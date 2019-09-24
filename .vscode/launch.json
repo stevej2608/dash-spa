@@ -1,0 +1,75 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "internalConsole",
+            "justMyCode": false
+        },
+        {
+            "name": "1. usage.py",
+            "type": "python",
+            "request": "launch",
+            "pythonPath": "${config:python.pythonPath}",
+            "program": "${workspaceFolder}/usage.py",
+            "args": [
+                "runserver"
+            ],
+            // "env": {"DASH_DEBUG" : 1},
+            // "env": {"DASH_DEBUG" : 2},
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "justMyCode": false
+        },
+        {
+            "name": "2. test.py",
+            "type": "python",
+            "request": "launch",
+            "pythonPath": "${config:python.pythonPath}",
+            "program": "${workspaceFolder}/test.py",
+            "args": [
+                "runserver"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "justMyCode": false
+        },
+        {
+            "name": "3. examples/redirect.py",
+            "type": "python",
+            "request": "launch",
+            "stopOnEntry": false,
+            "pythonPath": "${config:python.pythonPath}",
+            "module": "examples.redirect",
+            "env": {},
+            "envFile": "${workspaceFolder}/.env",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "justMyCode": false
+        },
+        {
+            "name": "4. PyTest",
+            "type": "python",
+            "request": "launch",
+            "stopOnEntry": false,
+            "pythonPath": "${config:python.pythonPath}",
+            "module": "pytest",
+            "args": [
+                "--headless"
+            ],
+            "cwd": "${workspaceRoot}",
+            "env": {},
+            "envFile": "${workspaceRoot}/.env",
+            "console": "internalConsole",
+            "justMyCode": false
+        }
+
+    ]
+}

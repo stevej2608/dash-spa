@@ -1,0 +1,33 @@
+{
+  "logging": {
+    "level" : "WARNING"
+  },
+  "flask" : {
+    "secret_key" : "my secret flask password"
+  },
+  "user_db" : {
+    "database_uri" : "sqlite:///db.sqlite"
+  },
+  "mail_options": {
+    "sender" : "admin@joes.com",
+    "active" : "gmail",
+    "gmail": {
+      "host": "smtp.gmail.com",
+      "port": 465,
+      "secure": true,
+      "auth": {
+        "user": "bigjoe@gmail.com",
+        "password": "bigjoespassword"
+      }
+    },
+    "plusnet": {
+      "host": "relay.plus.net",
+      "port": 587,
+      "secure": false,
+      "auth": {
+        "user": "bigjoe",
+        "password": "bigjoesotherpassword"
+      }
+    }
+  }
+}
