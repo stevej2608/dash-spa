@@ -5,7 +5,7 @@ from .spa_components import SpaComponents
 from .spa import SinglePageApp
 from .spa_blueprint import Blueprint
 
+from ._version import __version__
 
-__version__ = '0.0.1'
 __author__ = 'Steve Jones <jonesst2608@gmail.com>'
 __all__ = []

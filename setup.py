@@ -6,6 +6,8 @@ from setuptools import find_packages, setup
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+DASH_SPA_DIR = 'dash_spa'
+
 def read(filename):
     filename = os.path.join(os.path.dirname(__file__), filename)
     text_type = type(u"")
@@ -15,10 +17,9 @@ def read(filename):
 
 def _get_version():
     """ Get version by parsing _version programmatically """
-    packages = find_packages()
     version_ns = {}
     with open(
-            os.path.join(HERE, packages[0], "_version.py")
+            os.path.join(HERE, DASH_SPA_DIR, "_version.py")
     ) as f:
         exec(f.read(), {}, version_ns)
     version = version_ns["__version__"]
@@ -42,6 +43,10 @@ setup(
     author="Steve Jones",
     author_email="jonesst2608@gmail.com",
     license='MIT',
+    install_requires=[
+        'dash-bootstrap-components',
+        'dash-holoniq-components',
+    ],
     extras_require={
         "dev": [
             "pytest >= 3.6",

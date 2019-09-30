@@ -4,12 +4,13 @@ import tempfile
 from shutil import which
 from subprocess import call
 from pathlib import Path
-from setuptools import find_packages
 
 import semver
 
 from invoke import run as invoke_run
 from invoke import task
+
+DASH_SPA_DIR = 'dash_spa'
 
 VERSION_TEMPLATE = """__version__ = "{version_string}"
 """
@@ -66,7 +67,7 @@ def release(_ctx, version):
     info("Committing version changes")
 
     run(f"git checkout -b release-{version}")
-    run(f"git add {package_name()}/_version.py")
+    run(f"git add {DASH_SPA_DIR}/_version.py")
     run(f'git commit -m "Bump version to {version}"')
 
     info(f"Tagging version {version} and pushing to GitHub")
@@ -93,7 +94,7 @@ def postrelease(_ctx, version):
     info(f"Bumping version numbers to {new_version} and committing")
     set_pyversion(new_version)
     run(f"git checkout -b postrelease-{version}")
-    run(f"git add {package_name()}/_version.py")
+    run(f"git add {DASH_SPA_DIR}/_version.py")
     run('git commit -m "Back to dev"')
     run(f"git push origin postrelease-{version}")
 
@@ -158,7 +159,7 @@ def build_publish(version):
 def set_pyversion(version):
 
     version = normalize_version(version)
-    version_path = HERE / package_name() / "_version.py"
+    version_path = HERE / DASH_SPA_DIR / "_version.py"
     with version_path.open("w") as f:
         f.write(VERSION_TEMPLATE.format(version_string=version))
 
@@ -167,9 +168,6 @@ def normalize_version(version):
     version_string = str(version_info)
     return version_string
 
-def package_name():
-    packages = find_packages()
-    return packages[0]
 
 def check_prerequisites():
     for executable in ["twine"]:
