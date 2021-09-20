@@ -42,7 +42,7 @@ class SinglePageApp:
         self.endpoints = {}
         self.login_manager = None
 
-    def run_server(self, debug=False, host=None, port=None, threaded=True):
+    def run_server(self, debug=False, host='localhost', port=5000, threaded=True):
         """Start the Dash/SPA server
 
         Args:
@@ -181,8 +181,8 @@ class SinglePageApp:
             ])
 
         def navbar_elements():
-            items_left = getItems(self.navitems['left'])
-            items_right = getItems(self.navitems['right'])
+            items_left = getItems(self.navitems['left'] if 'left' in self.navitems else [])
+            items_right = getItems(self.navitems['right'] if 'right' in self.navitems else [])
             return [
                 dbc.NavbarBrand(html.Strong(navitems['brand']['title']), href=navitems['brand']['href']),
 

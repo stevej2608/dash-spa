@@ -7,8 +7,8 @@ demo = Blueprint('demo')
 NAV_BAR_ITEMS = {
     'brand' : {'title' : 'SPA/Example', 'href' : '/'},
     'left' : [
-        {'title' : 'Page1', 'endpoint' : 'demo.page1'},
-        {'title' : 'Page2', 'endpoint' : 'demo.page2'},
+        {'title' : 'Page1', 'href' : '/demo/page1'},
+        {'title' : 'Page2', 'href' : '/demo/page2'},
     ],
 }
 
@@ -56,6 +56,6 @@ def create_app():
 #
 
 if __name__ == '__main__':
-    print('\nvisit: http://localhost:8050/demo/page1\n')
+    print('\nvisit: http://localhost:5000/demo/page1\n')
     app = create_app()
     app.run_server(debug=False, threaded=False)
