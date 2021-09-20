@@ -59,6 +59,7 @@ class SinglePageApp:
             self.dash.run_server(debug=debug, host=host, port=port, threaded=threaded)
 
     def layout(self):
+        """Layout the Dash/SPA application"""
         self.dash.layout = self.pageLayout()
 
     def pageLayout(self):

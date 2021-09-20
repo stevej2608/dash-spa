@@ -27,14 +27,21 @@ NAV_BAR_ITEMS = {
     ]
 }
 
-app = spa.SinglePageApp(app, navitems=NAV_BAR_ITEMS)
+def create_spa(app=app):
+    """Create SPA application, return Flask app server instance"""
 
-app.register_blueprint(welcome)
-app.register_blueprint(demo, url_prefix='/demo')
-app.register_blueprint(user, url_prefix='/user')
+    app = spa.SinglePageApp(app, navitems=NAV_BAR_ITEMS)
 
-app.register_blueprint(admin, url_prefix='/admin')
-app.enable_login_manager(login_manager, login_view='admin.login')
+    app.register_blueprint(welcome)
+    app.register_blueprint(demo, url_prefix='/demo')
+    app.register_blueprint(user, url_prefix='/user')
+
+    app.register_blueprint(admin, url_prefix='/admin')
+    app.enable_login_manager(login_manager, login_view='admin.login')
+
+    app.layout()
+
+    return app.dash.server
 
 if __name__ == '__main__':
 
@@ -53,4 +60,6 @@ if __name__ == '__main__':
 
     print(f' * Visit http://{hostname}:{hostport}/admin/login\n')
 
-    app.run_server(debug=False, host='0.0.0.0', port=port, threaded=False)  
+    app = create_spa()
+
+    app.run(debug=False, host='0.0.0.0', port=port, threaded=False) 
