@@ -10,10 +10,10 @@ test = Blueprint('test')
 def route1():
     spa = test.get_spa('page1')
 
-    btn = spa.Button('Page #2', id='btn')
+    btn = spa.Button('Go to Page #2', id='btn')
     redirect = spa.Redirect(id='redirect')
 
-    @spa.callback(redirect.output.href, [btn.input.n_clicks])
+    @spa.callback(redirect.output.pathname, [btn.input.n_clicks])
     def _cb(clicks):
         red = test.NOUPDATE
         log.info('btn clicks=%s', clicks)
@@ -32,11 +32,10 @@ def route1():
 def route2():
     spa = test.get_spa('route2')
 
-
-    btn = spa.Button('Page #1', id='btn')
+    btn = spa.Button('Go to Page #1', id='btn')
     redirect = spa.Redirect(id='redirect')
 
-    @spa.callback(redirect.output.href, [btn.input.n_clicks])
+    @spa.callback(redirect.output.pathname, [btn.input.n_clicks])
     def _cb(clicks):
         red = test.NOUPDATE
         log.info('btn clicks=%s', clicks)
@@ -66,6 +65,6 @@ def create_app():
 #
 
 if __name__ == '__main__':
-    print('\nvisit: http://localhost:8050/test/page1\n')
+    print('\nvisit: http://localhost:5000/test/page1\n')
     app = create_app()
     app.run_server(debug=False, threaded=False)
