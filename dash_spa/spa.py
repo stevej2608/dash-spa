@@ -96,6 +96,9 @@ class SinglePageApp:
 
             pathname = re.sub(r"\/$", '', url.path)
 
+            if pathname == '':
+                pathname = '/'
+
             log.info('display_page href=%s', href)
 
             if pathname and pathname in blueprint_routes:
@@ -180,7 +183,7 @@ class SinglePageApp:
             items_left = getItems(self.navitems['left'])
             items_right = getItems(self.navitems['right'])
             return [
-                dbc.NavbarBrand(html.Strong(navitems['brand']['title']), href="https://datatables.net/"),
+                dbc.NavbarBrand(html.Strong(navitems['brand']['title']), href=navitems['brand']['href']),
 
                 # Left hand side
 
@@ -205,7 +208,7 @@ class SinglePageApp:
 
         return navbar
 
-    def register_blueprint(self, blueprint, url_prefix=None):
+    def register_blueprint(self, blueprint, url_prefix='/'):
         """Register blueprint with Dash/SPA application
 
         Args:
@@ -234,7 +237,12 @@ class SinglePageApp:
         # Process endpoints
 
         for route, layout_function in blueprint.routes.items():
-            full_route = '{}/{}'.format(url_prefix, route.replace('.','/'))
+
+            if route:
+                full_route = '{}/{}'.format(url_prefix, route.replace('.','/'))
+            else:
+                full_route = url_prefix
+
             ep = '{}.{}'.format(blueprint.name, route)
             self.blueprint_routes[full_route] = layout_function
             self.endpoints[ep] = full_route

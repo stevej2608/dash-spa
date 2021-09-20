@@ -29,7 +29,7 @@ NAV_BAR_ITEMS = {
 
 app = spa.SinglePageApp(app, navitems=NAV_BAR_ITEMS)
 
-app.register_blueprint(welcome, url_prefix='/')
+app.register_blueprint(welcome)
 app.register_blueprint(demo, url_prefix='/demo')
 app.register_blueprint(user, url_prefix='/user')
 

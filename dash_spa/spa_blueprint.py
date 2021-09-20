@@ -30,7 +30,7 @@ class Blueprint(SpaComponents):
         self.routes = {}
         self.cli = BlueprintAppGroup(name)
 
-    def route(self, route, title=None, **options):
+    def route(self, route='', title=None, **options):
         """Define Dash/SPA endpoint
 
         Args:
