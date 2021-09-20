@@ -1,12 +1,11 @@
 import re
-import dash_holoniq_components as dhc
 from utils import log
 
 import dash
+from dash import html, dcc
 from dash.dependencies import DashDependency
-from dash import html
-from dash import dcc
 import dash_bootstrap_components as dbc
+import dash_holoniq_components as dhc
 
 from .spa_components import SpaComponents
 
@@ -48,7 +47,7 @@ class SinglePageApp:
         Args:
             debug (bool, optional): Enable Dash debugging. Defaults to False.
             threaded (bool, optional): Enable threading. Defaults to True.
-        """        
+        """
 
         if not self.dash.layout:
             self.dash.layout = self.pageLayout()
@@ -215,7 +214,7 @@ class SinglePageApp:
         Args:
             blueprint (dash_spa.Blueprint): The Blueprint being registered
             url_prefix (String, optional): The prefix to be applied to all routes defined by the blueprint. Defaults to None.
-        
+
         Example:
 
                 admin = Blueprint('admin')
@@ -240,11 +239,11 @@ class SinglePageApp:
         for route, layout_function in blueprint.routes.items():
 
             if route:
-                full_route = '{}/{}'.format(url_prefix, route.replace('.','/'))
+                full_route = f"{url_prefix}/{route.replace('.','/')}"
             else:
                 full_route = url_prefix
 
-            ep = '{}.{}'.format(blueprint.name, route)
+            ep = f'{blueprint.name}.{route}'
             self.blueprint_routes[full_route] = layout_function
             self.endpoints[ep] = full_route
 
@@ -252,7 +251,7 @@ class SinglePageApp:
         try:
             return self.endpoints[endpoint] if endpoint else None
         except Exception as ex:
-            raise Exception("Unable to resolve endpoint '{}'".format(endpoint)) from ex
+            raise Exception(f"Unable to resolve endpoint '{endpoint}'") from ex
 
     def enable_login_manager(self, login_manager, login_view):
 

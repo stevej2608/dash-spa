@@ -67,7 +67,7 @@ def ticker():
         if tickers is not None:
             href = demo.url_for('ticker')
             urlargs = '+'.join(tickers)
-            search = '?{}={}'.format(url_args_name, urlargs)
+            search = f'?{url_args_name}={urlargs}'
             href += search
         return href
 
@@ -123,7 +123,7 @@ def update_graph(tickers):
                 'hoverinfo': 'none',
                 'legendgroup': ticker,
                 'showlegend': True if i == 0 else False,
-                'name': '{} - bollinger bands'.format(ticker)
+                f'name': '{ticker} - bollinger bands'
             } for i, y in enumerate(bb_bands)]
             graphs.append(dcc.Graph(
                 id=ticker,

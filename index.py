@@ -15,7 +15,7 @@ The framework, component suite and demo are 100% Python
 
 def jumbotron_header(title, text):
     return html.Header([
-        html.H1(title, className='display-3'),
+        html.H1(title, className='display-4 text-center'),
         html.P(text),
     ], className='jumbotron my-4')
 

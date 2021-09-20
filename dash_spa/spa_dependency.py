@@ -47,7 +47,7 @@ Will return the same Dash Dependency Output instance as:
 
     def __getattr__(self, name):
         if not name in self.component.available_properties:
-            raise AttributeError("'{}' component '{}' has no attribute '{}'".format(self.component._type, self.component.id, name))
+            raise AttributeError(f"'{self.component._type}' component '{self.component.id}' has no attribute '{name}'")
 
         dio = self.iofactory(self.component.id, name)
         self.__setattr__(name, dio)
@@ -89,7 +89,7 @@ class SpaDependency:
         self._prefix = strip(prefix)
 
     def prefix(self, id):
-        return '{}-{}'.format(self._prefix, id) if id else None
+        return f'{self._prefix}-{id}' if id else None
 
     def copy_factory(self, src, dest):
         """Copy Dash I/O Factory

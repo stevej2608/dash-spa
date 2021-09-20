@@ -1,9 +1,8 @@
 import inspect
 from urllib import parse
 import dash
-from dash import dcc
+from dash import dcc, html
 import dash_bootstrap_components as dbc
-from dash import html
 
 import dash_holoniq_components as dhc
 
@@ -62,7 +61,7 @@ class SpaComponents:
         """Create SpaComponents using the supplied prefix.
 
         Factory used to create Dash components that can be referenced in
-        callbacks without the need for strings.   
+        callbacks without the need for strings.
 
         """
         self.io = SpaDependency(prefix)
@@ -99,7 +98,7 @@ class SpaComponents:
             ctx = self.get_context()
             prefix = ctx.rule.replace('.','-')
 
-        return SpaComponents('{}-{}'.format(self.io._prefix, prefix), self)
+        return SpaComponents(f'{self.io._prefix}-{prefix}', self)
 
         # if prefix is None:
         #     return self
@@ -464,7 +463,7 @@ class SpaComponents:
                     ...
                 elif ctx.isTriggered(SpaComponents.url.input.href):
                     ...
-   
+
         """
         ctx = dash.callback_context
 
@@ -476,7 +475,7 @@ class SpaComponents:
                 if not ctx.triggered:
                     return False
 
-                prop_id = "{}.{}".format(input.id,input.component_property)
+                prop_id = f"{input.id}.{input.component_property}"
                 return ctx.triggered[0]['prop_id'] == prop_id
 
         return SpaCallbackContext()
