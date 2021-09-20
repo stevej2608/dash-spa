@@ -1,10 +1,7 @@
 import re
-
 import dash
 from dash.development.base_component import Component
 from dash.dependencies import DashDependency
-
-from app import app
 
 # Simple helper to get the Dash components identifier
 #
@@ -22,7 +19,7 @@ class DashIOFactory:
 Inject DashIOFactory instances into the Dash component. The
 factories will be accessable as follows:
 
-    div = html.Div(id='xxx') 
+    div = html.Div(id='xxx')
     children_attr = div.output.children
 
 Will return the same Dash Dependency Output instance as:
@@ -84,15 +81,15 @@ def strip(label):
 
 class SpaDependency:
 
+    # @property
+    # def app(self):
+    #     return self._spa_components.app
+
     def __init__(self, prefix):
         self._prefix = strip(prefix)
 
     def prefix(self, id):
         return '{}-{}'.format(self._prefix, id) if id else None
-
-    def callback(self, output, inputs=[], state=[]):
-        # log.info('register cb %s', [inputs, output])
-        return app.callback(output, inputs, state)
 
     def copy_factory(self, src, dest):
         """Copy Dash I/O Factory
@@ -118,8 +115,8 @@ class SpaDependency:
         if hasattr(dest, 'id'):
             _copy()
         else:
-            dest.id = '#container'
+            dest.id = src.id + '#container'
             _copy()
-            dest.id = None
+            #dest.id = None
 
         return dest

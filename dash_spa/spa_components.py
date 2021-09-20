@@ -1,10 +1,9 @@
-from functools import wraps
-
+import inspect
 from urllib import parse
 import dash
+from dash import dcc
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import html
 
 import dash_holoniq_components as dhc
 
@@ -21,45 +20,114 @@ class SPAComponent:
 
 
 class SpaComponents:
+    """
+    Factory used to create Dash components that can be referenced in
+    callbacks without the need for error prone string references.
+
+    Usage:
+
+        spa = SpaComponents('sector_view')
+
+        sector_title = spa.Div(id='table')
+
+        sector_dropdown = spa.Dropdown(id='trust_sector' ...)
+
+        @app.callback(sector_title.output.children, sector_dropdown.input.value)
+
+        def sector_title_update_cb(selection):
+            return html.H2(selection)
+
+    Class Attributes:
+
+        url : Location
+            Globally dash Location component
+
+        redirect : Redirect
+            Globally available dash Redirect component
+
+        NOUPDATE :
+            Default retutn value for callbacks when no updates are required
+
+    """
 
     url = None
-
+    redirect = None
     NOUPDATE = dash.no_update
 
+    @property
+    def app(self):
+        return self.parent.app
 
     def __init__(self, prefix, parent=None):
+        """Create SpaComponents using the supplied prefix.
+
+        Factory used to create Dash components that can be referenced in
+        callbacks without the need for strings.   
+
+        """
         self.io = SpaDependency(prefix)
-        self.url_pathname = prefix.split('-')[-1]
+        self._url_prefix = prefix.split('-')[-1]
         self.parent = parent
 
         if SpaComponents.url is None:
-            SpaComponents.url = self.Location()
+            SpaComponents.url = dcc.Location(id='spa#url')
 
-    def get_spa(self, prefix):
+        if SpaComponents.redirect is None:
+            SpaComponents.redirect = dhc.Location(id='spa#redirect')
+
+    def stack_lookup(self, var):
+        for frameinfo in inspect.stack(0):
+            if var in frameinfo.frame.f_locals:
+                return frameinfo.frame.f_locals[var]
+        return None
+
+    def get_context(self):
+        return self.stack_lookup('ctx')
+
+    def get_spa(self, prefix=None):
         """Return a new SPAComponent that is a child of this instance
 
         Arguments:
             prefix {str} -- the postfix to append to the current prefix
         """
+
+        # If prefix is not specified use the blueprint rule. To
+        # get this we need to look up the stack to get the blueprint
+        # context from spa#pageLayout()
+
+        if prefix is None:
+            ctx = self.get_context()
+            prefix = ctx.rule.replace('.','-')
+
         return SpaComponents('{}-{}'.format(self.io._prefix, prefix), self)
 
+        # if prefix is None:
+        #     return self
+        # else:
+        #     return SpaComponents('{}-{}'.format(self.io._prefix, prefix), self)
 
     def prefix(self, id):
         return self.io.prefix(id)
 
     def get_pathname(self):
-        pathname = (self.parent.get_pathname() + '/' if self.parent else '') + self.url_pathname
+        """Build the canatonical pathname associated with this SpaComponents instance"""
+
+        pathname = (self.parent.get_pathname() + '/' if self.parent else '') + self._url_prefix
+
         if not pathname.startswith('/'):
             pathname = '/' + pathname
         return  pathname.rstrip('/')
 
-    def set_pathname(self, pathname):
-        self.url_pathname = pathname
+    def set_url_prefix(self, prefix):
+        """Set the url_prefix"""
+        self._url_prefix = prefix
 
     def callback(self, output, inputs=[], state=[]):
-        return self.io.callback(output, inputs, state)
+        """Convenience wrapper for Dash @callback function decorator"""
+        return self.parent.callback(output, inputs, state)
 
-    def urlsplit(self, href):
+    @classmethod
+    def urlsplit(cls, href):
 
         class URL:
             def __init__(self):
@@ -123,32 +191,35 @@ class SpaComponents:
         id = self.prefix('null')
         return html.Div(id=id)
 
-
     def Button(self, label=None, id=None, type='button', className="btn btn-primary btn-block", **kwargs):
         """Button"""
-        id = self.prefix(id)
-        return html.Button(label, id=id, type=type, className=className, **kwargs)
+        if id:
+            id = self.prefix(id)
+            return html.Button(label, id=id, type=type, className=className, **kwargs)
+        else:
+            return html.Button(label, type=type, className=className, **kwargs)
 
 
-    def ButtonLink(self, label=None, id=None, **kwargs):
+    def ButtonLink(self, href='#', id=None, **kwargs):
         """ButtonLink"""
-        io = self.io
-        id = io.prefix(id) if id else None
 
-        if href is None:
-            href = '#'
-
-        return dhc.ButtonLink(id=id, **kwargs)
+        if id:
+            io = self.io
+            id = io.prefix(id) if id else None
+            return dhc.ButtonLink(id=id, href=href **kwargs)
+        else:
+            return dhc.ButtonLink(href=href **kwargs)
 
 
     def Checkbox(self, children=None, id=None, checked=False, **kwargs):
         """Checkbox"""
         io = self.io
         id = self.prefix(id)
+        app = self.app
 
         checkbox = dbc.Checkbox(id=id, className="form-check-input", checked=checked, **kwargs)
 
-        @io.callback(checkbox.output.key, [checkbox.input.checked])
+        @app.callback(checkbox.output.key, [checkbox.input.checked])
         def _location_cb(checked):
             self.value = checked
             return SpaComponents.NOUPDATE
@@ -166,8 +237,8 @@ class SpaComponents:
     def Location(self, id=None, refresh=False, **kwargs):
         """Location"""
 
-        id = self.prefix(id) if id else 'spa#root#url'
-        return dcc.Location(id, refresh=refresh, **kwargs)
+        id = self.prefix(id)
+        return dhc.Location(id, refresh=refresh, **kwargs)
 
 
     def Dropdown(self, id=None, name=None, querystring=False, **kwargs):
@@ -175,12 +246,13 @@ class SpaComponents:
 
         io = self.io
         id = io.prefix(id)
+        app = self.app
 
         dropdown = dcc.Dropdown(id=id, **kwargs)
 
         if querystring:
 
-            @io.callback(dropdown.output.value, [SpaComponents.url.input.href])
+            @app.callback(dropdown.output.value, [SpaComponents.url.input.href])
             def _location_cb(href):
                 value = SpaComponents.NOUPDATE
 
@@ -202,6 +274,7 @@ class SpaComponents:
 
         io = self.io
         id = io.prefix(id)
+        app = self.app
 
         def add_feedback():
             if feedback:
@@ -213,11 +286,14 @@ class SpaComponents:
 
         _value = None
 
-        input = dbc.Input(id=id, name=name, type=type, autoComplete=ac, value=_value, **kwargs)
+        if id:
+            input = dbc.Input(id=id, name=name, type=type, autoComplete=ac, value=_value, **kwargs)
+        else:
+            input = dbc.Input( name=name, type=type, autoComplete=ac, value=_value, **kwargs)
 
         if querystring:
 
-            @io.callback(input.output.value, [SpaComponents.url.input.href])
+            @app.callback(input.output.value, [SpaComponents.url.input.href])
             def _location_cb(href):
                 nonlocal _value
                 log.info('input %s: href=%s (%s)', input.id, href, self.get_pathname())
@@ -249,7 +325,7 @@ class SpaComponents:
         return _layout
 
 
-    def PasswordInput(self, label, id=None, prompt=None, feedback=None, autoComplete=None, **kwargs):
+    def PasswordInput(self, label=None, id=None, prompt=None, feedback=None, autoComplete=None, **kwargs):
         """PasswordWithShow"""
 
         io = self.io
@@ -263,7 +339,10 @@ class SpaComponents:
 
         ac = 'on' if autoComplete else None
 
-        input = dhc.PasswordWithShow(id=id, **kwargs)
+        if id:
+            input = dhc.PasswordWithShow(id=id, **kwargs)
+        else:
+            input = dhc.PasswordWithShow(**kwargs)
 
         fields = [input]
 
@@ -282,6 +361,41 @@ class SpaComponents:
 
         return _layout
 
+    def InputWithIcon(self, label=None, id=None, prompt=None, feedback=None, autoComplete=None, **kwargs):
+        """InputWithIcon"""
+
+        io = self.io
+        id = io.prefix(id)
+
+        def add_feedback():
+            if feedback:
+                return [dbc.FormFeedback(feedback, valid=False)]
+            else:
+                return []
+
+        ac = 'on' if autoComplete else None
+
+        if id:
+            input = dhc.InputWithIcon(id=id, **kwargs)
+        else:
+            input = dhc.InputWithIcon(**kwargs)
+
+        fields = [input]
+
+        if label:
+            fields.insert(0, dbc.Label(label))
+
+        if prompt:
+            fields.append(dbc.FormText(prompt))
+
+        fields += add_feedback()
+
+        _layout = dbc.FormGroup(fields)
+
+        if id is not None:
+            io.copy_factory(input, _layout)
+
+        return _layout
 
     def LayoutRouter(self, children=[], switch=None, routes=[], id=None):
         """LayoutRouter"""
@@ -310,8 +424,19 @@ class SpaComponents:
         """Redirect"""
 
         io = self.io
-        return dhc.Redirect(id=io.prefix(id), refresh=refresh, href=href)
+        return dhc.Location(id=io.prefix(id), refresh=refresh, href=href)
 
+
+    def Navbar(self, children=[], id=None, **kwargs):
+        """Navbar"""
+        return dbc.Navbar(children, id=self.io.prefix(id), **kwargs)
+
+    def H2(self, children=[], id=None, **kwargs):
+        """H2"""
+        if id:
+            return html.H2(children, id=self.io.prefix(id), **kwargs)
+        else:
+            return html.H2(children, **kwargs)
 
     def Flash(self, message=None, id=None, className="alert alert-danger", **kwargs):
         """Flash"""
@@ -323,3 +448,35 @@ class SpaComponents:
         """PageTitle"""
         io = self.io
         return dhc.PageTitle(id=io.prefix(id), title=title)
+
+    @classmethod
+    def CallbackContext(cls):
+        """Helper to allow the input trigger to be resolved more easily
+
+        The method returns an object the can be used within a callback to
+        determin which input triggered the callback execution.
+
+        Usage:
+
+                ctx = SpaComponents.CallbackContext()
+
+                if ctx.isTriggered(sector_dropdown.input.value):
+                    ...
+                elif ctx.isTriggered(SpaComponents.url.input.href):
+                    ...
+   
+        """
+        ctx = dash.callback_context
+
+        class SpaCallbackContext:
+
+            def isTriggered(self, input):
+                """Return true if given input triggered the callback"""
+
+                if not ctx.triggered:
+                    return False
+
+                prop_id = "{}.{}".format(input.id,input.component_property)
+                return ctx.triggered[0]['prop_id'] == prop_id
+
+        return SpaCallbackContext()

@@ -1,3 +1,4 @@
+import os
 from utils import log, logging
 import dash_spa as spa
 
@@ -14,15 +15,15 @@ from index import spa as welcome
 NAV_BAR_ITEMS = {
     'brand' : {'title' : 'Dash/SPA', 'href' : '/'},
     'left' : [
-        {'title' : 'Global Warming', 'endpoint' : 'demo.warming'},
-        {'title' : 'State Solar', 'endpoint' : 'demo.solar'},
-        {'title' : 'Ticker', 'endpoint' : 'demo.ticker?tickers=COKE'},
-        {'title' : 'Profile', 'endpoint' : 'user.profile'},
+        {'title' : 'Global Warming', 'href' : '/demo/warming'},
+        {'title' : 'State Solar', 'href' : '/demo/solar'},
+        {'title' : 'Ticker', 'href' : '/demo/ticker?tickers=COKE'},
+        {'title' : 'Profile', 'href' : '/user/profile'},
     ],
     'right': [
-        {'title' : 'Login', 'endpoint' : 'admin.login', "login_required" : False, 'icon' : "fa fa-sign-in"},
-        {'title' : 'Logout', 'endpoint' : 'admin.logout', "login_required" : True, 'icon' : "fa fa-sign-in"},
-        {'title' : 'Register', 'endpoint' : 'admin.register', "login_required" : False, 'icon' : "fa fa-user"},
+        {'title' : 'Login', 'href' : '/admin/login', "login_required" : False, 'icon' : "fa fa-sign-in"},
+        {'title' : 'Logout', 'href' : '/admin/logout', "login_required" : True, 'icon' : "fa fa-sign-in"},
+        {'title' : 'Register', 'href' : '/admin/register', "login_required" : False, 'icon' : "fa fa-user"},
     ]
 }
 
@@ -46,6 +47,10 @@ if __name__ == '__main__':
 
     log.setLevel(logging.INFO)
 
-    print('\nvisit http://localhost:8050/\n')
+    port = int(os.environ.get("PORT", 5000))
+    hostname = os.environ.get("HOST_HOSTNAME", "localhost")
+    hostport = os.environ.get("HOST_HOSTPORT", "5000")
 
-    app.run_server(debug=False, threaded=False)
+    print(f' * Visit http://{hostname}:{hostport}/admin/login\n')
+
+    app.run_server(debug=False, host='0.0.0.0', port=port, threaded=False)  

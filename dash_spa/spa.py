@@ -1,11 +1,12 @@
+import re
+import dash_holoniq_components as dhc
 from utils import log
 
 import dash
 from dash.dependencies import DashDependency
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import html
+from dash import dcc
 import dash_bootstrap_components as dbc
-
 
 from .spa_components import SpaComponents
 
@@ -22,194 +23,109 @@ setattr(dash.dash._NoUpdate, '__repr__', __no_update_str__)
 
 class SinglePageApp:
 
-    def __init__(self, _dash, navitems=None, pages=None, title='Dash/SPA'):
-        self.dash = _dash
+    """Wrapper dor Dash instance """
+
+    endpoints = {}
+
+    def __init__(self, dash, navitems=None, title='Dash/SPA'):
+        """Create instance of Dash/SPA object
+
+        Args:
+            dash (dash.Dash): Dash instance to wrap
+            navitems (dict, optional): Optional Navbar definition. Defaults to None.
+            title (str, optional): Application title presented in browser page tab. Defaults to 'Dash/SPA'.
+        """
+        self.dash = dash
         self.navitems = navitems
         self.title = title
-        self.routes = {}
+        self.blueprint_routes = {}
         self.endpoints = {}
+        self.login_manager = None
 
-    def run_server(self, debug=True, threaded=True):
-        self.init()
-        self.dash.run_server(debug=debug, threaded=threaded)
-        # self.dash.run_server(debug=debug, threaded=threaded, dev_tools_serve_dev_bundles=True)
+    def run_server(self, debug=False, host=None, port=None, threaded=True):
+        """Start the Dash/SPA server
 
-    def init(self):
-        self._layout = self.page_layout()
-        self.dash.layout = self.layout
-        return self.dash
+        Args:
+            debug (bool, optional): Enable Dash debugging. Defaults to False.
+            threaded (bool, optional): Enable threading. Defaults to True.
+        """        
+
+        if not self.dash.layout:
+            self.dash.layout = self.pageLayout()
+
+        if debug:
+            self.dash.run_server(debug=debug, host=host, port=port, threaded=threaded, dev_tools_serve_dev_bundles=True)
+        else:
+            self.dash.run_server(debug=debug, host=host, port=port, threaded=threaded)
 
     def layout(self):
-        """Return the dash component tree
+        self.dash.layout = self.pageLayout()
 
-        We rebuild the application layout for each refresh. This is
-        experimental and may have side effects
-
-        Returns:
-            Object -- The root Dash element of a tree of elements
+    def pageLayout(self):
+        """
+        Called once on initialisation to provide the top-level page
+        layout for the entire application.
         """
 
-        log.info('SPA: refresh')
+        blueprint_routes = self.blueprint_routes
+        SHOW_404 = 'show404'
 
-        try:
+        def page_content_router():
+            """Call the layout merthod for each of the registered blueprint routes"""
 
-            # Clear the Dash layout & callback state prior rebuilding, it's
-            # as if this is the first call prior to calling dash.run_server()
+            page_layouts = {SHOW_404 : self.show404()}
 
+            for route, ctx in self.blueprint_routes.items():
+                page_layouts[route] = ctx.layout()
 
-            self.dash.callback_map = {}
-            self.dash._layout = None
+            (routes, children) = zip(*page_layouts.items())
+            return dhc.LayoutRouter(children, routes=routes, id='router')
 
-            # Rebuild everything
+        # Define the dynamic top-level layout components and their
+        # associated callback.
 
-            layout = self.page_layout()
+        page_content = page_content_router()
+        page_title = dhc.PageTitle(title=self.title, id='title')
 
-        finally:
+        @self.dash.callback(page_content.output.switch, page_title.output.title, SpaComponents.url.input.href)
+        def _display_page(href):
+            route = SHOW_404
+            title = SpaComponents.NOUPDATE
 
-            # Allow dash to call us again on the next refresh
+            url = SpaComponents.urlsplit(href)
 
-            self.dash._layout = self.layout
+            pathname = re.sub(r"\/$", '', url.path)
 
-        return layout
+            log.info('display_page href=%s', href)
 
+            if pathname and pathname in blueprint_routes:
+                route = pathname
+                title = blueprint_routes[pathname].title
 
-    def page_layout(self):
-        """layout the application's Dash components
+            return route, title
 
-        This method is called by Dash on start-up The applications
-        component tree is built and all associated callbacks
-        are visited.
-
-        Returns:9
-            Object -- The root Dash element of a tree of elements
-        """
-
-        spa = SpaComponents('spa')
-        _outer = self
-
-        def just_layouts(routes):
-            result = {}
-            for route, el in routes.items():
-                result[route] = el.dash_layout
-            return result
-
-        def hash_route(route):
-            if route is not None:
-                route = route.replace('/', '-')
-                return route[1:]
-            return None
-
-        # Iterate all registered routes calling the layout
-        # function for each route
-
-        routes = {}
-
-        for route, el in self.routes.items():
-            try:
-                el.dash_layout = el.layout()
-                routes[hash_route(route)] = el
-            except Exception as ex:
-                log.error('Route %s, layout failed: %s', route, ex)
-                raise ex
-
-        # Gather the Dash layouts for each of the routes
-
-        layouts = just_layouts(routes)
-
-        # Add an undefined 404 route
-
-        layouts['undefined'] = self.show404()
-
-        (hash_routes, children) = zip(*layouts.items())
-
-        router = spa.LayoutRouter(children, routes=hash_routes, id='router')
-
-        self.page_title = self.title
-
-        title = spa.PageTitle(id='title', title=self.page_title)
+        # Render the navbar
 
         navbar = self.navBar(self.navitems) if self.navitems else None
 
-        @self.dash.callback([router.output.switch, title.output.title], [SpaComponents.url.input.href])
-        def _cb_root(href):
-            title = spa.NOUPDATE
+        # Return the top-level page layout
 
-            url = spa.urlsplit(href)
-
-            pathname = url.path
-
-            log.info('_cb_root[href] %s', pathname)
-
-            hash_pathname = hash_route(pathname)
-
-            if hash_pathname in routes:
-
-                el = routes[hash_pathname]
-
-                if el.login_required:
-                    if not self.user_logged_in():
-                        login_view = self.login_manager.login_view
-                        hash_pathname = self.url_for(login_view)
-
-                if el.anonymouse_only:
-                    if self.user_logged_in():
-                        hash_pathname = 'undefined'
-
-                if el.validate and not el.validate(href):
-                    hash_pathname = 'undefined'
-
-
-                if el.title:
-                    new_title = self.get_title(self.title, el.title)
-                    if self.page_title != new_title:
-                        title = self.page_title = new_title
-
-            else:
-                hash_pathname = 'undefined'
-
-            log.info('router.output.switch: %s title:%s', hash_pathname, title)
-
-            return hash_pathname, title
-
-        # Create the dash layout
-
-        layout = self.page_body(navbar, router)
-
-        layout.children.insert(0, SpaComponents.url)
-        layout.children.insert(0, title)
-
-        log.info('SPA: page layout - done')
-
-        return layout
-
-    def get_title(self, title, subtitle):
-        return '{}:{}'.format(title, subtitle)
-
-    def page_body(self, navbar, router):
-        return html.Div([
+        layout = html.Div([
+            SpaComponents.url,
+            SpaComponents.redirect,
+            page_title,
             navbar,
             html.Br(),
             html.Div([
                 html.Div([
-                    html.Div(className="col-md-2"),
-                    html.Div(router, className="col-md-8"),
-                    html.Div(className="col-md-2")
+                    html.Div([], className="col-md-1"),
+                    html.Div(page_content, id='page-content', className="col-md-10"),
+                    html.Div([], className="col-md-1")
                 ], className='row')
             ], className="container-fluid"),
-            html.Div(id='null'),
-            self.footer()
+            html.Div(id='null')
         ])
-
-    def footer_text(self):
-        return 'Dash/SPA'
-
-    def footer(self):
-        return html.Footer([
-            html.Div([
-                html.P(self.footer_text(), className='text-center font-italic', style={'marginTop': 10})
-            ], className='containers')
-        ], className='footer')
-
+        return layout
 
     def show404(self):
         return html.Div([
@@ -231,8 +147,6 @@ class SinglePageApp:
                                 ' Contact Support'
                             ], href='/support', className='btn btn-secondary btn-lg'),
 
-
-
                         ], className='error-actions')
                     ], className='error-template')
                 ], className='col-md-12')
@@ -240,88 +154,96 @@ class SinglePageApp:
         ], className='container')
 
     def navBar(self, navitems, dark=True, color='secondary'):
-        """Return the navbar layout, constructed from the supplied dictionary definition
+        """Return the navbar for the application"""
 
-        Returns:
-            [object] -- Navbar ready for display
-        """
+        def getItems(items):
 
-        def item(item):
+            def item(item):
 
-            def ep_split():
-                ep = item["endpoint"]
-                ep = ep.split('?')
-                return ep[0], ep[1] if len(ep) > 1 else None
+                login_required = item.get('login_required')
+                if login_required is not None:
+                    if self.user_logged_in() != login_required:
+                        return None
 
-            endpoint, querystring = ep_split()
-            href = self.url_for(endpoint)
+                if 'icon' in item:
+                    return dbc.NavItem(
+                        dbc.NavLink([html.I(className=item['icon']), ' ' + item['title']], href=item["href"])
+                    )
+                else:
+                    return dbc.NavItem(dbc.NavLink(item['title'], href=item["href"]))
 
-            login_required = item.get('login_required')
-            if login_required is not None:
-                if self.user_logged_in() != login_required:
-                    return None
+            return dbc.Nav([
+                item(x) for x in items
+            ])
 
-            if querystring:
-                href = href + '?' + querystring
+        def navbar_elements():
+            items_left = getItems(self.navitems['left'])
+            items_right = getItems(self.navitems['right'])
+            return [
+                dbc.NavbarBrand(html.Strong(navitems['brand']['title']), href="https://datatables.net/"),
 
-            if 'icon' in item:
-                return dbc.NavItem([
-                    dbc.NavLink([html.I(className=item['icon']), ' ' + item['title']], href=href)
-                ])
-            else:
-                return dbc.NavItem(dbc.NavLink(item['title'], href=href))
+                # Left hand side
 
-        def get_items(side):
-            if navitems and side in navitems:
-                items = navitems[side]
+                dbc.NavItem(items_left, className='navbar-nav mr-auto'),
 
-                return dbc.Nav([
-                    item(x) for x in items
-                ])
-            return None
+                # Right hand side
 
-        def brand():
-            if navitems and 'brand' in navitems:
-                brand = navitems['brand']
-                return dbc.NavbarBrand(html.Strong(brand['title']), href=brand['href'])
-            return None
+                dbc.NavItem(items_right, className='navbar-nav ml-auto')
 
-        navbar = dbc.Navbar(
-            children=[
-                brand(),
-                dbc.NavItem(get_items('left'), className='navbar-nav mr-auto'),
-                dbc.NavItem(get_items('right'), className='navbar-nav ml-auto')
-            ], className="navbar-default", dark=dark, color=color, expand="md")
+            ]
+
+        spa = SpaComponents('navbar')
+
+        navbar = spa.Navbar(children=navbar_elements(),
+                id='navbar', className="navbar-default",
+                dark=dark, color=color,  expand="md" )
+
+        @self.dash.callback(navbar.output.children, [SpaComponents.url.input.pathname])
+        def navbar_cb(pathname):
+            children = navbar_elements()
+            return children
 
         return navbar
 
     def register_blueprint(self, blueprint, url_prefix=None):
-        log.info('register_blueprint %s', url_prefix)
+        """Register blueprint with Dash/SPA application
 
-        blueprint.set_pathname(url_prefix)
+        Args:
+            blueprint (dash_spa.Blueprint): The Blueprint being registered
+            url_prefix (String, optional): The prefix to be applied to all routes defined by the blueprint. Defaults to None.
+        
+        Example:
+
+                admin = Blueprint('admin')
+
+                app = dash.Dash(__name__)
+                spa = SinglePageApp(app)
+
+                spa.register_blueprint(admin, url_prefix='/server')
+
+        """
+
+        blueprint.set_url_prefix(url_prefix)
         blueprint.set_spa_app(self)
 
+        # Pass any cli commands across to Flask
+
+        if blueprint.cli.hasCommand:
+            self.dash.server.cli.add_command(blueprint.cli)
+
+        # Process endpoints
+
         for route, layout_function in blueprint.routes.items():
-
-            full_route = url_prefix + route if url_prefix else route
-
-            if full_route.endswith('/'):
-                full_route = full_route[:-1]
-
-            if full_route.startswith('//'):
-                full_route = full_route[1:]
-
-            ep = blueprint.name + route.replace('/', '.').rstrip('.')
-            log.info('route %s', full_route)
-            self.routes[full_route] = layout_function
+            full_route = '{}/{}'.format(url_prefix, route.replace('.','/'))
+            ep = '{}.{}'.format(blueprint.name, route)
+            self.blueprint_routes[full_route] = layout_function
             self.endpoints[ep] = full_route
-
 
     def url_for(self, endpoint):
         try:
             return self.endpoints[endpoint] if endpoint else None
-        except Exception:
-            raise Exception("Unable to resolve endpoint '{}'".format(endpoint))
+        except Exception as ex:
+            raise Exception("Unable to resolve endpoint '{}'".format(endpoint)) from ex
 
     def enable_login_manager(self, login_manager, login_view):
 
@@ -332,12 +254,11 @@ class SinglePageApp:
     def user_logged_in(self):
         """Return True if user is valid and is not anonymouse
         """
-        log.info('user_logged_in')
         if self.login_manager:
             try:
                 user = self.login_manager.reload_user()
                 return user and user.is_anonymous is False
-            except Exception:
+            except Exception as ex:
                 pass
 
         return False

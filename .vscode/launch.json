@@ -17,7 +17,7 @@
             "name": "1. usage.py",
             "type": "python",
             "request": "launch",
-            "pythonPath": "${config:python.pythonPath}",
+            "python": "${command:python.interpreterPath}",
             "program": "${workspaceFolder}/usage.py",
             "args": [
                 "runserver"
@@ -32,7 +32,7 @@
             "name": "2. test.py",
             "type": "python",
             "request": "launch",
-            "pythonPath": "${config:python.pythonPath}",
+            "python": "${command:python.interpreterPath}",
             "program": "${workspaceFolder}/test.py",
             "args": [
                 "runserver"
@@ -46,7 +46,7 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": false,
-            "pythonPath": "${config:python.pythonPath}",
+            "python": "${command:python.interpreterPath}",
             "module": "examples.redirect",
             "env": {},
             "envFile": "${workspaceFolder}/.env",
@@ -59,7 +59,7 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": false,
-            "pythonPath": "${config:python.pythonPath}",
+            "python": "${command:python.interpreterPath}",
             "module": "pytest",
             "args": [
                 "--headless"
