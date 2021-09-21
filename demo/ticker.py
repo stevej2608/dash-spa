@@ -123,7 +123,7 @@ def update_graph(tickers):
                 'hoverinfo': 'none',
                 'legendgroup': ticker,
                 'showlegend': True if i == 0 else False,
-                f'name': '{ticker} - bollinger bands'
+                'name': f'{ticker} - bollinger bands'
             } for i, y in enumerate(bb_bands)]
             graphs.append(dcc.Graph(
                 id=ticker,
