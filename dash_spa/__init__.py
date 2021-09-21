@@ -6,6 +6,6 @@ from .spa import SinglePageApp
 from .spa_blueprint import Blueprint
 
 
-__version__ = '0.0.1'
+__version__ = '0.0.3'
 __author__ = 'Steve Jones <jonesst2608@gmail.com>'
 __all__ = []
