@@ -54,13 +54,15 @@ is created. It is then used by reference in associated Dash callbacks:
 NAV_BAR_ITEMS = {
     'brand' : {'title' : 'Dash/SPA', 'href' : '/'},
     'left' : [
-        {'title' : 'Global Warming', 'endpoint' : 'demo.warming'},
-        {'title' : 'State Solar', 'endpoint' : 'demo.solar'},
-        {'title' : 'Ticker', 'endpoint' : 'demo.ticker?tickers=COKE+TSLA'},
+        {'title' : 'Global Warming', 'href' : '/demo/warming'},
+        {'title' : 'State Solar', 'href' : '/demo/solar'},
+        {'title' : 'Ticker', 'href' : '/demo/ticker?tickers=COKE'},
+        {'title' : 'Profile', 'href' : '/user/profile'},
     ],
     'right': [
-        {'title' : 'Sign In', 'endpoint' : 'admin.login', 'icon' : "fa fa-sign-in"},
-        {'title' : 'Register', 'endpoint' : 'admin.register', 'icon' : "fa fa-user"},
+        {'title' : 'Login', 'href' : '/admin/login', "login_required" : False, 'icon' : "fa fa-sign-in"},
+        {'title' : 'Logout', 'href' : '/admin/logout', "login_required" : True, 'icon' : "fa fa-sign-in"},
+        {'title' : 'Register', 'href' : '/admin/register', "login_required" : False, 'icon' : "fa fa-user"},
     ]
 }
 ```
@@ -83,8 +85,6 @@ NAV_BAR_ITEMS = {
         def _form_submit(values):
             print(values)
             return spa.NOUPDATE
-
-
 ```
 
 ## Examples
