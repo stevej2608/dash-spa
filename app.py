@@ -1,15 +1,10 @@
-import os
-from utils import config, DashDebug
+from utils import config
 import dash
 import dash_bootstrap_components as dbc
 
 flask_options = config.get('flask')
 
-DASH_DEBUG = 'DASH_DEBUG' in os.environ
-
-_app_create = DashDebug if DASH_DEBUG else dash.Dash
-
-app = _app_create(__name__,
+app = dash.Dash(__name__,
                   suppress_callback_exceptions=True,
                   external_stylesheets=[
                       dbc.themes.BOOTSTRAP,
