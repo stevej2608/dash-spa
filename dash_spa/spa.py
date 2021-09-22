@@ -126,9 +126,26 @@ class SinglePageApp:
                     html.Div([], className="col-md-1")
                 ], className='row')
             ], className="container-fluid"),
-            html.Div(id='null')
+            html.Div(id='null'),
+            self.footer()
         ])
         return layout
+
+    def footer_text(self):
+        if 'footer' in  self.navitems:
+            return self.navitems['footer']
+        return None
+
+    def footer(self):
+        text = self.footer_text()
+        if text:
+            return html.Footer([
+                html.Div([
+                    html.P(self.footer_text(), className='text-center font-italic', style={'marginTop': 10})
+                ], className='containers')
+            ], className='footer')
+        else:
+            return None
 
     def show404(self):
         return html.Div([

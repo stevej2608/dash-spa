@@ -18,10 +18,10 @@ try:
     index = argv.index('--port')
     port = argv[index+1]
 except Exception:
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8050))
 
 hostname = os.environ.get("HOST_HOSTNAME", "localhost")
-hostport = os.environ.get("HOST_HOSTPORT", "5000")
+hostport = os.environ.get("HOST_HOSTPORT", "8050")
 
 print(f' * stock-server V{"0.0.1"}')
 print(f' * Visit http://{hostname}:{hostport}/admin/login\n')

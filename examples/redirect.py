@@ -1,8 +1,10 @@
 from utils import logging, log
-import dash_html_components as html
+from dash import html
 
 from dash_spa import spa, Blueprint
+
 from app import app as dash_app
+from server import serve_app
 
 test = Blueprint('test')
 
@@ -56,15 +58,15 @@ def create_app():
     app = spa.SinglePageApp(dash_app)
     app.register_blueprint(test, url_prefix='/test')
 
-    return app
+    app.layout()
+
+    return app.dash.server
 
 #
 # python -m examples.redirect
 #
-# http://localhost:8050/test/page1
-#
+
 
 if __name__ == '__main__':
-    print('\nvisit: http://localhost:5000/test/page1\n')
     app = create_app()
-    app.run_server(debug=False, threaded=False)
+    serve_app(app,"/test/page1")

@@ -7,7 +7,7 @@
 
   "containerEnv": {
     "HOST_HOSTNAME": "default",
-    "HOST_HOSTPORT": "80"
+    "HOST_HOSTPORT": "8051"
   },
 
 	// Set *default* container specific settings.json values on container create.
@@ -25,8 +25,8 @@
 	],
 
 	// "forwardPorts": [3000, 5000],
-  "appPort": "80:5000",
-  "postCreateCommand": "pip install -r requirements.txt",
+  "appPort": "8051:8050",
+  // "postCreateCommand": "pip install -r requirements.txt",
 
   "workspaceFolder": "/workspace",
 	"workspaceMount": "source=/workspaces/${localWorkspaceFolderBasename},target=/workspace,type=bind,consistency=cached",

@@ -1,8 +1,8 @@
-import os
 from utils import log, logging
 import dash_spa as spa
 
 from app import app
+from server import serve_app
 
 from admin import admin
 from admin import login_manager
@@ -14,6 +14,7 @@ from index import spa as welcome
 
 NAV_BAR_ITEMS = {
     'brand' : {'title' : 'Dash/SPA', 'href' : '/'},
+    'footer': 'SPA/Examples',
     'left' : [
         {'title' : 'Global Warming', 'href' : '/demo/warming'},
         {'title' : 'State Solar', 'href' : '/demo/solar'},
@@ -44,22 +45,5 @@ def create_spa(app=app):
     return app.dash.server
 
 if __name__ == '__main__':
-
-    # Turn off werkzeug  logging as it's very noisy
-
-    aps_log = logging.getLogger('werkzeug')
-    aps_log.setLevel(logging.ERROR)
-
-    # Set SPA logging level (if needed)
-
-    log.setLevel(logging.INFO)
-
-    port = int(os.environ.get("PORT", 5000))
-    hostname = os.environ.get("HOST_HOSTNAME", "localhost")
-    hostport = os.environ.get("HOST_HOSTPORT", "5000")
-
-    print(f' * Visit http://{hostname}:{hostport}/admin/login\n')
-
     app = create_spa()
-
-    app.run(debug=False, host='0.0.0.0', port=port, threaded=False) 
+    serve_app(app, "/admin/login")

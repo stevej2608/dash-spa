@@ -1,6 +1,8 @@
+from dash import html
 from dash_spa import spa, Blueprint
-import dash_html_components as html
+
 from app import app as dash_app
+from server import serve_app
 
 demo = Blueprint('demo')
 
@@ -47,15 +49,15 @@ class CustomSpaApp(spa.SinglePageApp):
 def create_app():
     app = CustomSpaApp(dash_app, navitems=NAV_BAR_ITEMS)
     app.register_blueprint(demo, url_prefix='/demo')
-    return app
+
+    app.layout()
+
+    return app.dash.server
 
 #
 # python -m examples.multipage
 #
-# http://localhost:8050/demo/page1
-#
 
 if __name__ == '__main__':
-    print('\nvisit: http://localhost:5000/demo/page1\n')
     app = create_app()
-    app.run_server(debug=False, threaded=False)
+    serve_app(app,"/demo/page1")
