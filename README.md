@@ -99,6 +99,12 @@ An example of a multi-page app with navbar and footer in less than sixty lines o
 
 Then visit [http://localhost:8050/demo/page1](http://localhost:8050/demo/page1)
 
+**[checkbox table row selection](examples/table.py)**
+
+        python -m examples.table
+
+Then visit [http://localhost:8050/table/page1](http://localhost:8050/table/page1)
+
 ## Admin Blueprint
 
 **Dash/SPA** Includes an optional **`admin`** blueprint that supports user registration, email 

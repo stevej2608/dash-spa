@@ -6,7 +6,7 @@ flask-sqlalchemy>=2.4.0
 pandas>=0.25.1
 colorlover>=0.3.0
 dash-holoniq-components>=0.0.15
-dash-datatables
+dash-datatables>=0.0.7
 
 #
 Paste
