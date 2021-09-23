@@ -132,7 +132,7 @@ class SinglePageApp:
         return layout
 
     def footer_text(self):
-        if 'footer' in  self.navitems:
+        if self.navitems and 'footer' in  self.navitems:
             return self.navitems['footer']
         return None
 
