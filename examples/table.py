@@ -49,7 +49,7 @@ def route1():
 
     return html.Div([
         table,
-        html.Div(id='solar#output')        
+        html.Div(id='solar#output')
     ])
 
 @dash_app.callback(Output('solar#output', 'children'), [Input('solar', 'table_event')])

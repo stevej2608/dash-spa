@@ -41,7 +41,7 @@ class Blueprint(SpaComponents):
             options (dict): Additional option that will be passed to the associated layout
 
         Maps given endpoint to Dash layout method. The given route will be tagged to the end
-        of the associated blueprint name and blueptint registration name.
+        of the associated blueprint name and blueprint registration name.
 
         Example:
 
