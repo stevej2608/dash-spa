@@ -241,7 +241,21 @@ class SpaComponents:
 
 
     def Dropdown(self, id=None, name=None, querystring=False, **kwargs):
-        """Dropdown"""
+        """[summary]
+
+        Args:
+            id (string, optional): ID associated with the component. Defaults to None.
+            name (string, optional): Component name. Defaults to None.
+            querystring (bool, optional): Enable query string processing. Defaults to False.
+
+        Returns:
+            Dropdown: Dash Dropdown component
+
+        Querystring:
+            Intercept the url, extract the querystring and if the qs 
+            key matches the dropdown name, pass it to the dropdown value
+        """
+
 
         io = self.io
         id = io.prefix(id)
@@ -251,11 +265,14 @@ class SpaComponents:
 
         if querystring:
 
+            # Intercept the url, extract the querystring and if the qs key
+            # matches the dropdown name, pass it to the dropdown value
+
             @app.callback(dropdown.output.value, [SpaComponents.url.input.href])
             def _location_cb(href):
                 value = SpaComponents.NOUPDATE
 
-                log.info('dropdown %s: href=%s (%s)', dropdown.id, href, self.get_pathname())
+                # log.info('dropdown %s: href=%s (%s)', dropdown.id, href, self.get_pathname())
 
                 qs = self.querystring_args(href)
 

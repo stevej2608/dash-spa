@@ -1,5 +1,6 @@
 import re
-from utils import log
+
+from utils import log, arg_list
 
 import dash
 from dash import html, dcc
@@ -67,45 +68,49 @@ class SinglePageApp:
         layout for the entire application.
         """
 
+        def get_content(ctx):
+            args = arg_list(ctx.layout)
+            if 'ctx' in args:
+                content = ctx.layout(ctx)
+            else:
+                content = ctx.layout()
+            return content
+
         blueprint_routes = self.blueprint_routes
-        SHOW_404 = 'show404'
 
-        def page_content_router():
-            """Call the layout merthod for each of the registered blueprint routes"""
+        # Iterate over all routes to register callbacks with dash
 
-            page_layouts = {SHOW_404 : self.show404()}
-
-            for route, ctx in self.blueprint_routes.items():
-                page_layouts[route] = ctx.layout()
-
-            (routes, children) = zip(*page_layouts.items())
-            return dhc.LayoutRouter(children, routes=routes, id='router')
+        for route, ctx in blueprint_routes.items():
+            get_content(ctx)
 
         # Define the dynamic top-level layout components and their
         # associated callback.
 
-        page_content = page_content_router()
+        page_content = html.Div(id='page_content')
         page_title = dhc.PageTitle(title=self.title, id='title')
 
-        @self.dash.callback(page_content.output.switch, page_title.output.title, SpaComponents.url.input.href)
+        @self.dash.callback(page_content.output.children, page_title.output.title, SpaComponents.url.input.href)
         def _display_page(href):
-            route = SHOW_404
             title = SpaComponents.NOUPDATE
 
             url = SpaComponents.urlsplit(href)
 
             pathname = re.sub(r"\/$", '', url.path)
 
-            if pathname == '':
+            if pathname is None or pathname == '':
                 pathname = '/'
 
             log.info('display_page href=%s', href)
 
-            if pathname and pathname in blueprint_routes:
-                route = pathname
-                title = blueprint_routes[pathname].title
+            if pathname in blueprint_routes:
+                ctx = blueprint_routes[pathname]
+                title = ctx.title
+                ctx.url = url
+                content = get_content(ctx)
+            else:
+                content = self.show404()
 
-            return route, title
+            return content, title
 
         # Render the navbar
 
