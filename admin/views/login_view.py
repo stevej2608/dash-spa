@@ -5,8 +5,8 @@ from dash_spa import SpaComponents
 
 from admin.login_manager import login_manager
 
-from .view_common import blueprint as admin
-from .view_common import form_layout
+from admin.views.view_common import form_layout
+from admin.views.view_common import blueprint as admin
 
 
 @admin.route('/login', anonymouse_only=True, title='Admin login')
