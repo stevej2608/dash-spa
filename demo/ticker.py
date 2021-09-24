@@ -25,16 +25,16 @@ except Exception:
 
 
 @demo.route('/ticker', title='Ticker')
-def ticker():
+def ticker(ctx):
     spa = demo.get_spa('ticker')
 
     # http://localhost:8050/finance_explorer?tickers=TSLA
 
-    url_args_name = 'tickers'
+    querystring_name = 'tickers'
 
     stock_ticker_dropdown = spa.Dropdown(
         id='stock_ticker',
-        name=url_args_name,
+        name=querystring_name,
         options=[{'label': s[0], 'value': str(s[1])}
                  for s in zip(df.Stock.unique(), df.Stock.unique())],
         multi=True,
@@ -67,7 +67,7 @@ def ticker():
         if tickers is not None:
             href = demo.url_for('ticker')
             urlargs = '+'.join(tickers)
-            search = f'?{url_args_name}={urlargs}'
+            search = f'?{querystring_name}={urlargs}'
             href += search
         return href
 

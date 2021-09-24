@@ -12,7 +12,12 @@
       "program": "${workspaceFolder}/usage.py",
       "cwd": "${workspaceFolder}",
       "console": "internalConsole",
-      "justMyCode": false
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
     },
     {
       "name": "2. examples/table.py",
