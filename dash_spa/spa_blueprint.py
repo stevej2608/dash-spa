@@ -81,6 +81,7 @@ class Blueprint(SpaComponents):
                 self.layout = layout
                 self.rule = endpoint
                 self.title = title
+                self.url = None
 
             def __getattr__(self, name):
                 if name in self.__dict__:
@@ -88,6 +89,21 @@ class Blueprint(SpaComponents):
                 else:
                     return None
 
+            def get_url_query_values(self, id):
+                """[summary]
+
+                Args:
+                    id (string): The is if the required sq params
+
+                Returns:
+                    [list]: List of values for given id
+                """
+                try:
+                    qs = self.url.qs
+                    if id in qs:
+                        return qs[id][0].split()
+                except Exception as ex:
+                    return None
 
         def decorator(f):
             self.routes[endpoint] = _Route(f)

@@ -1,6 +1,6 @@
 {
   "logging": {
-    "level" : "WARNING"
+    "level" : "INFO"
   },
   "flask" : {
     "secret_key" : "my secret flask password"

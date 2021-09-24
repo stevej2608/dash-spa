@@ -1,12 +1,9 @@
+from utils import log
 import colorlover as cl
 
 from dash import html, dcc
-
 import pandas as pd
-
 from dash_spa import SpaComponents
-
-from utils import log
 
 from .demo import blueprint as demo
 
@@ -28,17 +25,19 @@ except Exception:
 def ticker(ctx):
     spa = demo.get_spa('ticker')
 
+    log.info('/ticker')
+
     # http://localhost:8050/finance_explorer?tickers=TSLA
 
     querystring_name = 'tickers'
 
     stock_ticker_dropdown = spa.Dropdown(
         id='stock_ticker',
+        value=ctx.get_url_query_values(querystring_name),
         name=querystring_name,
         options=[{'label': s[0], 'value': str(s[1])}
                  for s in zip(df.Stock.unique(), df.Stock.unique())],
         multi=True,
-        querystring=True
     )
 
     graphs = spa.Div(id='graphs')
