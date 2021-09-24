@@ -80,6 +80,7 @@ class Blueprint(SpaComponents):
                 self.__dict__ = options
                 self.layout = layout
                 self.rule = endpoint
+                self.title = title
 
             def __getattr__(self, name):
                 if name in self.__dict__:
