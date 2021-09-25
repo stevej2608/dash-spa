@@ -3,12 +3,15 @@ import re
 from utils import log, arg_list
 
 import dash
-from dash import html, dcc
+from dash import html
 from dash.dependencies import DashDependency
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
 
 from .spa_components import SpaComponents
+
+from .page_not_found import PageNotFound
+from .navbar import NavbarBase
 
 DashDependency.id = property(lambda self: self.component_id)
 
@@ -27,6 +30,11 @@ class SinglePageApp:
 
     endpoints = {}
 
+    @property
+    def is_initialisation_completed(self):
+        """Application layout is completed"""
+        return self._is_initialisation_completed
+
     def __init__(self, dash, navitems=None, title='Dash/SPA'):
         """Create instance of Dash/SPA object
 
@@ -41,6 +49,9 @@ class SinglePageApp:
         self.blueprint_routes = {}
         self.endpoints = {}
         self.login_manager = None
+        self.page404 = None
+        self.components = SpaComponents('spa')
+        self._is_initialisation_completed = False
 
     def run_server(self, debug=False, host='localhost', port=5000, threaded=True):
         """Start the Dash/SPA server
@@ -112,9 +123,14 @@ class SinglePageApp:
 
             return content, title
 
-        # Render the navbar
+        # Render the navbar & footer
 
         navbar = self.navBar(self.navitems) if self.navitems else None
+        footer = self.footer()
+
+        # Block any further Dash callback registrations
+
+        self._is_initialisation_completed = True
 
         # Return the top-level page layout
 
@@ -132,80 +148,65 @@ class SinglePageApp:
                 ], className='row')
             ], className="container-fluid"),
             html.Div(id='null'),
-            self.footer()
+            footer
         ])
         return layout
 
     def footer_text(self):
-        if self.navitems and 'footer' in  self.navitems:
-            return self.navitems['footer']
         return None
 
     def footer(self):
-        text = self.footer_text()
-        if text:
-            return html.Footer([
-                html.Div([
-                    html.P(self.footer_text(), className='text-center font-italic', style={'marginTop': 10})
-                ], className='containers')
-            ], className='footer')
-        else:
+        """Create footer components and register a Dash callback that will
+        update the footer whenever the route changes
+
+        Returns:
+            object: The footer container
+        """
+
+        # Do nothing if footer is undefined
+
+        if not self.navitems or not 'footer' in  self.navitems:
             return None
 
+        # Create a container for the footer
+
+        footer = self.navitems['footer']
+        container = self.components.Div(footer.layout(self), id='footer')
+
+        # Register callback that will update the navbar whenever the browser page changes
+
+        @self.dash.callback(container.output.children, [SpaComponents.url.input.pathname])
+        def navbar_cb(pathname):
+            return footer.layout(self)
+
+        return container
+
+    def brand_text(self):
+        return None
+
+    def brand(self):
+        if self.navitems and 'brand' in  self.navitems:
+            return self.navitems['brand']
+        return NavbarBase()
+
     def show404(self):
-        return html.Div([
-            html.Div([
-                html.Div([
-                    html.Div([
-                        html.H1('Oops!'),
-                        html.H2('404 Not Found'),
-                        html.Div('Sorry, an error has occurred, Requested page not found!', className='error-details'),
-                        html.Div([
-
-                            dcc.Link([
-                                html.Span(className='fa fa-home'),
-                                ' Take Me Home'
-                            ], href='/', className='btn btn-secondary btn-lg'),
-
-                            dcc.Link([
-                                html.Span(className='fa fa-envelope'),
-                                ' Contact Support'
-                            ], href='/support', className='btn btn-secondary btn-lg'),
-
-                        ], className='error-actions')
-                    ], className='error-template')
-                ], className='col-md-12')
-            ], className='row')
-        ], className='container')
+        if not self.page404:
+            self.page404 = PageNotFound()
+        return self.page404.layout(self)
 
     def navBar(self, navitems, dark=True, color='secondary'):
         """Return the navbar for the application"""
 
+        brand = self.brand()
+
         def getItems(items):
-
-            def item(item):
-
-                login_required = item.get('login_required')
-                if login_required is not None:
-                    if self.user_logged_in() != login_required:
-                        return None
-
-                if 'icon' in item:
-                    return dbc.NavItem(
-                        dbc.NavLink([html.I(className=item['icon']), ' ' + item['title']], href=item["href"])
-                    )
-                else:
-                    return dbc.NavItem(dbc.NavLink(item['title'], href=item["href"]))
-
-            return dbc.Nav([
-                item(x) for x in items
-            ])
+            return dbc.Nav([item.layout(self) for item in items])
 
         def navbar_elements():
             items_left = getItems(self.navitems['left'] if 'left' in self.navitems else [])
             items_right = getItems(self.navitems['right'] if 'right' in self.navitems else [])
             return [
-                dbc.NavbarBrand(html.Strong(navitems['brand']['title']), href=navitems['brand']['href']),
+                brand.layout(self),
 
                 # Left hand side
 
@@ -217,11 +218,17 @@ class SinglePageApp:
 
             ]
 
-        spa = SpaComponents('navbar')
+        # Create navbar
 
-        navbar = spa.Navbar(children=navbar_elements(),
+        navbar = self.components.Navbar(children=navbar_elements(),
                 id='navbar', className="navbar-default",
                 dark=dark, color=color,  expand="md" )
+
+        # Iterate over all navbar element to register any internal callbacks with dash
+
+        navbar_elements()
+
+        # Register callback that will update the navbar whenever the browser page changes
 
         @self.dash.callback(navbar.output.children, [SpaComponents.url.input.pathname])
         def navbar_cb(pathname):

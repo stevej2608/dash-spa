@@ -117,7 +117,21 @@ class Blueprint(SpaComponents):
         We override the base class callback() to map onto the actual
         dash callback method.
         """
-        return self.app.callback(output, inputs, state)
+
+        # Dash callbacks can be defined in the SPA application
+        # layout methods. These methods are called on startup and
+        # during the normal running of the Dash application. Dash
+        # only allows callbacks to be registered on start up so
+        # we need to block any repeats that may occur during
+        # normal running.
+
+        def callback(self, *_args, **_kwargs):
+            pass
+
+        if not self.spa_app.is_initialisation_completed:
+            return self.app.callback(output, inputs, state)
+        else:
+            return callback
 
     def set_spa_app(self, spa_app):
         # log.info('set_spa_app %s', self.url_pathname)

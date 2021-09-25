@@ -1,11 +1,10 @@
 import inspect
 from urllib import parse
+
 import dash
-from dash import dcc, html
 import dash_bootstrap_components as dbc
-
 import dash_holoniq_components as dhc
-
+from dash import dcc, html
 from utils import log
 
 from .spa_dependency import SpaDependency
@@ -218,7 +217,7 @@ class SpaComponents:
 
         checkbox = dbc.Checkbox(id=id, className="form-check-input", checked=checked, **kwargs)
 
-        @app.callback(checkbox.output.key, [checkbox.input.checked])
+        @self.callback(checkbox.output.key, [checkbox.input.checked])
         def _location_cb(checked):
             self.value = checked
             return SpaComponents.NOUPDATE
@@ -283,7 +282,7 @@ class SpaComponents:
 
         if querystring:
 
-            @app.callback(input.output.value, [SpaComponents.url.input.href])
+            @self.callback(input.output.value, [SpaComponents.url.input.href])
             def _location_cb(href):
                 nonlocal _value
                 log.info('input %s: href=%s (%s)', input.id, href, self.get_pathname())

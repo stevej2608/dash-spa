@@ -9,8 +9,8 @@ from admin.views.view_common import form_layout
 from admin.views.view_common import blueprint as admin
 
 
-@admin.route('/login', anonymouse_only=True, title='Admin login')
-def login():
+@admin.route('/login', title='Admin login')
+def login(ctx):
     spa = admin.get_spa('login')
     log.info('spa pathname=%s ', spa.get_pathname())
 

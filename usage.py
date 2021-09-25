@@ -1,31 +1,26 @@
-from utils import log, logging
 import dash_spa as spa
-
+from admin import admin, login_manager
 from app import app
-from server import serve_app
-
-from admin import admin
-from admin import login_manager
-
-from user import spa as user
 from demo import spa as demo
 from index import spa as welcome
-
+from server import serve_app
+from user import spa as user
 
 NAV_BAR_ITEMS = {
-    'brand' : {'title' : 'Dash/SPA', 'href' : '/'},
-    'footer': 'SPA/Examples',
+    'brand' : spa.NavbarBrand('Dash/SPA','/'),
     'left' : [
-        {'title' : 'Global Warming', 'href' : '/demo/warming'},
-        {'title' : 'State Solar', 'href' : '/demo/solar'},
-        {'title' : 'Ticker', 'href' : '/demo/ticker?tickers=COKE'},
-        {'title' : 'Profile', 'href' : '/user/profile'},
+        spa.NavbarLink('Global Warming','/demo/warming'),
+        spa.NavbarLink('State Solar', '/demo/solar'),
+        spa.NavbarLink('Ticker', '/demo/ticker?tickers=COKE'),
+        spa.NavbarLink('Profile', '/user/profile'),
     ],
     'right': [
-        {'title' : 'Login', 'href' : '/admin/login', "login_required" : False, 'icon' : "fa fa-sign-in"},
-        {'title' : 'Logout', 'href' : '/admin/logout', "login_required" : True, 'icon' : "fa fa-sign-in"},
-        {'title' : 'Register', 'href' : '/admin/register', "login_required" : False, 'icon' : "fa fa-user"},
-    ]
+        spa.NavbarLink('Login', '/admin/login', icon = "fa fa-sign-in"),
+        spa.NavbarLink('Logout', '/admin/logout', login_required=True, icon = "fa fa-sign-in"),
+        spa.NavbarLink('Register','/admin/register', icon = "fa fa-user")
+    ],
+
+    'footer': spa.Footer('SPA/Examples'),
 }
 
 def create_spa(app=app):
