@@ -49,7 +49,7 @@ def build_login_form():
         if ctx.isTriggered(form.input.form_data):
             email = values['email']
             password = values['password']
-            remember = values['admin-login-remember']
+            remember = values['admin-login_form-remember']
             valid = app.login_manager.login(email, password, remember)
             if valid:
                 redirect = admin.url_for('user.profile')
