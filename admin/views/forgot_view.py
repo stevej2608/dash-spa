@@ -1,18 +1,15 @@
+from flask import current_app as app
 
 from flask import session
-
 from enum import Enum
 
-from utils import email_valid, log
-import dash_html_components as html
-
-from admin.login_manager import login_manager
-
-from .view_common import blueprint as admin
-from .view_common import form_layout
+from utils import log, email_valid
+from dash import html
 
 from dash_spa import SpaComponents
 
+from .view_common import blueprint as admin
+from .view_common import form_layout
 
 class ResetState(Enum):
     CONFIRM_EMAIL = 1
@@ -38,33 +35,34 @@ def forgot():
     the login_manager will send an forgot validation email to the user. We
     redirect to the `forgot-code` endpoint
     """
-    spa = admin.get_spa('forgot')
+    spa = admin.get_spa()
 
     flash = spa.Flash(id='flash')
     email = spa.Input(name='email', type='email', id='email', placeholder="Enter email", feedback="Your email is invalid")
-    redirect = spa.Redirect(id='redirect')
+    redirect = spa.Redirect(id='redirect', refresh=True)
 
     form = spa.Form([
-        flash, email, spa.Button('Reset Request', type='submit')
+        flash, email, spa.Button('Reset Request', id='btn', type='submit')
     ], id='forgot')
 
-    @spa.callback([redirect.output.href, flash.output.children], [form.input.form_data])
+    @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
 
-        if values:
+        ctx = SpaComponents.CallbackContext()
+        if ctx.isTriggered(form.input.form_data):
             email = values['email']
             if not email_valid(email):
                 error = 'Invalid email'
-            elif not login_manager.forgot(email):
+            elif not app.login_manager.forgot(email):
                 error = 'You do not have an account on this site'
             else:
 
                 # An email has been sent to the user, redirect to await
                 # entry of the forgot password validation code
 
-                redirect = admin.url_for('forgot1')
+                redirect = admin.url_for('forgot1', {'email': email})
 
         return redirect, error
 
@@ -79,27 +77,29 @@ def forgot_code():
     code. Allow the user to enter the code. If it verifies we redirect to
     the `forgot2` endpoint.
     """
-    spa = admin.get_spa('forgot1')
+    spa = admin.get_spa()
 
     flash = spa.Flash(id='flash')
     code = spa.Input(name='code', id='code', placeholder="verification code", prompt="Check your email in-box")
-    redirect = spa.Redirect(id='redirect')
+    redirect = spa.Redirect(id='redirect', refresh=True)
 
     form = spa.Form([
-        flash, code, spa.Button('Enter Verification Code', type='submit')
+        flash, code, spa.Button('Enter Verification Code', id='btn', type='submit')
     ], id='forgot')
 
-    @spa.callback([redirect.output.href, flash.output.children], [form.input.form_data])
+    @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
 
-        if values:
+        ctx = SpaComponents.CallbackContext()
+
+        if ctx.isTriggered(form.input.form_data):
             code = values['code']
-            if not login_manager.forgot_code_valid(code):
+            if not app.login_manager.forgot_code_valid(code):
                 error = 'Invalid vaildation code, please reenter'
             else:
-                args = {'code': code.upper(), 'email': login_manager.get_email()}
+                args = {'code': code.upper(), 'email': app.login_manager.get_email()}
                 redirect = admin.url_for('forgot2', args=args)
 
         return redirect, error
@@ -107,30 +107,14 @@ def forgot_code():
     layout = form_layout('Password Reset', form)
     return html.Div([layout, redirect])
 
-def validate_user(href):
-    """
-    Called prior to loading the requested route. If the href or
-    querystring is unacceptable for any resion return false and
-    404 will be displayed.
-    """
-    try:
-        log.info('href=%s', href)
-        url = admin.urlsplit(href)
-        email = url.qs['email'][0]
-        code = url.qs['code'][0]
-        return login_manager.forgot_code_valid(code, email)
-    except Exception:
-        pass
 
-    return False
-
-@admin.route('/forgot2', validate=validate_user)
+@admin.route('/forgot2')
 def forgot_password():
     """
     The user has confirmed his email, allow user to change the account
     password
     """
-    spa = admin.get_spa('forgot2')
+    spa = admin.get_spa()
 
     flash = spa.Flash(id='flash')
     password = spa.PasswordInput("Password", name='password', id='password', prompt="Make sure your password is strong and easy to remember", placeholder="Enter password")
@@ -138,27 +122,28 @@ def forgot_password():
     redirect = spa.Redirect(id='redirect', refresh=True)
 
     form = spa.Form([
-        flash, password, confirm_password, spa.Button('Update Password', type='submit')
+        flash, password, confirm_password, spa.Button('Update Password', id='btn', type='submit')
     ], id='forgot')
 
-    @spa.callback([redirect.output.href, flash.output.children], [form.input.form_data], [SpaComponents.url.state.href])
+    @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data], [SpaComponents.url.state.href])
     def _form_submit(values, href):
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
 
-        qs = spa.querystring_args(href)
+        ctx = SpaComponents.CallbackContext()
 
-        if qs is not None and 'code' in qs and 'email' in qs:
-            code = qs['code'][0]
-            email = qs['email'][0]
-            if login_manager.forgot_code_valid(code):
-                if values:
+        if ctx.isTriggered(form.input.form_data):
+            qs = spa.querystring_args(href)
+            if qs is not None and 'code' in qs and 'email' in qs:
+                code = qs['code'][0]
+                email = qs['email'][0]
+                if app.login_manager.forgot_code_valid(code):
                     password = values['password']
                     confirm_password = values['confirm_password']
                     if password != confirm_password:
                         error = 'Password mismatch'
                     else:
-                        if login_manager.change_password(email, password):
+                        if app.login_manager.change_password(email, password):
                             redirect = admin.url_for('login')
                         else:
                             error = 'Update failed, try again'

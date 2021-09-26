@@ -1,13 +1,15 @@
-from dash import html, dcc
+from flask import current_app as app
 
-from admin.login_manager import login_manager
+from dash import dcc
+from dash import html
 
+from dash_spa import SpaComponents
 from .view_common import blueprint as admin
 from .view_common import form_layout
 
 @admin.route('/verify', title='Admin verify')
 def verify():
-    spa = admin.get_spa('verify')
+    spa = admin.get_spa()
 
     def registerLink():
         return html.Div([
@@ -18,7 +20,7 @@ def verify():
     flash = spa.Flash(id='flash')
     code = spa.Input(name='code', id='code', placeholder="verification code", prompt="Check your email in-box")
     button = spa.Button('Submit', type='submit', id='btn')
-    redirect = spa.Redirect(id='redirect')
+    redirect = spa.Redirect(id='redirect', refresh=True)
 
     form = spa.Form([
         flash,
@@ -27,17 +29,21 @@ def verify():
         registerLink()
     ], id='verify')
 
-    @spa.callback([redirect.output.href, flash.output.children], [form.input.form_data])
-    def _button_click(values):
+    @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data], [SpaComponents.url.state.href])
+    def _button_click(values, href):
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
-        if values:
-            code = values['code']
-            if login_manager.validate(code):
-                redirect = admin.url_for('login')
-            else:
-                error = 'invalid code, please reenter'
 
+        ctx = SpaComponents.CallbackContext()
+        if ctx.isTriggered(form.input.form_data):
+            qs = spa.querystring_args(href)
+            if qs is not None and 'email' in qs:
+                code = values['code']
+                email = qs['email'][0]
+                if app.login_manager.validate(email, code):
+                    redirect = admin.url_for('login')
+                else:
+                    error = 'invalid code, please reenter'
         return redirect, error
 
     layout = form_layout('Verify', form)

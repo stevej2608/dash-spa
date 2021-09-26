@@ -6,4 +6,5 @@ from admin.views.verify_view import verify
 from admin.views.forgot_view import forgot
 from admin.views.navbar import AdminNavbarComponent
 
-from admin.login_manager import login_manager
+from .login_manager import AdminLoginManager
+

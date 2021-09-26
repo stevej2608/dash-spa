@@ -17,7 +17,7 @@ class NavbarLink(NavbarBase):
     def layout(self, spa):
         login_required = self.login_required
 
-        if spa.user_logged_in() != login_required:
+        if login_required and not spa.user_logged_in():
             return None
 
         if self.icon:

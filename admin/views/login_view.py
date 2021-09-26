@@ -1,18 +1,17 @@
-from utils import log
-from dash import html, dcc
+from flask import current_app as app
+
+from dash import dcc
+from dash import html
 
 from dash_spa import SpaComponents
 
-from admin.login_manager import login_manager
-
-from admin.views.view_common import form_layout
-from admin.views.view_common import blueprint as admin
+from .view_common import blueprint as admin
+from .view_common import form_layout
 
 
 @admin.route('/login', title='Admin login')
-def login(ctx):
-    spa = admin.get_spa('login')
-    log.info('spa pathname=%s ', spa.get_pathname())
+def login():
+    spa = admin.get_spa()
 
     def registerLink():
         return html.Div([
@@ -21,9 +20,9 @@ def login(ctx):
         ], className="mt-4 text-center")
 
     flash = spa.Flash(id='flash')
-    email = spa.Input('Email', name='email', type='email', placeholder="Enter email")
+    email = spa.Input('Email', id='email', name='email', type='email', placeholder="Enter email")
 
-    password = spa.PasswordInput("Password", name='password', placeholder="Enter password")
+    password = spa.PasswordInput("Password", name='password', id="password", placeholder="Enter password")
     password.children.insert(1, dcc.Link('Forgot Password?', href=admin.url_for('forgot'), className="float-right"))
 
 
@@ -41,15 +40,18 @@ def login(ctx):
     ], id='login')
 
 
-    @spa.callback([redirect.output.href, flash.output.children], [form.input.form_data])
+    @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
-        if values:
+
+        ctx = SpaComponents.CallbackContext()
+
+        if ctx.isTriggered(form.input.form_data):
             email = values['email']
             password = values['password']
             remember = values['admin-login-remember']
-            valid = login_manager.login(email, password, remember)
+            valid = app.login_manager.login(email, password, remember)
             if valid:
                 redirect = admin.url_for('user.profile')
             else:
@@ -62,14 +64,14 @@ def login(ctx):
 
 @admin.route('/logout', login_required=True)
 def logout():
-    spa = admin.get_spa('logout')
+    spa = admin.get_spa()
 
     redirect = spa.Redirect(id='redirect', refresh=True)
 
-    @spa.callback(redirect.output.href, [SpaComponents.url.input.pathname])
+    @admin.callback(redirect.output.href, [SpaComponents.url.input.pathname])
     def _logout_cb(pathname):
         if pathname == admin.url_for('logout'):
-            login_manager.logout_user()
+            app.login_manager.logout_user()
             return admin.url_for('user.profile')
         return SpaComponents.NOUPDATE
 

@@ -1,5 +1,5 @@
 import dash_spa as spa
-from admin import admin, login_manager, AdminNavbarComponent
+from admin import admin, AdminLoginManager, AdminNavbarComponent
 from app import app
 from demo import spa as demo
 from index import spa as welcome
@@ -23,7 +23,7 @@ NAV_BAR_ITEMS = {
 
 def create_spa(app=app):
     """Create SPA application, return Flask app server instance"""
-
+    
     app = spa.SinglePageApp(app, navitems=NAV_BAR_ITEMS)
 
     app.register_blueprint(welcome)
@@ -31,6 +31,8 @@ def create_spa(app=app):
     app.register_blueprint(user, url_prefix='/user')
 
     app.register_blueprint(admin, url_prefix='/admin')
+
+    login_manager = AdminLoginManager(app.dash.server)
     app.enable_login_manager(login_manager, login_view='admin.login')
 
     app.layout()

@@ -1,12 +1,11 @@
 from utils import config, log
 from random import randrange
+from cachetools import TTLCache
 from .template_mailer import TemplateMailer
 
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-
-from app import app
 
 VERIFICATION_TEMPLATE = """
 Hi {{name}}
@@ -38,6 +37,15 @@ email or reply to let us know.
 mail_options = config.get('mail_options')
 user_db = config.get('user_db')
 
+class VerificationRecord:
+
+    def __init__(self, name, email, password):
+        self.code = randomCode()
+        self.name = name
+        self.email = email
+        self.password = password
+
+
 def randomCode(length=4):
     return ''.join([chr(randrange(10) + 65) for n in range(length)])
 
@@ -46,8 +54,7 @@ class AdminLoginManager(LoginManager):
     def __init__(self, app=None, add_context_processor=True):
         super().__init__(app, add_context_processor)
 
-        self.code = None
-        self.email = None
+        self.verification_cache = TTLCache(maxsize=1000, ttl=30*60)
 
         app.config['SQLALCHEMY_DATABASE_URI'] = user_db.database_uri
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -58,9 +65,27 @@ class AdminLoginManager(LoginManager):
         self.User = self.user_model(self.db)
         self.user_loader(self.load_user)
 
+    def is_test(self):
+        return user_db.database_uri == "sqlite:////tmp/db.sqlite"
+
+    def delete_user(self, email):
+        user = self.User.query.filter_by(email=email).first()
+
+        if not user:
+            raise Exception('Invalid user')
+
+        self.db.session.delete(user)
+        self.db.session.commit()
+
+        return user
+
+    def add_user(self, name, email, password):
+        new_user = self.User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+        self.db.session.add(new_user)
+        self.db.session.commit()
+        return True
 
     def register(self, name, email, password, terms):
-
         log.info('register [name: %s, email: %s, password: %s, terms: %s]', name, email, password, terms)
 
         user = self.User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
@@ -68,23 +93,29 @@ class AdminLoginManager(LoginManager):
         if user:
             return False
 
-        self.code = randomCode()
-        self.name = name
-        self.email = email
-        self.password = password
+        verification_record = VerificationRecord(name, email, password)
+        self.verification_cache[email] = verification_record
 
-        mailer = TemplateMailer(VERIFICATION_TEMPLATE, {'name' : name, 'code': self.code})
-        mailer.send(mail_options.sender, email, 'Password verification')
+        mailer = TemplateMailer(VERIFICATION_TEMPLATE, {'name' : name, 'code': verification_record.code})
+        mailer.send(mail_options.sender, email, 'Password verification', self.is_test())
+
         return True
 
-    def validate(self, code):
+    def validate(self, email, code):
 
-        if self.code and (self.code == code):
+        if not email in self.verification_cache:
+            return False
 
-            new_user = self.User(email=self.email, name=self.name, password=generate_password_hash(self.password, method='sha256'))
+        vrec = self.verification_cache[email]
+
+        if vrec.code == code:
+
+            new_user = self.User(email=vrec.email, name=vrec.name, password=generate_password_hash(vrec.password, method='sha256'))
 
             self.db.session.add(new_user)
             self.db.session.commit()
+
+            self.verification_cache[email] = None
 
             return True
 
@@ -98,7 +129,6 @@ class AdminLoginManager(LoginManager):
         if not user or not check_password_hash(user.password, password):
             return False
 
-        log.info('Valid user %s', user)
         login_user(user, remember=remember)
         return True
 
@@ -128,7 +158,7 @@ class AdminLoginManager(LoginManager):
         log.info('code: %s', self.code)
 
         mailer = TemplateMailer(FORGOT_TEMPLATE, {'code': self.code})
-        mailer.send(mail_options.sender, email, 'Password verification')
+        mailer.send(mail_options.sender, email, 'Password verification', self.is_test())
 
         return True
 
@@ -141,19 +171,18 @@ class AdminLoginManager(LoginManager):
         return self.email
 
     def reload_user(self, user=None):
-        log.info('reload_user user=%s', user)
+        # log.info('reload_user user=%s', user)
         super().reload_user(user)
         return current_user
 
-
     def load_user(self, user_id):
-        log.info('load_user: %s', user_id)
-        return self.User.query.get(int(user_id))
+        user = self.User.query.get(int(user_id))
+        # log.info('load_user: id=%s, email=%s', user_id, user.email)
+        return user
 
     def logout_user(self):
         log.info('logout_user')
         logout_user()
-
 
     def user_model(self, db):
 
@@ -161,8 +190,6 @@ class AdminLoginManager(LoginManager):
             id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
             email = db.Column(db.String(100), unique=True)
             password = db.Column(db.String(100))
-            name = db.Column(db.String(1000))  
+            name = db.Column(db.String(1000))
 
         return _User
-
-login_manager = AdminLoginManager(app.server)
