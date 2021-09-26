@@ -7,6 +7,8 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, curren
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 
+from sqlalchemy_utils import database_exists
+
 VERIFICATION_TEMPLATE = """
 Hi {{name}}
 
@@ -56,6 +58,10 @@ class AdminLoginManager(LoginManager):
 
         self.verification_cache = TTLCache(maxsize=1000, ttl=30*60)
 
+        # engine = create_engine(user_db.database_uri)
+        # if not database_exists(engine.url):
+        #     create_database(engine.url)
+
         app.config['SQLALCHEMY_DATABASE_URI'] = user_db.database_uri
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -64,6 +70,13 @@ class AdminLoginManager(LoginManager):
 
         self.User = self.user_model(self.db)
         self.user_loader(self.load_user)
+
+        if not database_exists(user_db.database_uri):
+            app.app_context().push()
+            self.db.create_all()
+            self.db.session.commit()
+            # self.add_user("admin", "admin@holoniq.com", "passme99")
+
 
     def is_test(self):
         return user_db.database_uri == "sqlite:////tmp/db.sqlite"

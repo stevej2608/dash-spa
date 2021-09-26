@@ -23,15 +23,16 @@ NAV_BAR_ITEMS = {
 
 def create_spa(app=app):
     """Create SPA application, return Flask app server instance"""
-    
+
     app = spa.SinglePageApp(app, navitems=NAV_BAR_ITEMS)
 
     app.register_blueprint(welcome)
     app.register_blueprint(demo, url_prefix='/demo')
     app.register_blueprint(user, url_prefix='/user')
 
-    app.register_blueprint(admin, url_prefix='/admin')
+    # Enable admin
 
+    app.register_blueprint(admin, url_prefix='/admin')
     login_manager = AdminLoginManager(app.dash.server)
     app.enable_login_manager(login_manager, login_view='admin.login')
 

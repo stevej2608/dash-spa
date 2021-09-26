@@ -3,6 +3,7 @@ dash-bootstrap-components>=0.13.0
 pystache>=0.5.4
 flask-login==0.4.1
 flask-sqlalchemy>=2.4.0
+sqlalchemy-utils>=0.37.8
 pandas>=0.25.1
 colorlover>=0.3.0
 dash-holoniq-components>=0.0.15

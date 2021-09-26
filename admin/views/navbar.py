@@ -12,7 +12,7 @@ class AdminNavbarComponent:
             children=[
                 dbc.DropdownMenuItem("Messages", href="#"),
                 dbc.DropdownMenuItem("Settings", href="#"),
-                dbc.DropdownMenuItem([html.I(className='fa fa-sign-in'), ' Logout'], href='/admin/logout')
+                dbc.DropdownMenuItem([html.I(className='fa fa-sign-in'), ' Sign out'], href='/admin/logout')
              ],
             nav=True,
             in_navbar=True,
@@ -26,7 +26,7 @@ class AdminNavbarComponent:
 
     def signin_link(self):
         return dbc.NavItem(
-            dbc.NavLink([html.I(className='fa fa-sign-in'), ' Login'], href='/admin/login')
+            dbc.NavLink([html.I(className='fa fa-sign-in'), ' Sign in'], href='/admin/login')
         )
 
     def layout(self, spa):

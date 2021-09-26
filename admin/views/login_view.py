@@ -59,7 +59,7 @@ def login():
 
         return redirect, error
 
-    layout = form_layout('Login', form)
+    layout = form_layout('Sign in', form)
     return html.Div([layout, redirect])
 
 @admin.route('/logout', login_required=True)
