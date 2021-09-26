@@ -1,7 +1,7 @@
 import os
 from utils import log, logging
 
-def serve_app(app, path=""):
+def serve_app(app, path="", debug=False):
 
     # Turn off werkzeug  logging as it's very noisy
 
@@ -22,4 +22,4 @@ def serve_app(app, path=""):
 
     print(f' * Visit http://{hostname}:{hostport}{path}')
 
-    app.run(debug=False, host='0.0.0.0', port=port, threaded=False) 
+    app.run(debug=debug, host='0.0.0.0', port=port, threaded=False) 

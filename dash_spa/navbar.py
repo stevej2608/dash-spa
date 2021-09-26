@@ -3,8 +3,8 @@ import dash_bootstrap_components as dbc
 
 class NavbarBase:
 
-       def layout(self, spa):
-           return None
+    def layout(self, spa):
+        return None
 
 class NavbarLink(NavbarBase):
 

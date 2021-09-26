@@ -221,8 +221,7 @@ class SinglePageApp:
         # Create navbar
 
         navbar = self.components.Navbar(children=navbar_elements(),
-                id='navbar', className="navbar-default",
-                dark=dark, color=color,  expand="md" )
+                id='navbar',dark=dark, color=color,  expand="md" )
 
         # Iterate over all navbar element to register any internal callbacks with dash
 

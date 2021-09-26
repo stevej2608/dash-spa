@@ -1,5 +1,5 @@
 import dash_spa as spa
-from admin import admin, login_manager
+from admin import admin, login_manager, AdminNavbarComponent
 from app import app
 from demo import spa as demo
 from index import spa as welcome
@@ -15,9 +15,7 @@ NAV_BAR_ITEMS = {
         spa.NavbarLink('Profile', '/user/profile'),
     ],
     'right': [
-        spa.NavbarLink('Login', '/admin/login', icon = "fa fa-sign-in"),
-        spa.NavbarLink('Logout', '/admin/logout', login_required=True, icon = "fa fa-sign-in"),
-        spa.NavbarLink('Register','/admin/register', icon = "fa fa-user")
+        AdminNavbarComponent()
     ],
 
     'footer': spa.Footer('SPA/Examples'),
@@ -41,4 +39,4 @@ def create_spa(app=app):
 
 if __name__ == '__main__':
     app = create_spa()
-    serve_app(app, "/admin/login")
+    serve_app(app, "/admin/login", debug=False)

@@ -12,7 +12,7 @@
       "program": "${workspaceFolder}/usage.py",
       "cwd": "${workspaceFolder}",
       "console": "internalConsole",
-      "justMyCode": false,
+      //"justMyCode": false,
       "serverReadyAction": {
         "pattern": ".*Visit http://(.*)",
         "uriFormat": "http://%s",
@@ -30,7 +30,22 @@
       "console": "internalConsole",
       "justMyCode": false
     },
-
+    {
+      "name": "3. examples/nav-test.py",
+      "type": "python",
+      "request": "launch",
+      "stopOnEntry": false,
+      "python": "${command:python.interpreterPath}",
+      "module": "examples.nav_test",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
 
 
 
