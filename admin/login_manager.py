@@ -56,6 +56,8 @@ class AdminLoginManager(LoginManager):
     def __init__(self, app=None, add_context_processor=True):
         super().__init__(app, add_context_processor)
 
+        self.app = app
+
         self.verification_cache = TTLCache(maxsize=1000, ttl=30*60)
 
         # engine = create_engine(user_db.database_uri)
@@ -196,6 +198,18 @@ class AdminLoginManager(LoginManager):
     def logout_user(self):
         log.info('logout_user')
         logout_user()
+
+    def user_count(self):
+        rows = 0
+        ctx = None
+        try:
+            ctx = self.app.app_context()
+            ctx.push()
+            rows = self.User.query.count()
+        finally:
+            ctx.pop()
+
+        return rows
 
     def user_model(self, db):
 

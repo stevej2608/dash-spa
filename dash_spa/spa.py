@@ -82,6 +82,7 @@ class SinglePageApp:
         def get_content(ctx):
             args = arg_list(ctx.layout)
             if 'ctx' in args:
+                ctx.login_manager = self.login_manager
                 content = ctx.layout(ctx)
             else:
                 content = ctx.layout()

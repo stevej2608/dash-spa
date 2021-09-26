@@ -24,7 +24,7 @@ class AdminNavbarComponent:
 
         return html.Div(['', icon, menu], style={'padding': '0'}, className='d-flex align-items-center nav-link')
 
-    def signin_link(self):
+    def signin_link(self, spa):
         return dbc.NavItem(
             dbc.NavLink([html.I(className='fa fa-sign-in'), ' Sign in'], href='/admin/login')
         )
@@ -33,4 +33,4 @@ class AdminNavbarComponent:
         if spa.user_logged_in():
             return self.account_dropdown(spa)
         else:
-            return self.signin_link()
+            return self.signin_link(spa)
