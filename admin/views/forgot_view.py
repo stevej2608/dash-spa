@@ -29,7 +29,7 @@ def set_state(state):
 
 
 @admin.route('/forgot')
-def forgot():
+def forgot(ctx):
     """
     Display email form and wait input. If the user enters a valid email
     the login_manager will send an forgot validation email to the user. We
@@ -50,7 +50,6 @@ def forgot():
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
 
-        ctx = SpaComponents.CallbackContext()
         if ctx.isTriggered(form.input.form_data):
             email = values['email']
             if not email_valid(email):
@@ -71,7 +70,7 @@ def forgot():
 
 
 @admin.route('/forgot1')
-def forgot_code():
+def forgot_code(ctx):
     """
     The user has been sent an email containing the forgot password verification
     code. Allow the user to enter the code. If it verifies we redirect to
@@ -92,8 +91,6 @@ def forgot_code():
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
 
-        ctx = SpaComponents.CallbackContext()
-
         if ctx.isTriggered(form.input.form_data):
             code = values['code']
             if not app.login_manager.forgot_code_valid(code):
@@ -109,7 +106,7 @@ def forgot_code():
 
 
 @admin.route('/forgot2')
-def forgot_password():
+def forgot_password(ctx):
     """
     The user has confirmed his email, allow user to change the account
     password
@@ -129,8 +126,6 @@ def forgot_password():
     def _form_submit(values, href):
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
-
-        ctx = SpaComponents.CallbackContext()
 
         if ctx.isTriggered(form.input.form_data):
             qs = spa.querystring_args(href)

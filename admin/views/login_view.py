@@ -10,7 +10,7 @@ from .view_common import form_layout
 
 from utils import email_valid
 
-def build_login_form():
+def build_login_form(ctx):
     spa = admin.get_spa("login-form")
 
     def registerLink():
@@ -44,8 +44,6 @@ def build_login_form():
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
 
-        ctx = SpaComponents.CallbackContext()
-
         if ctx.isTriggered(form.input.form_data):
             email = values['email']
             password = values['password']
@@ -62,7 +60,7 @@ def build_login_form():
     return html.Div([layout, redirect])
 
 
-def build_admin_form():
+def build_admin_form(ctx):
     spa = admin.get_spa("admin_form")
 
     flash = spa.Flash(id='flash')
@@ -91,8 +89,6 @@ def build_admin_form():
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
 
-        ctx = SpaComponents.CallbackContext()
-
         if ctx.isTriggered(form.input.form_data):
             name = values['name']
             email = values['email']
@@ -118,8 +114,8 @@ def build_admin_form():
 def login(ctx):
     login_manager = ctx.login_manager
 
-    login_form = build_login_form()
-    admin_form = build_admin_form()
+    login_form = build_login_form(ctx)
+    admin_form = build_admin_form(ctx)
 
     if login_manager.user_count() == 0 :
         return admin_form

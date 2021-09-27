@@ -11,7 +11,7 @@ from .view_common import form_layout, form_values
 from utils import email_valid
 
 @admin.route('/register', title='Admin register')
-def register():
+def register(ctx):
     spa = admin.get_spa()
 
     def terms_check_box():
@@ -53,8 +53,6 @@ def register():
     def _form_submit(values):
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
-
-        ctx = SpaComponents.CallbackContext()
 
         if ctx.isTriggered(form.input.form_data):
             f = form_values(values)

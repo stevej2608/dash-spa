@@ -82,6 +82,10 @@ class Blueprint(SpaComponents):
                 self.rule = endpoint
                 self.title = title
                 self.url = None
+                self.callback_context = SpaComponents.CallbackContext()
+
+            def isTriggered(self,input):
+                return self.callback_context.isTriggered(input)
 
             def __getattr__(self, name):
                 if name in self.__dict__:

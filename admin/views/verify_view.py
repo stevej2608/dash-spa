@@ -8,7 +8,7 @@ from .view_common import blueprint as admin
 from .view_common import form_layout
 
 @admin.route('/verify', title='Admin verify')
-def verify():
+def verify(ctx):
     spa = admin.get_spa()
 
     def registerLink():
@@ -34,7 +34,6 @@ def verify():
         redirect = spa.NOUPDATE
         error = spa.NOUPDATE
 
-        ctx = SpaComponents.CallbackContext()
         if ctx.isTriggered(form.input.form_data):
             qs = spa.querystring_args(href)
             if qs is not None and 'email' in qs:
@@ -43,7 +42,7 @@ def verify():
                 if app.login_manager.validate(email, code):
                     redirect = admin.url_for('login')
                 else:
-                    error = 'invalid code, please reenter'
+                    error = 'invalid code, please re-enter'
         return redirect, error
 
     layout = form_layout('Verify', form)
