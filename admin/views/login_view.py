@@ -25,7 +25,7 @@ def build_login_form():
     password = spa.PasswordInput("Password", name='password', id="password", placeholder="Enter password")
     password.children.insert(1, dcc.Link('Forgot Password?', href=admin.url_for('forgot'), className="float-right"))
 
-    remember = spa.Checkbox("Remember me", id='remember', checked=True)
+    remember = spa.Checkbox("Remember me", id='remember', name='remember', checked=True)
     button = spa.Button('Sign In', type='submit', id='btn')
     redirect = spa.Redirect(id='redirect', refresh=True)
 
@@ -49,7 +49,7 @@ def build_login_form():
         if ctx.isTriggered(form.input.form_data):
             email = values['email']
             password = values['password']
-            remember = values['admin-login_form-remember']
+            remember = values['remember']
             valid = app.login_manager.login(email, password, remember)
             if valid:
                 redirect = admin.url_for('user.profile')

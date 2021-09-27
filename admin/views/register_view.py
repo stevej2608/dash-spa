@@ -18,7 +18,7 @@ def register():
         return spa.Checkbox([
             "I agree to the ",
             html.A("Terms and Conditions", href="#")
-        ], id='terms')
+        ], id='terms', name='terms')
 
 
     def accountLink():
@@ -61,7 +61,7 @@ def register():
             email = values['email']
             password = values['password']
             confirm_password = values['confirm_password']
-            terms = values['admin-register-terms']
+            terms = values['terms']
 
             if not (name and password and confirm_password and email):
                 error = 'You must enter all fields'
