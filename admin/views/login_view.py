@@ -38,7 +38,6 @@ def build_login_form(ctx):
         registerLink()
     ], id='login')
 
-
     @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
         redirect = spa.NOUPDATE

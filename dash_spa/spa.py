@@ -195,7 +195,7 @@ class SinglePageApp:
             self.page404 = PageNotFound()
         return self.page404.layout(self)
 
-    def navBar(self, navitems, dark=True, color='secondary'):
+    def navBar(self, dark=True, color='secondary'):
         """Return the navbar for the application"""
 
         brand = self.brand()

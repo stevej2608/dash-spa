@@ -213,7 +213,6 @@ class SpaComponents:
         """Checkbox"""
         io = self.io
         id = self.prefix(id)
-        app = self.app
 
         checkbox = dbc.Checkbox(id=id, className="form-check-input", checked=checked, **kwargs)
 
@@ -252,7 +251,6 @@ class SpaComponents:
         """
         io = self.io
         id = io.prefix(id)
-        app = self.app
 
         dropdown = dcc.Dropdown(id=id, **kwargs)
         return dropdown
@@ -263,7 +261,6 @@ class SpaComponents:
 
         io = self.io
         id = io.prefix(id)
-        app = self.app
 
         def add_feedback():
             if feedback:
