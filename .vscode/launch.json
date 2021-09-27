@@ -12,6 +12,7 @@
       "program": "${workspaceFolder}/usage.py",
       "cwd": "${workspaceFolder}",
       "console": "internalConsole",
+      "env": {"FLASK_ENV" : "test"},
       //"justMyCode": false,
       "serverReadyAction": {
         "pattern": ".*Visit http://(.*)",
@@ -31,75 +32,36 @@
       "justMyCode": false
     },
     {
-      "name": "3. examples/nav-test.py",
+      "name": "3. PyTest (all)",
       "type": "python",
       "request": "launch",
       "stopOnEntry": false,
-      "python": "${command:python.interpreterPath}",
-      "module": "examples.nav_test",
-      "cwd": "${workspaceFolder}",
-      "console": "internalConsole",
-      "justMyCode": false,
-      "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
-      }
-    },
-
-
-
-
-    
-    {
-      "name": "Python: Current File",
-      "type": "python",
-      "request": "launch",
-      "program": "${file}",
-      "console": "internalConsole",
-      "justMyCode": false
-    },
-    {
-      "name": "2. test.py",
-      "type": "python",
-      "request": "launch",
-      "python": "${command:python.interpreterPath}",
-      "program": "${workspaceFolder}/test.py",
-      "args": [
-        "runserver"
-      ],
-      "cwd": "${workspaceFolder}",
-      "console": "internalConsole",
-      "justMyCode": false
-    },
-    {
-      "name": "3. examples/redirect.py",
-      "type": "python",
-      "request": "launch",
-      "stopOnEntry": false,
-      "python": "${command:python.interpreterPath}",
-      "module": "examples.redirect",
-      "env": {},
-      "envFile": "${workspaceFolder}/.env",
-      "cwd": "${workspaceFolder}",
-      "console": "internalConsole",
-      "justMyCode": false
-    },
-    {
-      "name": "4. PyTest",
-      "type": "python",
-      "request": "launch",
-      "stopOnEntry": false,
-      "python": "${command:python.interpreterPath}",
       "module": "pytest",
       "args": [
-        "--headless"
+        "-sv"
+      ],
+      "cwd": "${workspaceRoot}",
+      "env": {},
+      "console": "internalConsole",
+      "justMyCode": false
+    },
+    {
+      "name": "4. PyTest (Current file)",
+      "type": "python",
+      "request": "launch",
+      "stopOnEntry": false,
+      "module": "pytest",
+      "args": [
+        "--headless",
+        "-sv",
+        "${file}"
       ],
       "cwd": "${workspaceRoot}",
       "env": {},
       "envFile": "${workspaceRoot}/.env",
       "console": "internalConsole",
-      "justMyCode": false
-    }
+      "internalConsoleOptions": "openOnSessionStart",
+      //"justMyCode": false
+    },
   ]
 }

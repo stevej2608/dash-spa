@@ -1,8 +1,13 @@
+from collections import namedtuple
 from dash import html
 
 from dash_spa import Blueprint
 
 blueprint = Blueprint('admin')
+
+def form_values(dt):
+    obj = namedtuple("FormFields", dt.keys())(*dt.values())
+    return obj 
 
 def form_layout(title, form):
     return html.Div([

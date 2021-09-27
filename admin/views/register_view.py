@@ -6,7 +6,7 @@ from dash import html
 from dash_spa import SpaComponents
 
 from .view_common import blueprint as admin
-from .view_common import form_layout
+from .view_common import form_layout, form_values
 
 from utils import email_valid
 
@@ -57,23 +57,19 @@ def register():
         ctx = SpaComponents.CallbackContext()
 
         if ctx.isTriggered(form.input.form_data):
-            name = values['name']
-            email = values['email']
-            password = values['password']
-            confirm_password = values['confirm_password']
-            terms = values['terms']
+            f = form_values(values)
 
-            if not (name and password and confirm_password and email):
+            if not (f.name and f.password and f.confirm_password and f.email):
                 error = 'You must enter all fields'
-            elif not email_valid(email):
+            elif not email_valid(f.email):
                 error = 'Invalid email'
-            elif password != confirm_password:
+            elif f.password != f.confirm_password:
                 error = 'Password mismatch'
             elif not terms:
                 error = 'You must agree to the terms'
             else:
-                if app.login_manager.register(name, email, password, terms):
-                    redirect = admin.url_for('verify', args={'email': email})
+                if app.login_manager.register(f.name, f.email, f.password, f.terms):
+                    redirect = admin.url_for('verify', args={'email': f.email})
                 else:
                     error = 'You already have an account, please login as normal'
 

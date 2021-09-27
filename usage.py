@@ -22,8 +22,15 @@ NAV_BAR_ITEMS = {
     'footer': spa.Footer('SPA/Examples'),
 }
 
-def create_spa(app=app):
-    """Create SPA application, return Flask app server instance"""
+def create_spa(app):
+    """Create SPA application, return SinglePageApp instance
+
+    Args:
+        app (Dash): Dash Instance
+
+    Returns:
+        SinglePageApp: Single Page App instance
+    """
 
     app = spa.SinglePageApp(app, navitems=NAV_BAR_ITEMS)
 
@@ -39,8 +46,8 @@ def create_spa(app=app):
 
     app.layout()
 
-    return app.dash.server
+    return app
 
 if __name__ == '__main__':
-    app = create_spa()
-    serve_app(app, "/admin/users", debug=False)
+    app = create_spa(app)
+    serve_app(app.dash, "/admin/users", debug=False)

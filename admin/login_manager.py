@@ -1,3 +1,4 @@
+import os
 from utils import config, log
 from random import randrange
 from cachetools import TTLCache
@@ -70,10 +71,7 @@ class AdminLoginManager(LoginManager):
         self.app = app
 
         self.verification_cache = TTLCache(maxsize=1000, ttl=30*60)
-
-        # engine = create_engine(user_db.database_uri)
-        # if not database_exists(engine.url):
-        #     create_database(engine.url)
+        self.test_mode = os.environ.get("FLASK_ENV", "production") == "test"
 
         app.config['SQLALCHEMY_DATABASE_URI'] = user_db.database_uri
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -94,8 +92,9 @@ class AdminLoginManager(LoginManager):
         return self.app.config['SQLALCHEMY_DATABASE_URI']
 
     def is_test(self):
-        return user_db.database_uri == "sqlite:////tmp/db.sqlite"
+        return self.test_mode
 
+    @flask_context
     def delete_user(self, email):
         user = self.User.query.filter_by(email=email).first()
 
@@ -107,6 +106,7 @@ class AdminLoginManager(LoginManager):
 
         return user
 
+    @flask_context
     def add_user(self, name, email, password):
         new_user = self.User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
         self.db.session.add(new_user)

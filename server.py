@@ -2,6 +2,13 @@ import os
 from utils import log, logging
 
 def serve_app(app, path="", debug=False):
+    """Serve Dash application
+
+    Args:
+        app (Dash): Dash instance to be served
+        path (str, optional): Initial URL. Defaults to "".
+        debug (bool, optional): Enable Dash debug. Defaults to False.
+    """
 
     # Turn off werkzeug  logging as it's very noisy
 
@@ -22,4 +29,4 @@ def serve_app(app, path="", debug=False):
 
     print(f' * Visit http://{hostname}:{hostport}{path}')
 
-    app.run(debug=debug, host='0.0.0.0', port=port, threaded=False) 
+    app.run_server(debug=debug, host='0.0.0.0', port=port, threaded=False) 

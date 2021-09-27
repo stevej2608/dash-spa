@@ -11,7 +11,7 @@ from .view_common import form_layout
 from utils import email_valid
 
 def build_login_form():
-    spa = admin.get_spa("login_form")
+    spa = admin.get_spa("login-form")
 
     def registerLink():
         return html.Div([
