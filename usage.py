@@ -13,6 +13,7 @@ NAV_BAR_ITEMS = {
         spa.NavbarLink('State Solar', '/demo/solar'),
         spa.NavbarLink('Ticker', '/demo/ticker?tickers=COKE'),
         spa.NavbarLink('Profile', '/user/profile'),
+        spa.NavbarLink('Admin', '/admin/users'),
     ],
     'right': [
         AdminNavbarComponent()
@@ -42,4 +43,4 @@ def create_spa(app=app):
 
 if __name__ == '__main__':
     app = create_spa()
-    serve_app(app, "/admin/login", debug=False)
+    serve_app(app, "/admin/users", debug=False)

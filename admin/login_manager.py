@@ -3,6 +3,7 @@ from random import randrange
 from cachetools import TTLCache
 from .template_mailer import TemplateMailer
 
+from app import app
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -47,6 +48,16 @@ class VerificationRecord:
         self.email = email
         self.password = password
 
+def flask_context(fn):
+    def _wrapper(*args, **kwargs):
+        ctx = None
+        try:
+            ctx = app.server.app_context()
+            ctx.push()
+            return fn(*args, **kwargs)
+        finally:
+            ctx.pop()
+    return _wrapper
 
 def randomCode(length=4):
     return ''.join([chr(randrange(10) + 65) for n in range(length)])
@@ -79,6 +90,8 @@ class AdminLoginManager(LoginManager):
             self.db.session.commit()
             # self.add_user("admin", "admin@holoniq.com", "passme99")
 
+    def database_uri(self):
+        return self.app.config['SQLALCHEMY_DATABASE_URI']
 
     def is_test(self):
         return user_db.database_uri == "sqlite:////tmp/db.sqlite"
@@ -199,17 +212,13 @@ class AdminLoginManager(LoginManager):
         log.info('logout_user')
         logout_user()
 
+    @flask_context
     def user_count(self):
-        rows = 0
-        ctx = None
-        try:
-            ctx = self.app.app_context()
-            ctx.push()
-            rows = self.User.query.count()
-        finally:
-            ctx.pop()
+        return self.User.query.count()
 
-        return rows
+    @flask_context
+    def users(self):
+        return self.User.query.all()
 
     def user_model(self, db):
 
