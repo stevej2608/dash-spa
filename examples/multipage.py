@@ -1,16 +1,16 @@
 from dash import html
-from dash_spa import spa, Blueprint
+import dash_spa as spa
 
 from app import app as dash_app
 from server import serve_app
 
-demo = Blueprint('demo')
+demo = spa.Blueprint('demo')
 
 NAV_BAR_ITEMS = {
-    'brand' : {'title' : 'SPA/Example', 'href' : '/'},
+    'brand' : spa.NavbarBrand('SPA/Example','/'),
     'left' : [
-        {'title' : 'Page1', 'href' : '/demo/page1'},
-        {'title' : 'Page2', 'href' : '/demo/page2'},
+        spa.NavbarLink('Page1','/demo/page1'),
+        spa.NavbarLink('Page2','/demo/page2'),
     ],
 }
 
@@ -34,17 +34,15 @@ def test2():
     ])
 
 class CustomSpaApp(spa.SinglePageApp):
-    """Example of customising Navbar & Footer
+    """Example of customising Navbar & Footer"""
 
-    https://en.wikipedia.org/wiki/Web_colors
-    """
+    # https://en.wikipedia.org/wiki/Web_colors
 
-    def navBar(self, navitems):
-        return super().navBar(navitems, color='DarkSlateGray')
+    def navBar(self, dark=True, color='secondary'):
+        return super().navBar(color='DarkSlateGray')
 
     def footer_text(self):
         return 'Multi-page Example'
-
 
 def create_app():
     app = CustomSpaApp(dash_app, navitems=NAV_BAR_ITEMS)
@@ -52,7 +50,7 @@ def create_app():
 
     app.layout()
 
-    return app.dash.server
+    return app.dash
 
 #
 # python -m examples.multipage
