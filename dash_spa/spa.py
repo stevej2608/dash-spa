@@ -195,7 +195,7 @@ class SinglePageApp:
             self.page404 = PageNotFound()
         return self.page404.layout(self)
 
-    def navBar(self, dark=True, color='secondary'):
+    def navBar(self, navitems, dark=True, color='secondary'):
         """Return the navbar for the application"""
 
         brand = self.brand()
@@ -204,8 +204,8 @@ class SinglePageApp:
             return dbc.Nav([item.layout(self) for item in items])
 
         def navbar_elements():
-            items_left = getItems(self.navitems['left'] if 'left' in self.navitems else [])
-            items_right = getItems(self.navitems['right'] if 'right' in self.navitems else [])
+            items_left = getItems(navitems['left'] if 'left' in navitems else [])
+            items_right = getItems(navitems['right'] if 'right' in navitems else [])
             return [
                 brand.layout(self),
 
@@ -219,14 +219,13 @@ class SinglePageApp:
 
             ]
 
-        # Create navbar
-
-        navbar = self.components.Navbar(children=navbar_elements(),
-                id='navbar',dark=dark, color=color,  expand="md" )
-
         # Iterate over all navbar element to register any internal callbacks with dash
 
-        navbar_elements()
+        elements = navbar_elements()
+
+        # Create navbar
+
+        navbar = self.components.Navbar(children=elements,id='navbar',dark=dark, color=color,  expand="md" )
 
         # Register callback that will update the navbar whenever the browser page changes
 

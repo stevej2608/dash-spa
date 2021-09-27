@@ -38,8 +38,8 @@ class CustomSpaApp(spa.SinglePageApp):
 
     # https://en.wikipedia.org/wiki/Web_colors
 
-    def navBar(self, dark=True, color='secondary'):
-        return super().navBar(color='DarkSlateGray')
+    def navBar(self, navitems, dark=True, color='secondary'):
+        return super().navBar(navitems, dark=dark, color='DarkSlateGray')
 
     def footer_text(self):
         return 'Multi-page Example'
