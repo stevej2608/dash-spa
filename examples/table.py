@@ -64,12 +64,11 @@ def route1():
     ])
 
 
-def create_app():
+def create_app(dash_factory):
     aps_log = logging.getLogger('werkzeug')
     aps_log.setLevel(logging.ERROR)
 
-    dash = create_dash()
-    app = spa.SinglePageApp(dash)
+    app = spa.SinglePageApp(dash_factory)
     app.register_blueprint(test, url_prefix='/table')
 
     app.layout()
@@ -81,5 +80,5 @@ def create_app():
 #
 
 if __name__ == '__main__':
-    app = create_app()
+    app = create_app(create_dash)
     serve_app(app,"/table/page1")

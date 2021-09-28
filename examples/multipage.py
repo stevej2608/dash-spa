@@ -46,8 +46,8 @@ class CustomSpaApp(spa.SinglePageApp):
     def footer_text(self):
         return 'Multi-page Example'
 
-def create_spa(dash_app):
-    app = CustomSpaApp(dash_app, navitems=NAV_BAR_ITEMS)
+def create_spa(dash_factory):
+    app = CustomSpaApp(dash_factory, navitems=NAV_BAR_ITEMS)
     app.register_blueprint(demo, url_prefix='/demo')
 
     app.layout()
@@ -59,6 +59,5 @@ def create_spa(dash_app):
 #
 
 if __name__ == '__main__':
-    dash_app = create_dash()
-    app = create_spa(dash_app)
+    app = create_spa(create_dash)
     serve_app(app.dash,"/demo/page1")

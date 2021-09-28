@@ -35,7 +35,7 @@ class SinglePageApp:
         """Application layout is completed"""
         return self._is_initialisation_completed
 
-    def __init__(self, dash, navitems=None, title='Dash/SPA'):
+    def __init__(self, dash_factory, navitems=None, title='Dash/SPA'):
         """Create instance of Dash/SPA object
 
         Args:
@@ -44,13 +44,7 @@ class SinglePageApp:
             title (str, optional): Application title presented in browser page tab. Defaults to 'Dash/SPA'.
         """
 
-        # if dash.started:
-        #     dash.stop()
-        #     dash.callback_map = {}
-        #     dash._layout = None
-
-        self.dash = dash
-
+        self.dash = dash_factory()
         self.navitems = navitems
         self.title = title
         self.blueprint_routes = {}

@@ -22,7 +22,7 @@ NAV_BAR_ITEMS = {
     'footer': spa.Footer('SPA/Examples'),
 }
 
-def create_spa(dash_app):
+def create_spa(dash_factory):
     """Create SPA application, return SinglePageApp instance
 
     Args:
@@ -32,7 +32,7 @@ def create_spa(dash_app):
         SinglePageApp: Single Page App instance
     """
 
-    app = spa.SinglePageApp(dash_app, navitems=NAV_BAR_ITEMS)
+    app = spa.SinglePageApp(dash_factory, navitems=NAV_BAR_ITEMS)
 
     app.register_blueprint(welcome)
     app.register_blueprint(demo, url_prefix='/demo')
@@ -49,6 +49,5 @@ def create_spa(dash_app):
     return app
 
 if __name__ == '__main__':
-    dash = create_dash()
-    app = create_spa(dash)
+    app = create_spa(create_dash)
     serve_app(app.dash, "/admin/users", debug=False)
