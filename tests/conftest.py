@@ -22,17 +22,12 @@ def pytest_setup_options():
     # options.add_argument("--start-maximized")
     return options
 
-@pytest.fixture(scope='session')
-def spa():
-    """An SPA Application for the tests."""
-    spa = create_spa(dash_app)
-    return spa
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='package')
 def app(spa):
     return spa.dash.server
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='package')
 def client(app):
     """A client for the Flask tests."""
     _client = app.test_client()
