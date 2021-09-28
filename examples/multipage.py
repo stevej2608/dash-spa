@@ -12,17 +12,19 @@ NAV_BAR_ITEMS = {
         spa.NavbarLink('Page1','/demo/page1'),
         spa.NavbarLink('Page2','/demo/page2'),
     ],
+    'footer': spa.Footer(),
 }
 
-def big_center(text):
-    return html.H2(text, className='display-3 text-center')
+def big_center(text, id=None):
+    className='display-3 text-center'
+    return html.H2(text, id=id, className=className) if id else html.H2(text, className=className)
 
 @demo.route('/page1')
 def test1():
     return html.Div([
         big_center('Multi-page Example'),
         big_center('+'),
-        big_center('Page 1'),
+        big_center('Page 1', id="page"),
     ])
 
 @demo.route('/page2')
@@ -30,7 +32,7 @@ def test2():
     return html.Div([
         big_center('Multi-page Example'),
         big_center('+'),
-        big_center('Page 2'),
+        big_center('Page 2', id="page"),
     ])
 
 class CustomSpaApp(spa.SinglePageApp):
@@ -44,18 +46,18 @@ class CustomSpaApp(spa.SinglePageApp):
     def footer_text(self):
         return 'Multi-page Example'
 
-def create_app():
+def create_spa():
     app = CustomSpaApp(dash_app, navitems=NAV_BAR_ITEMS)
     app.register_blueprint(demo, url_prefix='/demo')
 
     app.layout()
 
-    return app.dash
+    return app
 
 #
 # python -m examples.multipage
 #
 
 if __name__ == '__main__':
-    app = create_app()
-    serve_app(app,"/demo/page1")
+    app = create_spa()
+    serve_app(app.dash,"/demo/page1")
