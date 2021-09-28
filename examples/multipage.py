@@ -9,8 +9,8 @@ demo = spa.Blueprint('demo')
 NAV_BAR_ITEMS = {
     'brand' : spa.NavbarBrand('SPA/Example','/'),
     'left' : [
-        spa.NavbarLink('Page1','/demo/page1'),
-        spa.NavbarLink('Page2','/demo/page2'),
+        spa.NavbarLink('Page1','/demo/page1', id='nav-page1'),
+        spa.NavbarLink('Page2','/demo/page2', id='nav-page2'),
     ],
     'footer': spa.Footer(),
 }

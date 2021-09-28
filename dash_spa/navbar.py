@@ -8,11 +8,12 @@ class NavbarBase:
 
 class NavbarLink(NavbarBase):
 
-    def __init__(self, title, href, login_required=False, icon=None):
+    def __init__(self, title, href, id=None, login_required=False, icon=None):
         self.title=title
         self.href=href
         self.login_required=login_required
         self.icon=icon
+        self.id = id
 
     def layout(self, spa):
         login_required = self.login_required
@@ -21,11 +22,19 @@ class NavbarLink(NavbarBase):
             return None
 
         if self.icon:
-            return dbc.NavItem(
-                dbc.NavLink([html.I(className=self.icon), ' ' + self.title], href=self.href)
-            )
+            if self.id:
+                return dbc.NavItem(
+                    dbc.NavLink([html.I(className=self.icon), ' ' + self.title], id=self.id, href=self.href)
+                )
+            else:
+                return dbc.NavItem(
+                    dbc.NavLink([html.I(className=self.icon), ' ' + self.title], href=self.href)
+                )
         else:
-            return dbc.NavItem(dbc.NavLink(self.title, href=self.href))
+            if self.id:
+                return dbc.NavItem(dbc.NavLink(self.title, href=self.href, id=self.id))
+            else:
+                return dbc.NavItem(dbc.NavLink(self.title, href=self.href))
 
 
 class NavbarBrand(NavbarBase):
