@@ -51,7 +51,7 @@ class Footer(NavbarBase):
         if text:
             return html.Footer([
                 html.Div([
-                    html.P(text, className='text-center font-italic', style={'marginTop': 10})
+                    html.P(text, id='footer', className='text-center font-italic', style={'marginTop': 10})
                 ], className='containers')
             ], className='footer')
         else:
