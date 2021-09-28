@@ -4,7 +4,6 @@ from random import randrange
 from cachetools import TTLCache
 from .template_mailer import TemplateMailer
 
-from app import app
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -49,17 +48,6 @@ class VerificationRecord:
         self.email = email
         self.password = password
 
-def flask_context(fn):
-    def _wrapper(*args, **kwargs):
-        ctx = None
-        try:
-            ctx = app.server.app_context()
-            ctx.push()
-            return fn(*args, **kwargs)
-        finally:
-            ctx.pop()
-    return _wrapper
-
 def randomCode(length=4):
     return ''.join([chr(randrange(10) + 65) for n in range(length)])
 
@@ -88,30 +76,48 @@ class AdminLoginManager(LoginManager):
             self.db.session.commit()
             # self.add_user("admin", "admin@holoniq.com", "passme99")
 
+
+    def flask_context(self, fn):
+        def _wrapper(*args, **kwargs):
+            ctx = None
+            try:
+                ctx = self.app.app_context()
+                ctx.push()
+                return fn(*args, **kwargs)
+            finally:
+                ctx.pop()
+        return _wrapper
+
     def database_uri(self):
         return self.app.config['SQLALCHEMY_DATABASE_URI']
 
     def is_test(self):
         return self.test_mode
 
-    @flask_context
     def delete_user(self, email):
-        user = self.User.query.filter_by(email=email).first()
 
-        if not user:
-            raise Exception('Invalid user')
+        @self.flask_context
+        def _delete_user():
+            user = self.User.query.filter_by(email=email).first()
 
-        self.db.session.delete(user)
-        self.db.session.commit()
+            if not user:
+                raise Exception('Invalid user')
 
-        return user
+            self.db.session.delete(user)
+            self.db.session.commit()
 
-    @flask_context
+        return _delete_user()
+
     def add_user(self, name, email, password):
-        new_user = self.User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
-        self.db.session.add(new_user)
-        self.db.session.commit()
-        return True
+
+        @self.flask_context
+        def _add_user():
+            new_user = self.User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+            self.db.session.add(new_user)
+            self.db.session.commit()
+            return True
+
+        return  _add_user()
 
     def register(self, name, email, password, terms):
         log.info('register [name: %s, email: %s, password: %s, terms: %s]', name, email, password, terms)
@@ -212,13 +218,22 @@ class AdminLoginManager(LoginManager):
         log.info('logout_user')
         logout_user()
 
-    @flask_context
     def user_count(self):
-        return self.User.query.count()
 
-    @flask_context
+        @self.flask_context
+        def _user_count():
+            return self.User.query.count()
+
+        return _user_count()
+
+
     def users(self):
-        return self.User.query.all()
+
+        @self.flask_context
+        def _users():
+            return self.User.query.all()
+
+        return _users()
 
     def user_model(self, db):
 

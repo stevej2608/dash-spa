@@ -1,6 +1,6 @@
 import dash_spa as spa
 from admin import admin, AdminLoginManager, AdminNavbarComponent
-from app import app
+from app import create_dash
 from demo import spa as demo
 from index import spa as welcome
 from server import serve_app
@@ -22,7 +22,7 @@ NAV_BAR_ITEMS = {
     'footer': spa.Footer('SPA/Examples'),
 }
 
-def create_spa(app):
+def create_spa(dash_app):
     """Create SPA application, return SinglePageApp instance
 
     Args:
@@ -32,7 +32,7 @@ def create_spa(app):
         SinglePageApp: Single Page App instance
     """
 
-    app = spa.SinglePageApp(app, navitems=NAV_BAR_ITEMS)
+    app = spa.SinglePageApp(dash_app, navitems=NAV_BAR_ITEMS)
 
     app.register_blueprint(welcome)
     app.register_blueprint(demo, url_prefix='/demo')
@@ -49,5 +49,6 @@ def create_spa(app):
     return app
 
 if __name__ == '__main__':
-    app = create_spa(app)
+    dash = create_dash()
+    app = create_spa(dash)
     serve_app(app.dash, "/admin/users", debug=False)

@@ -3,7 +3,7 @@ from dash import html
 
 from dash_spa import spa, Blueprint
 
-from app import app as dash_app
+from app import create_dash
 from server import serve_app
 
 test = Blueprint('test')
@@ -55,7 +55,8 @@ def create_app():
     aps_log = logging.getLogger('werkzeug')
     aps_log.setLevel(logging.ERROR)
 
-    app = spa.SinglePageApp(dash_app)
+    dash = create_dash()
+    app = spa.SinglePageApp(dash)
     app.register_blueprint(test, url_prefix='/test')
 
     app.layout()

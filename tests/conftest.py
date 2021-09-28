@@ -1,9 +1,6 @@
 import logging
 import pytest
-
-from app import app as dash_app
 from selenium.webdriver.chrome.options import Options
-from usage import create_spa
 
 # Turn off werkzeug logging as it's very noisy
 

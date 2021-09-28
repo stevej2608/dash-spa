@@ -43,7 +43,14 @@ class SinglePageApp:
             navitems (dict, optional): Optional Navbar definition. Defaults to None.
             title (str, optional): Application title presented in browser page tab. Defaults to 'Dash/SPA'.
         """
+
+        # if dash.started:
+        #     dash.stop()
+        #     dash.callback_map = {}
+        #     dash._layout = None
+
         self.dash = dash
+
         self.navitems = navitems
         self.title = title
         self.blueprint_routes = {}

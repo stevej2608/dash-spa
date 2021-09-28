@@ -1,7 +1,7 @@
 from dash import html
 import dash_spa as spa
 
-from app import app as dash_app
+from app import create_dash
 from server import serve_app
 
 demo = spa.Blueprint('demo')
@@ -46,7 +46,7 @@ class CustomSpaApp(spa.SinglePageApp):
     def footer_text(self):
         return 'Multi-page Example'
 
-def create_spa():
+def create_spa(dash_app):
     app = CustomSpaApp(dash_app, navitems=NAV_BAR_ITEMS)
     app.register_blueprint(demo, url_prefix='/demo')
 
@@ -59,5 +59,6 @@ def create_spa():
 #
 
 if __name__ == '__main__':
-    app = create_spa()
+    dash_app = create_dash()
+    app = create_spa(dash_app)
     serve_app(app.dash,"/demo/page1")

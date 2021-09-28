@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output
 import dash_datatables as ddt
 from dash_spa import spa, Blueprint
 
-from app import app as dash_app
+from app import create_dash
 from server import serve_app
 import pandas as pd
 
@@ -47,28 +47,29 @@ def route1():
         )
     ])
 
+    @test.callback(Output('solar#output', 'children'), [Input('solar', 'table_event')])
+    def display_output(value):
+        selected = None
+
+        if value and value['action'] == 'selectItems':
+            selected = value['indexes']
+            selected = format(json.dumps(selected))
+
+        print(f'Select rows: {selected}')
+        return f'Select rows: {selected}'
+
     return html.Div([
         table,
         html.Div(id='solar#output')
     ])
-
-@dash_app.callback(Output('solar#output', 'children'), [Input('solar', 'table_event')])
-def display_output(value):
-    selected = None
-
-    if value and value['action'] == 'selectItems':
-        selected = value['indexes']
-        selected = format(json.dumps(selected))
-
-    print(f'Select rows: {selected}')
-    return f'Select rows: {selected}'
 
 
 def create_app():
     aps_log = logging.getLogger('werkzeug')
     aps_log.setLevel(logging.ERROR)
 
-    app = spa.SinglePageApp(dash_app)
+    dash = create_dash()
+    app = spa.SinglePageApp(dash)
     app.register_blueprint(test, url_prefix='/table')
 
     app.layout()
