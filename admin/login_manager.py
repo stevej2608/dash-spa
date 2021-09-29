@@ -95,6 +95,12 @@ class AdminLoginManager(LoginManager):
         return self.test_mode
 
     def isAdmin(self):
+
+        try:
+            return 'admin' in current_user.role
+        except Exception:
+            pass
+
         return False
 
     def delete_user(self, email):
