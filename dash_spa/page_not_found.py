@@ -2,13 +2,13 @@ from dash import html, dcc
 
 class PageNotFound:
 
-    def layout(self, spa):
+    def layout(self, spa, message='404 Not Found'):
         return html.Div([
             html.Div([
                 html.Div([
                     html.Div([
                         html.H1('Oops!'),
-                        html.H2('404 Not Found'),
+                        html.H2(message),
                         html.Div('Sorry, an error has occurred, Requested page not found!', className='error-details'),
                         html.Div([
 

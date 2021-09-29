@@ -9,7 +9,18 @@ df.insert(0, '', '')
 
 columns = [{"title": i, "data": i} for i in df.columns]
 
-@admin.route('/users', title='Admin Users')
+class InvalidAccess(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+def validate_user(ctx):
+    login_manager = ctx.login_manager
+    if login_manager.isAdmin():
+        return True
+    raise InvalidAccess("Must be signed in as admin")
+
+@admin.route('/users', title='Admin Users', access=validate_user)
 def user_view(ctx):
     spa = admin.get_spa()
 

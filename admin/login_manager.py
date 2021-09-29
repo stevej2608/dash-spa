@@ -94,6 +94,9 @@ class AdminLoginManager(LoginManager):
     def is_test(self):
         return self.test_mode
 
+    def isAdmin(self):
+        return False
+
     def delete_user(self, email):
 
         @self.flask_context
@@ -108,11 +111,12 @@ class AdminLoginManager(LoginManager):
 
         return _delete_user()
 
-    def add_user(self, name, email, password):
+    def add_user(self, name, email, password, role=[]):
 
         @self.flask_context
         def _add_user():
-            new_user = self.User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+            roles = ','.join(role)
+            new_user = self.User(email=email, name=name, password=generate_password_hash(password, method='sha256'), role=roles)
             self.db.session.add(new_user)
             self.db.session.commit()
             return True
@@ -226,7 +230,6 @@ class AdminLoginManager(LoginManager):
 
         return _user_count()
 
-
     def users(self):
 
         @self.flask_context
@@ -242,5 +245,6 @@ class AdminLoginManager(LoginManager):
             email = db.Column(db.String(100), unique=True)
             password = db.Column(db.String(100))
             name = db.Column(db.String(1000))
+            role = db.Column(db.String(100))
 
         return _User

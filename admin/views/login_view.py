@@ -68,7 +68,10 @@ def build_admin_form(ctx):
     email = spa.Input('Email', id='email', name='email', type='email', placeholder="Enter email")
 
     password = spa.PasswordInput("Password", name='password', id="password", placeholder="Enter password")
-    confirm_password = spa.PasswordInput('Re-enter password', name="confirm_password", id='confirm_password', placeholder="Re-enter password", feedback="Password fields are not the same, reenter them")
+
+    confirm_password = spa.PasswordInput('Re-enter password',
+            name="confirm_password", id='confirm_password', placeholder="Re-enter password",
+            feedback="Password fields are not the same, re-enter them")
 
     button = spa.Button('Create Admin', type='submit', id='btn')
     redirect = spa.Redirect(id='redirect', refresh=True)
@@ -100,7 +103,7 @@ def build_admin_form(ctx):
             elif password != confirm_password:
                 error = 'Password mismatch'
             else:
-                app.login_manager.add_user(name, email, password)
+                app.login_manager.add_user(name, email, password, role=['admin'])
                 redirect = admin.url_for('user.profile')
 
         return redirect, error

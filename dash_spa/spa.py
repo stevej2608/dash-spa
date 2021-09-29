@@ -1,17 +1,16 @@
 import re
-
-from utils import log, arg_list
+from abc import abstractmethod
 
 import dash
-from dash import html
-from dash.dependencies import DashDependency
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
+from dash import html
+from dash.dependencies import DashDependency
+from utils import arg_list, log
 
-from .spa_components import SpaComponents
-
-from .page_not_found import PageNotFound
 from .navbar import NavbarBase
+from .page_not_found import PageNotFound
+from .spa_components import SpaComponents
 
 DashDependency.id = property(lambda self: self.component_id)
 
@@ -24,9 +23,15 @@ def __no_update_str__(self):
 setattr(dash.dash._NoUpdate, '__str__', __no_update_str__)
 setattr(dash.dash._NoUpdate, '__repr__', __no_update_str__)
 
+
+class Route404(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
 class SinglePageApp:
 
-    """Wrapper dor Dash instance """
+    """Wrapper for Dash instance """
 
     endpoints = {}
 
@@ -39,7 +44,7 @@ class SinglePageApp:
         """Create instance of Dash/SPA object
 
         Args:
-            dash (dash.Dash): Dash instance to wrap
+            dash_factory (func): Factory that returns Dash instance to wrap
             navitems (dict, optional): Optional Navbar definition. Defaults to None.
             title (str, optional): Application title presented in browser page tab. Defaults to 'Dash/SPA'.
         """
@@ -106,6 +111,7 @@ class SinglePageApp:
         def _display_page(href):
             title = SpaComponents.NOUPDATE
 
+
             url = SpaComponents.urlsplit(href)
 
             pathname = re.sub(r"\/$", '', url.path)
@@ -115,13 +121,24 @@ class SinglePageApp:
 
             log.info('display_page href=%s', href)
 
-            if pathname in blueprint_routes:
-                ctx = blueprint_routes[pathname]
-                title = ctx.title
-                ctx.url = url
-                content = get_content(ctx)
-            else:
-                content = self.show404()
+            try:
+
+                if pathname in blueprint_routes:
+                    ctx = blueprint_routes[pathname]
+                    title = ctx.title
+                    ctx.url = url
+                else:
+                    raise Route404(f'Unknown route {pathname}')
+
+                # If route has access guard in place call it
+
+                if not ctx.access or ctx.access(ctx):
+                    content = get_content(ctx)
+
+            except Exception as ex:
+                msg = ex.message if hasattr(ex, 'message') else "???"
+                log.info('Error pathname %s : %s', pathname, msg)
+                content = self.show404(message=msg)
 
             return content, title
 
@@ -154,9 +171,11 @@ class SinglePageApp:
         ])
         return layout
 
+    @abstractmethod
     def footer_text(self):
         return None
 
+    @abstractmethod
     def footer(self):
         """Create footer components and register a Dash callback that will
         update the footer whenever the route changes
@@ -183,19 +202,23 @@ class SinglePageApp:
 
         return container
 
+    @abstractmethod
     def brand_text(self):
         return None
 
+    @abstractmethod
     def brand(self):
         if self.navitems and 'brand' in  self.navitems:
             return self.navitems['brand']
         return NavbarBase()
 
-    def show404(self):
+    @abstractmethod
+    def show404(self, message):
         if not self.page404:
             self.page404 = PageNotFound()
-        return self.page404.layout(self)
+        return self.page404.layout(self, message=message)
 
+    @abstractmethod
     def navBar(self, navitems, dark=True, color='secondary'):
         """Return the navbar for the application"""
 

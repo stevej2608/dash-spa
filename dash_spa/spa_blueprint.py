@@ -90,14 +90,14 @@ class Blueprint(SpaComponents):
             def __getattr__(self, name):
                 if name in self.__dict__:
                     return self[name]
-                else:
-                    return None
+
+                return None
 
             def get_url_query_values(self, id):
                 """[summary]
 
                 Args:
-                    id (string): The is if the required sq params
+                    id (string): The id of the required query string params
 
                 Returns:
                     [list]: List of values for given id
@@ -107,7 +107,9 @@ class Blueprint(SpaComponents):
                     if id in qs:
                         return qs[id][0].split()
                 except Exception as ex:
-                    return None
+                    pass
+
+                return None
 
         def decorator(f):
             self.routes[endpoint] = _Route(f)
@@ -134,8 +136,8 @@ class Blueprint(SpaComponents):
 
         if not self.spa_app.is_initialisation_completed:
             return self.app.callback(output, inputs, state)
-        else:
-            return callback
+
+        return callback
 
     def set_spa_app(self, spa_app):
         # log.info('set_spa_app %s', self.url_pathname)
