@@ -6,13 +6,14 @@ class AdminNavbarComponent:
     def __init__(self):
         pass
 
-    def account_dropdown(self, app):
+    def account_dropdown(self, spa):
 
         menu = dbc.DropdownMenu(
             children=[
+                dbc.DropdownMenuItem("Users", href=spa.url_for('admin.users')),
                 dbc.DropdownMenuItem("Messages", href="#"),
                 dbc.DropdownMenuItem("Settings", href="#"),
-                dbc.DropdownMenuItem([html.I(className='fa fa-sign-in'), ' Sign out'], href='/admin/logout')
+                dbc.DropdownMenuItem([html.I(className='fa fa-sign-in'), ' Sign out'], href=spa.url_for('admin.logout'))
              ],
             nav=True,
             in_navbar=True,
@@ -24,7 +25,7 @@ class AdminNavbarComponent:
 
         return html.Div(['', icon, menu], style={'padding': '0'}, className='d-flex align-items-center nav-link')
 
-    def signin_link(self, spa):
+    def signin_link(self):
         return dbc.NavItem(
             dbc.NavLink([html.I(className='fa fa-sign-in'), ' Sign in'], href='/admin/login')
         )
@@ -33,4 +34,4 @@ class AdminNavbarComponent:
         if spa.user_logged_in():
             return self.account_dropdown(spa)
         else:
-            return self.signin_link(spa)
+            return self.signin_link()

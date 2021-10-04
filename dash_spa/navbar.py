@@ -46,7 +46,7 @@ class NavbarBrand(NavbarBase):
     def layout(self, spa):
         text = spa.brand_text() or self.title
         if text:
-            return dbc.NavbarBrand(html.Strong(text,self.href))
+            return dbc.NavbarBrand(html.Strong(text,self.href), href="/")
         else:
             return None
 
