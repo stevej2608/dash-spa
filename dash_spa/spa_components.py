@@ -466,3 +466,9 @@ class SpaComponents:
                 return ctx.triggered[0]['prop_id'] == prop_id
 
         return SpaCallbackContext()
+
+
+    def isTriggered(self, input):
+        ctx = SpaComponents.CallbackContext()
+        return ctx.isTriggered(input)
+

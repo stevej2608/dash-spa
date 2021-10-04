@@ -7,7 +7,7 @@ sqlalchemy-utils>=0.37.8
 pandas>=0.25.1
 colorlover>=0.3.0
 dash-holoniq-components>=0.0.16
-dash-datatables>=0.0.7
+dash-datatables>=0.0.8
 
 #
 Paste

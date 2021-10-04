@@ -16,7 +16,8 @@
 	},
 
   "runArgs": [
-    "--name=${localWorkspaceFolderBasename}"
+    "--name=${localWorkspaceFolderBasename}",
+    "--add-host=debian-server:192.168.2.196"
   ],
 
 	// Add the IDs of extensions you want installed when the container is created.
