@@ -20,12 +20,34 @@ df.insert(0, '', '')
 
 columns = [{"title": i, "data": i} for i in df.columns]
 
+def button(icon, text, button_type="btn-primary"):
+    return html.Div([
+        html.Button(html.I(className=f'fa {icon} fa-sm'), title=text, className=f"btn {button_type}")
+    ], className="btn-group", role='group')
+
+def toolbar():
+    return html.Div([
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Div([
+                        button('fa-refresh', 'Add'),
+                        button('fa fa-plus fa-lg', 'Add'),
+                        button('fa-eye', 'Add', button_type="btn-warning"),
+                    ], className="btn-group btn-group-justified", role='group')
+                ], role='toolbar')
+            ], className='col-xs-offset 1 col-xs-11 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6')
+        ], className='row')
+    ], className='container')
+
+
 @test.route('/page1')
 def route1():
     spa = test.get_spa('page1')
 
     table = html.Div([
         html.H2('US Solar Capacity'),
+        toolbar(),
         ddt.DashDatatables(
             id='solar',
             columns=columns,
@@ -33,7 +55,8 @@ def route1():
             column_defs = [ {
                 'orderable': False,
                 'className': 'select-checkbox',
-                'targets':   0
+                'targets':   0,
+                'width': "4%"                
                 }],
 
             select = {
@@ -73,7 +96,7 @@ def create_app(dash_factory):
 
     app.layout()
 
-    return app.dash.server
+    return app.dash
 
 #
 # python -m examples.table
