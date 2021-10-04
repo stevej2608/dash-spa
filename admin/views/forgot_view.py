@@ -3,6 +3,7 @@ from flask import current_app as app
 from flask import session
 from enum import Enum
 
+from utils import log, email_valid
 from dash import html
 
 from dash_spa import SpaComponents

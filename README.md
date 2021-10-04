@@ -6,6 +6,10 @@
     pip install -r requirements.txt
     python usage.py
 
+When you sign in to the demo app for the first time you will be asked to create an 
+admin account. Enter any email address and password you fancy. To manage users, as
+admin, select **Users** from the **My Account** drop-down on the nav-bar.
+
 **Dash/SPA** is a minimal template and component suite that allows you to build complex 
 **[Dash](https://dash.plot.ly/introduction)** based multi-page applications with ease. The demo application includes
 several well known Dash demos that have been pasted into the SPA framework
@@ -116,14 +120,14 @@ Views are provided that allow:
 * Register, name, email, password. Verification code send by email.
 * Enter the email verification code.
 
-
 * Normal user login.
-
  
 * Reset forgotten password, Password reset code sent by email.
 * Enter password reset code.
 * Enter new password, confirm new password.
 * Login using new password.
+
+* User admin table with Add, Edit and Delete. Accessible only when signed in with *admin* rights.
 
 
 ![](docs/img/admin-views.png)

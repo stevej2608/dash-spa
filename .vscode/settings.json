@@ -3,11 +3,11 @@
       "tests"
   ],
   "python.testing.unittestEnabled": false,
-  "python.testing.nosetestsEnabled": false,
   "python.testing.pytestEnabled": true,
 
   "python.terminal.activateEnvironment": true,
   "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true,
 
   "files.watcherExclude": {
     "**/.venv/**": true,
@@ -16,5 +16,4 @@
   },
   "remote.localPortHost": "allInterfaces",
   "python.formatting.provider": "autopep8",
-  "python.linting.enabled": true
 }

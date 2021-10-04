@@ -471,4 +471,3 @@ class SpaComponents:
     def isTriggered(self, input):
         ctx = SpaComponents.CallbackContext()
         return ctx.isTriggered(input)
-
