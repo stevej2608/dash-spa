@@ -56,18 +56,19 @@ is created. It is then used by reference in associated Dash callbacks:
 
 ```
 NAV_BAR_ITEMS = {
-    'brand' : {'title' : 'Dash/SPA', 'href' : '/'},
+    'brand' : spa.NavbarBrand('Dash/SPA','/'),
     'left' : [
-        {'title' : 'Global Warming', 'href' : '/demo/warming'},
-        {'title' : 'State Solar', 'href' : '/demo/solar'},
-        {'title' : 'Ticker', 'href' : '/demo/ticker?tickers=COKE'},
-        {'title' : 'Profile', 'href' : '/user/profile'},
+        spa.NavbarLink('Global Warming','/demo/warming'),
+        spa.NavbarLink('State Solar', '/demo/solar'),
+        spa.NavbarLink('Ticker', '/demo/ticker?tickers=COKE'),
+        spa.NavbarLink('Profile', '/user/profile'),
+        spa.NavbarLink('Admin', '/admin/users'),
     ],
     'right': [
-        {'title' : 'Login', 'href' : '/admin/login', "login_required" : False, 'icon' : "fa fa-sign-in"},
-        {'title' : 'Logout', 'href' : '/admin/logout', "login_required" : True, 'icon' : "fa fa-sign-in"},
-        {'title' : 'Register', 'href' : '/admin/register', "login_required" : False, 'icon' : "fa fa-user"},
-    ]
+        AdminNavbarComponent()
+    ],
+
+    'footer': spa.Footer('SPA/Examples'),
 }
 ```
 
@@ -195,10 +196,34 @@ Will import the file `./config/production.json`. An example configuration is sho
   }
 }
 ```
-## Testing
+#### Build the project
 
-see [Dash Testing](https://dash.plot.ly/testing)
+Create tarball, first change the release version in package.json, then:
 
-Get the correct Chrome [Driver](http://chromedriver.chromium.org/downloads) and place it in the project route
+    rm -rf dist dash_spa.egg-info build
+
+    python setup.py sdist bdist_wheel
+
+The tarball is in *dist/dash_spa-<version>.tar.gz*
+
+To install the tarball in a dash project:
+
+    pip install dash_spa-<version>.tar.gz
+
+#### Testing
+
+Pytest and [Dash Duo](https://dash.plotly.com/testing) are used for testing. To run
+these tests both the Chrome browser and Chrome driver must be installed. These are
+already installed in the VSCode Docker container. If you are not using remote containers
+you must be install them first.
+
+To run the tests:
 
     pytest
+
+#### Publish
+
+See [Create a production build and publish]
+
+    twine upload dist/*
+
