@@ -7,7 +7,7 @@ from .user_data import user_db
 def user_form(spa, table, login_manager):
 
     user_form = dhc.Form([], id=spa.prefix('user-form'), preventDefault=True)
-    cancel_btn = dbc.Button("Cancel", id=spa.prefix("close-btn"), className="ml-1", n_clicks=0)
+    cancel_btn = dbc.Button("Cancel", id=spa.prefix("cancel-btn"), type="reset", className="ml-1", n_clicks=0)
 
     def form_body(action="blank_form", row_data=None):
         """Return form that's fully populated with relevant fields and buttons for the given action"""
@@ -25,12 +25,14 @@ def user_form(spa, table, login_manager):
                 dbc.Input(name='action', type="hidden", value=action),
 
                 form_field("Name", "name", row_data['name']),
-                form_field("email", "email", row_data['email']),
-                form_field("password", "password", ''),
-                form_field("role", "role", row_data['role']),
+                form_field("Email", "email", row_data['email']),
+                form_field("Role", "role", row_data['role']),
 
                 dbc.ButtonGroup(buttons, className='float-right mt-2')
             ]
+
+            if action != 'delete_row':
+                form.children.insert(3, form_field("Password", "password", ''))
 
             if 'id' in row_data:
                 user_id = dbc.Input(name='id', type="hidden", value=row_data['id'])
@@ -47,15 +49,15 @@ def user_form(spa, table, login_manager):
         edit_btn = dbc.Button('Update', type='submit', color="primary")
 
         if action == 'add_row':
-            header = "New user"
+            header = "New User"
             form = form_builder(user_form, [add_btn, cancel_btn])
 
         elif action == 'delete_row':
-            header = "Delete user"
+            header = "Delete User"
             form = form_builder(user_form, [delete_btn, cancel_btn])
 
         elif action == 'edit_row':
-            header = "Edit user"
+            header = "Edit User"
             form = form_builder(user_form, [edit_btn, cancel_btn])
 
         else:
@@ -81,7 +83,7 @@ def user_form(spa, table, login_manager):
         # Populate modal form fields based on table event
 
         if spa.isTriggered(table.input.table_event):
- 
+
             action = table_evt['action']
             if action == "add_row":
                 row_data = {'name': '', 'email': '', 'role': ''}
@@ -103,7 +105,7 @@ def user_form(spa, table, login_manager):
         table_data = spa.NOUPDATE
 
 
-        if value:
+        if spa.isTriggered(user_form.input.form_data) and value:
             action = value['action']
 
             del value['submit_count']
