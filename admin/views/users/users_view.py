@@ -11,8 +11,8 @@ def user_view(ctx):
 
     database_uri = ctx.login_manager.database_uri()
 
-    table = user_table(spa, database_uri)
-    modal_form = user_form(spa, table, database_uri)
+    table = user_table(spa, ctx.login_manager)
+    modal_form = user_form(spa, table, ctx.login_manager)
 
     return html.Div([
         html.H2('Users'),

@@ -121,13 +121,38 @@ class AdminLoginManager(LoginManager):
 
         @self.flask_context
         def _add_user():
-            roles = ','.join(role)
+
+            roles = ','.join(role) if isinstance(role, list) else role
+
             new_user = self.User(email=email, name=name, password=generate_password_hash(password, method='sha256'), role=roles)
             self.db.session.add(new_user)
             self.db.session.commit()
             return True
 
         return  _add_user()
+
+
+    def update_user(self, id, name, email, password, role=[]):
+
+        @self.flask_context
+        def _update_user():
+
+            user = self.User.query.filter_by(id=id).first()
+
+            if not user:
+                raise Exception('Invalid user')
+
+            user.role = ','.join(role) if isinstance(role, list) else role
+            user.password = generate_password_hash(password, method='sha256')
+            user.name = name
+            user.email = email
+
+
+            self.db.session.add(user)
+            self.db.session.commit()
+            return True
+
+        return  _update_user()
 
     def register(self, name, email, password, terms):
         log.info('register [name: %s, email: %s, password: %s, terms: %s]', name, email, password, terms)

@@ -4,7 +4,7 @@ import dash_html_components as html
 
 from .user_data import user_db
 
-def user_form(spa, table, database_uri):
+def user_form(spa, table, login_manager):
 
     user_form = dhc.Form([], id=spa.prefix('user-form'), preventDefault=True)
     cancel_btn = dbc.Button("Cancel", id=spa.prefix("close-btn"), className="ml-1", n_clicks=0)
@@ -15,21 +15,27 @@ def user_form(spa, table, database_uri):
         def form_builder(form, buttons):
 
             def form_field(label, name, value):
-                return dbc.FormGroup([dbc.Label(label), dbc.Input(name=name, value=value)])
+                disabled = action == 'delete_row'
+                return dbc.FormGroup([dbc.Label(label), dbc.Input(name=name, value=value, disabled=disabled)])
 
             form.children = [
 
-                # Hidden fields used to report the table row id & action
+                # Hidden fields used to report the user id and table action
 
-                dbc.Input(name='id', type="hidden", value=row_data['id']),
                 dbc.Input(name='action', type="hidden", value=action),
 
                 form_field("Name", "name", row_data['name']),
                 form_field("email", "email", row_data['email']),
+                form_field("password", "password", ''),
                 form_field("role", "role", row_data['role']),
 
                 dbc.ButtonGroup(buttons, className='float-right mt-2')
             ]
+
+            if 'id' in row_data:
+                user_id = dbc.Input(name='id', type="hidden", value=row_data['id'])
+                form.children.insert(0, user_id)
+
             return form
 
         header = "Header"
@@ -53,7 +59,8 @@ def user_form(spa, table, database_uri):
             form = form_builder(user_form, [edit_btn, cancel_btn])
 
         else:
-            form = [user_form, cancel_btn]
+            form = user_form
+            form.children = cancel_btn
 
         return [
             dbc.ModalHeader(header),
@@ -62,6 +69,7 @@ def user_form(spa, table, database_uri):
 
     modal_form = dbc.Modal(form_body(), id=spa.prefix("modal"), is_open=False)
 
+    # Process table action, set up and show the modal form
 
     @spa.callback(
         [modal_form.output.is_open, modal_form.output.children],
@@ -70,19 +78,13 @@ def user_form(spa, table, database_uri):
         is_open = False
         form = spa.NOUPDATE
 
-        df = user_db(database_uri)
-
-        def new_id():
-            id = df['id'].max()
-            return id + 1 if id == id else 0
-
         # Populate modal form fields based on table event
 
         if spa.isTriggered(table.input.table_event):
+ 
             action = table_evt['action']
             if action == "add_row":
-                id = new_id()
-                row_data = {'id': id, 'name': '', 'email': '', 'role': ''}
+                row_data = {'name': '', 'email': '', 'role': ''}
 
             else:
                 row_data = table_evt['data']
@@ -94,32 +96,30 @@ def user_form(spa, table, database_uri):
 
         return is_open, form
 
+    # Process modal form close, use the form values to update the table
+
     @spa.callback(table.output.data, user_form.input.form_data)
     def table_update(value):
         table_data = spa.NOUPDATE
 
-        df = user_db(database_uri)
 
         if value:
             action = value['action']
-            user_data = {
-                "id": int(value['id']),
-                "email": value["email"],
-                "name": value["name"],
-                "role": value["role"],
-            }
+
+            del value['submit_count']
+            del value['action']
 
             if action == 'add_row':
-                df = df.append(user_data, ignore_index=True)
+                login_manager.add_user(**value)
 
             if action == 'delete_row':
-                id = user_data['id']
-                df = df[df.id != id]
+                login_manager.delete_user(value['email'])
 
             if action == 'edit_row':
-                id = user_data['id']
-                keys, values = zip(*user_data.items())
-                df.loc[df['id'] == id, keys] = values
+                login_manager.update_user(**value)
+
+
+        df = user_db(login_manager.database_uri())
 
         table_data = df.to_dict('records')
         return table_data

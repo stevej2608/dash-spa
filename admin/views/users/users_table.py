@@ -1,9 +1,9 @@
 import dash_datatables as ddt
 from .user_data import user_db
 
-def user_table(spa, database_uri):
+def user_table(spa, login_manager):
 
-    df = user_db(database_uri)
+    df = user_db(login_manager.database_uri())
 
     columns = [{"title": i, "data": i} for i in df.columns]
 
@@ -11,8 +11,6 @@ def user_table(spa, database_uri):
         id = spa.prefix('user-table'),
         columns=columns,
         data=df.to_dict('records'),
-        width="100%",
-        order=[2, 'asc'],
+        column_defs = [{"targets": [ 0 ],"visible" : False }],
         editable=True
     )
- 
