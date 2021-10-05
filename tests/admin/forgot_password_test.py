@@ -16,7 +16,7 @@ def test_admin_forgot(mocker, duo):
         mail_args['subject'] = subject
         mail_args['code'] = self.args['code']
 
-    mocker.patch('admin.template_mailer.TemplateMailer.send', mock_send)
+    mocker.patch('dash_spa.admin.template_mailer.TemplateMailer.send', mock_send)
 
     # Mock password changer
 
@@ -24,7 +24,7 @@ def test_admin_forgot(mocker, duo):
         mail_args['new_password'] = password
         return True
 
-    mocker.patch('admin.login_manager.AdminLoginManager.change_password', mock_change_password)
+    mocker.patch('dash_spa.admin.login_manager.AdminLoginManager.change_password', mock_change_password)
 
     # Render the forgot password page, enter the test user email.
 

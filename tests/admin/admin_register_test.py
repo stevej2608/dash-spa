@@ -22,7 +22,7 @@ def test_admin_register(mocker, spa, duo):
         mail_args['receiver'] = receiver
         mail_args['subject'] = subject
 
-    mocker.patch('admin.template_mailer.TemplateMailer.send',mock_send)
+    mocker.patch('dash_spa.admin.template_mailer.TemplateMailer.send',mock_send)
 
     # Register new user confirm, via mock, that a registration email
 
