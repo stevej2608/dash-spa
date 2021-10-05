@@ -223,7 +223,5 @@ To run the tests:
 
 #### Publish
 
-See [Create a production build and publish]
-
     twine upload dist/*
 

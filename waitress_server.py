@@ -9,7 +9,9 @@ from usage import create_spa
 logger = logging.getLogger('waitress')
 logger.setLevel(logging.INFO)
 
-app_with_logger = TransLogger(create_spa(create_dash), setup_console_handler=False)
+app = create_spa(create_dash)
+
+app_with_logger = TransLogger(app.dash.server, setup_console_handler=False)
 
 # https://stackoverflow.com/questions/11087682/does-gunicorn-run-on-windows
 
@@ -25,6 +27,6 @@ hostname = os.environ.get("HOST_HOSTNAME", "localhost")
 hostport = os.environ.get("HOST_HOSTPORT", "8050")
 
 print(f' * stock-server V{"0.0.1"}')
-print(f' * Visit http://{hostname}:{hostport}/admin/login\n')
+print(f' * Visit http://{hostname}:{hostport}\n')
 
 serve(app_with_logger, port=port)
