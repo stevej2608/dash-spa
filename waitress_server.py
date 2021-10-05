@@ -3,12 +3,13 @@ from sys import argv
 import logging
 from waitress import serve
 from paste.translogger import TransLogger
+from app import create_dash
 from usage import create_spa
 
 logger = logging.getLogger('waitress')
 logger.setLevel(logging.INFO)
 
-app_with_logger = TransLogger(create_spa(), setup_console_handler=False)
+app_with_logger = TransLogger(create_spa(create_dash), setup_console_handler=False)
 
 # https://stackoverflow.com/questions/11087682/does-gunicorn-run-on-windows
 

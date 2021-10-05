@@ -1,4 +1,4 @@
-from utils import config
+from holoniq.utils import config
 import dash
 import dash_bootstrap_components as dbc
 
@@ -15,5 +15,5 @@ def create_dash():
 
     app.scripts.config.serve_locally = True
     app.css.config.serve_locally = True
-    app.server.config['SECRET_KEY'] = flask_options.secret_key
+    app.server.config['SECRET_KEY'] = flask_options.SECRET_KEY
     return app

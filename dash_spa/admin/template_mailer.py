@@ -2,7 +2,7 @@ import pystache
 import smtplib
 from email.mime.text import MIMEText
 
-from utils import config, log
+from holoniq.utils import config, log
 
 options = config.get('mail_options')
 options = options.__getattribute__(options.active)

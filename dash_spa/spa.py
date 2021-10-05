@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
 from dash import html
 from dash.dependencies import DashDependency
-from utils import arg_list, log
+from holoniq.utils import arg_list, log
 
 from .navbar import NavbarBase
 from .page_not_found import PageNotFound

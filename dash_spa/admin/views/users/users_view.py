@@ -1,6 +1,6 @@
 from dash import html
 
-from admin.views.view_common import blueprint as admin, validate_user
+from dash_spa.admin.views.view_common import blueprint as admin, validate_user
 
 from .users_table import user_table
 from .users_form import user_form

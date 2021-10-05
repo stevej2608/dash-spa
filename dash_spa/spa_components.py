@@ -5,7 +5,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
 from dash import dcc, html
-from utils import log
+from holoniq.utils import log
 
 from .spa_dependency import SpaDependency
 

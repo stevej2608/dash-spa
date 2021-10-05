@@ -8,7 +8,7 @@ from dash_spa import SpaComponents
 from .view_common import blueprint as admin
 from .view_common import form_layout
 
-from utils import email_valid
+from holoniq.utils import email_valid
 
 def build_login_form(ctx):
     spa = admin.get_spa("login-form")

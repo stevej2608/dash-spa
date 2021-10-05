@@ -1,5 +1,5 @@
 import dash_spa as spa
-from admin import AdminNavbarComponent
+from dash_spa.admin import AdminNavbarComponent
 from app import create_dash
 
 from server import serve_app

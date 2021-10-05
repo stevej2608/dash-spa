@@ -1,5 +1,5 @@
 import os
-from utils import log, logging
+from holoniq.utils import log, logging
 
 def serve_app(app, path="", debug=False):
     """Serve Dash application

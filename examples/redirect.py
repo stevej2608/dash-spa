@@ -1,4 +1,4 @@
-from utils import logging, log
+from holoniq.utils import logging, log
 from dash import html
 
 from dash_spa import spa, Blueprint

@@ -1,4 +1,4 @@
-from utils import log
+from holoniq.utils import log
 import colorlover as cl
 
 from dash import html, dcc

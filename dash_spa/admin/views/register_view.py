@@ -8,7 +8,7 @@ from dash_spa import SpaComponents
 from .view_common import blueprint as admin
 from .view_common import form_layout, form_values
 
-from utils import email_valid
+from holoniq.utils import email_valid
 
 @admin.route('/register', title='Admin register')
 def register(ctx):

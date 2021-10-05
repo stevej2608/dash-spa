@@ -1,5 +1,5 @@
 import os
-from utils import config, log
+from holoniq.utils import config, log
 from random import randrange
 from cachetools import TTLCache
 from .template_mailer import TemplateMailer

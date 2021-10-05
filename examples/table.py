@@ -1,5 +1,5 @@
 import json
-from utils import logging
+from holoniq.utils import logging
 
 from dash import html
 from dash.dependencies import Input, Output

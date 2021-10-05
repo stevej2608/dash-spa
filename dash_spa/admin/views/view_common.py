@@ -2,7 +2,7 @@ from collections import namedtuple
 from dash import html
 
 from dash_spa import Blueprint
-from admin.exceptions import InvalidAccess
+from dash_spa.admin.exceptions import InvalidAccess
 
 blueprint = Blueprint('admin')
 

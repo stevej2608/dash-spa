@@ -1,5 +1,5 @@
 import dash_spa as spa
-from admin import admin, AdminLoginManager, AdminNavbarComponent
+from dash_spa.admin import admin_blueprint, AdminNavbarComponent, AdminLoginManager
 from app import create_dash
 from demo import spa as demo
 from index import spa as welcome
@@ -40,7 +40,7 @@ def create_spa(dash_factory):
 
     # Enable admin
 
-    app.register_blueprint(admin, url_prefix='/admin')
+    app.register_blueprint(admin_blueprint, url_prefix='/admin')
     login_manager = AdminLoginManager(app.dash.server)
     app.enable_login_manager(login_manager, login_view='admin.login')
 

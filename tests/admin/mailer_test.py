@@ -1,5 +1,5 @@
-from admin.template_mailer import TemplateMailer
-from admin.login_manager import VERIFICATION_TEMPLATE
+from dash_spa.admin.template_mailer import TemplateMailer
+from dash_spa.admin.login_manager import VERIFICATION_TEMPLATE
 
 def test_send():
     name = 'Big Joe'
