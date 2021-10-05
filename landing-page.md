@@ -7,7 +7,8 @@ to show how easy it is to transition to SPA.
 
 **Dash/SPA** supports Flask style Blueprints and route decorators:
 
-![](https://raw.githubusercontent.com/stevej2608/dash-spa/main/docs/img/signin.png)
+![](https://raw.githubusercontent.com/stevej2608/dash-spa/master/docs/img/signin.png)
+
 
 **Code Snippet**
 
@@ -109,7 +110,7 @@ Views are provided that allow:
 * User admin table with Add, Edit and Delete. Accessible only when signed in with *admin* rights.
 
 
-![](https://raw.githubusercontent.com/stevej2608/dash-spa/main/docs/img/admin-views.png)
+![](https://raw.githubusercontent.com/stevej2608/dash-spa/master/docs/img/admin-views.png)
 
 ## Documentation
 
