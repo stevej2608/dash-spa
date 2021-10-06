@@ -2,6 +2,13 @@
 
 ![](docs/img/signin.png)
 
+**Dash/SPA** is a minimal template and component suite that allows you to build complex 
+**[Dash](https://dash.plot.ly/introduction)** based multi-page applications with ease. The demo application includes
+several well known Dash demos that have been pasted into the SPA framework
+to show how easy it is to transition to SPA.
+
+### Demo
+
 
     pip install -r requirements.txt
     python usage.py
@@ -10,10 +17,33 @@ When you sign in to the demo app for the first time you will be asked to create 
 admin account. Enter any email address and password you fancy. To manage users, as
 admin, select **Users** from the **My Account** drop-down on the nav-bar.
 
-**Dash/SPA** is a minimal template and component suite that allows you to build complex 
-**[Dash](https://dash.plot.ly/introduction)** based multi-page applications with ease. The demo application includes
-several well known Dash demos that have been pasted into the SPA framework
-to show how easy it is to transition to SPA.
+#### Docker Demo Website
+
+Perform the following steps to build and run the nginx/dash-spa demo 
+website in a docker container
+
+Build demo website Image:
+
+    docker build -t holoniq/dash-spa .
+
+Run website:
+
+    docker run -it --rm  -p 5000:80 holoniq/dash-spa
+
+Visit [http://localhost:5000/](http://localhost:5000/)
+
+Or to run bash:
+
+    docker run -it --rm  -p 5000:80 holoniq/dash-apa /bin/bash
+
+Remove image:
+
+    docker rmi holoniq/dash-spa
+
+### Features
+
+The following Dash/SPA features are implemented to allow Dash to be
+more easily used at scale.
 
 **Dash/SPA** supports Flask style Blueprints and route decorators:
 
@@ -92,30 +122,7 @@ NAV_BAR_ITEMS = {
             return spa.NOUPDATE
 ```
 
-## Docker Demo Website
-
-Perform the following steps to build and run the nginx/dash-spa demo 
-website in a docker container
-
-Build demo website Image:
-
-    docker build -t holoniq/dash-spa .
-
-Run website:
-
-    docker run -it --rm  -p 5000:80 holoniq/dash-spa
-
-Visit [http://localhost:5000/](http://localhost:5000/)
-
-Or to run bash:
-
-    docker run -it --rm  -p 5000:80 holoniq/dash-apa /bin/bash
-
-Remove image:
-
-    docker rmi holoniq/dash-spa
-
-## Examples
+### Examples
 
 **[multipage.py](examples/multipage.py)**
 
@@ -133,7 +140,7 @@ Then visit [http://localhost:8050/demo/page1](http://localhost:8050/demo/page1)
 
 Then visit [http://localhost:8050/table/page1](http://localhost:8050/table/page1)
 
-## Admin Blueprint
+### Admin Blueprint
 
 **Dash/SPA** Includes an optional **`admin`** blueprint that supports user registration, email 
 authentication and login. This is provided as a demonstrator, careful consideration
@@ -156,15 +163,15 @@ Views are provided that allow:
 
 ![](docs/img/admin-views.png)
 
-### User DB
+#### User DB
 
 User details are held in a local sqlite db. The SQLAlchemy model and all DB interaction is 
-defined in **[login_manager.py](admin/login_manager.py)**. It should be straight forward to
+defined in **[login_manager.py](dash_spa/admin/login_manager.py)**. It should be straight forward to
 modify this for other databases.
 
-### Authentication mailer
+#### Authentication mailer
 
-The authentication mailer is configured in `config/default.json` this will need to be modified to include
+The authentication mailer is configured in `settings.py` this will need to be modified to include
 the details for your email agent, [see below](#Configuration).
 
 If you use gmail just change the user/password details in 
@@ -172,56 +179,86 @@ the gmail options. To use a specific mailer edit the `mail_options.active` field
 the mailer will have come from  `mail_options.sender` edit this field 
 as required. Gmail will flag unknown emails as a security risk.
 
-## Configuration
+### Configuration
 
-Configuration details are held in the json file `./config/default.json`. The 
-environmental variable `DASH_SPA_ENV` can be configured to instruct
-Dash/SPA to use a different configuration file. 
+Configuration details are held in the `settings.py`. The 
+environmental variable `FLASK_ENV` can be configured to instruct
+Dash/SPA to use a different configuration. 
 
 Setting:
 
-        DASH_SPA_ENV='production'
+        FLASK_ENV='production'
 
-Will import the file `./config/production.json`. An example configuration is shown below:
+Will use *class ProdConfig:* from `settings.py`. An example configuration 
+is shown below:
 
 ```
-{
-  "logging": {
-    "level" : "WARNING"
-  },
-  "flask" : {
-    "secret_key" : "my secret flask password"
-  },
-  "user_db" : {
-    "database_uri" : "sqlite:///db.sqlite"
-  },
-  "mail_options": {
-    "sender" : "admin@joes.com",
-    "active" : "gmail",
-    "gmail": {
-      "host": "smtp.gmail.com",
-      "port": 465,
-      "secure": true,
-      "auth": {
-        "user": "bigjoe@gmail.com",
-        "password": "bigjoespassword"
-      }
-    },
-    "plusnet": {
-      "host": "relay.plus.net",
-      "port": 587,
-      "secure": false,
-      "auth": {
-        "user": "bigjoe",
-        "password": "bigjoesotherpassword"
-      }
+class DefaultConfig(object):
+    """Base configuration."""
+
+    flask = {
+        "SECRET_KEY": "my secret flask password",
+        "URL_PREFIX": "api"
     }
-  }
-}
+
+    logging = {"level": "INFO"}
+
+    user_db = {
+        "database_uri": "sqlite:///db.sqlite"
+    }
+    mail_options = {
+        "sender": "admin@joes.com",
+        "active": "gmail",
+        "gmail": {
+            "host": "smtp.gmail.com",
+            "port": 465,
+            "secure": True,
+            "auth": {
+                "user": "bigjoe@gmail.com",
+                "password": "bigjoepassword"
+            }
+        },
+        "plusnet": {
+            "host": "relay.plus.net",
+            "port": 587,
+            "secure": False,
+            "auth": {
+                "user": "bigjoe",
+                "password": "bigjoesotherpassword"
+            }
+        }
+    }
+
+
+class ProdConfig(DefaultConfig):
+    """Production configuration."""
+
+
+class DevConfig(DefaultConfig):
+    """Development configuration."""
+
+
+class TestConfig(DefaultConfig):
+    """Test configuration."""
+
+    flask = {
+        "SECRET_KEY": "my secret flask password",
+        "URL_PREFIX": "api",
+        "FLASK_ENV" : "test"
+    }
+
+    user_db = {
+        "database_uri": "sqlite:///tests/admin/test_db.sqlite"
+    }
+
+    logging = {"level": "WARN"}
+
 ```
 #### Build the project
 
-Create tarball, first change the release version in package.json, then:
+The dash-spa package it available on [pypi](https://pypi.org/project/dash-spa/). If
+needed, to create a local tarball, first change the release version 
+in *dash_spa/_version.py*, then:
 
     rm -rf dist dash_spa.egg-info build
 
