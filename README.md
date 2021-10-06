@@ -256,7 +256,7 @@ class TestConfig(DefaultConfig):
 ```
 #### Build the project
 
-The dash-spa package it available on [pypi](https://pypi.org/project/dash-spa/). If
+The dash-spa package is available on [pypi](https://pypi.org/project/dash-spa/). If
 needed, to create a local tarball, first change the release version 
 in *dash_spa/_version.py*, then:
 
@@ -275,7 +275,7 @@ To install the tarball in a dash project:
 Pytest and [Dash Duo](https://dash.plotly.com/testing) are used for testing. To run
 these tests both the Chrome browser and Chrome driver must be installed. These are
 already installed in the VSCode Docker container. If you are not using remote containers
-you must be install them first.
+you must install them first.
 
 To run the tests:
 
