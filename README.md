@@ -92,6 +92,29 @@ NAV_BAR_ITEMS = {
             return spa.NOUPDATE
 ```
 
+## Docker Demo Website
+
+Perform the following steps to build and run the nginx/dash-spa demo 
+website in a docker container
+
+Build demo website Image:
+
+    docker build -t holoniq/dash-spa .
+
+Run website:
+
+    docker run -it --rm  -p 5000:80 holoniq/dash-spa
+
+Visit [http://localhost:5000/](http://localhost:5000/)
+
+Or to run bash:
+
+    docker run -it --rm  -p 5000:80 holoniq/dash-apa /bin/bash
+
+Remove image:
+
+    docker rmi holoniq/dash-spa
+
 ## Examples
 
 **[multipage.py](examples/multipage.py)**
