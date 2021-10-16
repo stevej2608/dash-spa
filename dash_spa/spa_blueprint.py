@@ -1,34 +1,31 @@
-from flask.cli import AppGroup
+import re
 from urllib import parse
+from dash.development.base_component import Component
+
 from .spa_components import SpaComponents
+from .spa_url import SpaURLParse
+from .spa_blueprint_app_group import BlueprintAppGroup
 
-
-class BlueprintAppGroup(AppGroup):
-    """Flag cli commands are defined by blueprint"""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.hasCommand = False
-
-    def command(self, *args, **kwargs):
-        self.hasCommand = True
-        return super().command(*args, **kwargs)
-
-class Blueprint(SpaComponents):
+class Blueprint:
 
     @property
     def name(self):
-        return self.io._prefix
+        return self._name
 
     @property
     def app(self):
         return self.spa_app.dash
 
     def __init__(self, name):
-        super().__init__(name)
+        self._name = name
+        self._url_prefix = None
         self.spa_app = None
         self.routes = {}
         self.cli = BlueprintAppGroup(name)
+
+    def set_url_prefix(self, prefix):
+        """Set the url_prefix"""
+        self._url_prefix = prefix
 
     def route(self, route='', title=None, **options):
         """Define Dash/SPA endpoint
@@ -73,46 +70,57 @@ class Blueprint(SpaComponents):
             str = str.replace('/', '.')
             return str
 
-        endpoint = route2ep(route)
+        # TODO: I think endpoint should include the blueprint name
+        # TODO: Rationalise _Route properties
 
-        class _Route:
+        endpoint = route2ep(route)
+        blueprint = self
+
+        if 'prefix_ids' not in options:
+            options['prefix_ids'] = True
+
+        # An instance of _RouteContext is available to the user if the
+        # ctx patameter is defined in the Dash/SPA root function
+
+        class _RouteContext:
             def __init__(self, layout):
                 self.__dict__ = options
                 self.layout = layout
                 self.rule = endpoint
                 self.title = title
                 self.url = None
-                self.callback_context = SpaComponents.CallbackContext()
+                self.blueprint = blueprint
+
+            def querystring_args(self, href):
+                url_parse = SpaURLParse(self)
+                return url_parse.querystring_args(href)
+
+            def prefix(self, id):
+                if id == Component.UNDEFINED: return id
+                return SpaComponents.prefix([blueprint.name, self.rule, id])
+
+            def callback(self, output, inputs=[], state=[]):
+                return blueprint.callback(output, inputs, state)
 
             def isTriggered(self,input):
-                return self.callback_context.isTriggered(input)
+                return SpaComponents.isTriggered(input)
 
-            def __getattr__(self, name):
-                if name in self.__dict__:
-                    return self[name]
-
-                return None
-
-            def get_url_query_values(self, id):
-                """[summary]
-
-                Args:
-                    id (string): The id of the required query string params
-
-                Returns:
-                    [list]: List of values for given id
-                """
+            def get_url_query_values(self, qid):
                 try:
                     qs = self.url.qs
-                    if id in qs:
-                        return qs[id][0].split()
+                    if qid in qs:
+                        return qs[qid][0].split()
                 except Exception as ex:
                     pass
 
                 return None
 
+            def __getattr__(self, name):
+                if name in self.__dict__: return self[name]
+                return None
+
         def decorator(f):
-            self.routes[endpoint] = _Route(f)
+            self.routes[endpoint] = _RouteContext(f)
             return f
 
         return decorator
@@ -142,17 +150,6 @@ class Blueprint(SpaComponents):
     def set_spa_app(self, spa_app):
         # log.info('set_spa_app %s', self.url_pathname)
         self.spa_app = spa_app
-
-    def mypath(self):
-        """Return the full path for the enclosing blueprint endpoint.
-
-        If called outside of a rule context the path of the bluprint is returned.
-
-        Example: The path returned for the blueprint rule '/profile' when the
-        blueprint registered as '/user' will be '/user/profile'
-        """
-        ctx = self.get_context()
-        return self.url_for(ctx.rule)
 
     def url_for(self, endpoint=None, args=None):
         """Convert endpoint to url

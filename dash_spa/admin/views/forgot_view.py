@@ -3,10 +3,12 @@ from flask import current_app as app
 from flask import session
 from enum import Enum
 
-from holoniq.utils import log, email_valid
+import dash_holoniq_components as dhc
+
+from holoniq.utils import email_valid
 from dash import html
 
-from dash_spa import SpaComponents
+from dash_spa import SpaComponents, SpaForm
 
 from .view_common import blueprint as admin
 from .view_common import form_layout
@@ -35,20 +37,21 @@ def forgot(ctx):
     the login_manager will send an forgot validation email to the user. We
     redirect to the `forgot-code` endpoint
     """
-    spa = admin.get_spa()
 
-    flash = spa.Flash(id='flash')
-    email = spa.Input(name='email', type='email', id='email', placeholder="Enter email", feedback="Your email is invalid")
-    redirect = spa.Redirect(id='redirect', refresh=True)
+    frm = SpaForm(ctx)
 
-    form = spa.Form([
-        flash, email, spa.Button('Reset Request', id='btn', type='submit')
+    flash = frm.Alert(id='flash')
+    email = frm.Input(name='email', type='email', id='email', placeholder="Enter email", feedback="Your email is invalid")
+    redirect = frm.Location(id='redirect', refresh=True)
+
+    form = frm.Form([
+        flash, email, frm.Button('Reset Request', id='btn', type='submit')
     ], id='forgot')
 
     @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
-        redirect = spa.NOUPDATE
-        error = spa.NOUPDATE
+        redirect = frm.NOUPDATE
+        error = frm.NOUPDATE
 
         if ctx.isTriggered(form.input.form_data):
             email = values['email']
@@ -76,20 +79,20 @@ def forgot_code(ctx):
     code. Allow the user to enter the code. If it verifies we redirect to
     the `forgot2` endpoint.
     """
-    spa = admin.get_spa()
+    frm = SpaForm(ctx)
 
-    flash = spa.Flash(id='flash')
-    code = spa.Input(name='code', id='code', placeholder="verification code", prompt="Check your email in-box")
-    redirect = spa.Redirect(id='redirect', refresh=True)
+    flash = frm.Alert(id='flash')
+    code = frm.Input(name='code', id='code', placeholder="verification code", prompt="Check your email in-box")
+    redirect = frm.Location(id='redirect', refresh=True)
 
-    form = spa.Form([
-        flash, code, spa.Button('Enter Verification Code', id='btn', type='submit')
+    form = frm.Form([
+        flash, code, frm.Button('Enter Verification Code', id='btn', type='submit')
     ], id='forgot')
 
     @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
-        redirect = spa.NOUPDATE
-        error = spa.NOUPDATE
+        redirect = frm.NOUPDATE
+        error = frm.NOUPDATE
 
         if ctx.isTriggered(form.input.form_data):
             code = values['code']
@@ -111,24 +114,24 @@ def forgot_password(ctx):
     The user has confirmed his email, allow user to change the account
     password
     """
-    spa = admin.get_spa()
+    frm = SpaForm(ctx)
 
-    flash = spa.Flash(id='flash')
-    password = spa.PasswordInput("Password", name='password', id='password', prompt="Make sure your password is strong and easy to remember", placeholder="Enter password")
-    confirm_password = spa.PasswordInput('Re-enter password', name="confirm_password", id='confirm_password', placeholder="Re-enter password", feedback="Password fields are not the same, reenter them")
-    redirect = spa.Redirect(id='redirect', refresh=True)
+    flash = frm.Alert(id='flash')
+    password = frm.PasswordInput("Password", name='password', id='password', prompt="Make sure your password is strong and easy to remember", placeholder="Enter password")
+    confirm_password = frm.PasswordInput('Re-enter password', name="confirm_password", id='confirm_password', placeholder="Re-enter password", feedback="Password fields are not the same, reenter them")
+    redirect = frm.Location(id='redirect', refresh=True)
 
-    form = spa.Form([
-        flash, password, confirm_password, spa.Button('Update Password', id='btn', type='submit')
+    form = frm.Form([
+        flash, password, confirm_password, frm.Button('Update Password', id='btn', type='submit')
     ], id='forgot')
 
     @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data], [SpaComponents.url.state.href])
     def _form_submit(values, href):
-        redirect = spa.NOUPDATE
-        error = spa.NOUPDATE
+        redirect = frm.NOUPDATE
+        error = frm.NOUPDATE
 
         if ctx.isTriggered(form.input.form_data):
-            qs = spa.querystring_args(href)
+            qs = ctx.querystring_args(href)
             if qs is not None and 'code' in qs and 'email' in qs:
                 code = qs['code'][0]
                 email = qs['email'][0]

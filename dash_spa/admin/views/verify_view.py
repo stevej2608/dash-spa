@@ -3,13 +3,14 @@ from flask import current_app as app
 from dash import dcc
 from dash import html
 
-from dash_spa import SpaComponents
+from dash_spa import SpaComponents, SpaForm
 from .view_common import blueprint as admin
 from .view_common import form_layout
 
 @admin.route('/verify', title='Admin verify')
 def verify(ctx):
-    spa = admin.get_spa()
+
+    frm = SpaForm(ctx)
 
     def registerLink():
         return html.Div([
@@ -17,12 +18,12 @@ def verify(ctx):
             dcc.Link("Create one", href='/admin/register')
         ], className="mt-4 text-center")
 
-    flash = spa.Flash(id='flash')
-    code = spa.Input(name='code', id='code', placeholder="verification code", prompt="Check your email in-box")
-    button = spa.Button('Submit', type='submit', id='btn')
-    redirect = spa.Redirect(id='redirect', refresh=True)
+    flash = frm.Alert(id='flash')
+    code = frm.Input(name='code', id='code', placeholder="verification code", prompt="Check your email in-box")
+    button = frm.Button('Submit', type='submit', id='btn')
+    redirect = frm.Location(id='redirect', refresh=True)
 
-    form = spa.Form([
+    form = frm.Form([
         flash,
         code, html.Br(),
         button,
@@ -31,11 +32,11 @@ def verify(ctx):
 
     @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data], [SpaComponents.url.state.href])
     def _button_click(values, href):
-        redirect = spa.NOUPDATE
-        error = spa.NOUPDATE
+        redirect = frm.NOUPDATE
+        error = frm.NOUPDATE
 
         if ctx.isTriggered(form.input.form_data):
-            qs = spa.querystring_args(href)
+            qs = ctx.querystring_args(href)
             if qs is not None and 'email' in qs:
                 code = values['code']
                 email = qs['email'][0]

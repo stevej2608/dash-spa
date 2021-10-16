@@ -11,6 +11,7 @@ from holoniq.utils import arg_list, log
 from .navbar import NavbarBase
 from .page_not_found import PageNotFound
 from .spa_components import SpaComponents
+from .spa_url import urlsplit
 
 DashDependency.id = property(lambda self: self.component_id)
 
@@ -56,7 +57,7 @@ class SinglePageApp:
         self.endpoints = {}
         self.login_manager = None
         self.page404 = None
-        self.components = SpaComponents('spa')
+        # self.components = SpaComponents('spa')
         self._is_initialisation_completed = False
 
     def run_server(self, debug=False, host='localhost', port=5000, threaded=True):
@@ -85,21 +86,21 @@ class SinglePageApp:
         layout for the entire application.
         """
 
-        def get_content(ctx):
-            args = arg_list(ctx.layout)
+        def get_layout(route_ctx):
+            args = arg_list(route_ctx.layout)
             if 'ctx' in args:
-                ctx.login_manager = self.login_manager
-                content = ctx.layout(ctx)
+                route_ctx.login_manager = self.login_manager
+                content = route_ctx.layout(route_ctx)
             else:
-                content = ctx.layout()
+                content = route_ctx.layout()
             return content
 
         blueprint_routes = self.blueprint_routes
 
         # Iterate over all routes to register callbacks with dash
 
-        for route, ctx in blueprint_routes.items():
-            get_content(ctx)
+        for route, route_ctx in blueprint_routes.items():
+            get_layout(route_ctx)
 
         # Define the dynamic top-level layout components and their
         # associated callback.
@@ -112,7 +113,7 @@ class SinglePageApp:
             title = SpaComponents.NOUPDATE
 
 
-            url = SpaComponents.urlsplit(href)
+            url = urlsplit(href)
 
             pathname = re.sub(r"\/$", '', url.path)
 
@@ -124,16 +125,16 @@ class SinglePageApp:
             try:
 
                 if pathname in blueprint_routes:
-                    ctx = blueprint_routes[pathname]
-                    title = ctx.title
-                    ctx.url = url
+                    route_ctx = blueprint_routes[pathname]
+                    title = route_ctx.title
+                    route_ctx.url = url
                 else:
                     raise Route404(f'Unknown route {pathname}')
 
                 # If route has access guard in place call it
 
-                if not ctx.access or ctx.access(ctx):
-                    content = get_content(ctx)
+                if not route_ctx.access or route_ctx.access(route_ctx):
+                    content = get_layout(route_ctx)
 
             except Exception as ex:
                 msg = ex.message if hasattr(ex, 'message') else "???"
@@ -192,7 +193,7 @@ class SinglePageApp:
         # Create a container for the footer
 
         footer = self.navitems['footer']
-        container = self.components.Div(footer.layout(self), id='footer')
+        container = html.Div(footer.layout(self), id='footer')
 
         # Register callback that will update the navbar whenever the browser page changes
 
@@ -249,7 +250,7 @@ class SinglePageApp:
 
         # Create navbar
 
-        navbar = self.components.Navbar(children=elements,id='navbar',dark=dark, color=color,  expand="md" )
+        navbar = dbc.Navbar(children=elements,id='navbar',dark=dark, color=color,  expand="md" )
 
         # Register callback that will update the navbar whenever the browser page changes
 
@@ -289,6 +290,8 @@ class SinglePageApp:
         # Process endpoints
 
         for route, layout_function in blueprint.routes.items():
+
+            layout_function.url_prefix  = url_prefix
 
             if route:
                 full_route = f"{url_prefix}/{route.replace('.','/')}"

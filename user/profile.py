@@ -6,10 +6,14 @@ from dash_spa import SpaComponents
 
 @user.route('/profile', title='User')
 def profile():
-    spa = user.get_spa()
+
 
     def big_center(text, id=None):
-        return spa.H2(text, id=id, className='display-3 text-center')
+        if id:
+            return html.H2(text, id=id, className='display-3 text-center')
+        else:
+            return html.H2(text, className='display-3 text-center')
+
 
     def page_content():
         if current_user and not current_user.is_anonymous:
@@ -19,10 +23,10 @@ def profile():
 
         return html.Header([
             big_center("Dash/SPA Welcomes"),
-            big_center(name, id='name')
+            big_center(name, id='user-name')
         ], className='jumbotron my-4')
 
-    content = spa.Div(page_content(), id='content')
+    content = html.Div(page_content(), id='content')
 
     @user.callback(content.output.children, [SpaComponents.url.input.pathname])
     def profile_cb(pathname):

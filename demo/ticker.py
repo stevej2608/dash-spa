@@ -5,6 +5,8 @@ from dash import html, dcc
 import pandas as pd
 from dash_spa import SpaComponents
 
+import dash_holoniq_components as dhc
+
 from .demo import blueprint as demo
 
 # Taken from Dash example, see:
@@ -23,7 +25,6 @@ except Exception:
 
 @demo.route('/ticker', title='Ticker')
 def ticker(ctx):
-    spa = demo.get_spa('ticker')
 
     log.info('/ticker')
 
@@ -31,20 +32,20 @@ def ticker(ctx):
 
     querystring_name = 'tickers'
 
-    stock_ticker_dropdown = spa.Dropdown(
+    stock_ticker_dropdown = dcc.Dropdown(
         id='stock_ticker',
         value=ctx.get_url_query_values(querystring_name),
-        name=querystring_name,
+        # name=querystring_name,
         options=[{'label': s[0], 'value': str(s[1])}
                  for s in zip(df.Stock.unique(), df.Stock.unique())],
         multi=True,
     )
 
-    graphs = spa.Div(id='graphs')
+    graphs = html.Div(id='graphs')
 
     # Callback to create the charts for requested tickers
 
-    @spa.callback(graphs.output.children, [stock_ticker_dropdown.input.value])
+    @demo.callback(graphs.output.children, [stock_ticker_dropdown.input.value])
     def _update_graph(tickers):
         global current_tickers
         log.info('_update_graph, stock_ticker_dropdown.input: %s', tickers)
@@ -57,9 +58,9 @@ def ticker(ctx):
     # Callback to update the browser search-bar with the
     # selected tickers
 
-    location = spa.Redirect(id='redirect', refresh=False)
+    location = dhc.Location(id='redirect', refresh=False)
 
-    @spa.callback(location.output.href, [stock_ticker_dropdown.input.value])
+    @demo.callback(location.output.href, [stock_ticker_dropdown.input.value])
     def _update_url(tickers):
         log.info('_update_url, stock_ticker_dropdown.input: %s', tickers)
         href = SpaComponents.NOUPDATE

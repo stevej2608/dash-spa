@@ -3,15 +3,20 @@
 ![](docs/img/signin.png)
 
 **Dash/SPA** is a minimal template and component suite that allows you to build complex 
-**[Dash](https://dash.plot.ly/introduction)** based multi-page applications with ease. The demo application includes
+**[Dash]** based multi-page applications with ease. The demo application includes
 several well known Dash demos that have been pasted into the SPA framework
-to show how easy it is to transition to SPA.
+to show how easy it is to transition to SPA. **Dash/SPA** can be installed from [pypi]
+
+    pip install dash-spa
 
 ### Demo
 
-
     pip install -r requirements.txt
     python usage.py
+
+or:
+
+    python waitress_server.py
 
 When you sign in to the demo app for the first time you will be asked to create an 
 admin account. Enter any email address and password you fancy. To manage users, as
@@ -19,10 +24,9 @@ admin, select **Users** from the **My Account** drop-down on the nav-bar.
 
 #### Docker Demo Website
 
-Perform the following steps to build and run the nginx/dash-spa demo 
-website in a docker container
+Perform the following steps to build and run the demo website in an [nginx](https://www.nginx.com/) docker container.
 
-Build demo website Image:
+Build demo website Docker image:
 
     docker build -t holoniq/dash-spa .
 
@@ -32,7 +36,7 @@ Run website:
 
 Visit [http://localhost:5000/](http://localhost:5000/)
 
-Or to run bash:
+If needed, to debug, run bash in the container:
 
     docker run -it --rm  -p 5000:80 holoniq/dash-apa /bin/bash
 
@@ -42,7 +46,7 @@ Remove image:
 
 ### Features
 
-The following Dash/SPA features are implemented to allow Dash to be
+The following Dash/SPA features are implemented to allow [Dash] to be
 more easily used at scale.
 
 **Dash/SPA** supports Flask style Blueprints and route decorators:
@@ -71,16 +75,32 @@ reduces Dash component ID conflicts. A component ID is only defined once when th
 is created. It is then used by reference in associated Dash callbacks:
 
 ```
-    user_name = spa.Input(id='user', placeholder="Enter name")
-    password = spa.PasswordInput("Password", name='password', id='password', placeholder="Enter password")
+from dash import html
+import dash_bootstrap_components as dbc
+import dash_holoniq_components as dhc
 
-    btn = spa.Button('Enter', id='enter', disabled=True)
+user_name = dbc.Input(id='user', placeholder="Enter name")
+password = dhc.PasswordInput("Password", name='password', id='password', placeholder="Enter password")
 
-    @app.callback(btn.output.disabled, [user_name.input.value, password.input.value])
-    def _cb_enter(user_name, password):
-        return not db_validate_user(user_name, password)
+btn = html.Button('Enter', id='enter', disabled=True)
+
+@app.callback(btn.output.disabled, [user_name.input.value, password.input.value])
+def _cb_enter(user_name, password):
+    return not db_validate_user(user_name, password)
 
 ```
+
+Dash components created outside of a blueprint route are prefixed with the
+enclosing modules name (\_\_NAME\_\_)
+
+Routes can be protected by an arbitrary access validation function:
+```
+@admin.route('/users', title='Admin Users', access=validate_user)
+def user_view(ctx):
+  pass
+```
+In the example, *validate_user* throws an exception if the user is not signed 
+in. This results in a 404 page being displayed
 
 **Dash/SPA** includes an optional NAVBAR, configured by a simple dictionary:
 
@@ -105,21 +125,23 @@ NAV_BAR_ITEMS = {
 **Dash/SPA** Allows easy creation of interactive forms
 
 ```
-        email = spa.Input('Email', name='email', type='email', placeholder="Enter email")
-        password = spa.PasswordInput("Password", name='password', placeholder="Enter password")
-        button = button = spa.Button('Sign In', type='submit')
+frm = SpaForm(ctx,'loginFrm')
 
-        form = spa.Form([
-            email,
-            password,
-            button,
-        ], title='Sign In'),
+email = frm.Input('Email', name='email', type='email', placeholder="Enter email")
+password = frm.PasswordInput("Password", name='password', placeholder="Enter password")
+button = html.Button('Sign In', type='submit')
+
+form = frm.Form([
+    email,
+    password,
+    button,
+], title='Sign In'),
 
 
-        @spa.callback(form.output.children, [form.input.form_data])
-        def _form_submit(values):
-            print(values)
-            return spa.NOUPDATE
+@app.callback(form.output.children, [form.input.form_data])
+def _form_submit(values):
+    print(values)
+    return spa.NOUPDATE
 ```
 
 ### Examples
@@ -256,9 +278,8 @@ class TestConfig(DefaultConfig):
 ```
 #### Build the project
 
-The dash-spa package is available on [pypi](https://pypi.org/project/dash-spa/). If
-needed, to create a local tarball, first change the release version 
-in *dash_spa/_version.py*, then:
+The dash-spa package is available on [pypi]. If needed, to create a local 
+tarball, first change the release version in *dash_spa/_version.py*, then:
 
     rm -rf dist dash_spa.egg-info build
 
@@ -285,3 +306,5 @@ To run the tests:
 
     twine upload dist/*
 
+[pypi]: https://pypi.org/project/dash-spa/
+[Dash]: https://dash.plot.ly/introduction

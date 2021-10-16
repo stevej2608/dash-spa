@@ -3,19 +3,20 @@ from flask import current_app as app
 from dash import dcc
 from dash import html
 
-from dash_spa import SpaComponents
+from dash_spa import SpaForm
 
 from .view_common import blueprint as admin
 from .view_common import form_layout, form_values
 
 from holoniq.utils import email_valid
 
-@admin.route('/register', title='Admin register')
+@admin.route('/register', title='Admin register', prefix_ids=False)
 def register(ctx):
-    spa = admin.get_spa()
+
+    frm = SpaForm(ctx)
 
     def terms_check_box():
-        return spa.Checkbox([
+        return frm.Checkbox([
             "I agree to the ",
             html.A("Terms and Conditions", href="#")
         ], id='terms', name='terms')
@@ -27,18 +28,18 @@ def register(ctx):
             dcc.Link("Login", href=admin.url_for('login'))
             ], className="mt-4 text-center")
 
-    flash = spa.Flash(id='flash')
-    name = spa.Input('Name', name='name', id='name', placeholder="Enter name")
-    email = spa.Input('Email', name='email', type='email', id='email', placeholder="Enter email", feedback="Your email is invalid")
-    password = spa.PasswordInput("Password", name='password', id='password', prompt="Make sure your password is strong and easy to remember", placeholder="Enter password")
-    confirm_password = spa.PasswordInput('Re-enter password', name="confirm_password", id='confirm_password', placeholder="Re-enter password", feedback="Password fields are not the same, reenter them")
+    flash = frm.Alert(id='flash')
+    name = frm.Input('Name', name='name', id='name', placeholder="Enter name")
+    email = frm.Input('Email', name='email', type='email', id='email', placeholder="Enter email", feedback="Your email is invalid")
+    password = frm.PasswordInput("Password", name='password', id='password', prompt="Make sure your password is strong and easy to remember", placeholder="Enter password")
+    confirm_password = frm.PasswordInput('Re-enter password', name="confirm_password", id='confirm_password', placeholder="Re-enter password", feedback="Password fields are not the same, re-enter them")
     terms = terms_check_box()
 
-    redirect = spa.Redirect(id='redirect', refresh=True)
+    redirect = frm.Location(id='redirect', refresh=True)
 
-    button = spa.Button('Register', type='submit', id='btn')
+    button = frm.Button('Register', type='submit', id='btn')
 
-    form = spa.Form([
+    form = frm.Form([
         flash,
         name,
         email,
@@ -51,8 +52,8 @@ def register(ctx):
 
     @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
-        redirect = spa.NOUPDATE
-        error = spa.NOUPDATE
+        redirect = frm.NOUPDATE
+        error = frm.NOUPDATE
 
         if ctx.isTriggered(form.input.form_data):
             f = form_values(values)

@@ -2,12 +2,15 @@ import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
 import dash_html_components as html
 
+from dash_spa.spa_components import SpaComponents
+
+
 from .user_data import user_db
 
-def user_form(spa, table, login_manager):
+def user_form(ctx, table, login_manager):
 
-    user_form = dhc.Form([], id=spa.prefix('user-form'), preventDefault=True)
-    cancel_btn = dbc.Button("Cancel", id=spa.prefix("cancel-btn"), type="reset", className="ml-1", n_clicks=0)
+    user_form = dhc.Form([], id='user-form', preventDefault=True)
+    cancel_btn = dbc.Button("Cancel", id="cancel-btn", type="reset", className="ml-1", n_clicks=0)
 
     def form_body(action="blank_form", row_data=None):
         """Return form that's fully populated with relevant fields and buttons for the given action"""
@@ -69,20 +72,20 @@ def user_form(spa, table, login_manager):
             dbc.ModalBody(form),
         ]
 
-    modal_form = dbc.Modal(form_body(), id=spa.prefix("modal"), is_open=False)
+    modal_form = dbc.Modal(form_body(), id="modal", is_open=False)
 
     # Process table action, set up and show the modal form
 
-    @spa.callback(
+    @ctx.callback(
         [modal_form.output.is_open, modal_form.output.children],
         [table.input.table_event, cancel_btn.input.n_clicks, user_form.input.form_data])
     def toggle_modal(table_evt, close_btn, value):
         is_open = False
-        form = spa.NOUPDATE
+        form = SpaComponents.NOUPDATE
 
         # Populate modal form fields based on table event
 
-        if spa.isTriggered(table.input.table_event):
+        if ctx.isTriggered(table.input.table_event):
 
             action = table_evt['action']
             if action == "add_row":
@@ -100,12 +103,12 @@ def user_form(spa, table, login_manager):
 
     # Process modal form close, use the form values to update the table
 
-    @spa.callback(table.output.data, user_form.input.form_data)
+    @ctx.callback(table.output.data, user_form.input.form_data)
     def table_update(value):
-        table_data = spa.NOUPDATE
+        table_data = SpaComponents.NOUPDATE
 
 
-        if spa.isTriggered(user_form.input.form_data) and value:
+        if ctx.isTriggered(user_form.input.form_data) and value:
             action = value['action']
 
             del value['submit_count']

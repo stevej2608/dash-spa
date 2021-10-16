@@ -3,15 +3,19 @@ from flask import current_app as app
 from dash import dcc
 from dash import html
 
-from dash_spa import SpaComponents
+import dash_holoniq_components as dhc
+
+from dash_spa import SpaComponents, SpaForm
 
 from .view_common import blueprint as admin
 from .view_common import form_layout
 
 from holoniq.utils import email_valid
 
+# Normal user login
+
 def build_login_form(ctx):
-    spa = admin.get_spa("login-form")
+    frm = SpaForm(ctx,'loginFrm')
 
     def registerLink():
         return html.Div([
@@ -19,17 +23,17 @@ def build_login_form(ctx):
             dcc.Link("Create one", href=admin.url_for('register'))
         ], className="mt-4 text-center")
 
-    flash = spa.Flash(id='flash')
-    email = spa.Input('Email', id='email', name='email', type='email', placeholder="Enter email")
+    flash = frm.Alert(id='flash')
+    email = frm.Input('Email', id='email', name='email', type='email', placeholder="Enter email")
 
-    password = spa.PasswordInput("Password", name='password', id="password", placeholder="Enter password")
+    password = frm.PasswordInput("Password", name='password', id="password", placeholder="Enter password")
     password.children.insert(1, dcc.Link('Forgot Password?', href=admin.url_for('forgot'), className="float-right"))
 
-    remember = spa.Checkbox("Remember me", id='remember', name='remember', checked=True)
-    button = spa.Button('Sign In', type='submit', id='btn')
-    redirect = spa.Redirect(id='redirect', refresh=True)
+    remember = frm.Checkbox("Remember me", id='remember', name='remember', checked=True)
+    button = frm.Button('Sign In', type='submit', id='btn')
+    redirect = frm.Location(id='redirect', refresh=True)
 
-    form = spa.Form([
+    form = frm.Form([
         flash,
         email,
         password,
@@ -40,8 +44,8 @@ def build_login_form(ctx):
 
     @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
-        redirect = spa.NOUPDATE
-        error = spa.NOUPDATE
+        redirect = frm.NOUPDATE
+        error = frm.NOUPDATE
 
         if ctx.isTriggered(form.input.form_data):
             email = values['email']
@@ -59,24 +63,25 @@ def build_login_form(ctx):
     return html.Div([layout, redirect])
 
 
-def build_admin_form(ctx):
-    spa = admin.get_spa("admin_form")
+def build_admin_registration_form(ctx):
 
-    flash = spa.Flash(id='flash')
+    frm = SpaForm(ctx,'adminFrm')
 
-    name = spa.Input('Name', name='name', id='name', placeholder="Enter name")
-    email = spa.Input('Email', id='email', name='email', type='email', placeholder="Enter email")
+    flash = frm.Alert(id='flash')
 
-    password = spa.PasswordInput("Password", name='password', id="password", placeholder="Enter password")
+    name = frm.Input('Name', name='name', id='name', placeholder="Enter name")
+    email = frm.Input('Email', id='email', name='email', type='email', placeholder="Enter email")
 
-    confirm_password = spa.PasswordInput('Re-enter password',
+    password = frm.PasswordInput("Password", name='password', id="password", placeholder="Enter password")
+
+    confirm_password = frm.PasswordInput('Re-enter password',
             name="confirm_password", id='confirm_password', placeholder="Re-enter password",
             feedback="Password fields are not the same, re-enter them")
 
-    button = spa.Button('Create Admin', type='submit', id='btn')
-    redirect = spa.Redirect(id='redirect', refresh=True)
+    button = frm.Button('Create Admin', type='submit', id='btn')
+    redirect = frm.Location(id='redirect', refresh=True)
 
-    form = spa.Form([
+    form = frm.Form([
         flash,
         name,
         email,
@@ -88,8 +93,8 @@ def build_admin_form(ctx):
 
     @admin.callback([redirect.output.href, flash.output.children], [form.input.form_data])
     def _form_submit(values):
-        redirect = spa.NOUPDATE
-        error = spa.NOUPDATE
+        redirect = frm.NOUPDATE
+        error = frm.NOUPDATE
 
         if ctx.isTriggered(form.input.form_data):
             name = values['name']
@@ -112,12 +117,12 @@ def build_admin_form(ctx):
     return html.Div([layout, redirect])
 
 
-@admin.route('/login', title='Admin login')
+@admin.route('/login', title='Admin login', prefix_ids=False)
 def login(ctx):
     login_manager = ctx.login_manager
 
     login_form = build_login_form(ctx)
-    admin_form = build_admin_form(ctx)
+    admin_form = build_admin_registration_form(ctx)
 
     if login_manager.user_count() == 0 :
         return admin_form
@@ -126,9 +131,8 @@ def login(ctx):
 
 @admin.route('/logout', login_required=True)
 def logout():
-    spa = admin.get_spa()
 
-    redirect = spa.Redirect(id='redirect', refresh=True)
+    redirect = dhc.Location(id='redirect', refresh=True)
 
     @admin.callback(redirect.output.href, [SpaComponents.url.input.pathname])
     def _logout_cb(pathname):

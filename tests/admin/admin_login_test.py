@@ -16,19 +16,19 @@ def test_admin_login(duo, spa):
 
     duo.server_url = duo.server_url + "/admin/login"
 
-    result = duo.wait_for_text_to_equal("#admin-login-form-btn", "Sign In", timeout=20)
+    result = duo.wait_for_text_to_equal("#admin-loginfrm-btn", "Sign In", timeout=20)
     assert result
 
-    email=duo.find_element("#admin-login-form-email")
+    email=duo.find_element("#admin-loginfrm-email")
     email.send_keys(USER_EMAIL)
 
-    password=duo.find_element("#admin-login-form-password")
+    password=duo.find_element("#admin-loginfrm-password")
     password.send_keys(USER_PASSWORD)
 
-    btn = duo.find_element("#admin-login-form-btn")
+    btn = duo.find_element("#admin-loginfrm-btn")
     btn.click()
 
-    result = duo.wait_for_text_to_equal("#user-profile-name", "Big Joe", timeout=20)
+    result = duo.wait_for_text_to_equal("#user-name", "Big Joe", timeout=20)
     assert result
 
 def test_admin_login_fail(duo):
@@ -40,16 +40,16 @@ def test_admin_login_fail(duo):
 
     duo.server_url = duo.server_url + "/admin/login"
 
-    btn = duo.find_element("#admin-login-form-btn")
+    btn = duo.find_element("#admin-loginfrm-btn")
     assert btn.text == "Sign In"
 
-    email=duo.find_element("#admin-login-form-email")
+    email=duo.find_element("#admin-loginfrm-email")
     email.send_keys(USER_EMAIL)
 
-    password=duo.find_element("#admin-login-form-password")
+    password=duo.find_element("#admin-loginfrm-password")
     password.send_keys('bad')
 
     btn.click()
 
-    result = duo.wait_for_text_to_equal("#admin-login-form-flash", "Please check your login details and try again.", timeout=20)
+    result = duo.wait_for_text_to_equal("#admin-loginfrm-flash", "Please check your login details and try again.", timeout=20)
     assert result

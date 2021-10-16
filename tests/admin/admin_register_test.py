@@ -73,5 +73,5 @@ def test_admin_register(mocker, spa, duo):
 
     # Confirm redirect to login page
 
-    result = duo.wait_for_text_to_equal("#admin-login-form-btn", "Sign In", timeout=20)
+    result = duo.wait_for_text_to_equal("#admin-loginfrm-btn", "Sign In", timeout=20)
     assert result

@@ -1,7 +1,9 @@
 from holoniq.utils import logging, log
 from dash import html
+import dash_holoniq_components as dhc
 
 from dash_spa import spa, Blueprint
+from dash_spa import SpaComponents
 
 from app import create_dash
 from server import serve_app
@@ -9,15 +11,14 @@ from server import serve_app
 test = Blueprint('test')
 
 @test.route('/page1')
-def route1():
-    spa = test.get_spa('page1')
+def route1(ctx):
 
-    btn = spa.Button('Go to Page #2', id='btn')
-    redirect = spa.Redirect(id='redirect')
+    btn = html.Button('Go to Page #2', id='btn', className="btn btn-primary btn-block")
+    redirect = dhc.Location(id='redirect')
 
-    @spa.callback(redirect.output.pathname, [btn.input.n_clicks])
+    @test.callback(redirect.output.pathname, [btn.input.n_clicks])
     def _cb(clicks):
-        red = test.NOUPDATE
+        red = SpaComponents.NOUPDATE
         log.info('btn clicks=%s', clicks)
         if clicks:
             red = test.url_for('page2')
@@ -31,15 +32,14 @@ def route1():
 
 
 @test.route('/page2')
-def route2():
-    spa = test.get_spa('route2')
+def route2(ctx):
 
-    btn = spa.Button('Go to Page #1', id='btn')
-    redirect = spa.Redirect(id='redirect')
+    btn = html.Button('Go to Page #1', id='btn', className="btn btn-primary btn-block")
+    redirect = dhc.Location(id='redirect')
 
-    @spa.callback(redirect.output.pathname, [btn.input.n_clicks])
+    @test.callback(redirect.output.pathname, [btn.input.n_clicks])
     def _cb(clicks):
-        red = test.NOUPDATE
+        red = SpaComponents.NOUPDATE
         log.info('btn clicks=%s', clicks)
         if clicks:
             red = test.url_for('page1')
@@ -60,7 +60,7 @@ def create_app(dash_factory):
 
     app.layout()
 
-    return app.dash.server
+    return app
 
 #
 # python -m examples.redirect
@@ -69,4 +69,4 @@ def create_app(dash_factory):
 
 if __name__ == '__main__':
     app = create_app(create_dash)
-    serve_app(app,"/test/page1")
+    serve_app(app.dash,"/test/page1")

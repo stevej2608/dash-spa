@@ -13,8 +13,9 @@ import pandas as pd
 
 test = Blueprint('test')
 
-
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
+
+# Col for checkboxes
 
 df.insert(0, '', '')
 
@@ -43,7 +44,6 @@ def toolbar():
 
 @test.route('/page1')
 def route1():
-    spa = test.get_spa('page1')
 
     table = html.Div([
         html.H2('US Solar Capacity'),
@@ -56,7 +56,7 @@ def route1():
                 'orderable': False,
                 'className': 'select-checkbox',
                 'targets':   0,
-                'width': "4%"                
+                'width': "4%"          
                 }],
 
             select = {
@@ -96,7 +96,7 @@ def create_app(dash_factory):
 
     app.layout()
 
-    return app.dash
+    return app
 
 #
 # python -m examples.table
@@ -104,4 +104,4 @@ def create_app(dash_factory):
 
 if __name__ == '__main__':
     app = create_app(create_dash)
-    serve_app(app,"/table/page1")
+    serve_app(app.dash,"/table/page1")

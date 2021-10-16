@@ -1,7 +1,9 @@
+import inspect
 import re
 import dash
 from dash.development.base_component import Component
 from dash.dependencies import DashDependency
+
 
 # Simple helper to get the Dash components identifier
 #
@@ -36,14 +38,51 @@ Will return the same Dash Dependency Output instance as:
     """
 
     def __init__(self, component, iofactory):
+
+        def get_prefix():
+
+            for frm in inspect.stack(3):
+
+                try:
+
+                    mod = inspect.getmodule(frm[0])
+
+                    # Use blueprint rule context has been defined
+
+                    if 'ctx' in frm.frame.f_locals:
+                        ctx = frm.frame.f_locals['ctx']
+                        prefix = ctx.url_prefix[1:].replace('/','-')
+                        return f"{prefix}-{ctx.rule}" if ctx.prefix_ids else None
+
+                except Exception:
+                    pass
+          
+            # Default to using module name as prefix
+
+            for frm in inspect.stack(3):
+                mod = inspect.getmodule(frm[0])
+                if mod.__name__  not in  ['dash_spa.spa_dependency','dash_spa.spa_components']:
+                    return mod.__name__.replace('.','-')
+
+            raise Exception('Unable to resolve context')
+
+
         assert hasattr(component, 'id'), "The dash component must have an 'id' attribute"
         self.component = component
+
+        prefix = get_prefix()
+
+        # We can be called for both input, output and state so we
+        # need to avoid adding the prefix more than once
+
+        if prefix and not component.id.startswith(prefix):
+            component.id = f"{prefix}-{component.id}"
+
+        # if 'container' not in component.id:
+        #     print(f'#{component.id}')
+
         self.iofactory = iofactory
 
-
-    def is_valid(self, attr):
-        if attr not in self.available_properties:
-            raise TypeError('`' + self._type + '` has no attribute `' + attr + '`')
 
     def __getattr__(self, name):
         if not name in self.component.available_properties:
@@ -53,6 +92,10 @@ Will return the same Dash Dependency Output instance as:
         self.__setattr__(name, dio)
         return dio
 
+# The following three methods have been injected in to dash's
+# Component class as properties 'input', 'output' and 'state'
+# In each case, when the property is accessed in a dash callback
+# the associated DashIOFactory instance will be invoked
 
 def input(self):
     if not hasattr(self, '_input'):
@@ -75,48 +118,32 @@ Component.input = property(input)
 Component.output = property(output)
 Component.state = property(state)
 
+def copy_factory(src, dest):
+    """Copy Dash I/O Factory
 
-def strip(label):
-    return re.sub(r"\s+", '_', label).strip().lower()
+    When a Dash component has been wrapped in additional layout to make
+    a composite it is necessary to copy the embedded component I/O definition
+    to the outermost component. This will then allow the composite component
+    to be referenced in Dash callbacks.
 
-class SpaDependency:
+    Arguments:
+        src {obj} -- The source Dash component
+        dest {obj} -- The destination Dash component
 
-    # @property
-    # def app(self):
-    #     return self._spa_components.app
+    Returns:
+        [Obj] -- The destination component
+    """
 
-    def __init__(self, prefix):
-        self._prefix = strip(prefix)
+    def _copy():
+        dest.input.component = src.input.component
+        dest.output.component = src.output.component
+        dest.state.component = src.state.component
 
-    def prefix(self, id):
-        return f'{self._prefix}-{id}' if id else None
+    if hasattr(dest, 'id'):
+        _copy()
+    else:
+        dest.id = src.id + '#container'
+        _copy()
+        #dest.id = None
 
-    def copy_factory(self, src, dest):
-        """Copy Dash I/O Factory
-
-        When a Dash component has been wrapped in additional layout to make
-        a composite it is necessary to copy the embedded component I/O definition
-        to the outermost component. This will then allow the composite component
-        to be referenced in Dash callbacks.
-
-        Arguments:
-            src {obj} -- The source Dash component
-            dest {obj} -- The destination Dash component
-
-        Returns:
-            [Obj] -- The destination component
-        """
-
-        def _copy():
-            dest.input.component = src.input.component
-            dest.output.component = src.output.component
-            dest.state.component = src.state.component
-
-        if hasattr(dest, 'id'):
-            _copy()
-        else:
-            dest.id = src.id + '#container'
-            _copy()
-            #dest.id = None
-
-        return dest
+    return dest
