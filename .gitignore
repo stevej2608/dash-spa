@@ -37,3 +37,4 @@ nosetests.xml
 !/config/default.json
 /tmp
 /db.sqlite
+/tests/admin/test_db.sqlite
