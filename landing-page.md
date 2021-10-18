@@ -38,16 +38,32 @@ reduces Dash component ID conflicts. A component ID is only defined once when th
 is created. It is then used by reference in associated Dash callbacks:
 
 ```
-    user_name = spa.Input(id='user', placeholder="Enter name")
-    password = spa.PasswordInput("Password", name='password', id='password', placeholder="Enter password")
+from dash import html
+import dash_bootstrap_components as dbc
+import dash_holoniq_components as dhc
 
-    btn = spa.Button('Enter', id='enter', disabled=True)
+user_name = dbc.Input(id='user', placeholder="Enter name")
+password = dhc.PasswordInput("Password", name='password', id='password', placeholder="Enter password")
 
-    @app.callback(btn.output.disabled, [user_name.input.value, password.input.value])
-    def _cb_enter(user_name, password):
-        return not db_validate_user(user_name, password)
+btn = html.Button('Enter', id='enter', disabled=True)
+
+@app.callback(btn.output.disabled, [user_name.input.value, password.input.value])
+def _cb_enter(user_name, password):
+    return not db_validate_user(user_name, password)
 
 ```
+
+Dash components created outside of a blueprint route are prefixed with the
+enclosing modules name (\_\_NAME\_\_)
+
+Routes can be protected by an arbitrary access validation function:
+```
+@admin.route('/users', title='Admin Users', access=validate_user)
+def user_view(ctx):
+  pass
+```
+In the example, *validate_user* throws an exception if the user is not signed 
+in. This results in a 404 page being displayed
 
 **Dash/SPA** includes an optional NAVBAR, configured by a simple dictionary:
 
@@ -72,21 +88,23 @@ NAV_BAR_ITEMS = {
 **Dash/SPA** Allows easy creation of interactive forms
 
 ```
-        email = spa.Input('Email', name='email', type='email', placeholder="Enter email")
-        password = spa.PasswordInput("Password", name='password', placeholder="Enter password")
-        button = button = spa.Button('Sign In', type='submit')
+frm = SpaForm(ctx,'loginFrm')
 
-        form = spa.Form([
-            email,
-            password,
-            button,
-        ], title='Sign In'),
+email = frm.Input('Email', name='email', type='email', placeholder="Enter email")
+password = frm.PasswordInput("Password", name='password', placeholder="Enter password")
+button = html.Button('Sign In', type='submit')
+
+form = frm.Form([
+    email,
+    password,
+    button,
+], title='Sign In'),
 
 
-        @spa.callback(form.output.children, [form.input.form_data])
-        def _form_submit(values):
-            print(values)
-            return spa.NOUPDATE
+@app.callback(form.output.children, [form.input.form_data])
+def _form_submit(values):
+    print(values)
+    return spa.NOUPDATE
 ```
 
 ## Admin Blueprint
