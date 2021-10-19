@@ -7,7 +7,7 @@ from dash_spa import SpaComponents, SpaForm
 from .view_common import blueprint as admin
 from .view_common import form_layout
 
-@admin.route('/verify', title='Admin verify')
+@admin.route('/verify', title='Admin verify', prefix_ids=False)
 def verify(ctx):
 
     frm = SpaForm(ctx)

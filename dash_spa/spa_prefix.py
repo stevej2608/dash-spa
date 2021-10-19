@@ -61,7 +61,7 @@ Will return the same Dash Dependency Output instance as:
                         ctx = frm.frame.f_locals['ctx']
                         prefix = ctx.url_prefix[1:].replace('/','-')
                         log.info('       Found prefix %s (ctx.prefix_ids=%s)', prefix, ctx.prefix_ids)
-                        return f"{prefix}-{ctx.rule}" if ctx.prefix_ids else None
+                        return [prefix,ctx.rule, component.id] if ctx.prefix_ids else [component.id]
 
                 except Exception:
                     pass
@@ -71,25 +71,24 @@ Will return the same Dash Dependency Output instance as:
             for frm in inspect.stack()[3:]:
                 mod = inspect.getmodule(frm[0])
                 if mod.__name__  not in  ['dash_spa.spa_prefix','dash_spa.spa_components']:
-                    return mod.__name__.replace('.','-')
+                    return [mod.__name__.replace('.','-'), component.id]
 
             raise Exception('Unable to resolve context')
 
+        # Add component id prefix if its not allready been done
 
-        assert hasattr(component, 'id'), "The dash component must have an 'id' attribute"
+        if not hasattr(component, '_spa_prefixed_id'):
+
+            assert hasattr(component, 'id'), "The dash component must have an 'id' attribute"
+
+            component._spa_prefixed_id = get_prefix()
+            component.id = '-'.join(component._spa_prefixed_id)
+
+            if 'container' not in component.id:
+                log.info("Resolved id to %s", component.id)
+
+
         self.component = component
-
-        prefix = get_prefix()
-
-        # We can be called for both input, output and state so we
-        # need to avoid adding the prefix more than once
-
-        if prefix and not component.id.startswith(prefix):
-            component.id = f"{prefix}-{component.id}"
-
-        if 'container' not in component.id:
-            log.info("Resolved id to %s", component.id)
-
         self.iofactory = iofactory
 
 

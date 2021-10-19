@@ -30,7 +30,7 @@ def set_state(state):
         session['reset_state'] = state.value
 
 
-@admin.route('/forgot')
+@admin.route('/forgot', prefix_ids=False)
 def forgot(ctx):
     """
     Display email form and wait input. If the user enters a valid email
@@ -72,7 +72,7 @@ def forgot(ctx):
     return html.Div([layout, redirect])
 
 
-@admin.route('/forgot1')
+@admin.route('/forgot1', prefix_ids=False)
 def forgot_code(ctx):
     """
     The user has been sent an email containing the forgot password verification
@@ -108,7 +108,7 @@ def forgot_code(ctx):
     return html.Div([layout, redirect])
 
 
-@admin.route('/forgot2')
+@admin.route('/forgot2', prefix_ids=False)
 def forgot_password(ctx):
     """
     The user has confirmed his email, allow user to change the account
