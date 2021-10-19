@@ -8,7 +8,7 @@ def create_spa(blueprint):
 
     app = spa.SinglePageApp(dash_factory)
     app.register_blueprint(blueprint, url_prefix='/test')
-    app.layout()    
+    app.layout()
     return app
 
 # Test 1: Component prefix is derived from __NAME__
@@ -21,7 +21,7 @@ def test_module_component_prefix():
     def _callback(clicks):
         return None
 
-    assert div.id == 'tests-spa-spa_dependency_test-hello'
+    assert div.id == 'tests-spa-spa_prefix_test-hello'
 
 # Test 2: Component prefix with ctx defined is {blueprint}.{route}
 
@@ -77,7 +77,7 @@ def test_bluprint_component_with_module_prefix():
 
     # Confirm the component prefix is {blueprint}.{route}
 
-    assert div.id == 'tests-spa-spa_dependency_test-hello'
+    assert div.id == 'tests-spa-spa_prefix_test-hello'
 
 # Test 4: With route attribute prefix_ids=False no prefix is applied
 
@@ -106,9 +106,3 @@ def test_bluprint_component_with_no_prefix():
     # Confirm the component prefix is {blueprint}.{route}
 
     assert div.id == 'hello'
-
-
-
-
-
-

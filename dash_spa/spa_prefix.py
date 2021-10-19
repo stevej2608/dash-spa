@@ -51,7 +51,7 @@ Will return the same Dash Dependency Output instance as:
 
                     if mod_name in ['dash_spa.spa', '__main__', '_pytest.python']: break
 
-                    if mod_name in ['dash_spa.spa_dependency']: continue
+                    if mod_name in ['dash_spa.spa_prefix']: continue
 
                     log.info('    Inspecting module %s', inspect.getmodule(frm[0]).__name__)
 
@@ -70,7 +70,7 @@ Will return the same Dash Dependency Output instance as:
 
             for frm in inspect.stack()[3:]:
                 mod = inspect.getmodule(frm[0])
-                if mod.__name__  not in  ['dash_spa.spa_dependency','dash_spa.spa_components']:
+                if mod.__name__  not in  ['dash_spa.spa_prefix','dash_spa.spa_components']:
                     return mod.__name__.replace('.','-')
 
             raise Exception('Unable to resolve context')
