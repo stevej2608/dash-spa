@@ -6,7 +6,7 @@ from dash.development.base_component import Component
 from holoniq.utils import log
 
 from .spa_components import SpaComponents
-from .spa_dependency import copy_factory
+from .spa_prefix import copy_factory
 
 def form_prefix(ctx, form_name):
     if form_name is None: form_name = ctx.rule

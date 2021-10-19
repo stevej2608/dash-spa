@@ -105,13 +105,13 @@ class SinglePageApp:
         # Define the dynamic top-level layout components and their
         # associated callback.
 
-        page_content = html.Div(id='page_content')
-        page_title = dhc.PageTitle(title=self.title, id='title')
+        page_content = html.Div(id='spa-page_content')
+        page_title = dhc.PageTitle(title=self.title, id='spa-title')
 
-        @self.dash.callback(page_content.output.children, page_title.output.title, SpaComponents.url.input.href)
+        @self.callback(page_title.output.title, page_content.output.children,SpaComponents.url.input.href)
         def _display_page(href):
             title = SpaComponents.NOUPDATE
-
+            page = SpaComponents.NOUPDATE
 
             url = urlsplit(href)
 
@@ -134,19 +134,36 @@ class SinglePageApp:
                 # If route has access guard in place call it
 
                 if not route_ctx.access or route_ctx.access(route_ctx):
-                    content = get_layout(route_ctx)
+                    page = get_layout(route_ctx)
 
             except Exception as ex:
                 msg = ex.message if hasattr(ex, 'message') else "???"
                 log.info('Error pathname %s : %s', pathname, msg)
-                content = self.show404(message=msg)
+                page_content = self.show404(message=msg)
 
-            return content, title
+            return title, page
 
-        # Render the navbar & footer
+        # Render the navbar
 
         navbar = self.navBar(self.navitems) if self.navitems else None
+        navbar_content = html.Div(navbar, id='spa-navbar_content')
+
+        # @self.callback(navbar_content.output.children, SpaComponents.url.input.href)
+        # def _display_navbar(href):
+        #     log.info('display_navbar=%s', href)
+        #     navbar = self.navBar(self.navitems) if self.navitems else None
+        #     return navbar
+
+        # Render the footer        
+
         footer = self.footer()
+        footer_content = html.Div(footer, id='spa-footer_content')            
+
+        # @self.callback(footer_content.output.children, SpaComponents.url.input.href)
+        # def _display_footer(href):
+        #     log.info('display_footer=%s', href)
+        #     footer = self.footer()
+        #     return footer
 
         # Block any further Dash callback registrations
 
@@ -158,7 +175,7 @@ class SinglePageApp:
             SpaComponents.url,
             SpaComponents.redirect,
             page_title,
-            navbar,
+            navbar_content,
             html.Br(),
             html.Div([
                 html.Div([
@@ -168,7 +185,7 @@ class SinglePageApp:
                 ], className='row')
             ], className="container-fluid"),
             html.Div(id='null'),
-            footer
+            footer_content
         ])
         return layout
 
@@ -260,6 +277,28 @@ class SinglePageApp:
             return children
 
         return navbar
+
+    def callback(self, output, inputs=[], state=[]):
+        """Convenience wrapper for Dash @callback function decorator
+
+        We override the base class callback() to map onto the actual
+        dash callback method.
+        """
+
+        # Dash callbacks can be defined in the SPA application
+        # layout methods. These methods are called on startup and
+        # during the normal running of the Dash application. Dash
+        # only allows callbacks to be registered on start up so
+        # we need to block any repeats that may occur during
+        # normal running.
+
+        def callback(self, *_args, **_kwargs):
+            pass
+
+        if not self.is_initialisation_completed:
+            return self.dash.callback(output, inputs, state)
+
+        return callback
 
     def register_blueprint(self, blueprint, url_prefix='/'):
         """Register blueprint with Dash/SPA application

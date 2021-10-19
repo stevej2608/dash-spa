@@ -3,6 +3,7 @@ from flask import current_app as app
 from dash import dcc
 from dash import html
 
+from holoniq.utils import log
 import dash_holoniq_components as dhc
 
 from dash_spa import SpaComponents, SpaForm
@@ -134,8 +135,9 @@ def logout():
 
     redirect = dhc.Location(id='redirect', refresh=True)
 
-    @admin.callback(redirect.output.href, [SpaComponents.url.input.pathname])
+    @admin.callback(redirect.output.href, redirect.input.pathname)
     def _logout_cb(pathname):
+        log.info('_logout_cb pathname=%s',pathname)
         if pathname == admin.url_for('logout'):
             app.login_manager.logout_user()
             return admin.url_for('user.profile')

@@ -1,5 +1,6 @@
 from dash import html
 import dash_bootstrap_components as dbc
+from flask_login import current_user
 
 class AdminNavbarComponent:
 
@@ -31,7 +32,7 @@ class AdminNavbarComponent:
         )
 
     def layout(self, spa):
-        if spa.user_logged_in():
+        if current_user and not current_user.is_anonymous:
             return self.account_dropdown(spa)
         else:
             return self.signin_link()
