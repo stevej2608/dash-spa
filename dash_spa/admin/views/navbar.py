@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from dash import html
 import dash_bootstrap_components as dbc
 from flask_login import current_user
@@ -7,15 +8,29 @@ class AdminNavbarComponent:
     def __init__(self):
         pass
 
+    @abstractmethod
+    def menu_items(self, spa):
+        """User defined components for NavBar My Account dropdown"""
+        return [
+            dbc.DropdownMenuItem("Messages", href="#"),
+            dbc.DropdownMenuItem("Settings", href="#"),
+        ]
+
     def account_dropdown(self, spa):
 
+        children = self.menu_items(spa)
+
+        if spa.login_manager.isAdmin():
+            users_link = dbc.DropdownMenuItem("Users", href=spa.url_for('admin.users'))
+            children.append(users_link)
+
+        children.append(html.Div(className='dropdown-divider'))
+        children.append(
+            dbc.DropdownMenuItem([html.I(className='fa fa-sign-in'), ' Sign out'], href=spa.url_for('admin.logout'))
+        )
+
         menu = dbc.DropdownMenu(
-            children=[
-                dbc.DropdownMenuItem("Users", href=spa.url_for('admin.users')),
-                dbc.DropdownMenuItem("Messages", href="#"),
-                dbc.DropdownMenuItem("Settings", href="#"),
-                dbc.DropdownMenuItem([html.I(className='fa fa-sign-in'), ' Sign out'], href=spa.url_for('admin.logout'))
-             ],
+            children=children,
             nav=True,
             in_navbar=True,
             label="My Account",
