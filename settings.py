@@ -6,7 +6,7 @@ class DefaultConfig(object):
         "URL_PREFIX": "api"
     }
 
-    logging = {"level": "INFO"}
+    logging = {"level": "WARN"}
 
     user_db = {
         "database_uri": "sqlite:///db.sqlite"
