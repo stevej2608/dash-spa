@@ -1,8 +1,8 @@
 import inspect
-import re
 import dash
 from dash.development.base_component import Component
 from dash.dependencies import DashDependency
+from holoniq.utils import log
 
 
 # Simple helper to get the Dash components identifier
@@ -41,25 +41,34 @@ Will return the same Dash Dependency Output instance as:
 
         def get_prefix():
 
-            for frm in inspect.stack(3):
+            log.info('get_prefix(%s)', component.id)
+
+            for frm in inspect.stack()[3:]:
 
                 try:
 
-                    mod = inspect.getmodule(frm[0])
+                    mod_name = inspect.getmodule(frm[0]).__name__
+
+                    if mod_name in ['dash_spa.spa', '__main__', '_pytest.python']: break
+
+                    if mod_name in ['dash_spa.spa_dependency']: continue
+
+                    log.info('    Inspecting module %s', inspect.getmodule(frm[0]).__name__)
 
                     # Use blueprint rule context has been defined
 
                     if 'ctx' in frm.frame.f_locals:
                         ctx = frm.frame.f_locals['ctx']
                         prefix = ctx.url_prefix[1:].replace('/','-')
+                        log.info('       Found prefix %s (ctx.prefix_ids=%s)', prefix, ctx.prefix_ids)
                         return f"{prefix}-{ctx.rule}" if ctx.prefix_ids else None
 
                 except Exception:
                     pass
-          
+
             # Default to using module name as prefix
 
-            for frm in inspect.stack(3):
+            for frm in inspect.stack()[3:]:
                 mod = inspect.getmodule(frm[0])
                 if mod.__name__  not in  ['dash_spa.spa_dependency','dash_spa.spa_components']:
                     return mod.__name__.replace('.','-')
@@ -78,8 +87,8 @@ Will return the same Dash Dependency Output instance as:
         if prefix and not component.id.startswith(prefix):
             component.id = f"{prefix}-{component.id}"
 
-        # if 'container' not in component.id:
-        #     print(f'#{component.id}')
+        if 'container' not in component.id:
+            log.info("Resolved id to %s", component.id)
 
         self.iofactory = iofactory
 
@@ -98,19 +107,19 @@ Will return the same Dash Dependency Output instance as:
 # the associated DashIOFactory instance will be invoked
 
 def input(self):
-    if not hasattr(self, '_input'):
-        self._input = DashIOFactory(self, dash.dependencies.Input)
-    return self._input
+    if not hasattr(self, '_spa_input'):
+        self._spa_input = DashIOFactory(self, dash.dependencies.Input)
+    return self._spa_input
 
 def output(self):
-    if not hasattr(self, '_output'):
-        self._output = DashIOFactory(self, dash.dependencies.Output)
-    return self._output
+    if not hasattr(self, '_spa_output'):
+        self._spa_output = DashIOFactory(self, dash.dependencies.Output)
+    return self._spa_output
 
 def state(self):
-    if not hasattr(self, '_state'):
-        self._state = DashIOFactory(self, dash.dependencies.State)
-    return self._state
+    if not hasattr(self, '_spa_state'):
+        self._spa_state = DashIOFactory(self, dash.dependencies.State)
+    return self._spa_state
 
 # Inject DashIOFactory instances into the Dash component
 
