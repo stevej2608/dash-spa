@@ -59,23 +59,27 @@ def ticker(ctx):
     # selected tickers
 
     location = dhc.Location(id='redirect', refresh=False)
+    title = dhc.PageTitle(title=ctx.title, id='ticker_title')
 
-    @demo.callback(location.output.href, [stock_ticker_dropdown.input.value])
+    @demo.callback([location.output.href, title.output.title], [stock_ticker_dropdown.input.value])
     def _update_url(tickers):
         log.info('_update_url, stock_ticker_dropdown.input: %s', tickers)
         href = SpaComponents.NOUPDATE
+        title = SpaComponents.NOUPDATE
         if tickers is not None:
             href = demo.url_for('ticker')
             urlargs = '+'.join(tickers)
             search = f'?{querystring_name}={urlargs}'
             href += search
-        return href
+            title = ctx.title = 'Ticker: ' + ','.join(tickers)
+        return href, title
 
 
     # Layout the page
 
     return html.Div([
         location,
+        title,
         html.H2('Finance Explorer'),
         html.Br(),
         stock_ticker_dropdown,

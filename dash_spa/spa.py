@@ -126,7 +126,6 @@ class SinglePageApp:
 
                 if pathname in blueprint_routes:
                     route_ctx = blueprint_routes[pathname]
-                    title = route_ctx.title
                     route_ctx.url = url
                 else:
                     raise Route404(f'Unknown route {pathname}')
@@ -135,6 +134,7 @@ class SinglePageApp:
 
                 if not route_ctx.access or route_ctx.access(route_ctx):
                     page = get_layout(route_ctx)
+                    title = route_ctx.title
 
             except Exception as ex:
                 msg = ex.message if hasattr(ex, 'message') else "???"
@@ -154,10 +154,10 @@ class SinglePageApp:
         #     navbar = self.navBar(self.navitems) if self.navitems else None
         #     return navbar
 
-        # Render the footer        
+        # Render the footer
 
         footer = self.footer()
-        footer_content = html.Div(footer, id='spa-footer_content')            
+        footer_content = html.Div(footer, id='spa-footer_content')
 
         # @self.callback(footer_content.output.children, SpaComponents.url.input.href)
         # def _display_footer(href):
