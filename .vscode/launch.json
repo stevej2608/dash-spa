@@ -12,7 +12,7 @@
       "program": "${workspaceFolder}/usage.py",
       "cwd": "${workspaceFolder}",
       "console": "internalConsole",
-      //"env": {"FLASK_ENV" : "test"},
+      "env": {"FLASK_ENV" : "test"},
       "justMyCode": false,
       "serverReadyAction": {
         "pattern": ".*Visit http://(.*)",

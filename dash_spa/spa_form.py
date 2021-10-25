@@ -82,42 +82,15 @@ class SpaForm:
         copy_factory(btn, _layout)
         return _layout
 
-
     def Checkbox(self, label=Component.UNDEFINED, id=None, checked=False, **kwargs):
         """Checkbox"""
         id = self.prefix(id)
-        checkbox = html.Div([
-            dcc.Input(className="form-check-input", id=id, type='checkbox', value=""),
+        input = dcc.Input(className="form-check-input", id=id, type='checkbox', value="", **kwargs)
+        _layout = html.Div([
+            input,
             html.Label(label, htmlFor=id, className="form-check-label")
         ], className='form-check' )
-        return checkbox
-
-    def CheckboxX(self, children=None, id=None, checked=False, **kwargs):
-        """Checkbox"""
-        id = self.prefix(id)
-
-        checkbox = dbc.Checkbox(id=id, className="form-check-input", value=checked, **kwargs)
-
-        # @self.callback(checkbox.output.key, [checkbox.input.value])
-        # def _location_cb(checked):
-        #     self.value = checked
-        #     return SpaForm.NOUPDATE
-
-        _layout = html.Div([
-            checkbox,
-            dbc.Label(children, html_for=id, className="form-check-label")
-        ], className="form-check")
-
-
-
-#   <div class="form-check">
-#     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-#     <label class="form-check-label" for="flexCheckDefault">
-#         Default checkbox
-#     </label>
-# </div>
-
-        copy_factory(checkbox, _layout)
+        copy_factory(input, _layout)
         return _layout
 
     def Input(self, label=None, id=None, type='text', prompt=None, name=None, feedback=None, autoComplete=None, querystring=False, **kwargs):
