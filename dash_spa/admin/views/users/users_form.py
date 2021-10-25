@@ -31,7 +31,7 @@ def user_form(ctx, table, login_manager):
                 form_field("Email", "email", row_data['email']),
                 form_field("Role", "role", row_data['role']),
 
-                dbc.ButtonGroup(buttons, className='float-right mt-2')
+                dbc.ButtonGroup(buttons, className='float-end mt-2')
             ]
 
             if action != 'delete_row':

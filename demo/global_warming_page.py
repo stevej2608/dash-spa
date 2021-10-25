@@ -8,9 +8,9 @@ from .demo import blueprint as spa
 
 global_md = """\
 ### Global Warming
-Global Temperature Time Series. Data are included from the GISS 
-Surface Temperature (GISTEMP) analysis and the global component 
-of Climate at a Glance (GCAG). Two datasets are provided: 
+Global Temperature Time Series. Data are included from the GISS
+Surface Temperature (GISTEMP) analysis and the global component
+of Climate at a Glance (GCAG). Two datasets are provided:
 
 * Global monthly mean
 * Annual mean temperature anomalies in degrees Celsius from 1880 to the present
@@ -51,7 +51,7 @@ def warming():
         ]),
         dbc.Row([
             dbc.Col([
-                dcc.Link("State Solar", href=spa.url_for('solar'), className="btn btn-primary float-right")
+                dcc.Link("State Solar", href=spa.url_for('solar'), className="btn btn-primary float-end")
             ], md=12)
 
         ])

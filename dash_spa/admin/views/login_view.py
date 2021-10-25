@@ -28,7 +28,7 @@ def build_login_form(ctx):
     email = frm.Input('Email', id='email', name='email', type='email', placeholder="Enter email")
 
     password = frm.PasswordInput("Password", name='password', id="password", placeholder="Enter password")
-    password.children.insert(1, dcc.Link('Forgot Password?', href=admin.url_for('forgot'), className="float-right"))
+    password.children.insert(1, dcc.Link('Forgot Password?', href=admin.url_for('forgot'), className="float-end"))
 
     remember = frm.Checkbox("Remember me", id='remember', name='remember', checked=True)
     button = frm.Button('Sign In', type='submit', id='btn')

@@ -7,7 +7,7 @@ from server import serve_app
 from user import spa as user
 
 NAV_BAR_ITEMS = {
-    'brand' : spa.NavbarBrand('Dash/SPA','/'),
+    'brand' : spa.NavbarBrand(' Dash/SPA','/'),
     'left' : [
         spa.NavbarLink('Global Warming','/demo/warming'),
         spa.NavbarLink('State Solar', '/demo/solar'),

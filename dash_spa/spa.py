@@ -253,11 +253,11 @@ class SinglePageApp:
 
                 # Left hand side
 
-                dbc.NavItem(items_left, className='navbar-nav mr-auto'),
+                dbc.NavItem(items_left, className='navbar-nav me-auto'),
 
                 # Right hand side
 
-                dbc.NavItem(items_right, className='navbar-nav ml-auto')
+                dbc.NavItem(items_right, className='navbar-nav ms-auto')
 
             ]
 

@@ -1,7 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
-from dash import html
+from dash import dcc, html
 from dash.development.base_component import Component
 from holoniq.utils import log
 
@@ -74,28 +74,49 @@ class SpaForm:
         id = self.prefix(id)
         return dhc.Location(id, refresh=refresh, **kwargs)
 
-    def Button(self, label=None, id=Component.UNDEFINED, type='button', className="btn btn-primary btn-block", **kwargs):
+    def Button(self, label=None, id=Component.UNDEFINED, type='button', className="btn btn-primary", **kwargs):
         """Button"""
         id = self.prefix(id)
-        return html.Button(label, id=id, type=type, className=className, **kwargs)
+        btn = html.Button(label, id=id, type=type, className=className, **kwargs)
+        _layout = html.Div(btn, className="d-grid gap-2")
+        copy_factory(btn, _layout)
+        return _layout
 
-    def Checkbox(self, children=None, id=None, checked=False, **kwargs):
+
+    def Checkbox(self, label=Component.UNDEFINED, id=None, checked=False, **kwargs):
+        """Checkbox"""
+        id = self.prefix(id)
+        checkbox = html.Div([
+            dcc.Input(className="form-check-input", id=id, type='checkbox', value=""),
+            html.Label(label, htmlFor=id, className="form-check-label")
+        ], className='form-check' )
+        return checkbox
+
+    def CheckboxX(self, children=None, id=None, checked=False, **kwargs):
         """Checkbox"""
         id = self.prefix(id)
 
-        checkbox = dbc.Checkbox(id=id, className="form-check-input", checked=checked, **kwargs)
+        checkbox = dbc.Checkbox(id=id, className="form-check-input", value=checked, **kwargs)
 
-        @self.callback(checkbox.output.key, [checkbox.input.checked])
-        def _location_cb(checked):
-            self.value = checked
-            return SpaForm.NOUPDATE
+        # @self.callback(checkbox.output.key, [checkbox.input.value])
+        # def _location_cb(checked):
+        #     self.value = checked
+        #     return SpaForm.NOUPDATE
 
-        fields = [
+        _layout = html.Div([
             checkbox,
             dbc.Label(children, html_for=id, className="form-check-label")
-        ]
+        ], className="form-check")
 
-        _layout = dbc.FormGroup(fields, check=True)
+
+
+#   <div class="form-check">
+#     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+#     <label class="form-check-label" for="flexCheckDefault">
+#         Default checkbox
+#     </label>
+# </div>
+
         copy_factory(checkbox, _layout)
         return _layout
 
@@ -106,7 +127,7 @@ class SpaForm:
 
         def add_feedback():
             if feedback:
-                return [dbc.FormFeedback(feedback, valid=False)]
+                return [dbc.FormFeedback(feedback)]
             else:
                 return []
 
@@ -142,7 +163,7 @@ class SpaForm:
 
         fields += add_feedback()
 
-        _layout = dbc.FormGroup(fields)
+        _layout = html.Div(fields, className='mb-3')
 
         if id is not None:
             copy_factory(input, _layout)
@@ -156,7 +177,7 @@ class SpaForm:
 
         def add_feedback():
             if feedback:
-                return [dbc.FormFeedback(feedback, valid=False)]
+                return [dbc.FormFeedback(feedback)]
             else:
                 return []
 
@@ -173,7 +194,7 @@ class SpaForm:
 
         fields += add_feedback()
 
-        _layout = dbc.FormGroup(fields)
+        _layout = html.Div(fields, className='mb-3')
 
         if id is not None:
             copy_factory(input, _layout)
@@ -187,7 +208,7 @@ class SpaForm:
 
         def add_feedback():
             if feedback:
-                return [dbc.FormFeedback(feedback, valid=False)]
+                return [dbc.FormFeedback(feedback)]
             else:
                 return []
 
@@ -205,7 +226,7 @@ class SpaForm:
 
         fields += add_feedback()
 
-        _layout = dbc.FormGroup(fields)
+        _layout = html.Div(fields, className='mb-3')
 
         if id is not None:
             copy_factory(input, _layout)
