@@ -29,4 +29,4 @@ def serve_app(app, path="", debug=False):
 
     print(f' * Visit http://{hostname}:{hostport}{path}')
 
-    app.run_server(debug=debug, host='0.0.0.0', port=port, threaded=False, dev_tools_serve_dev_bundles=True)
+    app.run_server(debug=debug, host='0.0.0.0', port=port, threaded=False)
