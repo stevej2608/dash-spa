@@ -19,7 +19,9 @@ def user_form(ctx, table, login_manager):
 
             def form_field(label, name, value):
                 disabled = action == 'delete_row'
-                return dbc.FormGroup([dbc.Label(label), dbc.Input(name=name, value=value, disabled=disabled)])
+                return html.Div([
+                    dbc.Label(label), dbc.Input(name=name, value=value, disabled=disabled)
+                    ], className='mb-3')
 
             form.children = [
 
@@ -31,7 +33,7 @@ def user_form(ctx, table, login_manager):
                 form_field("Email", "email", row_data['email']),
                 form_field("Role", "role", row_data['role']),
 
-                dbc.ButtonGroup(buttons, className='float-end mt-2')
+                html.Div(buttons, className='d-grid gap-2 d-md-flex justify-content-md-end')
             ]
 
             if action != 'delete_row':
