@@ -1,6 +1,6 @@
+from dash import html
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
-import dash_html_components as html
 
 from dash_spa.spa_components import SpaComponents
 

@@ -1,11 +1,10 @@
-import dash_html_components as html
 from dash import html, dcc
 from dash_spa import Blueprint
 
 spa = Blueprint('welcome')
 
 header_text = """
-Dash/SPA is a minimal framework and component suite that allows you to build complex 
+Dash/SPA is a minimal framework and component suite that allows you to build complex
 Dash based single-page applications with ease. The demo application includes
 several well known Dash examples that have been pasted into the SPA framework
 to show how easy it is to transition to SPA.
@@ -54,7 +53,7 @@ def blueprints():
 **Dash/SPA** supports Flask style Blueprints and route decorators:
 
 ```
-    import dash_html_components as html
+    from dash import html
     from dash_spa import Blueprint
 
     greetings = Blueprint('greetings')

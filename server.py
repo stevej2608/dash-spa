@@ -17,7 +17,7 @@ def serve_app(app, path="", debug=False):
 
     # Set SPA logging level (if needed)
 
-    log.setLevel(logging.INFO)
+    # log.setLevel(logging.INFO)
 
     # When running in a Docker container the internal port
     # is mapped onto a host port. Use the env variables passed

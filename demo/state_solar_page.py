@@ -1,5 +1,4 @@
 from dash import html, dcc
-import dash_html_components as html
 import dash_bootstrap_components as dbc
 
 import pandas as pd

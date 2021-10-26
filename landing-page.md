@@ -1,6 +1,6 @@
 # dash-spa
 
-**Dash/SPA** is a minimal template and component suite that allows you to build complex 
+**Dash/SPA** is a minimal template and component suite that allows you to build complex
 **[Dash](https://dash.plot.ly/introduction)** based multi-page applications with ease. The demo application includes
 several well known Dash demos that have been pasted into the SPA framework
 to show how easy it is to transition to SPA.
@@ -15,7 +15,7 @@ to show how easy it is to transition to SPA.
     pip install dash-spa
 
 ```
-import dash_html_components as html
+from dash import html
 from dash_spa import Blueprint
 
 greetings = Blueprint('greetings')
@@ -33,7 +33,7 @@ def goodby():
 app.register_blueprint(greetings, url_prefix='/test/greetings')
 ```
 
-**Dash/SPA** manages component IDs using blueprint/route based namespaces. This greatly 
+**Dash/SPA** manages component IDs using blueprint/route based namespaces. This greatly
 reduces Dash component ID conflicts. A component ID is only defined once when the component
 is created. It is then used by reference in associated Dash callbacks:
 
@@ -62,7 +62,7 @@ Routes can be protected by an arbitrary access validation function:
 def user_view(ctx):
   pass
 ```
-In the example, *validate_user* throws an exception if the user is not signed 
+In the example, *validate_user* throws an exception if the user is not signed
 in. This results in a 404 page being displayed
 
 **Dash/SPA** includes an optional NAVBAR, configured by a simple dictionary:
@@ -109,7 +109,7 @@ def _form_submit(values):
 
 ## Admin Blueprint
 
-**Dash/SPA** Includes an optional **`admin`** blueprint that supports user registration, email 
+**Dash/SPA** Includes an optional **`admin`** blueprint that supports user registration, email
 authentication and login. This is provided as a demonstrator, careful consideration
 to the security implications should be undertaken before using it in a public website.
 
@@ -119,7 +119,7 @@ Views are provided that allow:
 * Enter the email verification code.
 
 * Normal user login.
- 
+
 * Reset forgotten password, Password reset code sent by email.
 * Enter password reset code.
 * Enter new password, confirm new password.
