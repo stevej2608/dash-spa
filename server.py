@@ -23,9 +23,9 @@ def serve_app(app, path="", debug=False):
     # is mapped onto a host port. Use the env variables passed
     # in to the container to determin the host URL.
 
-    port = int(os.environ.get("PORT", 8050))
-    hostname = os.environ.get("HOST_HOSTNAME", "localhost")
-    hostport = os.environ.get("HOST_HOSTPORT", "8050")
+    port = int(os.environ.get("PORT", 5000))
+    hostname = os.environ.get("HOSTNAME", "localhost")
+    hostport = os.environ.get("HOSTPORT", "5000")
 
     print(f' * Visit http://{hostname}:{hostport}{path}')
 
