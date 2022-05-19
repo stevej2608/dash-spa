@@ -1,10 +1,11 @@
 import pytest
 
-from app import create_dash
-from examples.multipage import create_spa
+from examples.multipage.app import create_dash, create_app
+
+# https://pypi.org/project/pytest-pyppeteer/
+
 
 @pytest.fixture(scope='package')
 def spa():
-    """An SPA Application for the admin tests."""
-    spa = create_spa(create_dash)
+    spa = create_app(create_dash)
     return spa

@@ -33,8 +33,6 @@ nosetests.xml
 /.vscode/.ropeproject
 /.pytest_cache
 
-/config/*
-!/config/default.json
 /tmp
 /db.sqlite
 /tests/admin/test_db.sqlite

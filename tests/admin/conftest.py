@@ -1,10 +1,9 @@
 import pytest
 
-from app import create_dash
-from usage import create_spa
+from usage import create_dash, create_app
 
-@pytest.fixture(scope='package')
+@pytest.fixture(scope='function')
 def spa():
     """An SPA Application for the admin tests."""
-    spa = create_spa(create_dash)
+    spa = create_app(create_dash)
     return spa

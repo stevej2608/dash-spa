@@ -1,30 +1,26 @@
+from urllib import parse
+from argparse import ArgumentError
 import dash
+from dash import dcc, html, callback
+from dash.development.base_component import Component
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
-from dash import dcc, html
-from dash.development.base_component import Component
-from holoniq.utils import log
 
-from .spa_components import SpaComponents
-from .spa_prefix import copy_factory
+from dash_spa.logging import log
 
-def form_prefix(ctx, form_name):
-    if form_name is None: form_name = ctx.rule
-    prefix = ctx.blueprint.name.replace('.',"-")
-    return f'{prefix}-{form_name.lower()}' if form_name else prefix
-
+from .spa_prefix import prefix, copy_factory, isTriggered
 
 class SpaForm:
 
     NOUPDATE = dash.no_update
 
-    def __init__(self, ctx, form_name = None):
+    def __init__(self, form_name = None):
         """
         Factory used to quickly create forms
 
         Usage:
 
-            frm = SpaForm(ctx, 'loginFrm')
+            frm = SpaForm('loginFrm')
 
 
             flash = frm.Alert(id='flash')
@@ -44,25 +40,48 @@ class SpaForm:
             ], id='verify')
 
         """
-        self.ctx = ctx
-        self.form_name = form_prefix(ctx, form_name)
-
-    def callback(self, output, inputs=[], state=[]):
-        """Convenience wrapper for Dash @callback function decorator"""
-        return self.ctx.blueprint.callback(output, inputs, state)
-
-    def querystring_args(self, href):
-        return self.ctx.querystring_args(href)
-
-    def prefix(self, id):
-        if id:
-            id = f'{self.form_name}-{id.lower()}'
-        return id
+        self.prefix = prefix(form_name)
 
     def Form(self, children, id=Component.UNDEFINED, preventDefault=True, **kwargs):
         id = self.prefix(id)
         form = dhc.Form(children, id=id, preventDefault=preventDefault, **kwargs)
         return form
+
+    def Store(self, form, id='store', fields=None, storage_type='session'):
+        """Create  presistent store for the fields in the given form
+
+        Args:
+            form (dhc.Form): The form to persist
+            id (str, optional): ID of the store. Defaults to 'store'.
+            fields (List, optional): Fields to persist. If None, all fields will be persisted
+            storage_type (str, optional): Type of storage: local' or 'session' or 'memory. Defaults to 'session'.
+
+        Returns:
+            _type_: _description_
+        """
+
+        # TODO: Can this be achieved with input persistence?
+
+
+        id = self.prefix(id)
+        store = dcc.Store(id=id, storage_type=storage_type)
+
+        @callback(store.output.data, form.input.form_data)
+        def _form_store_cb(values):
+            log.info('_form_store_cb values=%s', values)
+            if isTriggered(form.input.form_data):
+                if fields:
+                    data = {}
+                    for f in fields:
+                        data[f] = values.pop(f, None)
+                    return data
+                else:
+                    return values
+
+            else:
+                return SpaForm.NOUPDATE
+
+        return store
 
     def Alert(self, message=None, id=Component.UNDEFINED, className="alert alert-danger", **kwargs):
         """Flash"""
@@ -72,9 +91,9 @@ class SpaForm:
     def Location(self, id=Component.UNDEFINED, refresh=False, **kwargs):
         """Location"""
         id = self.prefix(id)
-        return dhc.Location(id, refresh=refresh, **kwargs)
+        return dhc.Location(id=id, refresh=refresh, **kwargs)
 
-    def Button(self, label=None, id=Component.UNDEFINED, type='button', className="btn btn-primary", **kwargs):
+    def Button(self, label=None, id=Component.UNDEFINED, type='button', className="btn btn-secondary", **kwargs):
         """Button"""
         id = self.prefix(id)
         btn = html.Button(label, id=id, type=type, className=className, **kwargs)
@@ -82,18 +101,51 @@ class SpaForm:
         copy_factory(btn, _layout)
         return _layout
 
-    def Checkbox(self, label=Component.UNDEFINED, id=None, checked=False, **kwargs):
+    def CheckboxX(self, label=Component.UNDEFINED, id=None, name=None, checked=False, **kwargs):
         """Checkbox"""
         id = self.prefix(id)
-        input = dcc.Input(className="form-check-input", id=id, type='checkbox', value="", **kwargs)
+        input = dbc.Checkbox(label=label, value=checked, id=id, name=name, **kwargs)
+        return input
+
+
+    def Checkbox(self, label=Component.UNDEFINED, id=None, name=None, checked=False, **kwargs):
+        """Checkbox"""
+        id = self.prefix(id)
+
+        if isinstance(label, str):
+            input = dbc.Checkbox(label=label, value=checked, id=id, name=name, **kwargs)
+            return input
+
+        # The standard dbc.Checkbox does not allow html child components in the label
+        # attribute. The following composite uses the same markup as dbc.Checkbox and does
+        # allow html children. Unfortunately setting the checkbox initial state
+        # to True does not work.
+        #
+        # See: Standalone checkboxes, toggle switches and radio buttons
+        # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/
+
+        if checked:
+            raise ArgumentError('Checkbox: None string lables combined with checked=True is not supported')
+
+        # input = dbc.Input(id=id, name=name, className='form-check-input', type='checkbox')
+        # _layout = html.Div([
+        #         input,
+        #         html.Label(label, className='form-check-label', htmlFor=id)
+        #     ], className='form-check')
+
+        style = {'padding': '0 0'}
+        input = dbc.Input(id=id, name=name, className='form-check-input', type='checkbox', style=style)
         _layout = html.Div([
-            input,
-            html.Label(label, htmlFor=id, className="form-check-label")
-        ], className='form-check' )
+                input,
+                html.Label(label, className='form-label', htmlFor=id)
+            ], className='form-check')
+
+        _layout.name=name
+
         copy_factory(input, _layout)
         return _layout
 
-    def Input(self, label=None, id=None, type='text', prompt=None, name=None, feedback=None, autoComplete=None, querystring=False, **kwargs):
+    def Input(self, label=None, id=None, type='text', prompt=None, name=None, feedback=None, autoComplete=None, value=None, **kwargs):
         """Input"""
 
         id = self.prefix(id)
@@ -106,23 +158,21 @@ class SpaForm:
 
         ac = 'on' if autoComplete else None
 
-        _value = None
+        input = dbc.Input(id=id, name=name, type=type, autoComplete=ac, value=value, **kwargs)
 
-        input = dbc.Input(id=id, name=name, type=type, autoComplete=ac, value=_value, **kwargs)
+        # if querystring:
 
-        if querystring:
+        #     @self.callback(input.output.value, [SpaComponents.url.input.href])
+        #     def _location_cb(href):
+        #         nonlocal _value
+        #         log.info('input %s: href=%s (%s)', input.id, href, self.get_pathname())
+        #         qs = self.querystring_args(href)
+        #         if qs and name in qs:
+        #             _value = qs[name][0]
 
-            @self.callback(input.output.value, [SpaComponents.url.input.href])
-            def _location_cb(href):
-                nonlocal _value
-                log.info('input %s: href=%s (%s)', input.id, href, self.get_pathname())
-                qs = self.querystring_args(href)
-                if qs and name in qs:
-                    _value = qs[name][0]
+        #         log.info('input %s: value %s', input.id, self.value)
 
-                log.info('input %s: value %s', input.id, self.value)
-
-                return _value
+        #         return _value
 
         fields = [
             input,
@@ -137,6 +187,8 @@ class SpaForm:
         fields += add_feedback()
 
         _layout = html.Div(fields, className='mb-3')
+
+        _layout.name = input.name
 
         if id is not None:
             copy_factory(input, _layout)
@@ -174,34 +226,25 @@ class SpaForm:
 
         return _layout
 
-    def InputWithIcon(self, label=None, id=None, prompt=None, feedback=None, autoComplete=None, **kwargs):
-        """InputWithIcon"""
 
-        id = self.prefix(id)
+    def querystring_args(self, href):
+        """URL parser
+        Arguments:
+            href {str} -- The URL to be parsed
 
-        def add_feedback():
-            if feedback:
-                return [dbc.FormFeedback(feedback)]
-            else:
-                return []
+        Returns:
+            [dict] -- K,V pairs of the query string
+        """
 
-        ac = 'on' if autoComplete else None
+        def parse_qs(href):
+            query = parse.urlsplit(href).query
+            qs = parse.parse_qs(query)
+            return qs
 
-        dhc.InputWithIcon(id=id, **kwargs)
+        qs = parse_qs(href) if href else None
 
-        fields = [input]
+        for key, value in qs.items():
+            if isinstance(value, list) and len(value) == 1:
+                qs[key] = value[0]
 
-        if label:
-            fields.insert(0, dbc.Label(label))
-
-        if prompt:
-            fields.append(dbc.FormText(prompt))
-
-        fields += add_feedback()
-
-        _layout = html.Div(fields, className='mb-3')
-
-        if id is not None:
-            copy_factory(input, _layout)
-
-        return _layout
+        return qs

@@ -5,14 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "1. usage.py",
+      "name": "1a. usage.py",
       "type": "python",
       "request": "launch",
-      "python": "${command:python.interpreterPath}",
-      "program": "${workspaceFolder}/usage.py",
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceRoot}",
+      "program": "usage.py",
       "console": "internalConsole",
-      "env": {"FLASK_ENV" : "test"},
+      //"env": {"DASH_SPA_ENV" : "test"},
+      "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
         "pattern": ".*Visit http://(.*)",
@@ -21,15 +21,50 @@
       }
     },
     {
-      "name": "2. examples/table.py",
+      "name": "1b. examples.todo.app",
       "type": "python",
       "request": "launch",
-      "stopOnEntry": false,
-      "python": "${command:python.interpreterPath}",
-      "module": "examples.table",
-      "cwd": "${workspaceFolder}",
+      // "module": "examples.todo.redux_test",
+      "module": "examples.todo.app",
       "console": "internalConsole",
-      "justMyCode": false
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
+    {
+      "name": "1c. examples.todo.redux_test",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.todo.redux_test",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
+
+    {
+      "name": "3. Python: Current Module",
+      "type": "python",
+      "request": "launch",
+      "module": "${command:extension.commandvariable.file.relativeDirDots}.${fileBasenameNoExtension}",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
     },
     {
       "name": "3. PyTest (all)",
@@ -61,7 +96,7 @@
       "envFile": "${workspaceRoot}/.env",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
-      //"justMyCode": false
+      "justMyCode": false
     },
   ]
 }

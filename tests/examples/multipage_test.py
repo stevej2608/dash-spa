@@ -2,7 +2,7 @@
 
 def test_page_nav(duo, spa):
 
-    duo.server_url = duo.server_url + "/demo/page1"
+    duo.server_url = duo.server_url + "/page1"
 
     # Confirm we're on page 1
 

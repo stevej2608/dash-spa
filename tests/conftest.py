@@ -33,9 +33,7 @@ def client(app):
 @pytest.fixture(scope='function')
 def duo(dash_duo, spa):
     """A client for the dash_duo/Flask tests."""
-    dash_duo.start_server(spa.dash)
-
-    dash_duo.driver.set_window_size(1500, 1100)
+    dash_duo.driver.set_window_size(1500, 1200)
     dash_duo.driver.maximize_window()
-
+    dash_duo.start_server(spa)
     return dash_duo

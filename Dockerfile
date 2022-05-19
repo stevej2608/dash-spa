@@ -6,4 +6,5 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-#CMD [ "/bin/bash" ]
+# CMD [ "/bin/bash" ]
+ENTRYPOINT ["python", "waitress_server.py"]

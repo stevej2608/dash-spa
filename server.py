@@ -1,7 +1,10 @@
 import os
-from holoniq.utils import log, logging
+from dash import Dash
 
-def serve_app(app, path="", debug=False):
+from dash_spa.utils import  DashLogger
+from dash_spa import logging
+
+def serve_app(app: Dash, path="/", debug=False, logger: DashLogger =None):
     """Serve Dash application
 
     Args:
@@ -10,14 +13,10 @@ def serve_app(app, path="", debug=False):
         debug (bool, optional): Enable Dash debug. Defaults to False.
     """
 
-    # Turn off werkzeug  logging as it's very noisy
+    # Turn off werkzeug logging as it's very noisy
 
     aps_log = logging.getLogger('werkzeug')
     aps_log.setLevel(logging.ERROR)
-
-    # Set SPA logging level (if needed)
-
-    # log.setLevel(logging.INFO)
 
     # When running in a Docker container the internal port
     # is mapped onto a host port. Use the env variables passed
@@ -29,4 +28,7 @@ def serve_app(app, path="", debug=False):
 
     print(f' * Visit http://{hostname}:{hostport}{path}')
 
-    app.run_server(debug=debug, host='0.0.0.0', port=port, threaded=False)
+    if logger:
+        logger.init(app.server)
+
+    app.run_server(debug=debug, host='0.0.0.0', port=port, threaded=False, dev_tools_serve_dev_bundles=False)

@@ -1,53 +1,55 @@
-import dash_spa as spa
-from dash_spa.admin import admin_blueprint, AdminNavbarComponent, AdminLoginManager
+from dash import Dash
+from dash import html
 from app import create_dash
-from demo import spa as demo
-from index import spa as welcome
+from dash_spa import page_container
+from dash_spa import logging, config
+from dash_spa.utils import DashLogger, DEBUG_LEVEL
 from server import serve_app
-from user import spa as user
 
-NAV_BAR_ITEMS = {
-    'brand' : spa.NavbarBrand(' Dash/SPA','/'),
-    'left' : [
-        spa.NavbarLink('Global Warming','/demo/warming'),
-        spa.NavbarLink('State Solar', '/demo/solar'),
-        spa.NavbarLink('Ticker', '/demo/ticker?tickers=COKE'),
-        spa.NavbarLink('Profile', '/user/profile'),
-        spa.NavbarLink('Admin', '/admin/users'),
-    ],
-    'right': [
-        AdminNavbarComponent()
-    ],
+from dash_spa_admin import AdminLoginManager
 
-    'footer': spa.Footer('SPA/Examples'),
-}
+options = config.get('logging')
 
-def create_spa(dash_factory):
-    """Create SPA application, return SinglePageApp instance
+def create_app(dash_factory) -> Dash:
+    """Create Dash application
 
     Args:
-        app (Dash): Dash Instance
+        dash_factory (Dash): Callable that returns a Dash Instance
 
     Returns:
-        SinglePageApp: Single Page App instance
+        Dash: Dash instance
     """
+    app = dash_factory()
 
-    app = spa.SinglePageApp(dash_factory, navitems=NAV_BAR_ITEMS)
+    def layout():
+        return page_container
 
-    app.register_blueprint(welcome)
-    app.register_blueprint(demo, url_prefix='/demo')
-    app.register_blueprint(user, url_prefix='/user')
+    app.layout = layout
 
-    # Enable admin
+    if AdminLoginManager.enabled:
+        login_manager = AdminLoginManager(app.server)
+        login_manager.init_app(app.server)
 
-    app.register_blueprint(admin_blueprint, url_prefix='/admin')
-    login_manager = AdminLoginManager(app.dash.server)
-    app.enable_login_manager(login_manager, login_view='admin.login')
+        # Optionally add admin user here or via the admin web interface
+        # if login_manager.user_count() == 0:
+        #     login_manager.add_user("admin", "bigjoe@gmail.com", "1234", role=['admin'])
 
-    app.layout()
+
+        # Other users can also be added here. Alternatively login as 'admin'
+        # and manage users from the users view.
+
+        # if not login_manager.get_user("littlejoe@gmail.com"):
+        #     login_manager.add_user("littlejoe", "littlejoe@gmail.com", "5678")
 
     return app
 
-if __name__ == '__main__':
-    app = create_spa(create_dash)
-    serve_app(app.dash, "/admin/users", debug=False)
+
+if __name__ == "__main__":
+
+    logging.setLevel(options.level)
+
+    app = create_app(create_dash)
+    # logger=DashLogger(DEBUG_LEVEL.VERBOSE)
+    # serve_app(app, debug=False, logger=logger)
+
+    serve_app(app, debug=False)

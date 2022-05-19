@@ -1,32 +1,30 @@
 import os
 from sys import argv
-import logging
 from waitress import serve
 from paste.translogger import TransLogger
 from app import create_dash
-from usage import create_spa
+from usage import create_app
+from dash_spa import __version__, logging, config
+
+options = config.get('logging')
+
+logging.setLevel(options.level)
 
 logger = logging.getLogger('waitress')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.WARN)
 
-app = create_spa(create_dash)
+app = create_app(create_dash)
 
-app_with_logger = TransLogger(app.dash.server, setup_console_handler=False)
-
-# https://stackoverflow.com/questions/11087682/does-gunicorn-run-on-windows
-
-# Resolve the port we're using
+app_with_logger = TransLogger(app.server, setup_console_handler=False)
 
 try:
     index = argv.index('--port')
     port = argv[index+1]
 except Exception:
-    port = int(os.environ.get("PORT", 8050))
+    port = int(os.environ.get("PORT", 5000))
 
-hostname = os.environ.get("HOST_HOSTNAME", "localhost")
-hostport = os.environ.get("HOST_HOSTPORT", "8050")
+print(f'Dash/SPA V{__version__}')
 
-print(f' * stock-server V{"0.0.1"}')
-print(f' * Visit http://{hostname}:{hostport}\n')
+# serve(app_with_logger, host='0.0.0.0', port=port)
 
-serve(app_with_logger, port=port)
+serve(app.server, host='0.0.0.0', port=port)

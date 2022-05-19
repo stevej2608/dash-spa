@@ -1,9 +1,8 @@
+from tests.admin import USER_NAME, USER_EMAIL, USER_PASSWORD, delete_user, css_id
 
-from tests.admin import USER_NAME, USER_EMAIL, USER_PASSWORD, delete_user
+def test_login(duo, spa):
 
-def test_admin_login(duo, spa):
-
-    login_manager = spa.login_manager
+    login_manager = spa.server.login_manager
 
     # Delete the test user as preparation for test
 
@@ -16,22 +15,24 @@ def test_admin_login(duo, spa):
 
     duo.server_url = duo.server_url + "/admin/login"
 
-    result = duo.wait_for_text_to_equal("#admin-loginfrm-btn", "Sign In", timeout=20)
+    form = css_id('login')
+
+    result = duo.wait_for_text_to_equal(form.btn, "Sign In", timeout=20)
     assert result
 
-    email=duo.find_element("#admin-loginfrm-email")
+    email=duo.find_element(form.email)
     email.send_keys(USER_EMAIL)
 
-    password=duo.find_element("#admin-loginfrm-password")
+    password=duo.find_element(form.password)
     password.send_keys(USER_PASSWORD)
 
-    btn = duo.find_element("#admin-loginfrm-btn")
+    btn = duo.find_element(form.btn)
     btn.click()
 
     result = duo.wait_for_text_to_equal("#user-name", "Big Joe", timeout=20)
     assert result
 
-def test_admin_login_fail(duo):
+def test_admin_login_fail(duo, spa):
 
     # Login known user with a bad password - confirm rejection
     #
@@ -40,16 +41,18 @@ def test_admin_login_fail(duo):
 
     duo.server_url = duo.server_url + "/admin/login"
 
-    btn = duo.find_element("#admin-loginfrm-btn")
+    form = css_id('login')
+
+    btn = duo.find_element(form.btn)
     assert btn.text == "Sign In"
 
-    email=duo.find_element("#admin-loginfrm-email")
+    email=duo.find_element(form.email)
     email.send_keys(USER_EMAIL)
 
-    password=duo.find_element("#admin-loginfrm-password")
+    password=duo.find_element(form.password)
     password.send_keys('bad')
 
     btn.click()
 
-    result = duo.wait_for_text_to_equal("#admin-loginfrm-flash", "Please check your login details and try again.", timeout=20)
+    result = duo.wait_for_text_to_equal(form.flash, "Please check your login details and try again.", timeout=20)
     assert result

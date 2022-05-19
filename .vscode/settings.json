@@ -7,7 +7,6 @@
 
   "python.terminal.activateEnvironment": true,
   "python.linting.pylintEnabled": true,
-  "python.linting.enabled": true,
 
   "files.watcherExclude": {
     "**/.venv/**": true,
@@ -15,14 +14,11 @@
     "**/tmp/*/**": true
   },
   "remote.localPortHost": "allInterfaces",
-  "python.formatting.provider": "autopep8",
-  "cSpell.ignoreWords": [
-    "forgotfrm",
-    "holoniq",
-    "iofactory",
-    "loginfrm",
-    "pystache",
-    "registerfrm",
-    "verifyfrm"
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "black",
+  "cSpell.words": [
+    "fmxw",
+    "thead"
   ],
+  "todo-tree.tree.showBadges": true
 }

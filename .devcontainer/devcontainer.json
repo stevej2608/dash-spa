@@ -36,21 +36,22 @@
 	"extensions": [
     "ms-python.python",
     "ms-python.vscode-pylance",
+    "njpwerner.autodocstring",
     "dbaeumer.vscode-eslint",
     "ritwickdey.liveserver",
     "streetsidesoftware.code-spell-checker",
     "rioj7.command-variable",
-    "njpwerner.autodocstring"
+    "gruntfuggly.todo-tree"
 	],
 
   // appPort, The LHS port must match the value of $HOSTPORT defined
   // in .devcontainer/devcontainer.env
 
-  "appPort": "5022:5000",
+  "appPort": "5026:5000",
 
   "postCreateCommand": "chmod +x .devcontainer/init.sh && .devcontainer/init.sh",
 
   "workspaceFolder": "/${localWorkspaceFolderBasename}",
-	"workspaceMount": "source=/workspaces/github/${localWorkspaceFolderBasename},target=/${localWorkspaceFolderBasename},type=bind,consistency=cached",
+	"workspaceMount": "source=/workspaces/${localWorkspaceFolderBasename},target=/${localWorkspaceFolderBasename},type=bind,consistency=cached",
 
 }
