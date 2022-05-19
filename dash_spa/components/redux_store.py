@@ -6,18 +6,16 @@ from dash import html, callback, ALL
 from dash_spa import match,  prefix, trigger_index, copy_factory, page_container
 from dash_spa.logging import log
 
-
 def default_action_execute(cmd, state, *_args, **_kwargs):
     """Built in action execute dispatcher"""
     state = StateWrapper(state)
     new_state = cmd(state, *_args, **_kwargs)
     return new_state.state
 
-
 class ReduxStore(html.Div):
     """Create a master dcc.Store who's input is derived from any number surrogate stores that are
-    presented to application for update. The (modified) content of a surrogate store is copied to
-    the master store. This machanism acts as a data multiplexor feeding Dash UI events into a
+    presented to application for update. The (modified) content of a surrogate stores are copied to
+    the master store. This mechanism acts as a data multiplexor feeding Dash UI events into a
     master "source of truth" that can then be used to trigger additional activity in the UI.
 
     The application interfaces with the store using the callback @Redux.update(...). This
@@ -63,7 +61,11 @@ class ReduxStore(html.Div):
 
     @property
     def data(self):
-        return self.store.data
+        return self.master_store.data
+
+    @property
+    def store(self):
+        return self.master_store
 
     def __init__(self, id, **kwargs):
         self.pfx = prefix(id)
@@ -71,17 +73,17 @@ class ReduxStore(html.Div):
         self.storage_type = kwargs.pop('storage_type', 'session')
         self.execute = kwargs.pop('execute', default_action_execute)
 
-        self.store_match = match({'type': self.pfx('store'), 'idx': ALL})
+        self.master_store = dcc.Store(id=id, storage_type=self.storage_type, **kwargs)
 
-        self.store_idx = 0
+        self._surrogate_store_match = match({'type': self.pfx('store'), 'idx': ALL})
+        self._surrogate_stores = {}
 
-        self.store = store = dcc.Store(id=id, storage_type=self.storage_type, **kwargs)
+        super().__init__([self.master_store])
 
-        self._mux_stores = {}
-        super().__init__([store])
+        # MASTER store surrogate merge @callback
 
-        @callback(store.output.data, self.store_match.input.data, store.state.data, prevent_initial_call=True)
-        def update_store(mux_state, store_state):
+        @callback(self.master_store.output.data, self._surrogate_store_match.input.data, prevent_initial_call=True)
+        def update_store(surrogate_state):
 
             # log.info('Updating MASTER state = %s', store_state)
             # for index, state in enumerate(mux_state):
@@ -90,7 +92,7 @@ class ReduxStore(html.Div):
             index = trigger_index()
             if index is not None:
                 # log.info('Update using index  = %d', index)
-                return deepcopy(mux_state[index])
+                return deepcopy(surrogate_state[index])
 
             return NOUPDATE
 
@@ -122,24 +124,30 @@ class ReduxStore(html.Div):
 
         ```
         """
+        surrogate_store = self._surrogate_input_store(*_args)
 
-        store = self._mux_input_store(*_args)
+        def wrapper(user_func):
 
-        def wrapper(f):
-
-            @callback(store.output.data, *_args, self.store.state.data, prevent_initial_call=True, **_kwargs)
+            @callback(surrogate_store.output.data, *_args, self.master_store.state.data, prevent_initial_call=True, **_kwargs)
             def _proxy(*_args):
 
-                # copy the store's data
+                # We need to copy the state of the master store to make sure
+                # it's immutable
 
                 args = list(_args)
                 args[-1] = deepcopy(args[-1])
 
-                result = f(*args)
+                # Call the user's @Redux.update() function.
+
+                result = user_func(*args)
+
+                # Return the results to the standard Dash callback.
+                # If the surrogate_store has been modified this will
+                # trigger the `MASTER store surrogate merge @callback`
+
                 return result
 
         return wrapper
-
 
     def action(self, *_args, **_kwargs):
         """
@@ -171,17 +179,22 @@ class ReduxStore(html.Div):
                 NOUPDATE
         ```
         """
+        surrogate_store = self._surrogate_input_store(*_args)
 
+        def wrapper(user_func):
 
-
-        store = self._mux_input_store(*_args)
-
-        def wrapper(f):
-
-            @callback(store.output.data, *_args, prevent_initial_call=True, **_kwargs)
+            @callback(surrogate_store.output.data, *_args, prevent_initial_call=True, **_kwargs)
             def _proxy(*_args):
-                result = f(*_args)
+
+                # Call the user's @Redux.action() function.
+
+                result = user_func(*_args)
+
+                # Test for a returned action_function
+
                 if result != NOUPDATE and result != None:
+
+                    # With arguments?
 
                     if callable(result):
                         action = result
@@ -190,7 +203,14 @@ class ReduxStore(html.Div):
                         args = list(result)
                         action = args.pop(0)
 
-                    result = self.execute(action, store.data, *args)
+                    # Execute the users action function
+
+                    result = self.execute(action, surrogate_store.data, *args)
+
+                    # Return the results to the standard Dash callback.
+                    # If the surrogate_store has been modified this will
+                    # trigger the `MASTER store surrogate merge @callback`
+
                 else:
                     result = NOUPDATE
 
@@ -198,17 +218,26 @@ class ReduxStore(html.Div):
 
         return wrapper
 
-    def _mux_input_store(self, *_args):
+    def _surrogate_input_store(self, *_args):
+
+        # Surrogate stores are created and stored for reuse in
+        # a dictionary that is keyed on a hash of all the input
+        # IDs defined in the callback.
 
         def unpack(id):
+
+            # Handle dict the keys used by MATCH
+
             if isinstance(id, dict):
                 id = [ part for part in id.values() if isinstance(part, str)]
                 return '_'.join(id)
             else:
                 return id
 
-
         def input_hash():
+
+            # Create a positive hex hash all the callback inputs
+
             inputs = []
             for input in _args:
                 id = f"{unpack(input.component_id)}.{input.component_property}"
@@ -220,16 +249,16 @@ class ReduxStore(html.Div):
 
         id = input_hash()
 
-        if not id in self._mux_stores:
+        if not id in self._surrogate_stores:
             # log.info('Create Redux mux %s', id)
-            match_id = self.store_match.idx(id)
+            match_id = self._surrogate_store_match.idx(id)
             store = dcc.Store(id=match_id, data=self.data, storage_type='memory')
-            self._mux_stores[id] = store
+            self._surrogate_stores[id] = store
             self.children.append(store)
 
         # log.info("number of mux inputs = %d", len(self._mux_stores))
 
-        return self._mux_stores[id]
+        return self._surrogate_stores[id]
 
 
 class StateWrapper:
