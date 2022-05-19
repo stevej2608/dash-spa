@@ -1,10 +1,10 @@
-from subprocess import call
 import sys
 from copy import deepcopy
-from dash import dcc,  no_update as NOUPDATE, callback_context
+from dash import dcc,  no_update as NOUPDATE
 from dash import html, callback, ALL
-from dash_spa import match,  prefix, trigger_index, copy_factory, page_container
-from dash_spa.logging import log
+from dash_spa import match,  prefix, trigger_index
+
+# from dash_spa.logging import log
 
 def default_action_execute(cmd, state, *_args, **_kwargs):
     """Built in action execute dispatcher"""

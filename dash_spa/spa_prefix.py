@@ -11,10 +11,11 @@ from .component_id import component_id
 NOUPDATE = dash.no_update
 
 def isTriggered(component: DashDependency) -> bool:
-    """Return true if the given dash component was the reasion for the enclosing callback being triggered
+    """Return true if the given dash component was the
+    reason for the enclosing callback being triggered
 
     Args:
-        component (DashDependency): The calback component being tested
+        component (DashDependency): The callback component being tested
 
     Returns:
         bool: Return true if the given component is the trigger
@@ -33,7 +34,6 @@ def isTriggered(component: DashDependency) -> bool:
 
     return ctx.triggered[0]['prop_id'] == prop_id
 
-
 def trigger_index(idx_field='idx') -> Union[int, None]:
     """Return the index of the match ALL field that triggered the callback
 
@@ -51,7 +51,6 @@ def trigger_index(idx_field='idx') -> Union[int, None]:
                 return index
     else:
         return None
-
 
 def match(pattern: dict):
     """ Return a match factory that can be used to create
@@ -193,7 +192,7 @@ class _DashIOFactory:
     """Dash Dependency Factory
 
 Inject DashIOFactory instances into the Dash component. The
-factories will be accessable as follows:
+factories will be accessible as follows:
 
     div = html.Div(id='xxx')
     children_attr = div.output.children
@@ -213,7 +212,7 @@ Will return the same Dash Dependency Output instance as:
 
     def __init__(self, component, iofactory):
 
-        # Add component id prefix if its not allready been done
+        # Add component id prefix if its not already been done
 
         if not hasattr(component, '_spa_prefixed_id'):
 
