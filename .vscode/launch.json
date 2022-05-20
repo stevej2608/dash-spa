@@ -21,20 +21,6 @@
       }
     },
     {
-      "name": "1c. examples.todo.redux_test",
-      "type": "python",
-      "request": "launch",
-      "module": "examples.todo.redux_test",
-      "console": "internalConsole",
-      "internalConsoleOptions": "openOnSessionStart",
-      "justMyCode": false,
-      "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
-      }
-    },
-    {
       "name": "3. Python: Current Module",
       "type": "python",
       "request": "launch",
