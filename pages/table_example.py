@@ -39,7 +39,7 @@ class CustomTable(TableAIO):
         button = DropdownAIO.Button([
             html.Span(html.Span(className='fas fa-ellipsis-h icon-dark'), className='icon icon-sm'),
             html.Span("Toggle Dropdown", className='visually-hidden')
-        ], className='btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0')
+        ], className='btn btn-link text-dark dropdown-toggle-split m-0 p-0')
 
         # Action column dropdown bottom-left. Ripped from the Volt transactions table using Firefox debug tools
 
