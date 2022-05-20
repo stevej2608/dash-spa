@@ -6,12 +6,7 @@ iniconfig>=1.1.1
 
 # setup.py - exclude
 
-# For ticker demo
-
-pandas>=1.4.2
-colorlover>=0.3.0
-
-# For admin pages demo support
+# setup.py - extra dash_admin_spa
 
 Flask_Login>=0.4.1
 Flask_SQLAlchemy>=2.5.1
@@ -20,11 +15,15 @@ cachetools>=5.0.0
 pystache>=0.6.0
 dash-datatables>=0.0.9
 
+# For ticker demo
+
+pandas>=1.4.2
+colorlover>=0.3.0
+
 # Waitress server
 
 waitress>=2.1.1
 Paste>=3.5.0
-
 
 # For package development & testing
 
