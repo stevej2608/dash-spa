@@ -1,13 +1,11 @@
 from typing import Callable, Union
-import os
-import inspect
 from urllib import parse
 from collections import OrderedDict
 import dash
 from dash.development.base_component import Component
+from dash_prefix import prefix
 from .plugins import pages
 
-from .spa_prefix import prefix
 
 spa_plugin = __name__
 page_container = pages.page_container

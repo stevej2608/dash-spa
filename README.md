@@ -245,79 +245,6 @@ def layout():
   return "Big ADMIN SECRET for {current_user.name}"
 ```
 
-**Dash/SPA** Implements a ReduxStore component
-
-The ReduxStore component, input is derived from any number automatically generated
-surrogate stores. The stores are presented to the application for update via callbacks.
-The (modified) content of a surrogate store is copied to a master store. This mechanism
-acts as a data multiplexor feeding Dash UI events into a *single source of truth* that can
-then be used to trigger additional activity in the UI.
-
-The application interfaces with the store using the callback *@Redux.update(...)*. This
-callback defines Dash IO to be used by the callback handler in the normal way. When
-triggered by a Dash event the associated function is called with the IO state together
-with a reference to a surrogate store that contains a copy of the master store. The callback
-modifies the state as required and returns the store state.  *ReduxStore* then copies the
-new state into the master store.
-
-The following snippets are taken from the todo example. See [examples/todo/pages/todo.py](examples/todo/pages/todo.py).
-
-```
-Redux = ReduxStore(id='store', data = { "todo": []})
-
-@Redux.update(button.input.n_clicks, input.state.value)
-def new_activity(button_clicks, input, state):
-    if button_clicks and input:
-          state['todo'].append(input)
-    return state
-```
-
-*ReduxStore* also supports an `action_function` execution model that enforces a formal
-separation of the Dash/UI from the model.
-
-*todo.py*:
-```
-from .todo_model import TODO_MODEL, add_action, delete_action, undo_action, redo_action
-
-Redux = ReduxStore(id=page.id('store'), data=TODO_MODEL)
-
-@Redux.action(button.input.n_clicks, input.state.value)
-def _add(button_clicks, input):
-    if button_clicks and input:
-        return add_action, input
-    else:
-        NOUPDATE
-
-...
-```
-*todo_model.py*:
-```
-TODO_MODEL= {
-    "past": [],
-    "todo": [],
-    "future": []
-    }
-
-def add_action(state, input):
-    current = state.todo.copy()
-    state.past.append(current)
-    state.todo.append(input)
-    state.future = []
-    return state
-
-def delete_action(state, index):
-    ...
-    return state
-
-def undo_action(state):
-    ...
-    return state
-
-def redo_action(state):
-    ...
-    return state
-```
-
 ### Dash/SPA Examples
 
 Several example are available:
@@ -325,11 +252,6 @@ Several example are available:
 **Minimal MultiPage** An example of a multi-page app with navbar and footer in less than sixty lines of code.
 
     python -m examples.multipage.app
-
-**Simple TODO App** An example of using the **ReduxStore** component. You can Add & Delete entries in a
-list. The model also provides UNDO & REDO buttons to demonstrate how to implement state history.
-
-    python -m examples.todo.app
 
 **React CRA clone**
 

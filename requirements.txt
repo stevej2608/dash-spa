@@ -1,5 +1,6 @@
 dash>=2.1.0
 dash-bootstrap-components>=1.1.0
+dash-prefix>=0.0.2
 dash-holoniq-components>=0.0.19
 iniconfig>=1.1.1
 

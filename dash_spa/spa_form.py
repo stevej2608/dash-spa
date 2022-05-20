@@ -8,7 +8,7 @@ import dash_holoniq_components as dhc
 
 from dash_spa.logging import log
 
-from .spa_prefix import prefix, copy_factory, isTriggered
+from dash_prefix import prefix, copy_factory, isTriggered
 
 class SpaForm:
 
