@@ -1,9 +1,11 @@
 from dash import html, dcc
-from dash_spa import prefix
+from dash_spa import prefix, page_container_append
 
 class StoreAIO:
 
     container = html.Div([], id='_aio_storage')
+
+    page_container_append(container)
 
     @staticmethod
     def create_store(data: dict={}, id=None):
@@ -18,3 +20,4 @@ class StoreAIO:
         loc = dcc.Location(id=pid())
         StoreAIO.container.children.append(loc)
         return loc
+

@@ -2,7 +2,7 @@ from typing import List
 from math import ceil
 from dash import html, callback, ALL
 from dash.exceptions import PreventUpdate
-from dash_spa import match, prefix
+from dash_prefix import match, prefix
 from .PaginationState import PaginationState
 
 from dash_spa.components import  AIOBase
