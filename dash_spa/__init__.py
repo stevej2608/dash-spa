@@ -11,3 +11,5 @@ from .navbar import NavBar, NavbarBrand, NavbarLink, Footer
 from .spa_form import SpaForm
 from .spa_current_user import current_user
 from .decorators import login_required
+
+from dash_spa import themes
