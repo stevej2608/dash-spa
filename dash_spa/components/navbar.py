@@ -1,6 +1,7 @@
 from dash import html
 import dash_bootstrap_components as dbc
-from ..spa_pages import DashPage, add_style, get_page
+
+from ..spa_pages import DashPage, get_page, add_style
 
 class NavbarBase:
 

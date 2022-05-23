@@ -1,10 +1,11 @@
 from dash import html
 from .navbar import NavbarBase
 
+
 class Footer(NavbarBase):
 
     style = '''
-        .footer {
+        .spa_footer {
             position: fixed;
             left: 0;
             bottom: 0;
@@ -12,6 +13,7 @@ class Footer(NavbarBase):
             background-color: #f5f5f5;
             }
         '''
+
 
     def __init__(self, title=None):
         super().__init__()
@@ -24,6 +26,6 @@ class Footer(NavbarBase):
                 html.Div([
                     html.P(text, id='footer', className='text-center font-italic', style={'marginTop': 10})
                 ], className='containers')
-            ], className='footer')
+            ], className='spa_footer')
         else:
             return None

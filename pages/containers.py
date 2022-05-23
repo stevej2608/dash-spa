@@ -1,6 +1,8 @@
+import traceback
 from dash import html
 import dash_spa as spa
 from pages import NAVBAR_PAGES
+from dash_spa.logging import log
 from dash_spa_admin import AdminNavbarComponent
 from dash_spa.exceptions import InvalidAccess
 
@@ -52,6 +54,7 @@ def default_container(layout,  **kwargs):
             html.Div(footer.layout())
         ])
     except Exception:
+        log.warn(traceback.format_exc())
         page = spa.page_for('pages.not_found_404')
         return page.layout()
 
