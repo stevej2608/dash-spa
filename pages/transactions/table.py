@@ -73,6 +73,7 @@ class OrdersTable(TableAIO):
         viewer = TableAIOPaginatorView(paginator)
 
         class CompositePaginator():
+            """Single line display, paginator on the LHS and current page view on th RHS"""
 
             @property
             def value(self):
