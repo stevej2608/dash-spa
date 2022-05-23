@@ -31,7 +31,6 @@ class TableAIO(html.Div):
         log.info('TableAIO id=%s', pid(''))
 
         table_data = {
-            'data': data,
             'current_page': page,
             'last_page' : ceil(len(data) / page_size),
             'page_size': page_size
@@ -49,7 +48,7 @@ class TableAIO(html.Div):
             try:
                 store = StateWrapper(store)
                 # log.info('_update_table_cb(id=%s) page=%d', pid(''), store.current_page)
-                rows = self.tableRows(store.data, page=store.current_page, page_size=store.page_size)
+                rows = self.tableRows(data, page=store.current_page, page_size=store.page_size)
                 return rows
             except:
                 raise PreventUpdate()
