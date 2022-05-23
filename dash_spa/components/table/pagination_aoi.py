@@ -3,7 +3,7 @@ from dash import html, callback, ALL
 from dash_redux import ReduxStore, StateWrapper
 from dash_prefix import match, prefix
 
-from dash_spa import PreventUpdate
+from dash_spa import PreventUpdate, NOUPDATE
 from dash_spa.logging import log
 
 
@@ -42,29 +42,29 @@ class TableAIOPaginator(html.Ul):
     NEXT = 'Next'
 
     def __init__(self, store: ReduxStore, adjacents=2, className: str = None, id=None):
-        self.pid = prefix(id)
+        pid = prefix(id)
         self.className = className
-        self.range_match = match({'type': self.pid('li'), 'idx': ALL})
+        self.range_match = match({'type': pid('li'), 'idx': ALL})
 
         pagination = self.selectable(store.data, adjacents)
 
-        super().__init__(pagination, id=self.pid('TableAIOPaginator'), className=self.className)
+        super().__init__(pagination, id=pid('TableAIOPaginator'), className=self.className)
 
-        @store.update(self.output.children,
-                      self.range_match.input.n_clicks,
+        @store.update(self.range_match.input.n_clicks,
                       self.range_match.state.children)
-        def _update_cb(clicks, children, state):
-            log.info('update_paginator_cb')
+        def _paginator_change_cb(clicks, children, store):
 
             if not any(clicks):
                 raise PreventUpdate
 
-            _state = StateWrapper(state)
+            _store = StateWrapper(store)
+
+            # log.info('_paginator_update_cb(id=%s) page=%d', pid(''), _store.current_page)
 
             # Set the selected element to active and update
             # store.data['page'] with the selected value
 
-            page = _state.current_page
+            page = _store.current_page
 
             index = self.range_match.triggerIndex()
             if index is not None:
@@ -78,12 +78,25 @@ class TableAIOPaginator(html.Ul):
                 else:
                     page = selection
 
-                _state.current_page = page
-                pagination = self.selectable(state, adjacents)
+                _store.current_page = page
+                # pagination = self.selectable(store, adjacents)
 
-                return state, pagination
+                # log.info('**************** _paginator_update_cb(id=%s) new page=%d', pid(''), _store.current_page)
+
+                return _store.state
 
             raise PreventUpdate
+
+        @callback(self.output.children, store.store.input.data)
+        def _paginator_update_cb(store):
+            if store:
+                _store = StateWrapper(store)
+                # log.info('_paginator_update_cb(id=%s) page=%d', pid(''), _store.current_page)
+                pagination = self.selectable(store, adjacents)
+                return pagination
+            else:
+                NOUPDATE
+
 
     def selection(self, element: html.Li) -> str:
         """Return the selected page|Previous|Next

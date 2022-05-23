@@ -80,8 +80,8 @@ def table_layout():
         page_size=7,
         id="table_example")
 
-    paginator = TableAIOPaginator(table.store, className='pagination mb-0')
-    viewer = TableAIOPaginatorView(table.store)
+    paginator = TableAIOPaginator(table.store, className='pagination mb-0', id="table_example_paginator")
+    viewer = TableAIOPaginatorView(table.store, id="table_example_paginator_view")
     paginator_row = html.Div([paginator, viewer], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
 
     return html.Div([table, paginator_row])

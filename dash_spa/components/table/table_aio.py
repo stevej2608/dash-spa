@@ -26,9 +26,9 @@ class TableAIO(html.Div):
 
     def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 10, id: str = None):
 
-        self.pid = prefix(id)
+        pid = prefix(id)
 
-        log.info('TableAIO id=%s', self.pid(''))
+        log.info('TableAIO id=%s', pid(''))
 
         table_data = {
             'data': data,
@@ -37,18 +37,18 @@ class TableAIO(html.Div):
             'page_size': page_size
         }
 
-        self.store = store = ReduxStore(id=self.pid('store'), data=table_data)
+        self.store = store = ReduxStore(id=pid('store'), data=table_data)
         page_container_append(store)
 
         thead = self.tableHead(columns)
         trows = self.tableRows(data, page=1, page_size=page_size)
-        tbody = html.Tbody(trows, id=self.pid('table'))
+        tbody = html.Tbody(trows, id=pid('table'))
 
         @callback(tbody.output.children, store.store.input.data)
         def _update_table_cb(store):
             try:
                 store = StateWrapper(store)
-                log.info('_update_table_cb')
+                # log.info('_update_table_cb(id=%s) page=%d', pid(''), store.current_page)
                 rows = self.tableRows(store.data, page=store.current_page, page_size=store.page_size)
                 return rows
             except:

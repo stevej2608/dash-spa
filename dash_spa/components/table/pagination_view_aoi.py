@@ -33,19 +33,18 @@ class TableAIOPaginatorView(html.Div):
     ```
     """
     def __init__(self, store: ReduxStore, className='fw-normal small mt-4 mt-lg-0', id=None):
-        pfx = prefix(id)
+        pid = prefix(id)
         state = StateWrapper(store.data)
         content = self.render_content(state.current_page, state.last_page)
 
-        super().__init__(content, id=pfx('TableAIOPaginator'), className=className)
+        super().__init__(content, id=pid('TableAIOPaginator'), className=className)
 
         @callback(self.output.children, store.store.input.data)
-        def update_paginator_view_cb(state):
-            log.info('update_paginator_view_cb')
-
-            if state is not None:
-                state = StateWrapper(state)
-                return self.render_content(state.current_page, state.last_page)
+        def update_paginator_view_cb(store):
+            if store is not None:
+                store = StateWrapper(store)
+                # log.info('update_paginator_view_cb(id=%s) page=%d', pid(''), store.current_page)
+                return self.render_content(store.current_page, store.last_page)
 
             raise PreventUpdate
 
