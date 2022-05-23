@@ -29,12 +29,13 @@ class OrdersTable(TableAIO):
     TABLE_CLASS_NAME = 'card card-body border-0 shadow table-wrapper table-responsive'
 
     def tableAction(self):
+
         button = DropdownAIO.Button([
             html.Span(html.Span(className='fas fa-ellipsis-h icon-dark'), className='icon icon-sm'),
             html.Span("Toggle Dropdown", className='visually-hidden')
-        ], className='btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0')
+        ], className='btn btn-link text-dark dropdown-toggle-split m-0 p-0')
 
-        # dropdown bottom-left. Ripped from the Volt transactons table using Firefox debug tools
+        # Action column dropdown bottom-left. Ripped from the Volt transactions table using Firefox debug tools
 
         style={"position": "absolute",
                 "inset": "0px 0px auto auto",
@@ -63,7 +64,7 @@ class OrdersTable(TableAIO):
             html.Td(html.Span(due_date, className='fw-normal')),
             html.Td(html.Span(total, className='fw-bold')),
             html.Td(html.Span(status, className='fw-bold text-warning')),
-            html.Td("...")
+            html.Td(action)
         ])
 
     def paginator_init(self, page:int, page_size, total_items) -> TableAIOPaginator:
