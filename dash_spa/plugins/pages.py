@@ -383,6 +383,36 @@ def plug(app):
 
     @app.server.before_first_request
     def router():
+
+
+        def page_layout(page, layout=None, path_variables={}, query_parameters={}):
+
+            layout = page["layout"] if layout is None else  layout
+
+            # Test to see if a content container id define for the page
+            # if so call the container
+
+            if 'container' in page:
+                container_name = page['container']
+                if container_name in dash.container_registry:
+                    container = dash.container_registry[container_name]
+                    return (
+                            container(layout, **path_variables, **query_parameters)
+                            if path_variables
+                            else container(layout, **query_parameters)
+                        )
+
+            # No container handle the page layout directly
+
+            if callable(layout):
+                layout = (
+                    layout(**path_variables, **query_parameters)
+                    if path_variables
+                    else layout(**query_parameters)
+                )
+
+            return layout
+
         @callback(
             Output(_ID_CONTENT, "children"),
             Output(_ID_STORE, "data"),
@@ -397,32 +427,6 @@ def plug(app):
             query_parameters = _parse_query_string(search)
             page, path_variables = _path_to_page(app, app.strip_relative_path(pathname))
 
-            def page_layout(page, layout):
-
-                # Test to see if a content container id define for the page
-                # if so call the container
-
-                if 'container' in page:
-                    container_name = page['container']
-                    if container_name in dash.container_registry:
-                        container = dash.container_registry[container_name]
-                        return (
-                                container(layout, **path_variables, **query_parameters)
-                                if path_variables
-                                else container(layout, **query_parameters)
-                            )
-
-                # No container handle he page layout directly
-
-                if callable(layout):
-                    layout = (
-                        layout(**path_variables, **query_parameters)
-                        if path_variables
-                        else layout(**query_parameters)
-                    )
-
-                return layout
-
             # get layout
             if page == {}:
                 if "pages.not_found_404" in dash.page_registry:
@@ -435,7 +439,7 @@ def plug(app):
                 layout = page["layout"]
                 title = page["title"]
 
-            layout = page_layout(page, layout)
+            layout = page_layout(page, layout, path_variables, query_parameters)
 
             if callable(title):
                 title = title(**path_variables) if path_variables else title()
@@ -456,14 +460,12 @@ def plug(app):
 
         # Set validation_layout
 
-        page_layout = page["layout"]
         app.validation_layout = html.Div(
-            [
-                page_layout() if callable(page_layout) else page_layout
-                for page in dash.page_registry.values()
-            ]
-            + [app.layout() if callable(app.layout) else app.layout]
+            [ page_layout(page) for page in dash.page_registry.values() ] +
+            [ app.layout() if callable(app.layout) else app.layout ]
         )
+
+
 
         # Update the page title on page navigation
         app.clientside_callback(
