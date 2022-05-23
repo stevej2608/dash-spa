@@ -5,10 +5,8 @@ from collections import OrderedDict
 from dash_spa import register_page
 from pages import TABLE_EXAMPLE_SLUG
 
-
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.table import TableAIO, TableAIOPaginator, TableAIOPaginatorView
-from dash_spa.components.store_aio import StoreAIO
 
 register_page(__name__, path=TABLE_EXAMPLE_SLUG, title="Table Example", short_name='Table')
 
@@ -73,34 +71,19 @@ class CustomTable(TableAIO):
             html.Td(action)
         ])
 
-    def tablePaginator(self, page:int, page_size, total_items):
 
-        paginator = TableAIOPaginator(page=page, page_size=page_size, total_items=total_items, className='pagination mb-0')
-        viewer = TableAIOPaginatorView(paginator)
+def table_layout():
 
-        class CompositePaginator():
+    table = CustomTable(
+        data=df.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df.columns],
+        page_size=7,
+        id="table_example")
 
-            @property
-            def value(self):
-                return self.paginator.store.input.data
+    paginator = TableAIOPaginator(table.store, className='pagination mb-0')
+    viewer = TableAIOPaginatorView(table.store)
+    paginator_row = html.Div([paginator, viewer], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
 
-            def __init__(self, paginator, viewer):
-                self.paginator = paginator
-                self.viewer = viewer
+    return html.Div([table, paginator_row])
 
-            def layout(self):
-                children = [html.Nav(self.paginator.layout()), self.viewer.layout()]
-                return html.Div(children, className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
-
-            def state(self, state:dict = None):
-                return self.paginator.state(state)
-
-        compositePaginator = CompositePaginator(paginator, viewer)
-
-        return compositePaginator
-
-
-table = CustomTable(data=df.to_dict('records'), columns=[{'id': c, 'name': c} for c in df.columns], page_size=7)
-
-def layout():
-    return html.Div([StoreAIO.container, table.layout()])
+layout = table_layout()

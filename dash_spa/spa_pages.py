@@ -1,9 +1,11 @@
 from typing import Callable, Union
 from urllib import parse
 from collections import OrderedDict
+from attr import has
 import dash
 from dash.development.base_component import Component
 from dash_prefix import prefix
+from .logging import log
 from .plugins import pages
 
 
@@ -13,8 +15,22 @@ page_container = pages.page_container
 # location = dcc.Location(id='spa#location')
 location = page_container.children[0]
 
-def page_container_append(store):
-    page_container.children.append(store)
+def page_container_append(component: Component):
+
+    def get_id(component):
+        if hasattr(component, 'id'):
+            return component.id
+        elif hasattr(component, 'children'):
+            children = component.children
+            children = children if isinstance(children, list) else [children]
+            for component in children:
+                if hasattr(component, 'id'):
+                    return component.id
+        return "NO ID"
+
+    id = get_id(component)
+    log.info('page_container_append id=%s', id)
+    page_container.children.append(component)
 
 
 def add_style(style: str):

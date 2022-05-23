@@ -1,11 +1,10 @@
 from dash import html, callback
 from dash.exceptions import PreventUpdate
-from dash_spa.components import  AIOBase
-from .pagination_aoi import TableAIOPaginator
-
+from dash_spa import  prefix
+from dash_redux import ReduxStore, StateWrapper
 from dash_spa.logging import log
 
-class TableAIOPaginatorView(AIOBase):
+class TableAIOPaginatorView(html.Div):
     """Manages and updates the view component of the associated
     TableAIOPaginator. The TableAIOPaginatorView callback is triggered when the
     store component value changes. The callback calls the supplied
@@ -33,25 +32,22 @@ class TableAIOPaginatorView(AIOBase):
         </div>
     ```
     """
-    def __init__(self, paginator: TableAIOPaginator, className='fw-normal small mt-4 mt-lg-0'):
+    def __init__(self, store: ReduxStore, className='fw-normal small mt-4 mt-lg-0', id=None):
+        pfx = prefix(id)
+        state = StateWrapper(store.data)
+        content = self.render_content(state.current_page, state.last_page)
 
-        id=paginator.pid('TableAIOPaginatorView')
-        state = paginator.state()
+        super().__init__(content, id=pfx('TableAIOPaginator'), className=className)
 
-        self.container = html.Div(self.render_content(state.page, state.last_page), id=id, className=className)
-
-        @callback(self.container.output.children, paginator.value)
-        def update_paginator_view_cb(data):
+        @callback(self.output.children, store.store.input.data)
+        def update_paginator_view_cb(state):
             log.info('update_paginator_view_cb')
 
-            if data is not None:
-                state = paginator.state(data)
-                return self.render_content(state.page, state.last_page)
+            if state is not None:
+                state = StateWrapper(state)
+                return self.render_content(state.current_page, state.last_page)
 
             raise PreventUpdate
-
-    def layout(self):
-        return self.container
 
     def render_content(self, current, last_page):
         return ["Showing page ",html.B(current)," out of ",html.B(last_page)," pages"]

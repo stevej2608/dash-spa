@@ -20,7 +20,7 @@ def newPlanButton():
     ], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
 
 
-def layout(page=1):
+def table_layout(page=1):
     page = int(page)
     #log.info('page=%s', page)
     return html.Div([
@@ -29,3 +29,5 @@ def layout(page=1):
             table(page),
         ], className='content')
     ])
+
+layout = table_layout()

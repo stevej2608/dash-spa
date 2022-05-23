@@ -18,7 +18,8 @@
   "python.formatting.blackPath": "black",
   "cSpell.words": [
     "fmxw",
-    "thead"
+    "thead",
+    "trows"
   ],
   "todo-tree.tree.showBadges": true
 }

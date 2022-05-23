@@ -67,37 +67,22 @@ class OrdersTable(TableAIO):
             html.Td(action)
         ])
 
-    def paginator_init(self, page:int, page_size, total_items) -> TableAIOPaginator:
 
-        paginator = TableAIOPaginator(page=page, page_size=page_size, total_items=total_items, className='pagination mb-0')
-        viewer = TableAIOPaginatorView(paginator)
+def table_layout(page):
+    ordersTable = OrdersTable(
+        data=df.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df.columns],
+        page = page,
+        page_size=7,
+        id="transactions"
+    )
 
-        class CompositePaginator():
-            """Single line display, paginator on the LHS and current page view on th RHS"""
+    paginator = TableAIOPaginator(ordersTable.store, className='pagination mb-0')
+    viewer = TableAIOPaginatorView(ordersTable.store)
+    paginator_row = html.Div([paginator, viewer], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
 
-            @property
-            def value(self):
-                return self.paginator.store.input.data
+    return html.Div([ordersTable, paginator_row])
 
-            def __init__(self, paginator, viewer):
-                self.paginator = paginator
-                self.viewer = viewer
-
-            def layout(self, page=1):
-                children = [html.Nav(paginator.layout(page=page)), viewer.layout()]
-                return html.Div(children, className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
-
-            def state(self, state:dict = None):
-                return self.paginator.state(state)
-
-        return CompositePaginator(paginator, viewer)
-
-
-ordersTable = OrdersTable(
-    data=df.to_dict('records'),
-    columns=[{'id': c, 'name': c} for c in df.columns],
-    page_size=7
-)
 
 def table(page):
-    return ordersTable.layout(page)
+    return table_layout(page)
