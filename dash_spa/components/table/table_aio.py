@@ -12,6 +12,7 @@ TableData = List[Dict[str, Any]]
 TableColumns = List[Dict[str, Any]]
 
 PAGE_SIZE = 'page_size'
+LAST_PAGE = 'last_page'
 
 class TableAIO(html.Table):
     """Generic SPA Table
@@ -29,14 +30,16 @@ class TableAIO(html.Table):
     def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 10, id: str = None, **kwargs):
 
         self._prefix = pid = spa.prefix(id)
+        self._data = data
 
         log.info('TableAIO id=%s', pid(''))
 
         table_data = {
             'current_page': page,
-            'last_page' : ceil(len(data) / page_size),
+            LAST_PAGE : ceil(len(data) / page_size),
             PAGE_SIZE: page_size
         }
+
 
         self.store = store = ReduxStore(id=pid('store'), data=table_data)
         spa.page_container_append(store)
@@ -61,6 +64,8 @@ class TableAIO(html.Table):
     def prefix(self, pfx:str = None) -> Callable[[str], str]:
         return spa.prefix(f'{self._prefix(pfx)}')
 
+    def last_row(self, page_size):
+        return ceil(len(self._data) / page_size)
 
     def tableHead(self, columns: TableColumns):
         row =  html.Tr([html.Th(col['name'], className='border-gray-200') for col in columns])

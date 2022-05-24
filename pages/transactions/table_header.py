@@ -5,7 +5,7 @@ from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.button_container_aoi import ButtonContainerAIO
 from .icons import TICK_ICON, GEAR_ICON
 
-from dash_spa.components.table import TableAIO, PAGE_SIZE
+from dash_spa.components.table import TableAIO, PAGE_SIZE, LAST_PAGE
 
 
 def _searchOrders():
@@ -42,7 +42,8 @@ def _settingsDropdown(table: TableAIO) -> html.Div:
     page_size = ["10", "20", "30"]
 
     def update_function(value, store):
-        store[PAGE_SIZE] = int(page_size[value])
+        store[PAGE_SIZE] = new_size = int(page_size[value])
+        store[LAST_PAGE] = table.last_row(new_size)
         return store
 
     container = ButtonContainerAIO(page_size, 0,
