@@ -1,7 +1,8 @@
-import logging
+import time
 from dash import html, callback, MATCH
 from dash.development.base_component import Component
 import dash_holoniq_components as dhc
+from dash_spa.logging import log
 
 from dash_prefix import match, component_id
 
@@ -26,10 +27,20 @@ class DropdownAIO(html.Div):
         if 'show' in classNames:
             if button_focus is False:
                 classNames.remove('show')
+
+                # Delay hiding the container. If we don't do this click
+                # event from elements in the container are lost
+                # TODO: Add a configurable delay to dhc.Button
+
+                time.sleep(300/1000)
         else:
             classNames.append('show')
 
-        return ' '.join(classNames)
+        className = ' '.join(classNames)
+
+        #log.info("DropdownAIO className='%s'", className)
+
+        return className
 
 
     def __init__(self, button:Component, container:Component, aio_id=None):

@@ -49,7 +49,7 @@ class TableAIO(html.Table):
         def _update_table_cb(store):
             try:
                 store = StateWrapper(store)
-                # log.info('_update_table_cb(id=%s) page=%d', pid(''), store.current_page)
+                log.info('_update_table_cb(id=%s) page=%d', pid(''), store.current_page)
                 rows = self.tableRows(data, page=store.current_page, page_size=store.page_size)
                 return rows
             except:

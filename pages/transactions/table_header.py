@@ -42,7 +42,7 @@ def _settingsDropdown(table: TableAIO) -> html.Div:
     page_size = ["10", "20", "30"]
 
     def update_function(value, store):
-        store[PAGE_SIZE] = page_size[int(value)]
+        store[PAGE_SIZE] = int(page_size[value])
         return store
 
     container = ButtonContainerAIO(page_size, 0,

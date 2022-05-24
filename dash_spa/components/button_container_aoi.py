@@ -26,7 +26,7 @@ class ButtonContainerAIO(html.Div):
 
             def _range_element(index, text):
                 rng = range_element(text, index==current)
-                return html.Div(rng, id=range_match.idx(text))
+                return html.Div(rng, id=range_match.idx(index))
 
             return [_range_element(index, text) for index, text in enumerate(range)]
 
@@ -39,22 +39,23 @@ class ButtonContainerAIO(html.Div):
                 return [range_element(text, index==current) for index, text in enumerate(range)]
 
             index = trigger_index()
+            log.info('update UI index= %s', index)
+
             if index is not None and clicks[index]:
-                log.info('update UI  index= %s', index)
                 range_elements = _range_elements(index)
-                return range_elements
+                return range_elements.copy()
 
             return NOUPDATE
 
-        # @store.update(range_match.input.n_clicks)
-        # def _update_store(clicks, store):
-        #     index = trigger_index()
-        #     if index is not None and clicks[index]:
-        #         store = update_function(index, store)
-        #         log.info('store = %s', store)
-        #         return store
+        @store.update(range_match.input.n_clicks)
+        def _update_store(clicks, store):
+            index = trigger_index()
+            if index is not None and clicks[index]:
+                store = update_function(index, store)
+                log.info('store = %s', store)
+                return store
 
-        #     return NOUPDATE
+            return NOUPDATE
 
 
         super().__init__(range_elements, id=pid('ButtonContainerAIO'), className=className)
