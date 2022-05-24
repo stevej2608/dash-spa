@@ -58,4 +58,4 @@ def default_container(layout,  **kwargs):
         return page.layout()
 
 
-spa.register_container(default_container)
+#spa.register_container(default_container)
