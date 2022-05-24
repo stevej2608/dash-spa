@@ -2,7 +2,7 @@ from collections import OrderedDict
 from dash import html
 import pandas as pd
 from dash_spa.components.dropdown_aio import DropdownAIO
-from dash_spa.components.table import TableAIO, TableAIOPaginator, TableAIOPaginatorView
+from dash_spa.components.table import TableAIO
 
 
 data = OrderedDict([
@@ -25,8 +25,6 @@ df = pd.DataFrame(rows())
 
 
 class OrdersTable(TableAIO):
-
-    TABLE_CLASS_NAME = 'card card-body border-0 shadow table-wrapper table-responsive'
 
     def tableAction(self):
 
@@ -68,8 +66,8 @@ class OrdersTable(TableAIO):
         ])
 
 
-def table_layout(page):
-    ordersTable = OrdersTable(
+def create_table(page) -> OrdersTable:
+    return OrdersTable(
         data=df.to_dict('records'),
         columns=[{'id': c, 'name': c} for c in df.columns],
         page = page,
@@ -77,12 +75,3 @@ def table_layout(page):
         id="transactions"
     )
 
-    paginator = TableAIOPaginator(ordersTable.store, className='pagination mb-0', id="transactions_paginator")
-    viewer = TableAIOPaginatorView(ordersTable.store, id="transactions_paginator_view")
-    paginator_row = html.Div([paginator, viewer], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
-
-    return html.Div([ordersTable, paginator_row])
-
-
-def table(page):
-    return table_layout(page)

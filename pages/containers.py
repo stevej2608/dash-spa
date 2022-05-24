@@ -43,13 +43,12 @@ def default_container(layout,  **kwargs):
         return html.Div([
             navbar.layout(),
             html.Br(),
-            html.Div([
+            html.Main([
                 html.Div([
-                    html.Div([], className="col-md-1"),
                     html.Div(content, className="col-md-10"),
-                    html.Div([], className="col-md-1")
+                    html.Div([], className="col-md-2")
                 ], className='row')
-            ], className="container-fluid"),
+            ], className='content'),
             html.Div(id='null'),
             html.Div(footer.layout())
         ])

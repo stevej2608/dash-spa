@@ -1,17 +1,19 @@
+from typing import Callable
 from abc import abstractmethod
 from math import ceil
 from typing import List, Dict, Any
 from dash import html, callback
 from dash_redux import ReduxStore, StateWrapper
 
-from dash_spa import prefix, PreventUpdate, page_container_append
+import dash_spa as spa
 from dash_spa.logging import log
-
 
 TableData = List[Dict[str, Any]]
 TableColumns = List[Dict[str, Any]]
 
-class TableAIO(html.Div):
+PAGE_SIZE = 'page_size'
+
+class TableAIO(html.Table):
     """Generic SPA Table
 
     Args:
@@ -22,22 +24,22 @@ class TableAIO(html.Div):
         id (str, optional): The table id. If None one will be assigned.
         """
 
-    TABLE_CLASS_NAME = ''
+    TABLE_CLASS_NAME = 'table table-hover'
 
-    def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 10, id: str = None):
+    def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 10, id: str = None, **kwargs):
 
-        pid = prefix(id)
+        self._prefix = pid = spa.prefix(id)
 
         log.info('TableAIO id=%s', pid(''))
 
         table_data = {
             'current_page': page,
             'last_page' : ceil(len(data) / page_size),
-            'page_size': page_size
+            PAGE_SIZE: page_size
         }
 
         self.store = store = ReduxStore(id=pid('store'), data=table_data)
-        page_container_append(store)
+        spa.page_container_append(store)
 
         thead = self.tableHead(columns)
         trows = self.tableRows(data, page=1, page_size=page_size)
@@ -51,10 +53,13 @@ class TableAIO(html.Div):
                 rows = self.tableRows(data, page=store.current_page, page_size=store.page_size)
                 return rows
             except:
-                raise PreventUpdate()
+                raise spa.PreventUpdate()
 
-        table = html.Table([thead,tbody], className='table table-hover')
-        super().__init__(table, className=self.TABLE_CLASS_NAME)
+        super().__init__([thead,tbody], className=TableAIO.TABLE_CLASS_NAME, **kwargs)
+
+
+    def prefix(self, pfx:str = None) -> Callable[[str], str]:
+        return spa.prefix(f'{self._prefix(pfx)}')
 
 
     def tableHead(self, columns: TableColumns):

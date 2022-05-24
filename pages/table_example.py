@@ -30,8 +30,6 @@ df = pd.DataFrame(
 
 class CustomTable(TableAIO):
 
-    TABLE_CLASS_NAME = 'card card-body border-0 shadow table-wrapper table-responsive'
-
     def tableAction(self):
 
         button = DropdownAIO.Button([
@@ -84,6 +82,9 @@ def table_layout():
     viewer = TableAIOPaginatorView(table.store, id="table_example_paginator_view")
     paginator_row = html.Div([paginator, viewer], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
 
-    return html.Div([table, paginator_row])
+    return html.Div([
+        html.Div(table, className='card card-body border-0 shadow table-wrapper table-responsive'),
+        paginator_row
+        ])
 
-layout = table_layout()
+layout = ""
