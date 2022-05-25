@@ -33,18 +33,18 @@ class PageSizeSelect(ButtonContainerAIO):
         super().__init__(page_sizes, current, table.store, className=PageSizeSelect.className, id=pid('settings'))
 
 
-    def render_element(self, value, selected):
+    def render_button(self, text, selected):
         if selected:
-            element = html.Div([value, TICK_ICON], className='dropdown-item d-flex align-items-center fw-bold')
+            element = html.Div([text, TICK_ICON], className='dropdown-item d-flex align-items-center fw-bold')
         else:
-            element = html.Div(value, className='dropdown-item fw-bold')
+            element = html.Div(text, className='dropdown-item fw-bold')
 
-        if value == "30":
+        if text == self.page_sizes[-1]:
             element.className += ' rounded-bottom'
 
         return element
 
-    def update_function(self, value, store):
+    def update_store(self, value, store):
         store[PAGE_SIZE] = new_size = int(self.page_sizes[value])
         store[LAST_PAGE] = self.table.last_row(new_size)
         store[CURRENT_PAGE] = 1

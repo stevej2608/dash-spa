@@ -97,6 +97,7 @@ def update_graph(tickers):
                 'showlegend': True if i == 0 else False,
                 'name': f'{ticker} - bollinger bands'
             } for i, y in enumerate(bb_bands)]
+
             graphs.append(dcc.Graph(
                 id=ticker,
                 figure={
@@ -107,5 +108,7 @@ def update_graph(tickers):
                     }
                 }
             ))
+
+            graphs.append(html.Br())
 
     return graphs

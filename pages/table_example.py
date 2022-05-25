@@ -87,4 +87,4 @@ def table_layout():
         paginator_row
         ])
 
-layout = ""
+layout = table_layout()

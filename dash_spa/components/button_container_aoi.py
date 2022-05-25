@@ -1,8 +1,10 @@
-from typing import Callable, List
+from abc import abstractmethod
+from typing import List
 from dash_redux import ReduxStore
 from dash_spa.logging import log
-from dash import html, dcc, callback, ALL
-from dash_spa import match, prefix, isTriggered, trigger_index, NOUPDATE
+from dash import html, callback, ALL
+from dash.development.base_component import Component
+from dash_spa import match, prefix, trigger_index, NOUPDATE
 
 
 class Dict2Obj:
@@ -12,56 +14,75 @@ class Dict2Obj:
                 setattr(self, key, value)
 
 class ButtonContainerAIO(html.Div):
+    """Manage a container(typically a list) of buttons and associated
+    store. This is an abstract base class.
 
-    def __init__(self, range: List, current:int, store: ReduxStore, className: str = None, id=None):
+    Args:
+        elements (List[str]): The button text
+        current (int): Index of the selected button
+        store (ReduxStore): Store to be updated when a button is clicked
+        className (str, optional): Container className. Defaults to None.
+        id (_type_, optional): Container ID, if None one will be allocated.
 
+    Abstract Methods:
+
+        render_button(self, text, selected)
+
+        update_store(self, value, store)
+
+    """
+
+    def __init__(self, elements: List, current:int, store: ReduxStore, className: str = None, id=None):
         id = prefix(store.store.id) if id is None else id
         pid = prefix(id)
+        self._elements = elements
+        button_match = match({'type': pid('li'), 'idx': ALL})
 
-        self._elements = range
+        def _render_buttons(current):
+            def _render_button(index, text):
+                btn = self.render_button(text, index==current)
+                return html.Div(btn, id=button_match.idx(index))
+            return [_render_button(index, text) for index, text in enumerate(elements)]
 
-        range_match = match({'type': pid('li'), 'idx': ALL})
+        buttons = _render_buttons(current)
 
-        def _range_elements(current):
-
-            def _range_element(index, text):
-                rng = self.render_element(text, index==current)
-                return html.Div(rng, id=range_match.idx(index))
-
-            return [_range_element(index, text) for index, text in enumerate(range)]
-
-        range_elements = _range_elements(current)
-
-        @callback(range_match.output.children, range_match.input.n_clicks)
+        @callback(button_match.output.children, button_match.input.n_clicks)
         def _update_cb(clicks):
 
-            def _range_elements(current):
-                return [self.render_element(text, index==current) for index, text in enumerate(range)]
+            def _render_buttons(current):
+                return [self.render_button(text, index==current) for index, text in enumerate(elements)]
 
             index = trigger_index()
             log.info('update UI index= %s', index)
 
             if index is not None and clicks[index]:
-                range_elements = _range_elements(index)
-                return range_elements.copy()
+                buttons = _render_buttons(index)
+                return buttons.copy()
 
             return NOUPDATE
 
-        @store.update(range_match.input.n_clicks)
+        @store.update(button_match.input.n_clicks)
         def _update_store(clicks, store):
             index = trigger_index()
             if index is not None and clicks[index]:
-                store = self.update_function(index, store)
+                store = self.update_store(index, store)
                 log.info('store = %s', store)
                 return store
 
             return NOUPDATE
 
-        super().__init__(range_elements, id=pid('ButtonContainerAIO'), className=className)
+        super().__init__(buttons, id=pid('ButtonContainerAIO'), className=className)
 
-    def render_element(self, selected_index):
+    @abstractmethod
+    def render_button(self, text) -> Component:
+        """Return a button component for he given value
+
+        Args:
+            text (str): Text for button
+        """
         pass
 
-    def update_function(self, value, store):
+    @abstractmethod
+    def update_store(self, value, store: ReduxStore) -> ReduxStore :
         pass
 
