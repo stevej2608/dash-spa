@@ -13,20 +13,19 @@ class Dict2Obj:
 
 class ButtonContainerAIO(html.Div):
 
-    def __init__(self, range: List, current:int,
-                       range_element: Callable,
-                       store: ReduxStore, update_function,
-                       className: str = None, id=None):
+    def __init__(self, range: List, current:int, store: ReduxStore, className: str = None, id=None):
 
         id = prefix(store.store.id) if id is None else id
         pid = prefix(id)
+
+        self._elements = range
 
         range_match = match({'type': pid('li'), 'idx': ALL})
 
         def _range_elements(current):
 
             def _range_element(index, text):
-                rng = range_element(text, index==current)
+                rng = self.render_element(text, index==current)
                 return html.Div(rng, id=range_match.idx(index))
 
             return [_range_element(index, text) for index, text in enumerate(range)]
@@ -37,7 +36,7 @@ class ButtonContainerAIO(html.Div):
         def _update_cb(clicks):
 
             def _range_elements(current):
-                return [range_element(text, index==current) for index, text in enumerate(range)]
+                return [self.render_element(text, index==current) for index, text in enumerate(range)]
 
             index = trigger_index()
             log.info('update UI index= %s', index)
@@ -52,11 +51,17 @@ class ButtonContainerAIO(html.Div):
         def _update_store(clicks, store):
             index = trigger_index()
             if index is not None and clicks[index]:
-                store = update_function(index, store)
+                store = self.update_function(index, store)
                 log.info('store = %s', store)
                 return store
 
             return NOUPDATE
 
-
         super().__init__(range_elements, id=pid('ButtonContainerAIO'), className=className)
+
+    def render_element(self, selected_index):
+        pass
+
+    def update_function(self, value, store):
+        pass
+

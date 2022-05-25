@@ -7,6 +7,17 @@ from dash_spa.logging import log
 from dash_prefix import match, component_id
 
 class DropdownAIO(html.Div):
+    """Button and container. The container is shown when the
+    button is clicked. The container is hidden when focus is lost.
+
+    The button **must** be a dash_holoniq_components Button
+
+
+    Args:
+        button (dhc.Button): Button, when clicked displays the container
+        container (Component): Container to be shown/hidden
+        aio_id (str, optional): The container prefix. If None one will be allocated.
+    """
 
     Button = dhc.Button
 
@@ -43,7 +54,7 @@ class DropdownAIO(html.Div):
         return className
 
 
-    def __init__(self, button:Component, container:Component, aio_id=None):
+    def __init__(self, button:dhc.Button, container:Component, aio_id=None):
 
         ids = DropdownAIO.ids
         aio_id = aio_id if aio_id else component_id()

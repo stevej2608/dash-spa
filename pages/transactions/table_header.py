@@ -1,3 +1,4 @@
+from typing import List
 from dash import html, dcc, ALL
 from dash_svg import Svg, Path
 from dash_spa import match, prefix
@@ -21,14 +22,18 @@ def _searchOrders():
     ], className='col col-md-6 col-lg-3 col-xl-4')
 
 
-def _settingsDropdown(table: TableAIO) -> html.Div:
+class PageSizeSelect(ButtonContainerAIO):
 
-    button = DropdownAIO.Button([
-       GEAR_ICON,html.Span("Toggle Dropdown", className='visually-hidden')
-    ], className='btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1')
+    className ='dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0'
+
+    def __init__(self, page_sizes: List, current:int, table: TableAIO):
+        self.table = table
+        self.page_sizes = page_sizes
+        pid = table.prefix('page_size')
+        super().__init__(page_sizes, current, table.store, className=PageSizeSelect.className, id=pid('settings'))
 
 
-    def element_renderer(value, selected):
+    def render_element(self, value, selected):
         if selected:
             element = html.Div([value, TICK_ICON], className='dropdown-item d-flex align-items-center fw-bold')
         else:
@@ -39,20 +44,20 @@ def _settingsDropdown(table: TableAIO) -> html.Div:
 
         return element
 
-    page_sizes = ["10", "20", "30"]
-
-    pid = table.prefix('settings')
-
-    def update_function(value, store):
-        store[PAGE_SIZE] = new_size = int(page_sizes[value])
-        store[LAST_PAGE] = table.last_row(new_size)
+    def update_function(self, value, store):
+        store[PAGE_SIZE] = new_size = int(self.page_sizes[value])
+        store[LAST_PAGE] = self.table.last_row(new_size)
         store[CURRENT_PAGE] = 1
         return store
 
-    container = ButtonContainerAIO(page_sizes, 0,
-                    element_renderer, table.store, update_function,
-                    className='dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0',
-                    id=pid('container'))
+
+def _settingsDropdown(table: TableAIO) -> html.Div:
+
+    button = DropdownAIO.Button([
+       GEAR_ICON,html.Span("Toggle Dropdown", className='visually-hidden')
+    ], className='btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1')
+
+    container = PageSizeSelect(["10", "20", "30"], 0, table)
 
     # container.children[0:0] = [html.Span("Show", className='small ps-3 fw-bold text-dark')]
 
