@@ -71,7 +71,6 @@ def create_table(page) -> OrdersTable:
         data=df.to_dict('records'),
         columns=[{'id': c, 'name': c} for c in df.columns],
         page = page,
-        page_size=7,
         id="transactions"
     )
 

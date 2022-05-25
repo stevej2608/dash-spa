@@ -16,9 +16,10 @@ class ButtonContainerAIO(html.Div):
     def __init__(self, range: List, current:int,
                        range_element: Callable,
                        store: ReduxStore, update_function,
-                       className: str = None, aio_id=None):
+                       className: str = None, id=None):
 
-        pid = prefix(store.store.id)
+        id = prefix(store.store.id) if id is None else id
+        pid = prefix(id)
 
         range_match = match({'type': pid('li'), 'idx': ALL})
 

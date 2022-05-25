@@ -5,7 +5,7 @@ from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.button_container_aoi import ButtonContainerAIO
 from .icons import TICK_ICON, GEAR_ICON
 
-from dash_spa.components.table import TableAIO, PAGE_SIZE, LAST_PAGE
+from dash_spa.components.table import TableAIO, PAGE_SIZE, LAST_PAGE, CURRENT_PAGE
 
 
 def _searchOrders():
@@ -39,16 +39,20 @@ def _settingsDropdown(table: TableAIO) -> html.Div:
 
         return element
 
-    page_size = ["10", "20", "30"]
+    page_sizes = ["10", "20", "30"]
+
+    pid = table.prefix('settings')
 
     def update_function(value, store):
-        store[PAGE_SIZE] = new_size = int(page_size[value])
+        store[PAGE_SIZE] = new_size = int(page_sizes[value])
         store[LAST_PAGE] = table.last_row(new_size)
+        store[CURRENT_PAGE] = 1
         return store
 
-    container = ButtonContainerAIO(page_size, 0,
+    container = ButtonContainerAIO(page_sizes, 0,
                     element_renderer, table.store, update_function,
-                    className='dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0')
+                    className='dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0',
+                    id=pid('container'))
 
     # container.children[0:0] = [html.Span("Show", className='small ps-3 fw-bold text-dark')]
 

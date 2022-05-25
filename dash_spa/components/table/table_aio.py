@@ -13,6 +13,7 @@ TableColumns = List[Dict[str, Any]]
 
 PAGE_SIZE = 'page_size'
 LAST_PAGE = 'last_page'
+CURRENT_PAGE = 'current_page'
 
 class TableAIO(html.Table):
     """Generic SPA Table
@@ -35,7 +36,7 @@ class TableAIO(html.Table):
         log.info('TableAIO id=%s', pid(''))
 
         table_data = {
-            'current_page': page,
+            CURRENT_PAGE : page,
             LAST_PAGE : ceil(len(data) / page_size),
             PAGE_SIZE: page_size
         }
