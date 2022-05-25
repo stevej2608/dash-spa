@@ -33,16 +33,20 @@ class PageSizeSelect(ButtonContainerAIO):
         super().__init__(page_sizes, current, table.store, className=PageSizeSelect.className, id=pid('settings'))
 
 
-    def render_button(self, text, selected):
-        if selected:
-            element = html.Div([text, TICK_ICON], className='dropdown-item d-flex align-items-center fw-bold')
-        else:
-            element = html.Div(text, className='dropdown-item fw-bold')
+    def render_buttons(self, store):
 
-        if text == self.page_sizes[-1]:
-            element.className += ' rounded-bottom'
+        def render_button(text):
+            if int(text) == store[PAGE_SIZE]:
+                element = html.Div([text, TICK_ICON], className='dropdown-item d-flex align-items-center fw-bold')
+            else:
+                element = html.Div(text, className='dropdown-item fw-bold')
 
-        return element
+            if text == self.page_sizes[-1]:
+                element.className += ' rounded-bottom'
+            return element
+
+        return [render_button(text) for text in self.page_sizes]
+
 
     def update_store(self, value, store):
         store[PAGE_SIZE] = new_size = int(self.page_sizes[value])
@@ -58,9 +62,6 @@ def _settingsDropdown(table: TableAIO) -> html.Div:
     ], className='btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1')
 
     container = PageSizeSelect(["10", "20", "30"], 0, table)
-
-    # container.children[0:0] = [html.Span("Show", className='small ps-3 fw-bold text-dark')]
-
     dropdown = DropdownAIO(button, container)
 
     return html.Div(dropdown, className='col-4 col-md-2 col-xl-1 ps-md-0 text-end')

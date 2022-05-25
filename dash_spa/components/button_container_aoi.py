@@ -39,31 +39,24 @@ class ButtonContainerAIO(html.Div):
         button_match = match({'type': pid('li'), 'idx': ALL})
 
         def _render_buttons(current):
+
+            buttons = self.render_buttons(store.data)
+
             def _render_button(index, text):
-                btn = self.render_button(text, index==current)
+                btn = buttons[index]
                 return html.Div(btn, id=button_match.idx(index))
+
             return [_render_button(index, text) for index, text in enumerate(elements)]
 
         buttons = _render_buttons(current)
 
-        @callback(button_match.output.children, button_match.input.n_clicks)
-        def _update_cb(clicks):
-
-            def _render_buttons(current):
-                return [self.render_button(text, index==current) for index, text in enumerate(elements)]
-
-            index = trigger_index()
-            log.info('update UI index= %s', index)
-
-            if index is not None and clicks[index]:
-                buttons = _render_buttons(index)
-                return buttons.copy()
-
-            return NOUPDATE
-
         @store.update(button_match.input.n_clicks)
         def _update_store(clicks, store):
+
+            # Button clicked update the store
+
             index = trigger_index()
+
             if index is not None and clicks[index]:
                 store = self.update_store(index, store)
                 log.info('store = %s', store)
@@ -71,15 +64,21 @@ class ButtonContainerAIO(html.Div):
 
             return NOUPDATE
 
+
+        @callback(button_match.output.children, store.store.input.data)
+        def _update_cb(store):
+
+            # Store has changed, update buttons
+
+            buttons = self.render_buttons(store)
+            return buttons
+
+
         super().__init__(buttons, id=pid('ButtonContainerAIO'), className=className)
 
     @abstractmethod
-    def render_button(self, text) -> Component:
-        """Return a button component for he given value
-
-        Args:
-            text (str): Text for button
-        """
+    def render_buttons(self, store:ReduxStore) -> List[Component]:
+        """Return a button component list"""
         pass
 
     @abstractmethod
