@@ -88,7 +88,7 @@ class TableAIOPaginator(html.Ul):
 
             raise PreventUpdate
 
-        @callback(self.output.children, table.config_store.store.input.data)
+        @callback(self.output.children, table.config_store.input.data)
         def _paginator_update_cb(store):
             if store:
                 _store = StateWrapper(store)

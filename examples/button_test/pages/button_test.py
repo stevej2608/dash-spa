@@ -39,7 +39,7 @@ def page_layout():
         return store
 
 
-    @callback(container.output.children, store.store.input.data)
+    @callback(container.output.children, store.input.data)
     def btn2_update(store):
         msg = ""
         if store and 'btn1' in store:

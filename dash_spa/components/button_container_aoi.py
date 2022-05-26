@@ -33,7 +33,7 @@ class ButtonContainerAIO(html.Div):
     """
 
     def __init__(self, elements: List, current:int, store: ReduxStore, className: str = None, id=None):
-        id = prefix(store.store.id) if id is None else id
+        id = prefix(store.id) if id is None else id
         pid = prefix(id)
         self._elements = elements
         button_match = match({'type': pid('li'), 'idx': ALL})
@@ -65,7 +65,7 @@ class ButtonContainerAIO(html.Div):
             return NOUPDATE
 
 
-        @callback(button_match.output.children, store.store.input.data)
+        @callback(button_match.output.children, store.input.data)
         def _update_cb(store):
 
             # Store has changed, update buttons

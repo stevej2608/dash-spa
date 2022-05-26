@@ -42,7 +42,7 @@ class TableAIOPaginatorView(html.Div):
 
         super().__init__(content, id=pid('TableAIOPaginator'), className=className)
 
-        @callback(self.output.children, config_store.store.input.data)
+        @callback(self.output.children, config_store.input.data)
         def update_paginator_view_cb(store):
             if store:
                 # log.info('update_paginator_view_cb(id=%s) page=%d', pid(''), store.current_page)

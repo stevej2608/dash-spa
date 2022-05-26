@@ -49,19 +49,23 @@ class TableAIO(html.Table):
         }
 
 
-        self.config_store = store = ReduxStore(id=pid('store'), data={})
+        self.config_store = store = ReduxStore(id=pid('store'), data={}, storage_type="local")
         spa.page_container_append(store)
 
         thead = self.tableHead(columns)
         trows = self.tableRows(data, page=1, page_size=page_size)
         tbody = html.Tbody(trows, id=pid('table'))
 
-        @callback(tbody.output.children, store.store.input.data)
+        @callback(tbody.output.children, store.input.data)
         def _update_table_cb(store):
             try:
-                store = store if store else self._initial_config
+                if store:
+                    log.info('_update_table_cb(id=%s) live store=%s', pid(''), store)
+                else:
+                    log.info('_update_table_cb(id=%s) init store=%s', pid(''), store)
+                    store = self._initial_config
+
                 store = StateWrapper(store)
-                log.info('_update_table_cb(id=%s) page=%d', pid(''), store.current_page)
                 rows = self.tableRows(data, page=store.current_page, page_size=store.page_size)
                 return rows
             except:
