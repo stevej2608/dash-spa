@@ -27,8 +27,8 @@ def _table_layout(page=1):
 
     table = create_table(page)
     header = create_header(table)
-    paginator = TableAIOPaginator(table.store, className='pagination mb-0', id="transactions_paginator")
-    viewer = TableAIOPaginatorView(table.store, id="transactions_paginator_view")
+    paginator = TableAIOPaginator(table, className='pagination mb-0', id="transactions_paginator")
+    viewer = TableAIOPaginatorView(table, id="transactions_paginator_view")
 
     return html.Div([
         header,

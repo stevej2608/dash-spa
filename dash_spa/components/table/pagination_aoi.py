@@ -1,10 +1,10 @@
 from typing import List
 from dash import html, callback, ALL
-from dash_redux import ReduxStore, StateWrapper
 from dash_prefix import match, prefix
-
+from dash_redux import StateWrapper
 from dash_spa import PreventUpdate, NOUPDATE
 from dash_spa.logging import log
+from .table_aio import TableAIO
 
 
 # Smart pagination algorithm, converted from PHP
@@ -41,17 +41,18 @@ class TableAIOPaginator(html.Ul):
     PREVIOUS = 'Previous'
     NEXT = 'Next'
 
-    def __init__(self, store: ReduxStore, adjacents=2, className: str = None, id=None):
+    def __init__(self, table: TableAIO, adjacents=2, className: str = None, id=None):
         pid = prefix(id)
+        self.table = table
         self.className = className
         self.range_match = match({'type': pid('li'), 'idx': ALL})
 
-        pagination = self.selectable(store.data, adjacents)
+        pagination = self.selectable(table.config, adjacents)
 
         super().__init__(pagination, id=pid('TableAIOPaginator'), className=self.className)
 
-        @store.update(self.range_match.input.n_clicks,
-                      self.range_match.state.children)
+        @table.config_store.update(self.range_match.input.n_clicks,
+                                   self.range_match.state.children)
         def _paginator_change_cb(clicks, children, store):
 
             if not any(clicks):
@@ -87,7 +88,7 @@ class TableAIOPaginator(html.Ul):
 
             raise PreventUpdate
 
-        @callback(self.output.children, store.store.input.data)
+        @callback(self.output.children, table.config_store.store.input.data)
         def _paginator_update_cb(store):
             if store:
                 _store = StateWrapper(store)

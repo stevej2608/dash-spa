@@ -28,6 +28,13 @@ class TableAIO(html.Table):
 
     TABLE_CLASS_NAME = 'table table-hover'
 
+    @property
+    def config(self):
+        if self.config_store.store.data:
+            return self.config_store.data
+        else:
+            return self._initial_config
+
     def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 10, id: str = None, **kwargs):
 
         self._prefix = pid = spa.prefix(id)
@@ -35,14 +42,14 @@ class TableAIO(html.Table):
 
         log.info('TableAIO id=%s', pid(''))
 
-        table_data = {
+        self._initial_config = {
             CURRENT_PAGE : page,
             LAST_PAGE : ceil(len(data) / page_size),
             PAGE_SIZE: page_size
         }
 
 
-        self.store = store = ReduxStore(id=pid('store'), data=table_data)
+        self.config_store = store = ReduxStore(id=pid('store'), data={})
         spa.page_container_append(store)
 
         thead = self.tableHead(columns)
@@ -52,6 +59,7 @@ class TableAIO(html.Table):
         @callback(tbody.output.children, store.store.input.data)
         def _update_table_cb(store):
             try:
+                store = store if store else self._initial_config
                 store = StateWrapper(store)
                 log.info('_update_table_cb(id=%s) page=%d', pid(''), store.current_page)
                 rows = self.tableRows(data, page=store.current_page, page_size=store.page_size)

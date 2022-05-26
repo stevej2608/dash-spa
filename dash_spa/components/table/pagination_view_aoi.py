@@ -1,8 +1,10 @@
 from dash import html, callback
 from dash.exceptions import PreventUpdate
 from dash_spa import  prefix
-from dash_redux import ReduxStore, StateWrapper
+from dash_redux import StateWrapper
 from dash_spa.logging import log
+
+from .table_aio import TableAIO
 
 class TableAIOPaginatorView(html.Div):
     """Manages and updates the view component of the associated
@@ -32,19 +34,19 @@ class TableAIOPaginatorView(html.Div):
         </div>
     ```
     """
-    def __init__(self, store: ReduxStore, className='fw-normal small mt-4 mt-lg-0', id=None):
+    def __init__(self, table: TableAIO, className='fw-normal small mt-4 mt-lg-0', id=None):
         pid = prefix(id)
-        state = StateWrapper(store.data)
-        content = self.render_content(state.current_page, state.last_page)
+        config_store = table.config_store
+        table_config = StateWrapper(table.config)
+        content = self.render_content(table_config.current_page, table_config.last_page)
 
         super().__init__(content, id=pid('TableAIOPaginator'), className=className)
 
-        @callback(self.output.children, store.store.input.data)
+        @callback(self.output.children, config_store.store.input.data)
         def update_paginator_view_cb(store):
-            if store is not None:
-                store = StateWrapper(store)
+            if store:
                 # log.info('update_paginator_view_cb(id=%s) page=%d', pid(''), store.current_page)
-                return self.render_content(store.current_page, store.last_page)
+                return self.render_content(table_config.current_page, table_config.last_page)
 
             raise PreventUpdate
 
