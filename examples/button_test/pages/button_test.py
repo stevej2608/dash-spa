@@ -10,12 +10,15 @@ register_page(__name__, path='/', title="Button Test", short_name='Buttons')
 
 pfx = prefix("redux_test")
 
-def page_layout():
 
+def button_group(gid):
+    pfx = prefix(gid)
+
+    title = html.H4(f"Button {gid}")
     store = ReduxStore(id=pfx('store'), data={})
     btn1 = html.Button("Button1", id=pfx('btn1'))
     btn2 = html.Button("Button2", id=pfx("btn2"))
-    container = html.Div(id=pfx('container'))
+    container = html.Div(f"Button Group {gid}", id=pfx('container'))
 
     @store.update(btn1.input.n_clicks)
     def btn1_update(clicks, store):
@@ -50,7 +53,17 @@ def page_layout():
 
         return msg
 
-    return html.Div([btn1, btn2, container, store])
+    return html.Div([title, btn1, btn2, container, store, html.Br()])
+
+
+
+def page_layout():
+
+    group1 = button_group('group_1')
+    group2 = button_group('group_2')
+    group3 = button_group('group_3')
+
+    return html.Div([group1, group2, group3])
 
 
 layout = page_layout()
