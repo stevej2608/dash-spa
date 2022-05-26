@@ -49,7 +49,7 @@ class TableAIO(html.Table):
         }
 
 
-        self.config_store = store = ReduxStore(id=pid('store'), data={}, storage_type="local")
+        self.config_store = store = ReduxStore(id=pid('store'), data={}, storage_type='memory')
         spa.page_container_append(store)
 
         thead = self.tableHead(columns)
@@ -71,8 +71,13 @@ class TableAIO(html.Table):
             except:
                 raise spa.PreventUpdate()
 
+        self.init()
+
         super().__init__([thead,tbody], className=TableAIO.TABLE_CLASS_NAME, **kwargs)
 
+
+    def init(self):
+        pass
 
     def prefix(self, pfx:str = None) -> Callable[[str], str]:
         return spa.prefix(f'{self._prefix(pfx)}')
