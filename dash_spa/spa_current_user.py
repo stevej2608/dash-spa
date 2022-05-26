@@ -1,5 +1,6 @@
-from flask import current_app as app
+from flask import session, current_app as app
 from flask_login import current_user as flask_current_user
+
 
 class CurrentUser:
     """Stub that allows Dash/SPA to think it's got a Flask_Login
@@ -27,6 +28,7 @@ class CurrentUser:
     @property
     def is_authenticated(self):
         try:
+            session.permanent = True
             return flask_current_user.is_authenticated
         except:
             return
