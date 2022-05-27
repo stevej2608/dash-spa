@@ -36,7 +36,7 @@ class TableAIOPaginatorView(html.Div):
     """
     def __init__(self, table: TableAIO, className='fw-normal small mt-4 mt-lg-0', id=None):
         pid = prefix(id)
-        config_store = table.config_store
+        config_store = table.table_config
         table_config = StateWrapper(table.config)
         content = self.render_content(table_config.current_page, table_config.last_page)
 

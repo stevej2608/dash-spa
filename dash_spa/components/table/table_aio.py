@@ -30,8 +30,8 @@ class TableAIO(html.Table):
 
     @property
     def config(self):
-        if self.config_store.store.data:
-            return self.config_store.data
+        if self.table_config.store.data:
+            return self.table_config.data
         else:
             return self._initial_config
 
@@ -49,14 +49,14 @@ class TableAIO(html.Table):
         }
 
 
-        self.config_store = store = ReduxStore(id=pid('store'), data={}, storage_type='memory')
-        spa.page_container_append(store)
+        self.table_config = table_config = ReduxStore(id=pid('store'), data={}, storage_type='memory')
+        spa.page_container_append(table_config)
 
         thead = self.tableHead(columns)
         trows = self.tableRows(data, page=1, page_size=page_size)
         tbody = html.Tbody(trows, id=pid('table'))
 
-        @callback(tbody.output.children, store.input.data)
+        @callback(tbody.output.children, table_config.input.data)
         def _update_table_cb(store):
             try:
                 if store:

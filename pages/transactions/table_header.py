@@ -30,7 +30,7 @@ class PageSizeSelect(ButtonContainerAIO):
         self.table = table
         self.page_sizes = page_sizes
         pid = table.prefix('page_size')
-        super().__init__(page_sizes, current, table.config_store, className=PageSizeSelect.className, id=pid('settings'))
+        super().__init__(page_sizes, current, table.table_config, className=PageSizeSelect.className, id=pid('settings'))
 
 
     def render_buttons(self, store):

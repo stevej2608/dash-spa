@@ -51,7 +51,7 @@ class TableAIOPaginator(html.Ul):
 
         super().__init__(pagination, id=pid('TableAIOPaginator'), className=self.className)
 
-        @table.config_store.update(self.range_match.input.n_clicks,
+        @table.table_config.update(self.range_match.input.n_clicks,
                                    self.range_match.state.children)
         def _paginator_change_cb(clicks, children, store):
 
@@ -88,7 +88,7 @@ class TableAIOPaginator(html.Ul):
 
             raise PreventUpdate
 
-        @callback(self.output.children, table.config_store.input.data)
+        @callback(self.output.children, table.table_config.input.data)
         def _paginator_update_cb(store):
             if store:
                 _store = StateWrapper(store)

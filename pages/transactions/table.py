@@ -2,6 +2,7 @@ from collections import OrderedDict
 from dash import html
 import pandas as pd
 from dash_spa import NOUPDATE
+from dash_spa.logging import log
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.table import TableAIO
 
@@ -72,24 +73,35 @@ class OrdersTable(TableAIO):
 
         ID = 'transactions'
 
-        # Whenever the SPA_CONFIG changes update the table config
+        # Triggered by SPA_CONFIG changes, pass the config to the
+        # transaction table. This happens on startup to restore the
+        # table configuration
+        #
+        #  Browser local storage -> table
 
-        @self.config_store.update(SPA_CONFIG.input.data)
+        @self.table_config.update(SPA_CONFIG.input.data)
         def _table_update(spa_config, table_config):
             if spa_config:
                 table_config = SPA_CONFIG.get_user(ID, spa_config)
+                log.info('SPA config read, saved table_config=%s', spa_config)
                 return table_config
             else:
+                log.info('SPA config read - NOUPDATE')
                 return NOUPDATE
 
-        # Whenever the table config changes update the SPA_CONFIG
+        # Triggered by user changes to the table settings, write the changes
+        # to SPA_CONFIG
+        #
+        # Table settings change -> Browser local storage
 
-        @SPA_CONFIG.update(self.config_store.input.data)
+        @SPA_CONFIG.update(self.table_config.input.data)
         def _local_update(table_config, spa_config):
             if table_config:
+                log.info('SPA config write %s', table_config)
                 store = SPA_CONFIG.set_user(ID, spa_config, table_config)
                 return store
             else:
+                log.info('SPA config write NOUPDATE')
                 NOUPDATE
 
 def create_table(page) -> OrdersTable:
