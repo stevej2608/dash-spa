@@ -60,6 +60,9 @@ class PageSizeSelect(ButtonContainerAIO):
         store[CURRENT_PAGE] = 1
         return store
 
+    def get_config(self) -> dict :
+        return self.table.get_config()
+
 
 def _settingsDropdown(table: TableAIO) -> html.Div:
 

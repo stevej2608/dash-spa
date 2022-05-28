@@ -63,7 +63,7 @@ class TableAIO(html.Table):
                     log.info('_update_table_cb(id=%s) live store=%s', pid(''), store)
                 else:
                     log.info('_update_table_cb(id=%s) init store=%s', pid(''), store)
-                    store = self._initial_config
+                    store = self.get_config()
 
                 store = StateWrapper(store)
                 rows = self.tableRows(data, page=store.current_page, page_size=store.page_size)
@@ -75,6 +75,8 @@ class TableAIO(html.Table):
 
         super().__init__([thead,tbody], className=TableAIO.TABLE_CLASS_NAME, **kwargs)
 
+    def get_config(self):
+        return self._initial_config
 
     def init(self):
         pass

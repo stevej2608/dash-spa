@@ -67,6 +67,8 @@ class ButtonContainerAIO(html.Div):
 
         @callback(button_match.output.children, store.input.data)
         def _update_cb(store):
+            if not store:
+                store = self.get_config()
 
             # Store has changed, update buttons
 
@@ -85,3 +87,6 @@ class ButtonContainerAIO(html.Div):
     def update_store(self, value, store: ReduxStore) -> ReduxStore :
         pass
 
+    @abstractmethod
+    def get_config(self) -> dict :
+        return {}

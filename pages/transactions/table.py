@@ -69,6 +69,15 @@ class OrdersTable(TableAIO):
             html.Td(action)
         ])
 
+
+    def get_config(self):
+        ID = 'transactions'
+        config = SPA_CONFIG.get_config(ID)
+        if config:
+            return config
+        else:
+            return super().get_config()
+
     def init(self):
 
         ID = 'transactions'
@@ -79,15 +88,15 @@ class OrdersTable(TableAIO):
         #
         #  Browser local storage -> table
 
-        @self.table_config.update(SPA_CONFIG.input.data)
-        def _table_update(spa_config, table_config):
-            if spa_config:
-                table_config = SPA_CONFIG.get_user(ID, spa_config)
-                log.info('SPA config read, saved table_config=%s', spa_config)
-                return table_config
-            else:
-                log.info('SPA config read - NOUPDATE')
-                return NOUPDATE
+        # @self.table_config.update(SPA_CONFIG.input.data)
+        # def _table_update(spa_config, table_config):
+        #     if spa_config:
+        #         table_config = SPA_CONFIG.get_user(ID, spa_config)
+        #         log.info('SPA config read, saved table_config=%s', spa_config)
+        #         return table_config
+        #     else:
+        #         log.info('SPA config read - NOUPDATE')
+        #         return NOUPDATE
 
         # Triggered by user changes to the table settings, write the changes
         # to SPA_CONFIG

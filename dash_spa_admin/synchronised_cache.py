@@ -12,6 +12,16 @@ def synchronized(lock):
     return _wrapper
 
 class SynchronisedTTLCache:
+    """Synchronised TTL cache
+
+    Args:
+        maxsize (_type_): _description_
+        ttl (int): Time to live, seconds
+        timer (_type_, optional): _description_. Defaults to time.monotonic.
+        getsizeof (_type_, optional): _description_. Defaults to None.
+    """
+
+    FOREVER = 100 * 365 * 24 * 60 * 60
 
     # https://rszalski.github.io/magicmethods/
 
