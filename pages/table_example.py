@@ -2,7 +2,7 @@ from dash import html
 import pandas as pd
 from collections import OrderedDict
 
-from dash_spa import register_page
+from dash_spa import register_page, prefix
 from pages import TABLE_EXAMPLE_SLUG
 
 from dash_spa.components.dropdown_aio import DropdownAIO
@@ -25,12 +25,14 @@ data = OrderedDict([
 )
 
 df = pd.DataFrame(
-    OrderedDict([(name, col_data * 10) for (name, col_data) in data.items()])
+    OrderedDict([(name, col_data * 5) for (name, col_data) in data.items()])
 )
 
 class CustomTable(TableAIO):
 
-    def tableAction(self):
+    def tableAction(self, row):
+
+        pid = prefix('table_example_row_action')
 
         button = DropdownAIO.Button([
             html.Span(html.Span(className='fas fa-ellipsis-h icon-dark'), className='icon icon-sm'),
@@ -51,13 +53,13 @@ class CustomTable(TableAIO):
             html.A([html.Span(className='fas fa-trash-alt me-2'), "Remove" ], className='dropdown-item text-danger rounded-bottom', href='#')
         ], className='dropdown-menu py-0', style=style)
 
-        return html.Div(DropdownAIO(button, container), className='btn-group')
+        return html.Div(DropdownAIO(button, container, id=pid(row)), className='btn-group')
 
 
-    def tableRow(self, args):
+    def tableRow(self, index, args):
 
         cid, product, issue_date, due_date, total, status = args.values()
-        action = self.tableAction()
+        action = self.tableAction(index)
 
         return html.Tr([
             html.Td(html.A(cid, href='#', className='fw-bold')),
@@ -75,16 +77,20 @@ def table_layout():
     table = CustomTable(
         data=df.to_dict('records'),
         columns=[{'id': c, 'name': c} for c in df.columns],
-        page_size=7,
         id="table_example")
 
     paginator = TableAIOPaginator(table, className='pagination mb-0', id="table_example_paginator")
     viewer = TableAIOPaginatorView(table, id="table_example_paginator_view")
-    paginator_row = html.Div([paginator, viewer], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
+
+    paginator_row = html.Div([
+        paginator,
+        viewer
+        ], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
 
     return html.Div([
         html.Div(table, className='card card-body border-0 shadow table-wrapper table-responsive'),
         paginator_row
         ])
 
+# layout = "Disabled"
 layout = table_layout()

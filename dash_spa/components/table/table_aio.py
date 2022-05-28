@@ -22,9 +22,15 @@ class TableAIO(html.Table):
         data (TableData): The table data (an array of dict)
         columns (TableColumns): Column names dictionary
         page (int, optional): Initial page size. Defaults to 1.
-        page_size (int, optional): Initial page size. Defaults to 10.
+        page_size (int, optional): Initial page size. Defaults to 100.
         id (str, optional): The table id. If None one will be assigned.
-        """
+
+    Notes:
+
+        The table needs to be initialised with a *page_size* that is the
+        largest that will ever be displayed
+
+    """
 
     TABLE_CLASS_NAME = 'table table-hover'
 
@@ -35,7 +41,7 @@ class TableAIO(html.Table):
         else:
             return self._initial_config
 
-    def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 10, id: str = None, **kwargs):
+    def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 100, id: str = None, **kwargs):
 
         self._prefix = pid = spa.prefix(id)
         self._data = data
@@ -56,7 +62,7 @@ class TableAIO(html.Table):
         trows = self.tableRows(data, page=1, page_size=page_size)
         tbody = html.Tbody(trows, id=pid('table'))
 
-        @callback(tbody.output.children, table_config.input.data)
+        @callback(tbody.output.children, table_config.input.data, prevent_initial_call=True)
         def _update_table_cb(store):
             try:
                 if store:
@@ -97,9 +103,9 @@ class TableAIO(html.Table):
             high = (page) * page_size
             high = high if high < len(data) else len(data)
             data = data[low:high]
-        return[self.tableRow(args) for args in data]
+        return[self.tableRow(index, args) for index, args in enumerate(data)]
 
     @abstractmethod
-    def tableRow(self, args):
+    def tableRow(self, row_index, args):
         return None
 

@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from dash import html
 import pandas as pd
-from dash_spa import NOUPDATE
+from dash_spa import NOUPDATE, prefix
 from dash_spa.logging import log
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.table import TableAIO
@@ -30,7 +30,9 @@ df = pd.DataFrame(rows())
 
 class OrdersTable(TableAIO):
 
-    def tableAction(self):
+    def tableAction(self, row):
+
+        pid = prefix('orders_table_row_action')
 
         button = DropdownAIO.Button([
             html.Span(html.Span(className='fas fa-ellipsis-h icon-dark'), className='icon icon-sm'),
@@ -51,13 +53,13 @@ class OrdersTable(TableAIO):
             html.A([html.Span(className='fas fa-trash-alt me-2'), "Remove" ], className='dropdown-item text-danger rounded-bottom', href='#')
         ], className='dropdown-menu py-0', style=style)
 
-        return html.Div(DropdownAIO(button, container), className='btn-group')
+        return html.Div(DropdownAIO(button, container, id=pid(row)), className='btn-group')
 
 
-    def tableRow(self, args):
+    def tableRow(self, row_index, args):
 
         cid, product, issue_date, due_date, total, status = args.values()
-        action = self.tableAction()
+        action = self.tableAction(row_index)
 
         return html.Tr([
             html.Td(html.A(cid, href='#', className='fw-bold')),
