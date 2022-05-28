@@ -28,7 +28,7 @@ class DropdownAIO(html.Div):
 
         pid = prefix(id)
 
-        log.info('DropdownAIO pid=%s', id)
+        # log.info('DropdownAIO pid=%s', id)
 
         button.id = pid('btn')
         container.id = pid('container')

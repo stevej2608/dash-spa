@@ -46,7 +46,7 @@ class TableAIO(html.Table):
         self._prefix = pid = spa.prefix(id)
         self._data = data
 
-        log.info('TableAIO id=%s', pid(''))
+        log.info('TableAIO id=%s', pid())
 
         self._initial_config = {
             CURRENT_PAGE : page,
