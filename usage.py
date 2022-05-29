@@ -49,7 +49,9 @@ if __name__ == "__main__":
     logging.setLevel(options.level)
 
     app = create_app(create_dash)
-    # logger=DashLogger(DEBUG_LEVEL.VERBOSE)
-    # serve_app(app, debug=False, logger=logger)
 
-    serve_app(app, debug=False)
+    if options.get('DASH_LOGGING', False):
+        logger=DashLogger(DEBUG_LEVEL.VERBOSE)
+        serve_app(app, debug=False, logger=logger)
+    else:
+        serve_app(app, debug=False)
