@@ -20,6 +20,22 @@
         "action": "openExternally"
       }
     },
+
+    {
+      "name": "1b. Python: storage_test",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.storage_test.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
     {
       "name": "3. Python: Current Module",
       "type": "python",
