@@ -22,10 +22,10 @@
     },
 
     {
-      "name": "1b. Python: storage_test",
+      "name": "1b. Python: react_pattern",
       "type": "python",
       "request": "launch",
-      "module": "examples.storage_test.app",
+      "module": "examples.react_pattern.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
