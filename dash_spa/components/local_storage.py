@@ -62,7 +62,7 @@ class LocalStore(ReduxStore):
         if user not in store:
             store[user] = {}
 
-        if store[user][id] != segment:
+        if id not in store[user] or store[user][id] != segment:
             log.info('Updating %s.%s', user, id)
             store[user][id] = segment
             store[user][LAST_MODIFIED] = int((time.time() + 0.5) * 1000)

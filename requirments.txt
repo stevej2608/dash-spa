@@ -1,0 +1,22 @@
+attrs>=21.4.0
+dash-bootstrap-components>=1.1.0
+dash-holoniq-components>=0.0.19
+dash-prefix>=0.0.3
+dash-redux>=0.0.1
+dash-svg>=0.0.8
+dash>=2.1.0
+iniconfig>=1.1.1
+
+# For ticker demo
+
+colorlover>=0.3.0
+pandas>=1.4.2
+
+# For dash_admin_spa
+
+cachetools>=5.0.0
+dash-datatables>=0.0.9
+Flask_Login>=0.4.1
+Flask_SQLAlchemy>=2.5.1
+pystache>=0.6.0
+SQLAlchemy_Utils>=0.38.2
