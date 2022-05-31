@@ -1,6 +1,6 @@
 import json
 from flask import current_app as app
-from dash import html
+from dash import html, Output
 from dash import html, callback
 from dash_spa import prefix, register_page, NOUPDATE
 from dash_spa.logging import log
@@ -13,32 +13,26 @@ from dash_prefix.component_id import component_id
 
 register_page(__name__, path='/', title="React Pattern", short_name='React')
 
-pfx = prefix("storage_test")
+pfx = prefix("storage_test2")
 
 
 class DashReactBase(Component):
 
-    IDS = {}
+    # IDS = {}
 
     def __init__(self, *_args, **_kwargs):
 
-        if not 'id' in _kwargs:
-            _kwargs['id'] = component_id()
-
-        self.id = _kwargs['id']
-
+        self._id = _kwargs.pop('id', component_id())
         self.store = _kwargs.pop('store', None)
-        self.props =  DefaultMunch(None,_kwargs.copy())
+
+        self.props =  DefaultMunch.fromDict(_kwargs.copy())
         component = self._render()
-        super().__init__(component.children,  id=_kwargs['id'])
+        super().__init__(component.children,  id=self._id)
 
-
-    def instance_id(self):
-        class_name = self.__class__.__name__
-        if not class_name in DashReactBase.IDS:
-            DashReactBase.IDS[class_name] = 0
-        DashReactBase.IDS[class_name] += 1
-        return f"{class_name}_{DashReactBase.IDS[class_name]}"
+        @callback(self.output.children, self.store.input.data, prevent_initial_call=True)
+        def _render(data):
+            children = self.render()
+            return children
 
     def _render(self):
         return self.render()
@@ -53,7 +47,7 @@ class DashReactBase(Component):
             if app and app.got_first_request:
                 return callback_stub
 
-            log.info("register callback %s", self.id)
+            log.info("register callback %s", self._id)
 
             @self.store.update(*_args)
             def _proxy(*_args):
@@ -64,12 +58,11 @@ class DashReactBase(Component):
                 args = list(_args)
                 store = args.pop()
 
-                result = user_func(*args)
+                user_func(*args)
 
                 if prev_props != self.props.state:
-                    children = self.render()
-                    self.children = children
                     new_state = json.loads(json.dumps(self.props))
+                    self.props =  DefaultMunch.fromDict(new_state.copy())
                     store[self.id] = new_state
 
                 return store
@@ -88,13 +81,23 @@ class ButtonGroup(DashReactBase, html.Div):
 
     def render(self):
         # log.info("render %s props = %s", self.id, self.props)
-        gid = self.props.id
+        gid = self._id
         pfx = prefix(gid)
 
         title = html.H4(f"Button {gid}")
         btn1 = html.Button("Button1", id=pfx('btn1'))
         btn2 = html.Button("Button2", id=pfx("btn2"))
-        container = html.Div(f"Button Group {gid}", id=pfx('container'))
+
+        props = self.props
+
+        msg = ""
+        if 'btn1' in props:
+            msg += f"Button 1 pressed {props.btn1} times "
+
+        if 'btn2' in props:
+            msg += f"Button 2 pressed {props.btn2} times "
+
+        container = html.Div(msg)
 
         @self.on(btn1.input.n_clicks)
         def btn1_update(clicks):
@@ -123,7 +126,7 @@ class ButtonGroup(DashReactBase, html.Div):
 
 def page_layout():
 
-    store = ReduxStore(id='test_store', data={})
+    store = ReduxStore(id='test_store_1', data={})
 
     group1 = ButtonGroup(id='group_1', store=store)
     group2 = ButtonGroup(id='group_2', store=store)
