@@ -7,8 +7,7 @@ from dash_redux import ReduxStore
 
 from .react_base import DashReactBase
 
-
-register_page(__name__, path='/', title="React Pattern", short_name='React')
+register_page(__name__, path='/react_example', title="React Pattern", short_name='React')
 
 pfx = prefix("storage_test")
 
@@ -65,6 +64,5 @@ def page_layout():
         return groups
 
     return html.Div([store, group1, group2, store_view])
-
 
 layout = page_layout()
