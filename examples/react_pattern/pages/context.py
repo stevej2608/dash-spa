@@ -1,6 +1,6 @@
 import json
 from flask import current_app as app
-from dash import callback, Output
+from dash import callback, Output, no_update as NOUPDATE
 from dash_prefix import prefix
 from dash_spa.logging import log
 from dash_redux import ReduxStore
@@ -64,9 +64,11 @@ class _ContextWrapper:
                 if prev_props != self.props:
                     new_state = self.props.copy()
                     self.props = Props.fromDict(new_state)
-                    store = new_state
+                    log.info('Update state %s', new_state)
+                    return new_state
+                else:
+                    return NOUPDATE
 
-                return store
 
         return wrapper
 
@@ -81,7 +83,7 @@ class _ContextWrapper:
         # Props can be provide when the context is created or passed in here
 
         self.props = Props.fromDict(props.copy() if props is not None else self.props)
-        self.store = ReduxStore(id=pid('store'), data=self.props)
+        self.store = ReduxStore(id=pid(), data=self.props)
 
         def provider_decorator(func):
 
@@ -110,6 +112,7 @@ class _ContextWrapper:
 
         @callback(Output(container_id, 'children'), self.store.input.data, prevent_initial_call=True)
         def container_cb(store):
+            log.info('Update container %s', container_id)
             container = self.render()
             return container.children
 

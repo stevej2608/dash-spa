@@ -28,13 +28,7 @@ def button_group(gid):
 
     props = ctx.props[gid]
 
-    msg = ""
-    if 'btn1' in props:
-        msg += f"Button 1 pressed {props.btn1} times "
-
-    if 'btn2' in props:
-        msg += f"Button 2 pressed {props.btn2} times "
-
+    msg = f"Button 1 pressed {props.btn1} times Button 2 pressed {props.btn2} times "
     container = html.Div(msg)
 
     @ctx.On(btn1.input.n_clicks)
