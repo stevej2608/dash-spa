@@ -1,5 +1,6 @@
 from dash import html, callback
 from dash_spa import prefix, register_page, NOUPDATE
+from dash_spa.logging import log
 
 from .context import createContext, useContext
 
@@ -52,21 +53,19 @@ def button_group(gid):
 
 @ButtonContext.Provider()
 def layout_page():
+
     ctx = useContext(ButtonContext);
+
+    props = ctx.props.toDict()
 
     group1 = button_group(GROUP_1)
     group2 = button_group(GROUP_2)
 
-    button_view = html.Div("Press a button", id='button_view')
-
-    @callback(button_view.output.children, ctx.input.data)
-    def view_cb(store):
-        groups = [html.H4(f"{key} {item}") for key, item in store.items()]
-        return groups
+    button_report = html.Div([html.H4(f"{key} {item}") for key, item in props.items()])
 
     title = html.H3('React.js Context Example')
 
-    return html.Div([title, group1, group2, button_view])
+    return html.Div([title, group1, group2, button_report])
 
 
 layout = layout_page()

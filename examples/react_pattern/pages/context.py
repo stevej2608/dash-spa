@@ -1,7 +1,17 @@
+import json
 from flask import current_app as app
+from dash import callback, Output
+from dash_prefix import prefix
 from dash_spa.logging import log
 from dash_redux import ReduxStore
 from munch import DefaultMunch
+
+
+class Props(DefaultMunch):
+
+    def toDict(self):
+        _copy = json.loads(json.dumps(self))
+        return _copy
 
 
 # https://www.digitalocean.com/community/tutorials/how-to-share-state-across-react-components-with-context
@@ -53,7 +63,7 @@ class _ContextWrapper:
 
                 if prev_props != self.props:
                     new_state = self.props.copy()
-                    self.props = DefaultMunch.fromDict(new_state)
+                    self.props = Props.fromDict(new_state)
                     store = new_state
 
                 return store
@@ -62,10 +72,16 @@ class _ContextWrapper:
 
     def Provider(self, props=None):
 
-        # props can be provide when the context is created or passed in here
+        pid = prefix(self.id)
 
-        self.props = DefaultMunch.fromDict(props.copy() if props is not None else self.props)
-        self.store = ReduxStore(id=self.id, data=self.props)
+        log.info('Provider id=%s', self.id)
+
+        container_id = pid('container')
+
+        # Props can be provide when the context is created or passed in here
+
+        self.props = Props.fromDict(props.copy() if props is not None else self.props)
+        self.store = ReduxStore(id=pid('store'), data=self.props)
 
         def provider_decorator(func):
 
@@ -74,6 +90,8 @@ class _ContextWrapper:
                 # Call the Dash layout function we've wrapped
 
                 result = func(*_args, **_kwargs)
+
+                result.id = container_id
 
                 # Inject the context store into the layout
 
@@ -87,6 +105,14 @@ class _ContextWrapper:
             self.render = func_wrapper
 
             return func_wrapper
+
+        # Render the container if the context store has been modified
+
+        @callback(Output(container_id, 'children'), self.store.input.data, prevent_initial_call=True)
+        def container_cb(store):
+            container = self.render()
+            return container.children
+
         return provider_decorator
 
 
