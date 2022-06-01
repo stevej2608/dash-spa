@@ -1,10 +1,7 @@
 from dash import html, callback
 from dash_spa import prefix, register_page, NOUPDATE
 from dash_spa.logging import log
-
-from .context import createContext, useContext
-
-# https://www.netlify.com/blog/2019/03/11/deep-dive-how-do-react-hooks-really-work/
+from dash_spa.spa_context import createContext, useContext
 
 register_page(__name__, path='/', title="React Pattern", short_name='React')
 
@@ -41,9 +38,7 @@ def button_group(gid):
         if clicks:
             ctx.props[gid].btn2 += 1
 
-
     return html.Div([title, btn1, btn2, container, html.Br()])
-
 
 @ButtonContext.Provider()
 def layout_page():

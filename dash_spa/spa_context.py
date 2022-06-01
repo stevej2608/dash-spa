@@ -6,15 +6,16 @@ from dash_spa.logging import log
 from dash_redux import ReduxStore
 from munch import DefaultMunch
 
+# Provides a React.Js context pattern that allows state to be easily passed
+# between components
+#
+# See examples/react_pattern/pages/context_pattern.py
 
 class Props(DefaultMunch):
 
     def toDict(self):
         _copy = json.loads(json.dumps(self))
         return _copy
-
-
-# https://www.digitalocean.com/community/tutorials/how-to-share-state-across-react-components-with-context
 
 class _ContextWrapper:
 
@@ -83,7 +84,7 @@ class _ContextWrapper:
         # Props can be provide when the context is created or passed in here
 
         self.props = Props.fromDict(props.copy() if props is not None else self.props)
-        self.store = ReduxStore(id=pid(), data=self.props)
+        self.store = ReduxStore(id=pid(), data=self.props, storage_type='memory')
 
         def provider_decorator(func):
 
