@@ -64,7 +64,9 @@ def layout_page():
         groups = [html.H4(f"{key} {item}") for key, item in store.items()]
         return groups
 
-    return html.Div([group1, group2, button_view])
+    title = html.H3('React.js Context Example')
+
+    return html.Div([title, group1, group2, button_view])
 
 
 layout = layout_page()

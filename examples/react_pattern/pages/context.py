@@ -1,14 +1,8 @@
-import json
 from flask import current_app as app
-from dash import html, no_update as NOUPDATE
-from dash import html, callback, Output
-import dash_holoniq_components as dhc
-from dash_spa import prefix, register_page, page_container_append
 from dash_spa.logging import log
-from dash.development.base_component import Component
 from dash_redux import ReduxStore
 from munch import DefaultMunch
-from dash_prefix import copy_factory
+
 
 # https://www.digitalocean.com/community/tutorials/how-to-share-state-across-react-components-with-context
 
@@ -32,6 +26,9 @@ class _ContextWrapper:
 
 
     def On(self, *_args, **_kwargs):
+        """Transform a @ctx.On(...) callback an @store.update()
+        callback on the internal contexts store
+        """
 
         def wrapper(user_func):
 
@@ -52,14 +49,9 @@ class _ContextWrapper:
                 args = list(_args)
                 store = args.pop()
 
-                result = user_func(*args)
+                user_func(*args)
 
                 if prev_props != self.props:
-                    children = self.render().children
-
-                    for idx in range(len(children)):
-                        self.children[idx] = children[idx]
-
                     new_state = self.props.copy()
                     self.props = DefaultMunch.fromDict(new_state)
                     store = new_state
@@ -70,22 +62,25 @@ class _ContextWrapper:
 
     def Provider(self, props=None):
 
+        # props can be provide when the context is created or passed in here
+
         self.props = DefaultMunch.fromDict(props.copy() if props is not None else self.props)
         self.store = ReduxStore(id=self.id, data=self.props)
 
         def provider_decorator(func):
 
             def func_wrapper( *_args, **_kwargs):
+
+                # Call the Dash layout function we've wrapped
+
                 result = func(*_args, **_kwargs)
 
+                # Inject the context store into the layout
 
                 if not isinstance(result.children, list):
                     result.children = [result.children]
 
                 result.children.append(self.store)
-
-                if not hasattr(self, 'children'):
-                    self.children = result.children
 
                 return result
 
