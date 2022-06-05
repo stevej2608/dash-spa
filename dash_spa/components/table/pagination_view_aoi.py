@@ -1,10 +1,5 @@
-from dash import html, callback
-from dash.exceptions import PreventUpdate
-from dash_spa import  prefix
-from dash_redux import StateWrapper
-from dash_spa.logging import log
-
-from .table_aio import TableAIO
+from dash import html
+from .context import TableContext
 
 class TableAIOPaginatorView(html.Div):
     """Manages and updates the view component of the associated
@@ -34,21 +29,7 @@ class TableAIOPaginatorView(html.Div):
         </div>
     ```
     """
-    def __init__(self, table: TableAIO, className='fw-normal small mt-4 mt-lg-0', id=None):
-        pid = prefix(id)
-        config_store = table.table_config
-        table_config = StateWrapper(table.config)
-        content = self.render_content(table_config.current_page, table_config.last_page)
-
-        super().__init__(content, id=pid('TableAIOPaginator'), className=className)
-
-        @callback(self.output.children, config_store.input.data)
-        def update_paginator_view_cb(store):
-            if store:
-                # log.info('update_paginator_view_cb(id=%s) page=%d', pid(''), store.current_page)
-                return self.render_content(table_config.current_page, table_config.last_page)
-
-            raise PreventUpdate
-
-    def render_content(self, current, last_page):
-        return ["Showing page ",html.B(current)," out of ",html.B(last_page)," pages"]
+    def __init__(self, className='fw-normal small mt-4 mt-lg-0'):
+        state = TableContext.getState()
+        content = ["Showing page ",html.B(state.current)," out of ",html.B(state.last_page)," pages"]
+        super().__init__(content, className=className)

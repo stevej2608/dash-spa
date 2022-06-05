@@ -1,11 +1,13 @@
 from dash_spa.logging import log
 from dash import html, register_page
 from dash_svg import Svg, Path
-
+from dash_spa import prefix
 from pages import TRANSACTIONS_SLUG
 from .transactions import create_table, create_header
 
 from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView
+
+from dash_spa.components.table.context import TableContext
 
 register_page(__name__, path=TRANSACTIONS_SLUG, title="Dash/Flightdeck - Transactions", short_name='Transactions')
 
@@ -21,14 +23,15 @@ def newPlanButton():
     ], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
 
 
+@TableContext.Provider(id='transactions_table_context')
 def _table_layout(page=1):
     page = int(page)
-    #log.info('page=%s', page)
+    pid = prefix('transactions_table')
 
-    table = create_table(page)
-    header = create_header(table)
-    paginator = TableAIOPaginator(table, className='pagination mb-0', id="transactions_paginator")
-    viewer = TableAIOPaginatorView(table, id="transactions_paginator_view")
+    table = create_table(id=pid())
+    header = create_header(id=pid('header'))
+    paginator = TableAIOPaginator(className='pagination mb-0', id=pid('paginator'))
+    viewer = TableAIOPaginatorView()
 
     return html.Div([
         header,

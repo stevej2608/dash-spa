@@ -92,5 +92,5 @@ def table_layout():
         paginator_row
         ])
 
-# layout = "Disabled"
-layout = table_layout()
+layout = "Disabled"
+# layout = table_layout()

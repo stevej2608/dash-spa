@@ -4,8 +4,8 @@ from dash_prefix import match, prefix
 from dash_redux import StateWrapper
 from dash_spa import PreventUpdate, NOUPDATE
 from dash_spa.logging import log
-from .table_aio import TableAIO
 
+from .context import TableContext
 
 # Smart pagination algorithm, converted from PHP
 # see: https://stackoverflow.com/a/163825/489239
@@ -41,31 +41,31 @@ class TableAIOPaginator(html.Ul):
     PREVIOUS = 'Previous'
     NEXT = 'Next'
 
-    def __init__(self, table: TableAIO, adjacents=2, className: str = None, id=None):
+    def __init__(self, adjacents=2, className: str = None, id=None):
         pid = prefix(id)
-        self.table = table
+
         self.className = className
         self.range_match = match({'type': pid('li'), 'idx': ALL})
 
-        pagination = self.selectable(table.config, adjacents)
+        pagination = self.selectable(adjacents)
 
         super().__init__(pagination, id=pid('TableAIOPaginator'), className=self.className)
 
-        @table.table_config.update(self.range_match.input.n_clicks,
-                                   self.range_match.state.children)
-        def _paginator_change_cb(clicks, children, store):
+        @TableContext.On(self.range_match.input.n_clicks,
+                         self.range_match.state.children)
+        def _paginator_change_cb(clicks, children):
+
+            current_page, set_page = TableContext.useState('current_page')
 
             if not any(clicks):
                 raise PreventUpdate
-
-            _store = StateWrapper(store)
 
             # log.info('_paginator_update_cb(id=%s) page=%d', pid(''), _store.current_page)
 
             # Set the selected element to active and update
             # store.data['page'] with the selected value
 
-            page = _store.current_page
+            page = current_page
 
             index = self.range_match.triggerIndex()
             if index is not None:
@@ -79,24 +79,9 @@ class TableAIOPaginator(html.Ul):
                 else:
                     page = selection
 
-                _store.current_page = page
-                # pagination = self.selectable(store, adjacents)
-
-                # log.info('**************** _paginator_update_cb(id=%s) new page=%d', pid(''), _store.current_page)
-
-                return _store.state
+                self.set_page(page)
 
             raise PreventUpdate
-
-        @callback(self.output.children, table.table_config.input.data)
-        def _paginator_update_cb(store):
-            if store:
-                _store = StateWrapper(store)
-                # log.info('_paginator_update_cb(id=%s) page=%d', pid(''), _store.current_page)
-                pagination = self.selectable(store, adjacents)
-                return pagination
-            else:
-                NOUPDATE
 
 
     def selection(self, element: html.Li) -> str:
@@ -127,7 +112,7 @@ class TableAIOPaginator(html.Ul):
             List[html.Li]: Pagination child elements
         """
 
-        pagination = self.select(store, adjacents)
+        pagination = self.select(adjacents)
 
         # Create a list of elements that we want to trigger a callback when
         # clicked.
@@ -139,7 +124,7 @@ class TableAIOPaginator(html.Ul):
 
         return pagination
 
-    def select(self, store: dict, adjacents=2) -> List[html.Li]:
+    def select(self, adjacents=2) -> List[html.Li]:
         """Return pagination child UI elements for given active page
 
         Args:
@@ -150,12 +135,10 @@ class TableAIOPaginator(html.Ul):
             List[html.Li]: Pagination child elements
         """
 
-        store = StateWrapper(store)
-        page = store.current_page
-
+        state  = TableContext.getState()
+        page = state.current_page
         pagination = []
-
-        last_page = store.last_page
+        last_page = state.last_page
 
         def emit(page, active=False, disabled=False):
             element = self.emit(page, active, disabled)

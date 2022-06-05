@@ -120,21 +120,29 @@ class _ContextWrapper:
 
         return provider_decorator
 
-    def useState(self, ref, initial_state):
+    def useState(self, ref=None, initial_state={}):
 
-        if not ref in self._state:
-            self._state[ref] = initial_state.copy()
+        if ref is not None:
+            if not ref in self._state:
+                self._state[ref] = initial_state.copy()
 
-        state = State.fromDict(self._state[ref])
+            state = State(self._state[ref])
+        else:
+            if not self._state:
+                self._state = initial_state.copy()
+            state = State(self._state)
 
         def set_state(state):
-            self._state[ref] = state.copy()
+            if ref is not None:
+                self._state[ref].update(state)
+            else:
+                self._state.update(state)
 
         return state, set_state
 
     def getState(self, ref=None):
         state = self._state[ref] if ref else self._state
-        return State.fromDict(state)
+        return State(None, state)
 
     def getStateDict(self, ref=None):
         state = self._state[ref] if ref else self._state

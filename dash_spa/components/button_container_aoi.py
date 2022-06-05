@@ -32,61 +32,27 @@ class ButtonContainerAIO(html.Div):
 
     """
 
-    def __init__(self, elements: List, current:int, store: ReduxStore, className: str = None, id=None):
-        id = prefix(store.id) if id is None else id
+    def __init__(self, elements: List, current:int, className: str = None, id=None):
         pid = prefix(id)
         self._elements = elements
-        button_match = match({'type': pid('li'), 'idx': ALL})
+        self.button_match = match({'type': pid('li'), 'idx': ALL})
 
         def _render_buttons(current):
 
-            buttons = self.render_buttons(store.data)
+            buttons = self.render_buttons(elements)
 
             def _render_button(index, text):
                 btn = buttons[index]
-                return html.Div(btn, id=button_match.idx(index))
+                return html.Div(btn, id=self.button_match.idx(index))
 
             return [_render_button(index, text) for index, text in enumerate(elements)]
 
         buttons = _render_buttons(current)
 
-        @store.update(button_match.input.n_clicks)
-        def _update_store(clicks, store):
-
-            # Button clicked update the store
-
-            index = trigger_index()
-
-            if index is not None and clicks[index]:
-                store = self.update_store(index, store)
-                log.info('store = %s', store)
-                return store
-
-            return NOUPDATE
-
-
-        @callback(button_match.output.children, store.input.data)
-        def _update_cb(store):
-            if not store:
-                store = self.get_config()
-
-            # Store has changed, update buttons
-
-            buttons = self.render_buttons(store)
-            return buttons
-
-
-        super().__init__(buttons, id=pid('ButtonContainerAIO'), className=className)
+        super().__init__(buttons, className=className)
 
     @abstractmethod
     def render_buttons(self, store:ReduxStore) -> List[Component]:
         """Return a button component list"""
         pass
 
-    @abstractmethod
-    def update_store(self, value, store: ReduxStore) -> ReduxStore :
-        pass
-
-    @abstractmethod
-    def get_config(self) -> dict :
-        return {}

@@ -3,17 +3,15 @@ from abc import abstractmethod
 from math import ceil
 from typing import List, Dict, Any
 from dash import html, callback
-from dash_redux import ReduxStore, StateWrapper
+# from dash_redux import ReduxStore, StateWrapper
 
 import dash_spa as spa
 from dash_spa.logging import log
 
+from .context import TableContext, PAGE_SIZE, LAST_PAGE, CURRENT_PAGE, TABLE_ROWS
+
 TableData = List[Dict[str, Any]]
 TableColumns = List[Dict[str, Any]]
-
-PAGE_SIZE = 'page_size'
-LAST_PAGE = 'last_page'
-CURRENT_PAGE = 'current_page'
 
 class TableAIO(html.Table):
     """Generic SPA Table
@@ -34,61 +32,27 @@ class TableAIO(html.Table):
 
     TABLE_CLASS_NAME = 'table table-hover'
 
-    @property
-    def config(self):
-        if self.table_config.store.data:
-            return self.table_config.data
-        else:
-            return self._initial_config
-
     def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 100, id: str = None, **kwargs):
+
+        initial_state = {
+            CURRENT_PAGE : page,
+            LAST_PAGE : ceil(len(data) / page_size),
+            PAGE_SIZE: page_size,
+            TABLE_ROWS: len(data)
+        }
+
+        state, _ = TableContext.useState(initial_state=initial_state)
 
         self._prefix = pid = spa.prefix(id)
         self._data = data
 
         log.info('TableAIO id=%s', pid())
 
-        self._initial_config = {
-            CURRENT_PAGE : page,
-            LAST_PAGE : ceil(len(data) / page_size),
-            PAGE_SIZE: page_size
-        }
-
-
-        self.table_config = table_config = ReduxStore(id=pid('store'), data={}, storage_type='memory')
-        spa.page_container_append(table_config)
-
         thead = self.tableHead(columns)
         trows = self.tableRows(data, page=1, page_size=page_size)
         tbody = html.Tbody(trows, id=pid('table'))
 
-        @callback(tbody.output.children, table_config.input.data, prevent_initial_call=True)
-        def _update_table_cb(store):
-            try:
-                if store:
-                    log.info('_update_table_cb(id=%s) live store=%s', pid(''), store)
-                else:
-                    log.info('_update_table_cb(id=%s) init store=%s', pid(''), store)
-                    store = self.get_config()
-
-                store = StateWrapper(store)
-                rows = self.tableRows(data, page=store.current_page, page_size=store.page_size)
-                return rows
-            except:
-                raise spa.PreventUpdate()
-
-        self.init()
-
         super().__init__([thead,tbody], className=TableAIO.TABLE_CLASS_NAME, **kwargs)
-
-    def get_config(self):
-        return self._initial_config
-
-    def init(self):
-        pass
-
-    def prefix(self, pfx:str = None) -> Callable[[str], str]:
-        return spa.prefix(f'{self._prefix(pfx)}')
 
     def last_row(self, page_size):
         return ceil(len(self._data) / page_size)
