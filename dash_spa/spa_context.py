@@ -11,7 +11,7 @@ from munch import DefaultMunch
 #
 # See examples/react_pattern/pages/context_pattern.py
 
-class Props(DefaultMunch):
+class State(DefaultMunch):
 
     def toDict(self):
         _copy = json.loads(json.dumps(self))
@@ -21,20 +21,18 @@ class _ContextWrapper:
 
     @property
     def input(self):
-        return self.store.input
+        return self._store.input
 
     @property
     def output(self):
-        return self.store.output
+        return self._store.output
 
     @property
     def state(self):
-        return self.store.state
+        return self._store.state
 
-    def __init__(self, **kwargs):
-        self.id = kwargs.pop('_id')
-        self.props = kwargs.copy()
-
+    def __init__(self, state):
+        self._state = state.copy()
 
     def On(self, *_args, **_kwargs):
         """Transform a @ctx.On(...) callback an @store.update()
@@ -51,9 +49,9 @@ class _ContextWrapper:
 
             log.info("register callback %s", self.id)
 
-            @self.store.update(*_args)
+            @self._store.update(*_args)
             def _proxy(*_args):
-                prev_props = self.props.copy()
+                prev_state = self._state.copy()
 
                 # pop the store reference
 
@@ -62,10 +60,10 @@ class _ContextWrapper:
 
                 user_func(*args)
 
-                if prev_props != self.props:
-                    new_state = self.props.copy()
-                    self.props = Props.fromDict(new_state)
-                    log.info('Update state %s', new_state)
+                if prev_state != self._state:
+                    new_state = self._state.copy()
+                    self._state = State.fromDict(new_state)
+                    # log.info('Update state %s', new_state)
                     return new_state
                 else:
                     return NOUPDATE
@@ -73,18 +71,21 @@ class _ContextWrapper:
 
         return wrapper
 
-    def Provider(self, props=None):
+    def Provider(self, state=None, id=id):
 
-        pid = prefix(self.id)
+        assert id, "The context.Provider must have an id"
+
+        self.id = id
+        pid = prefix(id)
 
         log.info('Provider id=%s', self.id)
 
         container_id = pid('container')
 
-        # Props can be provide when the context is created or passed in here
+        # state can be provide when the context is created or passed in here
 
-        self.props = Props.fromDict(props.copy() if props is not None else self.props)
-        self.store = ReduxStore(id=pid(), data=self.props, storage_type='memory')
+        self._state = State.fromDict(state.copy() if state is not None else self._state)
+        self._store = ReduxStore(id=pid(), data=self._state, storage_type='memory')
 
         def provider_decorator(func):
 
@@ -101,7 +102,7 @@ class _ContextWrapper:
                 if not isinstance(result.children, list):
                     result.children = [result.children]
 
-                result.children.append(self.store)
+                result.children.append(self._store)
 
                 return result
 
@@ -111,17 +112,37 @@ class _ContextWrapper:
 
         # Render the container if the context store has been modified
 
-        @callback(Output(container_id, 'children'), self.store.input.data, prevent_initial_call=True)
+        @callback(Output(container_id, 'children'), self._store.input.data, prevent_initial_call=True)
         def container_cb(store):
-            log.info('Update container %s', container_id)
+            # log.info('Update container %s', container_id)
             container = self.render()
             return container.children
 
         return provider_decorator
 
+    def useState(self, ref, initial_state):
 
-def createContext(props={}, id=None):
-    return _ContextWrapper(**props, _id=id)
+        if not ref in self._state:
+            self._state[ref] = initial_state.copy()
+
+        state = State.fromDict(self._state[ref])
+
+        def set_state(state):
+            self._state[ref] = state.copy()
+
+        return state, set_state
+
+    def getState(self, ref=None):
+        state = self._state[ref] if ref else self._state
+        return State.fromDict(state)
+
+    def getStateDict(self, ref=None):
+        state = self._state[ref] if ref else self._state
+        return state.toDict()
+
+
+def createContext(state={}):
+    return _ContextWrapper(state)
 
 def useContext(ctx: _ContextWrapper):
     return ctx
