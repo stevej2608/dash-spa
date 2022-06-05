@@ -35,13 +35,13 @@ def create_app(dash_factory) -> Dash:
     app.layout = layout
     return app
 
-# python -m examples.react_pattern.app
+# python -m examples.context.app
 
 if __name__ == "__main__":
     logging.setLevel("INFO")
     app = create_app(create_dash)
 
-    # serve_app(app, debug=False)
+    serve_app(app, debug=False)
 
-    logger = DashLogger(DEBUG_LEVEL.VERBOSE)
-    serve_app(app, debug=False, logger=logger)
+    # logger = DashLogger(DEBUG_LEVEL.VERBOSE)
+    # serve_app(app, debug=False, logger=logger)
