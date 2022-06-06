@@ -3,6 +3,8 @@ import pandas as pd
 from collections import OrderedDict
 
 from dash_spa import register_page, prefix
+from dash_spa.logging import log
+
 from pages import TABLE_EXAMPLE_SLUG
 
 from dash_spa.components.dropdown_aio import DropdownAIO
@@ -75,8 +77,8 @@ class CustomTable(TableAIO):
 
 
 @TableContext.Provider(id='example_table')
-def table_layout():
-
+def layout():
+    log.info('layout - example_table')
     table = CustomTable(
         data=df.to_dict('records'),
         page_size = 8,
@@ -96,5 +98,3 @@ def table_layout():
         paginator_row
         ])
 
-# layout = "Disabled"
-layout = table_layout()

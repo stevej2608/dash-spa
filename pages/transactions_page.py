@@ -24,8 +24,8 @@ def newPlanButton():
 
 
 @TableContext.Provider(id='transactions_table_context')
-def _table_layout(page=1):
-    page = int(page)
+def layout():
+    log.info('layout - transactions_table')
     pid = prefix('transactions_table')
 
     table = create_table(id=pid())
@@ -41,5 +41,3 @@ def _table_layout(page=1):
             viewer
         ], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
     ])
-
-layout = _table_layout()

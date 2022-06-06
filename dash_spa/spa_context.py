@@ -159,7 +159,7 @@ class _Context:
         # state can be provide when the context is created or passed in here
 
         self._state = state.copy() if state is not None else self._state
-        self._store = ReduxStore(id=pid(), data=self._state, storage_type='session')
+        self._store = ReduxStore(id=pid(), data=self._state, storage_type='memory')
 
         def provider_decorator(func):
 
@@ -167,6 +167,7 @@ class _Context:
 
                 # Call the Dash layout function we've wrapped
 
+                self.contexts.set_context(self)
                 result = func(*_args, **_kwargs)
 
                 result.id = container_id
