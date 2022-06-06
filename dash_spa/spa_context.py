@@ -11,6 +11,8 @@ from munch import DefaultMunch
 #
 # See examples/react_pattern/pages/context_pattern.py
 
+# TODO: Look at how to make this thread safe
+
 class State(DefaultMunch):
 
     def toDict(self):
@@ -44,8 +46,8 @@ class _ContextWrapper:
             def callback_stub(self, *_args, **_kwargs):
                 pass
 
-            if app and app.got_first_request:
-                return callback_stub
+            # if app and app.got_first_request:
+            #     return callback_stub
 
             log.info("register callback %s", self.id)
 
@@ -85,7 +87,7 @@ class _ContextWrapper:
         # state can be provide when the context is created or passed in here
 
         self._state = State.fromDict(state.copy() if state is not None else self._state)
-        self._store = ReduxStore(id=pid(), data=self._state, storage_type='memory')
+        self._store = ReduxStore(id=pid(), data=self._state, storage_type='session')
 
         def provider_decorator(func):
 
@@ -124,13 +126,13 @@ class _ContextWrapper:
 
         if ref is not None:
             if not ref in self._state:
-                self._state[ref] = initial_state.copy()
+                self._state[ref] = State.fromDict(initial_state, None)
 
-            state = State(self._state[ref])
+            state = self._state[ref]
         else:
             if not self._state:
-                self._state = initial_state.copy()
-            state = State(self._state)
+                self._state = State.fromDict(initial_state)
+            state = self._state
 
         def set_state(state):
             if ref is not None:
@@ -142,7 +144,7 @@ class _ContextWrapper:
 
     def getState(self, ref=None):
         state = self._state[ref] if ref else self._state
-        return State(None, state)
+        return state
 
     def getStateDict(self, ref=None):
         state = self._state[ref] if ref else self._state

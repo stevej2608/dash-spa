@@ -22,13 +22,11 @@ class DropdownAIO(html.Div):
     Button = dhc.Button
 
 
-    def __init__(self, button:dhc.Button, container:Component, id=None):
-
-        id = id if id else f"DropdownAIO_{component_id()}"
+    def __init__(self, button:dhc.Button, container:Component, id):
 
         pid = prefix(id)
 
-        # log.info('DropdownAIO pid=%s', id)
+        log.info('DropdownAIO pid=%s', id)
 
         button.id = pid('btn')
         container.id = pid('container')
