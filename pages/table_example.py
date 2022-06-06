@@ -15,22 +15,8 @@ register_page(__name__, path=TABLE_EXAMPLE_SLUG, title="Table Example", short_na
 from dash_spa.components.table.context import TableContext
 
 # Example Of creating a custom table with paginator
-#
-#       python -m components.table.table_example
 
-data = OrderedDict([
-    ('#',['456478', '456423', '456420', '456421', '456420', '456479', '456478', '453673', '456468', '456478']),
-    ('Bill For',['Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Gold Subscription Plan', 'Gold Subscription Plan', 'Flexible Subscription Plan']),
-    ('Issue Date',['1 May 2020', '1 Apr 2020', '1 Mar 2020', '1 Feb 2020', '1 Jan 2020', '1 Dec 2019', '1 Nov 2019', '1 Oct 2019', '1 Sep 2019', '1 Aug 2019']),
-    ('Due Date',['1 Jun 2020', '1 May 2020', '1 Apr 2020', '1 Mar 2020', '1 Feb 2020', '1 Jan 2020', '1 Dec 2019', '1 Nov 2019', '1 Oct 2019', '1 Sep 2019']),
-    ('Total',['$799.00', '$799.00', '$799.00', '$799.00', '$799.00', '$799.00', '$799.00', '$533.42', '$533.42', '$233.42']),
-    ('Status',['Due', 'Paid', 'Paid', 'Paid', 'Paid', 'Paid', 'Paid', 'Cancelled', 'Paid', 'Paid']),
-    ]
-)
-
-df = pd.DataFrame(
-    OrderedDict([(name, col_data * 5) for (name, col_data) in data.items()])
-)
+df = pd.read_csv('pages/data/subscriptions.csv')
 
 class CustomTable(TableAIO):
 
@@ -62,12 +48,12 @@ class CustomTable(TableAIO):
 
     def tableRow(self, index, args):
 
-        cid, product, issue_date, due_date, total, status = args.values()
+        cid, bill, issue_date, due_date, total, status, action, = args.values()
         action = self.tableAction(index)
 
         return html.Tr([
             html.Td(html.A(cid, href='#', className='fw-bold')),
-            html.Td(html.Span(product, className='fw-normal')),
+            html.Td(html.Span(bill, className='fw-normal')),
             html.Td(html.Span(issue_date, className='fw-normal')),
             html.Td(html.Span(due_date, className='fw-normal')),
             html.Td(html.Span(total, className='fw-bold')),

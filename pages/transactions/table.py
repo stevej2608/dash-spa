@@ -8,24 +8,29 @@ from dash_spa.components.table import TableAIO
 
 from dash_spa.components.table.context import TableContext
 
+#
+# https://json-generator.com/#
+# https://www.convertcsv.com/json-to-csv.htm
+#
+# [
+#   '{{repeat(300, 300)}}',
+#   {
+#     index: '{{index()}}',
+#     isActive: '{{bool()}}',
+#     balance: '{{floating(1000, 4000, 2, "$0,0.00")}}',
+#     age: '{{integer(20, 40)}}',
+#     eyeColor: '{{random("blue", "brown", "green")}}',
+#     name: '{{firstName()}} {{surname()}}',
+#     gender: '{{gender()}}',
+#     company: '{{company().toUpperCase()}}',
+#     email: '{{email()}}',
+#     phone: '+1 {{phone()}}',
+#     address: '{{integer(100, 999)}} {{street()}}, {{city()}}, {{state()}}, {{integer(100, 10000)}}',
+#     registered: '{{date(new Date(2014, 0, 1), new Date(), "YYYY-MM-ddThh:mm:ss Z")}}',
+#   }
+# ]
 
-data = OrderedDict([
-    ('#',['456478', '456423', '456420', '456421', '456420', '456479', '456478', '453673', '456468', '456478']),
-    ('Bill For',['Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Platinum Subscription Plan', 'Gold Subscription Plan', 'Gold Subscription Plan', 'Flexible Subscription Plan']),
-    ('Issue Date',['1 May 2020', '1 Apr 2020', '1 Mar 2020', '1 Feb 2020', '1 Jan 2020', '1 Dec 2019', '1 Nov 2019', '1 Oct 2019', '1 Sep 2019', '1 Aug 2019']),
-    ('Due Date',['1 Jun 2020', '1 May 2020', '1 Apr 2020', '1 Mar 2020', '1 Feb 2020', '1 Jan 2020', '1 Dec 2019', '1 Nov 2019', '1 Oct 2019', '1 Sep 2019']),
-    ('Total',['$799.00', '$799.00', '$799.00', '$799.00', '$799.00', '$799.00', '$799.00', '$533.42', '$533.42', '$233.42']),
-    ('Status',['Due', 'Paid', 'Paid', 'Paid', 'Paid', 'Paid', 'Paid', 'Cancelled', 'Paid', 'Paid']),
-    ]
-)
-
-def rows():
-    _data = OrderedDict([(name, col_data * 10) for (name, col_data) in data.items()])
-    order_numbers = [ n for n in range(400000, 400000 + len(_data['#']))]
-    _data['#'] = order_numbers
-    return _data
-
-df = pd.DataFrame(rows())
+df = pd.read_csv('pages/data/customers.csv')
 
 
 class OrdersTable(TableAIO):
@@ -55,19 +60,26 @@ class OrdersTable(TableAIO):
 
         return html.Div(DropdownAIO(button, container, id=pid(row)), className='btn-group')
 
+    def tableHead(self, columns):
+        cid, active, balance, age, _, name, _, company, *_ = columns
+        return super().tableHead([cid, company, name, active, balance, age])
+
 
     def tableRow(self, row_index, args):
 
-        cid, product, issue_date, due_date, total, status = args.values()
+        # cid, active, balance, age, eyes, name, gender, company, email, phone, address, registered = args.values()
+        cid, active, balance, age, _, name, _, company, *_ = args.values()
+
+        active = 'yes' if active else ''
         action = self.tableAction(row_index)
 
         return html.Tr([
             html.Td(html.A(cid, href='#', className='fw-bold')),
-            html.Td(html.Span(product, className='fw-normal')),
-            html.Td(html.Span(issue_date, className='fw-normal')),
-            html.Td(html.Span(due_date, className='fw-normal')),
-            html.Td(html.Span(total, className='fw-bold')),
-            html.Td(html.Span(status, className='fw-bold text-warning')),
+            html.Td(html.Span(company, className='fw-bold')),
+            html.Td(html.Span(name, className='fw-normal')),
+            html.Td(html.Span(active, className='fw-normal')),
+            html.Td(html.Span(balance, className='fw-normal')),
+            html.Td(html.Span(age, className='fw-normal')),
             html.Td(action)
         ])
 
