@@ -207,7 +207,12 @@ class _ContextWrapper:
 
         def set_state(state):
             if ref is not None:
-                self._state[ref].update(state)
+                if isinstance(state, dict):
+                    self._state[ref].clear()
+                    self._state[ref].update(state.copy())
+                else:
+                    self._state[ref] = state
+
             else:
                 self._state.update(state)
 

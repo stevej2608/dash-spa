@@ -79,9 +79,7 @@ class TableAIOPaginator(html.Ul):
                 else:
                     page = selection
 
-                self.set_page(page)
-
-            raise PreventUpdate
+                set_page(page)
 
 
     def selection(self, element: html.Li) -> str:
