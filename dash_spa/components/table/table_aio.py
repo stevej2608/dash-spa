@@ -54,9 +54,6 @@ class TableAIO(html.Table):
 
         super().__init__([thead,tbody], className=TableAIO.TABLE_CLASS_NAME, **kwargs)
 
-    def last_row(self, page_size):
-        return ceil(len(self._data) / page_size)
-
     def tableHead(self, columns: TableColumns):
         row =  html.Tr([html.Th(col['name'], className='border-gray-200') for col in columns])
         return html.Thead(row)

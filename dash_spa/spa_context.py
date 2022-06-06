@@ -138,9 +138,10 @@ class _Context:
                 if prev_state != self._state:
                     # log.info('Update[%s] state %s', self._store.id, self._state)
                     new_state = self._state.copy()
-                    return new_state
                 else:
-                    return NOUPDATE
+                    new_state = NOUPDATE
+
+                return new_state
 
 
         return wrapper
@@ -207,7 +208,11 @@ class _Context:
 
         if ref is not None:
             if not ref in self._state:
-                self._state[ref] = initial_state.copy()
+                if isinstance(initial_state, dict) or isinstance(initial_state, list):
+                    self._state[ref] = initial_state.copy()
+                else:
+                    self._state[ref] = initial_state
+
                 # log.info("useState initial_state[%s]=%s", ref, self._state)
         else:
             if not self._state:
@@ -225,11 +230,17 @@ class _Context:
             else:
                 self._state.update(state)
 
-            # log.info("set_state state=%s",self._state)
 
-        # log.info("useState state=%s",self._state)
+        if ref is not None:
+            state = self._state[ref]
+        else:
+            state = self._state
 
-        return State(self._state), set_state
+        if isinstance(state, dict):
+            return State(state), set_state
+        else:
+            return state, set_state
+
 
     def getState(self, ref=None):
         state = self._state[ref] if ref else self._state

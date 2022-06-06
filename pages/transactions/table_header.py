@@ -4,20 +4,26 @@ from dash_svg import Svg, Path
 from dash_spa import match, prefix, trigger_index
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.button_container_aoi import ButtonContainerAIO
-from .icons import TICK_ICON, GEAR_ICON
+from .icons import TICK_ICON, GEAR_ICON, SEARCH_ICON
 
 from dash_spa.components.table.context import TableContext, PAGE_SIZE
 
 
-def _searchOrders():
+def _searchOrders(id):
+    pid = prefix(id)
+
+    search_term, setSearchTerm = TableContext.useState('search_term', '')
+
+    search = dcc.Input(id=pid('search'), className='form-control', type="text", value=search_term, placeholder='Search orders')
+
+    @TableContext.On(search.input.value, prevent_initial_call=True)
+    def search_cb(value):
+        setSearchTerm(value)
+
     return  html.Div([
         html.Div([
-            html.Span([
-                Svg([
-                    Path(fillRule='evenodd', d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z', clipRule='evenodd')
-                ], className='icon icon-xs', xmlns='http://www.w3.org/2000/svg', viewBox='0 0 20 20', fill='currentColor', **{"aria-hidden": "true"})
-            ], className='input-group-text'),
-            dcc.Input(type='text', className='form-control', placeholder='Search orders')
+            html.Span(SEARCH_ICON, className='input-group-text'),
+            search
         ], className='input-group me-2 me-lg-3 fmxw-400')
     ], className='col col-md-6 col-lg-3 col-xl-4')
 
@@ -72,7 +78,7 @@ def _settingsDropdown(id) -> html.Div:
 def create_header(id) -> html.Div:
     return html.Div([
         html.Div([
-            _searchOrders(),
+            _searchOrders(id=id),
             _settingsDropdown(id=id),
         ], className='row align-items-center justify-content-between')
     ], className='table-settings mb-4')
