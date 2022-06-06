@@ -10,6 +10,8 @@ from dash_spa.components.table import TableAIO, TableAIOPaginator, TableAIOPagin
 
 register_page(__name__, path=TABLE_EXAMPLE_SLUG, title="Table Example", short_name='Table')
 
+from dash_spa.components.table.context import TableContext
+
 # Example Of creating a custom table with paginator
 #
 #       python -m components.table.table_example
@@ -72,15 +74,17 @@ class CustomTable(TableAIO):
         ])
 
 
+@TableContext.Provider(id='example_table')
 def table_layout():
 
     table = CustomTable(
         data=df.to_dict('records'),
+        page_size = 8,
         columns=[{'id': c, 'name': c} for c in df.columns],
         id="table_example")
 
-    paginator = TableAIOPaginator(table, className='pagination mb-0', id="table_example_paginator")
-    viewer = TableAIOPaginatorView(table, id="table_example_paginator_view")
+    paginator = TableAIOPaginator(className='pagination mb-0', id="table_example_paginator")
+    viewer = TableAIOPaginatorView()
 
     paginator_row = html.Div([
         paginator,
@@ -92,5 +96,5 @@ def table_layout():
         paginator_row
         ])
 
-layout = "Disabled"
-# layout = table_layout()
+# layout = "Disabled"
+layout = table_layout()

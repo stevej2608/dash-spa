@@ -84,7 +84,7 @@ class State():
         self._state = dict.copy()
 
 
-class _ContextWrapper:
+class _Context:
 
     @property
     def input(self):
@@ -98,8 +98,10 @@ class _ContextWrapper:
     def state(self):
         return self._store.state
 
-    def __init__(self, state):
-        self._state = state.copy()
+    def __init__(self, contexts, id):
+        self.contexts = contexts
+        self.id = id
+        self._state = {}
 
     def On(self, *_args, **_kwargs):
         """Transform a @ctx.On(...) callback an @store.update()
@@ -126,6 +128,8 @@ class _ContextWrapper:
                 self._state.clear()
                 self._state.update(args.pop())
                 prev_state = self._state.copy()
+
+                self.contexts.set_context(self)
 
                 # log.info('State[%s] state %s', self._store.id, self._state)
 
@@ -186,10 +190,14 @@ class _ContextWrapper:
 
         @callback(Output(container_id, 'children'), self._store.input.data, prevent_initial_call=True)
         def container_cb(state):
-            # log.info('Update container %s, %s', container_id, state)
+            log.info('Update container %s, %s', container_id, state)
+
             self._state.clear()
             self._state.update(state.copy())
+            self.contexts.set_context(self)
+
             container = self.render()
+
             return container.children
 
         return provider_decorator
@@ -232,7 +240,36 @@ class _ContextWrapper:
 
 
 def createContext(state={}):
+
+    class _ContextWrapper:
+
+        def __init__(self, state):
+            self.contexts = {}
+
+        def set_context(self, ctx):
+            self.ctx = ctx
+
+        def On(self, *_args, **_kwargs):
+            return self.ctx.On(*_args, **_kwargs)
+
+        def Provider(self, state=None, id=id):
+            if id not in self.contexts:
+                self.contexts[id] = _Context(self, id)
+
+            self.ctx = self.contexts[id]
+            return self.ctx.Provider(state, id)
+
+        def useState(self, ref=None, initial_state={}):
+            return self.ctx.useState(ref, initial_state)
+
+        def getState(self, ref=None):
+            return self.ctx.getState(ref)
+
+        def getStateDict(self, ref=None):
+            return self.ctx.getStateDict(ref)
+
+
     return _ContextWrapper(state)
 
-def useContext(ctx: _ContextWrapper):
-    return ctx
+# def useContext(ctx: _ContextWrapper):
+#     return ctx

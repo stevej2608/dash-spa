@@ -49,7 +49,7 @@ class TableAIO(html.Table):
         log.info('TableAIO id=%s', pid())
 
         thead = self.tableHead(columns)
-        trows = self.tableRows(data, page=1, page_size=page_size)
+        trows = self.tableRows(data, page=state.current_page, page_size=page_size)
         tbody = html.Tbody(trows, id=pid('table'))
 
         super().__init__([thead,tbody], className=TableAIO.TABLE_CLASS_NAME, **kwargs)

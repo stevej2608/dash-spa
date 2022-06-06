@@ -6,8 +6,6 @@ from dash_spa.logging import log
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.table import TableAIO
 
-from dash_spa.spa_context import useContext
-
 from dash_spa.components.table.context import TableContext
 
 
