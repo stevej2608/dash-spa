@@ -31,5 +31,5 @@ class TableAIOPaginatorView(html.Div):
     """
     def __init__(self, className='fw-normal small mt-4 mt-lg-0'):
         state = TableContext.getState()
-        content = ["Showing page ",html.B(state.current)," out of ",html.B(state.last_page)," pages"]
+        content = ["Showing page ",html.B(state.current_page)," out of ",html.B(state.last_page)," pages"]
         super().__init__(content, className=className)

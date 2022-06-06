@@ -33,6 +33,9 @@ class ButtonContainerAIO(html.Div):
     """
 
     def __init__(self, elements: List, current:int, className: str = None, id=None):
+
+        assert id, "The ButtonContainerAIO must have an id"
+
         pid = prefix(id)
         self._elements = elements
         self.button_match = match({'type': pid('li'), 'idx': ALL})

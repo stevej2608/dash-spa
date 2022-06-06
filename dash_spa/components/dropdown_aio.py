@@ -26,7 +26,7 @@ class DropdownAIO(html.Div):
 
         pid = prefix(id)
 
-        log.info('DropdownAIO pid=%s', id)
+        # log.info('DropdownAIO pid=%s', id)
 
         button.id = pid('btn')
         container.id = pid('container')
@@ -37,7 +37,7 @@ class DropdownAIO(html.Div):
                   )
         def show_dropdown(button_clicks, button_focus, id, className):
 
-            log.info('%s button_clicks=%s, button_focus=%s',id, button_clicks, button_focus)
+            # log.info('%s button_clicks=%s, button_focus=%s',id, button_clicks, button_focus)
 
             if not button_clicks:
                 return className

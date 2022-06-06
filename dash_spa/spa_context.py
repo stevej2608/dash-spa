@@ -13,11 +13,76 @@ from munch import DefaultMunch
 
 # TODO: Look at how to make this thread safe
 
-class State(DefaultMunch):
 
-    def toDict(self):
-        _copy = json.loads(json.dumps(self))
-        return _copy
+
+
+
+# class State(dict):
+#     """
+#     Example:
+#     m = Map({'first_name': 'Eduardo'}, last_name='Pool', age=24, sports=['Soccer'])
+
+#     https://stackoverflow.com/a/32107024/489239
+
+#     """
+#     def __init__(self, *args, **kwargs):
+#         super(State, self).__init__(*args, **kwargs)
+#         for arg in args:
+#             if isinstance(arg, dict):
+#                 for k, v in arg.items():
+#                     self[k] = v
+
+#         if kwargs:
+#             for k, v in kwargs.items():
+#                 self[k] = v
+
+#     def __getattr__(self, attr):
+#         return self.get(attr)
+
+#     def __setattr__(self, key, value):
+#         self.__setitem__(key, value)
+
+#     def __setitem__(self, key, value):
+#         super(State, self).__setitem__(key, value)
+#         self.__dict__.update({key: value})
+
+#     def __delattr__(self, item):
+#         self.__delitem__(item)
+
+#     def __delitem__(self, key):
+#         super(State, self).__delitem__(key)
+#         del self.__dict__[key]
+
+
+
+class State():
+
+    def __init__(self, state, default = None):
+        self._state = state
+        self._default = default
+
+    def __getattr__(self, name):
+        if name in self._state:
+            return self._state[name]
+        else:
+            return self._default
+
+    def __setattr__(self, name, value):
+        if name in ['_state', '_default']:
+            super().__setattr__(name, value)
+        else:
+            self._state[name] = value
+
+    def __getitem__(self, name):
+        return self.__getattr__(name)
+
+    def __setitem__(self, name, value):
+        self.__setattr__(name, value)
+
+
+    def update(self, dict):
+        self._state = dict.copy()
+
 
 class _ContextWrapper:
 
@@ -49,23 +114,26 @@ class _ContextWrapper:
             # if app and app.got_first_request:
             #     return callback_stub
 
-            log.info("register callback %s", self.id)
+            # log.info("register callback %s", self.id)
 
             @self._store.update(*_args)
             def _proxy(*_args):
-                prev_state = self._state.copy()
 
                 # pop the store reference
 
                 args = list(_args)
-                store = args.pop()
+
+                self._state.clear()
+                self._state.update(args.pop())
+                prev_state = self._state.copy()
+
+                # log.info('State[%s] state %s', self._store.id, self._state)
 
                 user_func(*args)
 
                 if prev_state != self._state:
+                    # log.info('Update[%s] state %s', self._store.id, self._state)
                     new_state = self._state.copy()
-                    self._state = State.fromDict(new_state)
-                    # log.info('Update state %s', new_state)
                     return new_state
                 else:
                     return NOUPDATE
@@ -80,13 +148,13 @@ class _ContextWrapper:
         self.id = id
         pid = prefix(id)
 
-        log.info('Provider id=%s', self.id)
+        # log.info('Provider id=%s', self.id)
 
         container_id = pid('container')
 
         # state can be provide when the context is created or passed in here
 
-        self._state = State.fromDict(state.copy() if state is not None else self._state)
+        self._state = state.copy() if state is not None else self._state
         self._store = ReduxStore(id=pid(), data=self._state, storage_type='session')
 
         def provider_decorator(func):
@@ -104,6 +172,8 @@ class _ContextWrapper:
                 if not isinstance(result.children, list):
                     result.children = [result.children]
 
+                # log.info('store initial_state = %s', self._store.data)
+
                 result.children.append(self._store)
 
                 return result
@@ -115,8 +185,10 @@ class _ContextWrapper:
         # Render the container if the context store has been modified
 
         @callback(Output(container_id, 'children'), self._store.input.data, prevent_initial_call=True)
-        def container_cb(store):
-            # log.info('Update container %s', container_id)
+        def container_cb(state):
+            # log.info('Update container %s, %s', container_id, state)
+            self._state.clear()
+            self._state.update(state.copy())
             container = self.render()
             return container.children
 
@@ -126,13 +198,12 @@ class _ContextWrapper:
 
         if ref is not None:
             if not ref in self._state:
-                self._state[ref] = State.fromDict(initial_state, None)
-
-            state = self._state[ref]
+                self._state[ref] = initial_state.copy()
+                # log.info("useState initial_state[%s]=%s", ref, self._state)
         else:
             if not self._state:
-                self._state = State.fromDict(initial_state)
-            state = self._state
+                self._state.update(initial_state)
+                # log.info("useState initial_state=%s", self._state)
 
         def set_state(state):
             if ref is not None:
@@ -140,15 +211,19 @@ class _ContextWrapper:
             else:
                 self._state.update(state)
 
-        return state, set_state
+            # log.info("set_state state=%s",self._state)
+
+        # log.info("useState state=%s",self._state)
+
+        return State(self._state), set_state
 
     def getState(self, ref=None):
         state = self._state[ref] if ref else self._state
-        return state
+        return State(state)
 
     def getStateDict(self, ref=None):
         state = self._state[ref] if ref else self._state
-        return state.toDict()
+        return state.copy()
 
 
 def createContext(state={}):

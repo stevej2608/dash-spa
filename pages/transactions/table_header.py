@@ -28,7 +28,7 @@ class PageSizeSelect(ButtonContainerAIO):
     className ='dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0'
 
     def __init__(self, page_sizes: List, current:int, id):
-        super().__init__(page_sizes, current, className=PageSizeSelect.className, id=id)
+        super().__init__(page_sizes, current, id=id, className=PageSizeSelect.className)
 
         state = TableContext.getState()
 
@@ -57,13 +57,14 @@ class PageSizeSelect(ButtonContainerAIO):
 
 
 def _settingsDropdown(id) -> html.Div:
+    pid = prefix(id)
 
     button = DropdownAIO.Button([
        GEAR_ICON,html.Span("Toggle Dropdown", className='visually-hidden')
     ], className='btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1')
 
-    container = PageSizeSelect(["10", "20", "30"], 0, id=id)
-    dropdown = DropdownAIO(button, container)
+    container = PageSizeSelect(["10", "20", "30"], 0, id=pid('settings_container'))
+    dropdown = DropdownAIO(button, container, id=pid('settings_dropdown'))
 
     return html.Div(dropdown, className='col-4 col-md-2 col-xl-1 ps-md-0 text-end')
 
