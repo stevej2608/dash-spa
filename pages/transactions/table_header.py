@@ -6,27 +6,7 @@ from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.button_container_aoi import ButtonContainerAIO
 from .icons import TICK_ICON, GEAR_ICON, SEARCH_ICON
 
-from dash_spa.components.table.context import TableContext, PAGE_SIZE
-
-
-def _searchOrders(id):
-    pid = prefix(id)
-
-    search_term, setSearchTerm = TableContext.useState('search_term', '')
-
-    search = dcc.Input(id=pid('search'), className='form-control', type="text", value=search_term, placeholder='Search orders')
-
-    @TableContext.On(search.input.value, prevent_initial_call=True)
-    def search_cb(value):
-        setSearchTerm(value)
-
-    return  html.Div([
-        html.Div([
-            html.Span(SEARCH_ICON, className='input-group-text'),
-            search
-        ], className='input-group me-2 me-lg-3 fmxw-400')
-    ], className='col col-md-6 col-lg-3 col-xl-4')
-
+from dash_spa.components.table import SearchAIO, TableContext, PAGE_SIZE
 
 
 class PageSizeSelect(ButtonContainerAIO):
@@ -76,9 +56,12 @@ def _settingsDropdown(id) -> html.Div:
 
 
 def create_header(id) -> html.Div:
+
+    search = SearchAIO(id=id, placeholder='Search orders')
+
     return html.Div([
         html.Div([
-            _searchOrders(id=id),
+            search,
             _settingsDropdown(id=id),
         ], className='row align-items-center justify-content-between')
     ], className='table-settings mb-4')

@@ -1,9 +1,10 @@
 from dash_spa.logging import log
-from dash import html, dcc, callback
+from dash import html, dcc
 from dash_spa import prefix
-from dash_spa.components.store_aio import StoreAIO
+
 
 from .icons import SEARCH_ICON
+from .context import TableContext
 
 # https://dash.plotly.com/datatable/callbacks#backend-paging-with-filtering
 
@@ -30,7 +31,12 @@ def _split_filter_part(filter_part):
                     value = value_part[1: -1].replace('\\' + v0, v0)
                 else:
                     try:
-                        value = float(value_part)
+                        if value_part.lower() == 'true':
+                            value = True
+                        elif value_part.lower() == 'false':
+                            value = False
+                        else:
+                            value = float(value_part)
                     except ValueError:
                         value = value_part
                 # word _operators need spaces after them in the filter string,
@@ -39,9 +45,16 @@ def _split_filter_part(filter_part):
 
     return [None] * 3
 
-def filter_df(df, filter_query):
+def filter_df(df, filter_query: str):
     """Filter a Pandas dataframe as per the `filter_query` provided by
     the DataTable.
+
+    ```
+    filter_query is of the form:
+
+        {salary} gt 30000 && {city} eq {london} && {age} eq  35
+    ```
+
     """
 
     try:
@@ -68,19 +81,21 @@ def filter_df(df, filter_query):
 
 class SearchAIO(html.Div):
 
-    def __init__(self, placeholder='Search...',  aio_id=None):
+    def __init__(self, id, placeholder='Search...'):
 
-        self.store = StoreAIO.create_store({'search': ''}, aio_id)
-        pid = prefix(self.store.id)
+        search_term, setSearchTerm = TableContext.useState('search_term', '')
 
-        search = dcc.Input(id=pid('input'), type='text', className='form-control', placeholder=placeholder)
+        pid = prefix(id)
 
-        @callback(self.store.output.data, search.input.value, self.store.state.data)
-        def _cb(value, store):
-            log.info('value = [%s]', value)
-            store['search'] = value
-            return store
+        log.info('search init %s', search_term)
 
+        search = dcc.Input(id=pid('search'), className='form-control', type="text", value=search_term, placeholder=placeholder)
+
+        @TableContext.On(search.input.value, prevent_initial_call=True)
+        def search_cb(value):
+            log.info('search %s', value)
+            if value and len(value) > 2:
+                setSearchTerm(value)
 
         ui = html.Div([
             html.Span(SEARCH_ICON, className='input-group-text'),
