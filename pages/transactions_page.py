@@ -25,7 +25,7 @@ def newPlanButton():
 
 @TableContext.Provider(id='transactions_table_context')
 def layout():
-    log.info('layout - transactions_table')
+    # log.info('layout - transactions_table')
     pid = prefix('transactions_table')
 
     table = create_table(id=pid())

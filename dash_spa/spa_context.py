@@ -116,7 +116,7 @@ class _Context:
             if app and app.got_first_request:
                 return callback_stub
 
-            log.info("register callback %s", self.id)
+            # log.info("register callback %s", self.id)
 
             @self._store.update(*_args)
             def _proxy(*_args):
@@ -256,6 +256,9 @@ def createContext(state={}):
     class _ContextWrapper:
 
         def __init__(self, state):
+
+            # TODO: I don't think we need a dict here, the context can be saved in the
+
             self.contexts = {}
 
         def set_context(self, ctx):

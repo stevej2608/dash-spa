@@ -126,7 +126,7 @@ class SearchAIO(html.Div):
 
         pid = prefix(id)
 
-        log.info('search init term=[%s]', search_term)
+        # log.info('search init term=[%s]', search_term)
 
         search = dcc.Input(id=pid('search'), className='form-control', type="text", value=search_term, placeholder=placeholder)
         delay = dcc.Interval(id=pid('delay'), max_intervals=1, interval=1200, disabled=True)

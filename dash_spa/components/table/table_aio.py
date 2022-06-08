@@ -53,7 +53,7 @@ class TableAIO(html.Table):
         self._prefix = pid = spa.prefix(id)
         self._data = data
 
-        log.info('TableAIO id=%s', pid())
+        # log.info('TableAIO id=%s', pid())
 
         thead = self.tableHead(columns)
         trows = self.tableRows(data, page=state.current_page, page_size=page_size)
