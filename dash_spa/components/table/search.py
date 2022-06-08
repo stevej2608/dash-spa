@@ -1,6 +1,7 @@
 from dash_spa.logging import log
 from dash import html, dcc
 from dash_spa import prefix
+from pandas import DataFrame
 
 
 from .icons import SEARCH_ICON
@@ -45,7 +46,7 @@ def _split_filter_part(filter_part):
 
     return [None] * 3
 
-def filter_df(df, filter_query: str):
+def filter_dash(df: DataFrame, filter_query: str) -> DataFrame:
     """Filter a Pandas dataframe as per the `filter_query` provided by
     the DataTable.
 
@@ -77,6 +78,40 @@ def filter_df(df, filter_query: str):
         pass
 
     return df
+
+
+def filter_str_generic(df: DataFrame, value: str) -> DataFrame:
+
+    col_names = list(df.columns)
+
+    def filter_fn(row):
+        for col in col_names:
+            if str(row[col]) == value:
+                return True
+
+        return False
+
+    m = df.apply(filter_fn, axis=1)
+
+    df1 = df[m]
+    return df1
+
+
+# https://stackoverflow.com/a/43018248/489239
+
+def filter_str(df: DataFrame, value: str, case=False) -> DataFrame:
+    """Return df rows that contain given is any of the rows cells string
+
+    Args:
+        df (DataFrame): Data frame to be filtered
+        value (str): String the must be contained in row
+        case (bool, optional): True is test is case sensitive. Defaults to False.
+
+    Returns:
+        _type_: _description_
+    """
+
+    return  df[df.apply(lambda row: row.astype(str).str.contains(value, case=case).any(), axis=1)]
 
 
 class SearchAIO(html.Div):

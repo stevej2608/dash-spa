@@ -1,5 +1,5 @@
 import pandas as pd
-from dash_spa.components.table import filter_df
+from dash_spa.components.table import filter_dash, filter_str
 
 df = pd.read_csv('pages/data/customers.csv')
 
@@ -25,14 +25,21 @@ df = pd.read_csv('pages/data/customers.csv')
 #   }
 # ]
 
-def test_simple():
+def test_dash_filter():
 
     assert len(df) == 300
 
-    result = filter_df(df, "{isActive} eq true")
+    result = filter_dash(df, "{isActive} eq true")
     assert len(result) == 160
 
-    result = filter_df(df, "{isActive} eq true && {eyeColor} eq blue")
+    result = filter_dash(df, "{isActive} eq true && {eyeColor} eq blue")
     assert len(result) == 45
 
+
+def test_str_filter():
+
+    assert len(df) == 300
+
+    result = filter_str(df, "brown", case=True)
+    assert len(result) == 104
 
