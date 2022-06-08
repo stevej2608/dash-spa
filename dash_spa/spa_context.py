@@ -3,8 +3,9 @@ from flask import current_app as app
 from dash import callback, Output, no_update as NOUPDATE
 from dash_prefix import prefix
 from dash_spa.logging import log
+from dash_spa import callback
 from dash_redux import ReduxStore
-from munch import DefaultMunch
+
 
 # Provides a React.Js context pattern that allows state to be easily passed
 # between components
@@ -102,6 +103,18 @@ class _Context:
         self.contexts = contexts
         self.id = id
         self._state = {}
+
+    def callback(self, *_args, **_kwargs):
+
+        def wrapper(user_func):
+
+            @callback(*_args, **_kwargs)
+            def _proxy(*_args):
+                self.contexts.set_context(self)
+                result = user_func(*_args)
+                return result
+
+        return wrapper
 
     def On(self, *_args, **_kwargs):
         """Transform a @ctx.On(...) callback an @store.update()
@@ -254,24 +267,28 @@ class _Context:
 def createContext(state={}):
 
     class _ContextWrapper:
+        """Interface that maps the global context onto the active context.
+
+        The active context is in set by the @<context>.Provider() and remains
+        active until the decorated method returns. The active context is
+        switched prior to invoking a callback.
+
+        """
 
         def __init__(self, state):
-
-            # TODO: I don't think we need a dict here, the context can be saved in the
-
-            self.contexts = {}
+            self.ctx = None
 
         def set_context(self, ctx):
             self.ctx = ctx
+
+        def callback(self, *_args, **_kwargs):
+             return self.ctx.callback(*_args, **_kwargs)
 
         def On(self, *_args, **_kwargs):
             return self.ctx.On(*_args, **_kwargs)
 
         def Provider(self, state=None, id=id):
-            if id not in self.contexts:
-                self.contexts[id] = _Context(self, id)
-
-            self.ctx = self.contexts[id]
+            self.ctx = _Context(self, id)
             return self.ctx.Provider(state, id)
 
         def useState(self, ref=None, initial_state={}):

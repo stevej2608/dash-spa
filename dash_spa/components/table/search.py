@@ -3,8 +3,6 @@ from dash import html, dcc
 from dash_spa import prefix, NOUPDATE, callback
 from pandas import DataFrame
 
-from dash_spa.utils import time_ms
-
 from .icons import SEARCH_ICON
 from .context import TableContext
 
@@ -128,20 +126,26 @@ class SearchAIO(html.Div):
 
         # log.info('search init term=[%s]', search_term)
 
+        # The search input has an associated one-shot retriggerable timer that
+        # is rearmed each time the user enters a character. Only when the timer
+        # expires is the search term updated.
+
         search = dcc.Input(id=pid('search'), className='form-control', type="text", value=search_term, placeholder=placeholder)
         delay = dcc.Interval(id=pid('delay'), max_intervals=1, interval=1200, disabled=True)
 
-        @callback(delay.output.disabled, delay.output.interval, search.input.value, delay.state.interval, prevent_initial_call=True)
+        # User input arms/rearms the timer
+
+        @TableContext.callback(delay.output.disabled, delay.output.interval, search.input.value, delay.state.interval, prevent_initial_call=True)
         def delay_cb(value, interval):
-            self.time = time_ms()
-            interval +=  1
-            log.info('set search interval=%d input=[%s]', interval, value)
-            return False, interval
+
+            # This is the only way I've found to get the timer to rearm
+
+            return False, interval+1
+
+        # Timer has expired update the search term
 
         @TableContext.On(delay.input.n_intervals, search.state.value, prevent_initial_call=True)
         def search_cb(interval, value):
-            dt = time_ms() - self.time
-            log.info('search dt=%s, value=[%s]', dt, value)
             setSearchTerm(value)
 
         ui = html.Div([
