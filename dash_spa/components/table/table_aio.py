@@ -34,6 +34,8 @@ class TableAIO(html.Table):
 
     def __init__(self, data: TableData, columns: TableColumns, page = 1, page_size: int = 100, id: str = None, **kwargs):
 
+        # TODO: This shouldn't be here!
+
         initial_state = {
             CURRENT_PAGE : page,
             LAST_PAGE : ceil(len(data) / page_size),
@@ -42,6 +44,11 @@ class TableAIO(html.Table):
         }
 
         state, _ = TableContext.useState(initial_state=initial_state)
+
+        # TODO: or this
+
+        state.table_rows = len(data)
+        state.last_page = ceil(len(data) / page_size)
 
         self._prefix = pid = spa.prefix(id)
         self._data = data

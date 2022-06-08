@@ -116,7 +116,7 @@ def filter_str(df: DataFrame, value: str, case=False) -> DataFrame:
 
 class SearchAIO(html.Div):
 
-    def __init__(self, id, placeholder='Search...'):
+    def __init__(self, id, placeholder='Search...', minimum_characters=0):
 
         search_term, setSearchTerm = TableContext.useState('search_term', '')
 
@@ -129,7 +129,7 @@ class SearchAIO(html.Div):
         @TableContext.On(search.input.value, prevent_initial_call=True)
         def search_cb(value):
             log.info('search %s', value)
-            if value and len(value) > 2:
+            if value and len(value) > minimum_characters:
                 setSearchTerm(value)
 
         ui = html.Div([

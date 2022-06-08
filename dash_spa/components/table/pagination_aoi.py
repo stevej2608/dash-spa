@@ -97,13 +97,12 @@ class TableAIOPaginator(html.Ul):
         return element[0]['props']['children']
 
 
-    def selectable(self, store: dict, adjacents=2) -> List[html.Li]:
+    def selectable(self, adjacents=2) -> List[html.Li]:
         """Return pagination child UI elements for given active page. Add
         Dash callback IDs to the child elements that we want to trigger a
         callback when clicked
 
         Args:
-            store (dict): The table store
             adjacents (int, optional): How many adjacent pages should be shown on each side. Defaults to 2.
 
         Returns:
@@ -126,7 +125,6 @@ class TableAIOPaginator(html.Ul):
         """Return pagination child UI elements for given active page
 
         Args:
-            store (dict): The table store data
             adjacents (int, optional): How many adjacent pages should be shown on each side. Defaults to 2.
 
         Returns:

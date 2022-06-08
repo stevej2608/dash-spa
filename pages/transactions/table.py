@@ -6,7 +6,7 @@ from dash_spa.logging import log
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.table import TableAIO
 
-from dash_spa.components.table.context import TableContext
+from dash_spa.components.table import TableContext, filter_str
 
 #
 # https://json-generator.com/#
@@ -87,9 +87,14 @@ class OrdersTable(TableAIO):
 def create_table(id) -> OrdersTable:
     state = TableContext.getState()
 
+    if state.search_term:
+        df1 = filter_str(df,state.search_term)
+    else:
+        df1 = df
+
     ordersTable = OrdersTable(
-        data=df.to_dict('records'),
-        columns=[{'id': c, 'name': c} for c in df.columns],
+        data=df1.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df1.columns],
         page = state.page or 1,
         page_size = state.page_size or 10,
         id=id
