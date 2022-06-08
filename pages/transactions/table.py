@@ -60,26 +60,22 @@ class OrdersTable(TableAIO):
 
         return html.Div(DropdownAIO(button, container, id=pid(row)), className='btn-group')
 
-    def tableHead(self, columns):
-        cid, active, balance, age, _, name, _, company, *_ = columns
-        return super().tableHead([cid, company, name, active, balance, age])
-
 
     def tableRow(self, row_index, args):
 
         # cid, active, balance, age, eyes, name, gender, company, email, phone, address, registered = args.values()
-        cid, active, balance, age, _, name, _, company, *_ = args.values()
+        cid, active, balance, age, name, company = args.values()
 
         active = 'yes' if active else ''
         action = self.tableAction(row_index)
 
         return html.Tr([
             html.Td(html.A(cid, href='#', className='fw-bold')),
-            html.Td(html.Span(company, className='fw-bold')),
-            html.Td(html.Span(name, className='fw-normal')),
             html.Td(html.Span(active, className='fw-normal')),
             html.Td(html.Span(balance, className='fw-normal')),
             html.Td(html.Span(age, className='fw-normal')),
+            html.Td(html.Span(name, className='fw-normal')),
+            html.Td(html.Span(company, className='fw-bold')),
             html.Td(action)
         ])
 
@@ -87,7 +83,13 @@ class OrdersTable(TableAIO):
 def create_table(id) -> OrdersTable:
     state = TableContext.getState()
 
-    df1 = filter_str(df,state.search_term)
+    # TODO: Cache previous df search results
+
+    # [index, isActive, balance, age, eyeColor, name, gender, company, email, phone, address, registered]
+
+    df1 = df[['index', 'isActive', 'balance', 'age', 'name', 'company']]
+
+    df1 = filter_str(df1, state.search_term)
 
     ordersTable = OrdersTable(
         data=df1.to_dict('records'),

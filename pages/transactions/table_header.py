@@ -57,7 +57,7 @@ def _settingsDropdown(id) -> html.Div:
 
 def create_header(id) -> html.Div:
 
-    search = SearchAIO(id=id, placeholder='Search orders')
+    search = SearchAIO(id=id, placeholder='Search customers')
 
     return html.Div([
         html.Div([
