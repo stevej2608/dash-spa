@@ -14,5 +14,6 @@ from .components.footer import  Footer
 from .spa_form import SpaForm
 from .spa_current_user import current_user
 from .decorators import login_required
+from .callback import callback
 
 from dash_spa import themes

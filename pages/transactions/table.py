@@ -87,10 +87,7 @@ class OrdersTable(TableAIO):
 def create_table(id) -> OrdersTable:
     state = TableContext.getState()
 
-    if state.search_term:
-        df1 = filter_str(df,state.search_term)
-    else:
-        df1 = df
+    df1 = filter_str(df,state.search_term)
 
     ordersTable = OrdersTable(
         data=df1.to_dict('records'),

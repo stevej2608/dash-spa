@@ -1,8 +1,9 @@
 from dash_spa.logging import log
 from dash import html, dcc
-from dash_spa import prefix
+from dash_spa import prefix, NOUPDATE, callback
 from pandas import DataFrame
 
+from dash_spa.utils import time_ms
 
 from .icons import SEARCH_ICON
 from .context import TableContext
@@ -111,7 +112,10 @@ def filter_str(df: DataFrame, value: str, case=False) -> DataFrame:
         _type_: _description_
     """
 
-    return  df[df.apply(lambda row: row.astype(str).str.contains(value, case=case).any(), axis=1)]
+    if value:
+        return  df[df.apply(lambda row: row.astype(str).str.contains(value, case=case).any(), axis=1)]
+    else:
+        return df
 
 
 class SearchAIO(html.Div):
@@ -122,19 +126,28 @@ class SearchAIO(html.Div):
 
         pid = prefix(id)
 
-        log.info('search init %s', search_term)
+        log.info('search init term=[%s]', search_term)
 
         search = dcc.Input(id=pid('search'), className='form-control', type="text", value=search_term, placeholder=placeholder)
+        delay = dcc.Interval(id=pid('delay'), max_intervals=1, interval=1200, disabled=True)
 
-        @TableContext.On(search.input.value, prevent_initial_call=True)
-        def search_cb(value):
-            log.info('search %s', value)
-            if value and len(value) > minimum_characters:
-                setSearchTerm(value)
+        @callback(delay.output.disabled, delay.output.interval, search.input.value, delay.state.interval, prevent_initial_call=True)
+        def delay_cb(value, interval):
+            self.time = time_ms()
+            interval +=  1
+            log.info('set search interval=%d input=[%s]', interval, value)
+            return False, interval
+
+        @TableContext.On(delay.input.n_intervals, search.state.value, prevent_initial_call=True)
+        def search_cb(interval, value):
+            dt = time_ms() - self.time
+            log.info('search dt=%s, value=[%s]', dt, value)
+            setSearchTerm(value)
 
         ui = html.Div([
             html.Span(SEARCH_ICON, className='input-group-text'),
-            search
+            search,
+            delay
         ], className='input-group me-2 me-lg-3 fmxw-400')
 
         super().__init__(ui, className='col col-md-6 col-lg-3 col-xl-4')

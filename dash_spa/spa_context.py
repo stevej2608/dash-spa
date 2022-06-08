@@ -113,10 +113,10 @@ class _Context:
             def callback_stub(self, *_args, **_kwargs):
                 pass
 
-            # if app and app.got_first_request:
-            #     return callback_stub
+            if app and app.got_first_request:
+                return callback_stub
 
-            # log.info("register callback %s", self.id)
+            log.info("register callback %s", self.id)
 
             @self._store.update(*_args)
             def _proxy(*_args):
