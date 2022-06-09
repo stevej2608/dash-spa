@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from dash_spa.spa_context import createContext, ContextState
 
-
 @dataclass
 class TableState(ContextState):
     current_page: int = 1

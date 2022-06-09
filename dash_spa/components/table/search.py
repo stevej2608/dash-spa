@@ -1,6 +1,6 @@
 from dash_spa.logging import log
 from dash import html, dcc
-from dash_spa import prefix, NOUPDATE, callback
+from dash_spa import prefix
 from pandas import DataFrame
 
 from .icons import SEARCH_ICON

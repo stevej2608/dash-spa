@@ -1,8 +1,6 @@
-from collections import OrderedDict
 from dash import html
 import pandas as pd
-from dash_spa import NOUPDATE, prefix
-from dash_spa.logging import log
+from dash_spa import prefix
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.table import TableAIO
 

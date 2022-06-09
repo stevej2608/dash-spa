@@ -5,9 +5,8 @@ from dash_spa import prefix
 from pages import TRANSACTIONS_SLUG
 from .transactions import create_table, create_header
 
-from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView
+from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext
 
-from dash_spa.components.table.context import TableContext
 
 register_page(__name__, path=TRANSACTIONS_SLUG, title="Dash/Flightdeck - Transactions", short_name='Transactions')
 

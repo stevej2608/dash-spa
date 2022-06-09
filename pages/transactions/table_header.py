@@ -1,10 +1,9 @@
 from typing import List
-from dash import html, dcc, ALL
-from dash_svg import Svg, Path
-from dash_spa import match, prefix, trigger_index
+from dash import html
+from dash_spa import prefix, trigger_index
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.button_container_aoi import ButtonContainerAIO
-from .icons import TICK_ICON, GEAR_ICON, SEARCH_ICON
+from .icons import TICK_ICON, GEAR_ICON
 
 from dash_spa.components.table import SearchAIO, TableContext
 

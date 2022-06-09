@@ -2,13 +2,11 @@ from typing import TypeVar
 from copy import copy
 from dataclasses import dataclass
 from flask import current_app as app
-from dash import callback, Output, no_update as NOUPDATE
+from dash import Output
 from dash_prefix import prefix
 from dash_spa.logging import log
-from dash_spa import callback
+from dash_spa import callback, NOUPDATE
 from dash_redux import ReduxStore
-
-
 
 # Provides a React.Js context pattern that allows state to be easily passed
 # between components
@@ -17,79 +15,6 @@ from dash_redux import ReduxStore
 
 # TODO: Look at how to make this thread safe
 
-
-
-# class State(dict):
-#     """
-#     Example:
-#     m = Map({'first_name': 'Eduardo'}, last_name='Pool', age=24, sports=['Soccer'])
-
-#     https://stackoverflow.com/a/32107024/489239
-
-#     """
-#     def __init__(self, *args, **kwargs):
-#         super(State, self).__init__(*args, **kwargs)
-#         for arg in args:
-#             if isinstance(arg, dict):
-#                 for k, v in arg.items():
-#                     self[k] = v
-
-#         if kwargs:
-#             for k, v in kwargs.items():
-#                 self[k] = v
-
-#     def __getattr__(self, attr):
-#         return self.get(attr)
-
-#     def __setattr__(self, key, value):
-#         self.__setitem__(key, value)
-
-#     def __setitem__(self, key, value):
-#         super(State, self).__setitem__(key, value)
-#         self.__dict__.update({key: value})
-
-#     def __delattr__(self, item):
-#         self.__delitem__(item)
-
-#     def __delitem__(self, key):
-#         super(State, self).__delitem__(key)
-#         del self.__dict__[key]
-
-
-# https://stackoverflow.com/a/32107024/489239
-# https://stackoverflow.com/a/2352195/489239
-# https://gist.github.com/golobor/397b5099d42da476a4e6
-
-# class State():
-
-#     def __init__(self, state, default = None):
-#         for key, value in state.items():
-#             self[key] = value
-
-#         self._state = state
-#         self._default = default
-
-#     def __getattr__(self, name):
-#         if name in self._state:
-#             return self._state[name]
-#         else:
-#             return self._default
-
-#     def __setattr__(self, name, value):
-#         if name in ['_state', '_default']:
-#             super().__setattr__(name, value)
-#         else:
-#             self._state[name] = value
-
-#     def __getitem__(self, name):
-#         return self.__getattr__(name)
-
-#     def __setitem__(self, name, value):
-#         self.__setattr__(name, value)
-
-
-#     def update(self, dict):
-#         self._state = dict.copy()
 
 # https://docs.python.org/3/library/dataclasses.html
 
@@ -186,7 +111,6 @@ class _Context:
 
                 args = list(_args)
 
-                # self._state.clear()
                 prev_state = args.pop()
                 self._state.fromDict(prev_state)
 
@@ -252,9 +176,8 @@ class _Context:
 
         @callback(Output(container_id, 'children'), self._store.input.data, prevent_initial_call=True)
         def container_cb(state):
-            log.info('Update container %s, %s', container_id, state)
+            # log.info('Update container %s, %s', container_id, state)
 
-            # self._state.clear()
             self._state.fromDict(state)
             self.contexts.set_context(self)
 

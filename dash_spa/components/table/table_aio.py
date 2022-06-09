@@ -1,9 +1,8 @@
-from typing import Callable
 from abc import abstractmethod
 from math import ceil
 from typing import List, Dict, Any
-from dash import html, callback
-# from dash_redux import ReduxStore, StateWrapper
+from dash import html
+
 
 import dash_spa as spa
 from dash_spa.logging import log
