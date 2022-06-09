@@ -62,25 +62,26 @@ class CustomTable(TableAIO):
         ])
 
 
-@TableContext.Provider(id='example_table')
-def layout():
-    log.info('layout - example_table')
-    table = CustomTable(
-        data=df.to_dict('records'),
-        page_size = 8,
-        columns=[{'id': c, 'name': c} for c in df.columns],
-        id="table_example")
+# @TableContext.Provider(id='example_table')
+# def layoutX():
+#     log.info('layout - example_table')
+#     table = CustomTable(
+#         data=df.to_dict('records'),
+#         page_size = 8,
+#         columns=[{'id': c, 'name': c} for c in df.columns],
+#         id="table_example")
 
-    paginator = TableAIOPaginator(className='pagination mb-0', id="table_example_paginator")
-    viewer = TableAIOPaginatorView()
+#     paginator = TableAIOPaginator(className='pagination mb-0', id="table_example_paginator")
+#     viewer = TableAIOPaginatorView()
 
-    paginator_row = html.Div([
-        paginator,
-        viewer
-        ], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
+#     paginator_row = html.Div([
+#         paginator,
+#         viewer
+#         ], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between')
 
-    return html.Div([
-        html.Div(table, className='card card-body border-0 shadow table-wrapper table-responsive'),
-        paginator_row
-        ])
+#     return html.Div([
+#         html.Div(table, className='card card-body border-0 shadow table-wrapper table-responsive'),
+#         paginator_row
+#         ])
 
+layout = "Page is commented out!"

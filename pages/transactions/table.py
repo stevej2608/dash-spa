@@ -94,8 +94,8 @@ def create_table(id) -> OrdersTable:
     ordersTable = OrdersTable(
         data=df1.to_dict('records'),
         columns=[{'id': c, 'name': c} for c in df1.columns],
-        page = state.page or 1,
-        page_size = state.page_size or 10,
+        page = state.current_page,
+        page_size = state.page_size,
         id=id
     )
 

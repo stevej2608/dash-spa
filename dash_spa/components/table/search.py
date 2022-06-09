@@ -120,7 +120,7 @@ class SearchAIO(html.Div):
 
     def __init__(self, id, placeholder='Search...', minimum_characters=0):
 
-        search_term, setSearchTerm = TableContext.useState('search_term', '')
+        search_term, setSearchTerm = TableContext.useState('search_term')
 
         pid = prefix(id)
 

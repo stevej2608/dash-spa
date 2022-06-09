@@ -1,4 +1,6 @@
-import json
+from typing import TypeVar
+from copy import copy
+from dataclasses import dataclass
 from flask import current_app as app
 from dash import callback, Output, no_update as NOUPDATE
 from dash_prefix import prefix
@@ -7,14 +9,13 @@ from dash_spa import callback
 from dash_redux import ReduxStore
 
 
+
 # Provides a React.Js context pattern that allows state to be easily passed
 # between components
 #
 # See examples/react_pattern/pages/context_pattern.py
 
 # TODO: Look at how to make this thread safe
-
-
 
 
 
@@ -55,35 +56,82 @@ from dash_redux import ReduxStore
 #         del self.__dict__[key]
 
 
+# https://stackoverflow.com/a/32107024/489239
+# https://stackoverflow.com/a/2352195/489239
+# https://gist.github.com/golobor/397b5099d42da476a4e6
 
-class State():
+# class State():
 
-    def __init__(self, state, default = None):
-        self._state = state
-        self._default = default
+#     def __init__(self, state, default = None):
+#         for key, value in state.items():
+#             self[key] = value
 
-    def __getattr__(self, name):
-        if name in self._state:
-            return self._state[name]
-        else:
-            return self._default
+#         self._state = state
+#         self._default = default
 
-    def __setattr__(self, name, value):
-        if name in ['_state', '_default']:
-            super().__setattr__(name, value)
-        else:
-            self._state[name] = value
+#     def __getattr__(self, name):
+#         if name in self._state:
+#             return self._state[name]
+#         else:
+#             return self._default
 
-    def __getitem__(self, name):
-        return self.__getattr__(name)
+#     def __setattr__(self, name, value):
+#         if name in ['_state', '_default']:
+#             super().__setattr__(name, value)
+#         else:
+#             self._state[name] = value
 
-    def __setitem__(self, name, value):
-        self.__setattr__(name, value)
+#     def __getitem__(self, name):
+#         return self.__getattr__(name)
+
+#     def __setitem__(self, name, value):
+#         self.__setattr__(name, value)
 
 
-    def update(self, dict):
-        self._state = dict.copy()
+#     def update(self, dict):
+#         self._state = dict.copy()
 
+# https://docs.python.org/3/library/dataclasses.html
+
+
+SelfContextState = TypeVar("SelfContextState", bound="ContextState")
+
+@dataclass
+class ContextState(dict):
+
+    # def __setattr__(self, name, value):
+    #     if name == 'search_term' and value is not None:
+    #         log.info("ContextState name=%s = value=%s", name, value)
+    #     super().__setattr__(name, value)
+
+    def update(self, ref: str = None, state: SelfContextState = None) -> None:
+
+        if ref is not None:
+            if hasattr(self, ref):
+                if state is not None:
+                    setattr(self, ref, state)
+                return
+
+            raise AttributeError(f"Unknown attribute {ref}")
+
+        for attr in state.__dict__.keys():
+            if hasattr(self, attr):
+                value = getattr(state, attr)
+                if value is not None:
+                    setattr(self, attr, value)
+            else:
+                raise AttributeError(f"Unknown attribute {ref}")
+
+    def fromDict(self, state:dict):
+         for attr in state.keys():
+            if hasattr(self, attr):
+                value = state[attr]
+                setattr(self, attr, value)
+            else:
+                raise AttributeError(f"Unknown attribute {attr}")
+
+    def toDict(self):
+        return self.__dict__.copy()
 
 class _Context:
 
@@ -99,10 +147,10 @@ class _Context:
     def state(self):
         return self._store.state
 
-    def __init__(self, contexts, id):
+    def __init__(self, contexts, id, state: ContextState = None):
         self.contexts = contexts
         self.id = id
-        self._state = {}
+        self._state = state
 
     def callback(self, *_args, **_kwargs):
 
@@ -138,9 +186,9 @@ class _Context:
 
                 args = list(_args)
 
-                self._state.clear()
-                self._state.update(args.pop())
-                prev_state = self._state.copy()
+                # self._state.clear()
+                prev_state = args.pop()
+                self._state.fromDict(prev_state)
 
                 self.contexts.set_context(self)
 
@@ -148,10 +196,9 @@ class _Context:
 
                 user_func(*args)
 
-                if prev_state != self._state:
-                    # log.info('Update[%s] state %s', self._store.id, self._state)
-                    new_state = self._state.copy()
-                else:
+                new_state = self._state.toDict()
+
+                if prev_state == new_state:
                     new_state = NOUPDATE
 
                 return new_state
@@ -159,7 +206,7 @@ class _Context:
 
         return wrapper
 
-    def Provider(self, state=None, id=id):
+    def Provider(self, state:ContextState=None, id=id):
 
         assert id, "The context.Provider must have an id"
 
@@ -172,8 +219,8 @@ class _Context:
 
         # state can be provide when the context is created or passed in here
 
-        self._state = state.copy() if state is not None else self._state
-        self._store = ReduxStore(id=pid(), data=self._state, storage_type='memory')
+        self._state = copy(state) if state is not None else self._state
+        self._store = ReduxStore(id=pid(), data=self._state.toDict(), storage_type='memory')
 
         def provider_decorator(func):
 
@@ -207,8 +254,8 @@ class _Context:
         def container_cb(state):
             log.info('Update container %s, %s', container_id, state)
 
-            self._state.clear()
-            self._state.update(state.copy())
+            # self._state.clear()
+            self._state.fromDict(state)
             self.contexts.set_context(self)
 
             container = self.render()
@@ -217,90 +264,68 @@ class _Context:
 
         return provider_decorator
 
-    def useState(self, ref=None, initial_state={}):
-
-        if ref is not None:
-            if not ref in self._state:
-                if isinstance(initial_state, dict) or isinstance(initial_state, list):
-                    self._state[ref] = initial_state.copy()
-                else:
-                    self._state[ref] = initial_state
-
-                # log.info("useState initial_state[%s]=%s", ref, self._state)
-        else:
-            if not self._state:
-                self._state.update(initial_state)
-                # log.info("useState initial_state=%s", self._state)
+    def useState(self, ref=None, initial_state: ContextState = None):
+        if initial_state is not None:
+            self._state.update(ref, initial_state)
 
         def set_state(state):
-            if ref is not None:
-                if isinstance(state, dict):
-                    self._state[ref].clear()
-                    self._state[ref].update(state.copy())
-                else:
-                    self._state[ref] = state
-
-            else:
-                self._state.update(state)
-
+            self._state.update(ref, state)
 
         if ref is not None:
-            state = self._state[ref]
+            state = getattr(self._state, ref)
         else:
             state = self._state
 
-        if isinstance(state, dict):
-            return State(state), set_state
-        else:
-            return state, set_state
+        return state, set_state
 
 
     def getState(self, ref=None):
         state = self._state[ref] if ref else self._state
-        return State(state)
+        return state
 
     def getStateDict(self, ref=None):
         state = self._state[ref] if ref else self._state
         return state.copy()
 
 
-def createContext(state={}):
+class _ContextWrapper:
+    """Interface that maps the global context onto the active context.
 
-    class _ContextWrapper:
-        """Interface that maps the global context onto the active context.
+    The active context is in set by the @<context>.Provider() and remains
+    active until the decorated method returns. The active context is
+    switched prior to invoking a callback so the callback executes in
+    the context that was active when it was created.
 
-        The active context is in set by the @<context>.Provider() and remains
-        active until the decorated method returns. The active context is
-        switched prior to invoking a callback.
+    """
 
-        """
+    def __init__(self, state: ContextState):
+        self.ctx = None
+        self.state_dataclass = state
 
-        def __init__(self, state):
-            self.ctx = None
+    def set_context(self, ctx):
+        self.ctx = ctx
 
-        def set_context(self, ctx):
-            self.ctx = ctx
+    def callback(self, *_args, **_kwargs):
+            return self.ctx.callback(*_args, **_kwargs)
 
-        def callback(self, *_args, **_kwargs):
-             return self.ctx.callback(*_args, **_kwargs)
+    def On(self, *_args, **_kwargs):
+        return self.ctx.On(*_args, **_kwargs)
 
-        def On(self, *_args, **_kwargs):
-            return self.ctx.On(*_args, **_kwargs)
+    def Provider(self, id=id, state:ContextState=None):
+        state = state if state else self.state_dataclass()
+        self.ctx = _Context(self, id, state)
+        return self.ctx.Provider(state, id)
 
-        def Provider(self, state=None, id=id):
-            self.ctx = _Context(self, id)
-            return self.ctx.Provider(state, id)
+    def useState(self, ref=None, initial_state: ContextState = None):
+        return self.ctx.useState(ref, initial_state)
 
-        def useState(self, ref=None, initial_state={}):
-            return self.ctx.useState(ref, initial_state)
+    def getState(self, ref=None):
+        return self.ctx.getState(ref)
 
-        def getState(self, ref=None):
-            return self.ctx.getState(ref)
+    def getStateDict(self, ref=None):
+        return self.ctx.getStateDict(ref)
 
-        def getStateDict(self, ref=None):
-            return self.ctx.getStateDict(ref)
-
-
+def createContext(state: ContextState = None) -> _ContextWrapper:
     return _ContextWrapper(state)
 
 # def useContext(ctx: _ContextWrapper):

@@ -6,7 +6,7 @@ from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.button_container_aoi import ButtonContainerAIO
 from .icons import TICK_ICON, GEAR_ICON, SEARCH_ICON
 
-from dash_spa.components.table import SearchAIO, TableContext, PAGE_SIZE
+from dash_spa.components.table import SearchAIO, TableContext
 
 
 class PageSizeSelect(ButtonContainerAIO):

@@ -8,7 +8,7 @@ from dash import html, callback
 import dash_spa as spa
 from dash_spa.logging import log
 
-from .context import TableContext, PAGE_SIZE, LAST_PAGE, CURRENT_PAGE, TABLE_ROWS
+from .context import TableContext, TableState
 
 TableData = List[Dict[str, Any]]
 TableColumns = List[Dict[str, Any]]
@@ -36,19 +36,8 @@ class TableAIO(html.Table):
 
         # TODO: This shouldn't be here!
 
-        initial_state = {
-            CURRENT_PAGE : page,
-            LAST_PAGE : ceil(len(data) / page_size),
-            PAGE_SIZE: page_size,
-            TABLE_ROWS: len(data)
-        }
-
+        initial_state = TableState(page, page_size, ceil(len(data) / page_size), len(data))
         state, _ = TableContext.useState(initial_state=initial_state)
-
-        # TODO: or this
-
-        state.table_rows = len(data)
-        state.last_page = ceil(len(data) / page_size)
 
         self._prefix = pid = spa.prefix(id)
         self._data = data
