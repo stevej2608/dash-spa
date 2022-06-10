@@ -1,3 +1,4 @@
+import json
 from typing import TypeVar
 from copy import copy
 from dataclasses import dataclass
@@ -157,24 +158,22 @@ class _Context:
                 args = list(_args)
 
                 state = args.pop()
-                old_state = state.copy()
-                self._state.map_store(state)
+                ref_state = json.dumps(state)
+                self._state.map_store(state['spa'])
 
                 log.info('******** On Event ***********')
-                log.info('state %s', old_state)
+                log.info('state %s', state)
 
                 self.contexts.set_context(self)
 
                 user_func(*args)
 
-                new_state = self._state.state
+                log.info('state %s', state)
 
-                log.info('state %s', new_state)
-
-                if new_state == old_state:
+                if json.dumps(state) == ref_state:
                     new_state = NOUPDATE
 
-                return new_state
+                return state
 
 
         return wrapper
@@ -193,7 +192,9 @@ class _Context:
         # state can be provide when the context is created or passed in here
 
         self._state = copy(state) if state is not None else self._state
-        self._store = ReduxStore(id=pid(), data=self._state.state, storage_type='session')
+
+        data = {'spa': self._state.state.copy()}
+        self._store = ReduxStore(id=pid(), data=data, storage_type='session')
 
         def provider_decorator(func):
 
@@ -229,7 +230,7 @@ class _Context:
             log.info('******** Container render ***********')
             log.info('state %s', state)
 
-            self._state.map_store(state)
+            self._state.map_store(state['spa'])
             self.contexts.set_context(self)
 
             container = self.render()
