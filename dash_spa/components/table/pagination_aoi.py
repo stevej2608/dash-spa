@@ -78,6 +78,7 @@ class TableAIOPaginator(html.Ul):
                 else:
                     page = selection
 
+                log.info('set page=%d', page)
                 set_page(page)
 
 

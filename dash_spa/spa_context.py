@@ -24,39 +24,70 @@ SelfContextState = TypeVar("SelfContextState", bound="ContextState")
 @dataclass
 class ContextState(dict):
 
-    # def __setattr__(self, name, value):
-    #     if name == 'search_term' and value is not None:
-    #         log.info("ContextState name=%s = value=%s", name, value)
-    #     super().__setattr__(name, value)
+    @property
+    def state(self):
+        if hasattr(self, '_state'):
+            return self._state
+        else:
+            return self.__dict__.copy()
+
+    def map_store(self, store):
+        """Map the incoming dcc.Store state onto the context. When
+        context attributes are changed the store value will be updated
+
+        Args:
+            store (dict): The latest dcc.Store state
+        """
+
+        for attr in store.keys():
+            if attr in self.__store_keys__:
+                setattr(self, attr, store[attr])
+
+        for attr in self.__store_keys__:
+            value = getattr(self, attr)
+            store[attr] = value
+
+        self._state = store
+
+    # def map_state(self, state: dict):
+    #     self._state = state
+    #     for attr in state.keys():
+    #         if hasattr(self, attr):
+    #             setattr(self, attr, state[attr])
+
+    def __setattr__(self, name, value):
+
+        if hasattr(self, '_state'):
+            if name in self.__store_keys__:
+                self._state[name] = value
+            else:
+                raise AttributeError(f"Attempt to write to undefined attribute {name}")
+
+        elif name not in ['__store_keys__', '_state']:
+            if not hasattr(self, '__store_keys__'):
+                self.__store_keys__ = []
+            self.__store_keys__.append(name)
+
+        super().__setattr__(name, value)
+
 
     def update(self, ref: str = None, state: SelfContextState = None) -> None:
 
         if ref is not None:
-            if hasattr(self, ref):
+            if ref in self._state:
                 if state is not None:
-                    setattr(self, ref, state)
+                    self._state[ref] = state
                 return
 
             raise AttributeError(f"Unknown attribute {ref}")
 
-        for attr in state.__dict__.keys():
-            if hasattr(self, attr):
+        for attr in self.__dict__.keys():
+            if hasattr(state, attr):
                 value = getattr(state, attr)
                 if value is not None:
                     setattr(self, attr, value)
             else:
                 raise AttributeError(f"Unknown attribute {ref}")
-
-    def fromDict(self, state:dict):
-         for attr in state.keys():
-            if hasattr(self, attr):
-                value = state[attr]
-                setattr(self, attr, value)
-            else:
-                raise AttributeError(f"Unknown attribute {attr}")
-
-    def toDict(self):
-        return self.__dict__.copy()
 
 class _Context:
 
@@ -112,15 +143,18 @@ class _Context:
                 args = list(_args)
 
                 prev_state = args.pop()
-                self._state.fromDict(prev_state)
+                self._state.map_store(prev_state)
+
+                log.info('******** On Event ***********')
+                log.info('state %s', prev_state)
 
                 self.contexts.set_context(self)
 
-                # log.info('State[%s] state %s', self._store.id, self._state)
-
                 user_func(*args)
 
-                new_state = self._state.toDict()
+                new_state = self._state.state
+
+                log.info('state %s', new_state)
 
                 if prev_state == new_state:
                     new_state = NOUPDATE
@@ -144,7 +178,7 @@ class _Context:
         # state can be provide when the context is created or passed in here
 
         self._state = copy(state) if state is not None else self._state
-        self._store = ReduxStore(id=pid(), data=self._state.toDict(), storage_type='memory')
+        self._store = ReduxStore(id=pid(), data=self._state.state, storage_type='memory')
 
         def provider_decorator(func):
 
@@ -176,7 +210,9 @@ class _Context:
 
         @callback(Output(container_id, 'children'), self._store.input.data, prevent_initial_call=True)
         def container_cb(state):
-            # log.info('Update container %s, %s', container_id, state)
+
+            log.info('******** Container render ***********')
+            log.info('state %s', state)
 
             self._state.fromDict(state)
             self.contexts.set_context(self)

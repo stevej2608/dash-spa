@@ -7,7 +7,7 @@ logging.basicConfig(
     format = '%(levelname)s %(module)13s/%(lineno)-5d %(message)s'
 )
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("dash_spa")
 
 def getLogger(name=None):
     return logging.getLogger(name)
