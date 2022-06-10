@@ -47,7 +47,9 @@ class ContextState:
         if hasattr(self, '_state'):
             return self._state
         else:
-            return self.__dict__.copy()
+            state = self.__dict__.copy()
+            state.pop('__store_keys__', None)
+            return state
 
     def map_store(self, store):
         """Map the incoming dcc.Store state onto the ContextState. When
@@ -78,7 +80,8 @@ class ContextState:
         elif name not in ['__store_keys__', '_state']:
             if not hasattr(self, '__store_keys__'):
                 self.__store_keys__ = []
-            self.__store_keys__.append(name)
+            if name not in self.__store_keys__:
+                self.__store_keys__.append(name)
 
         super().__setattr__(name, value)
 
@@ -153,11 +156,12 @@ class _Context:
 
                 args = list(_args)
 
-                prev_state = args.pop()
-                self._state.map_store(prev_state)
+                state = args.pop()
+                old_state = state.copy()
+                self._state.map_store(state)
 
                 log.info('******** On Event ***********')
-                log.info('state %s', prev_state)
+                log.info('state %s', old_state)
 
                 self.contexts.set_context(self)
 
@@ -167,7 +171,7 @@ class _Context:
 
                 log.info('state %s', new_state)
 
-                if prev_state == new_state:
+                if new_state == old_state:
                     new_state = NOUPDATE
 
                 return new_state
@@ -189,7 +193,7 @@ class _Context:
         # state can be provide when the context is created or passed in here
 
         self._state = copy(state) if state is not None else self._state
-        self._store = ReduxStore(id=pid(), data=self._state.state, storage_type='memory')
+        self._store = ReduxStore(id=pid(), data=self._state.state, storage_type='session')
 
         def provider_decorator(func):
 
@@ -225,7 +229,7 @@ class _Context:
             log.info('******** Container render ***********')
             log.info('state %s', state)
 
-            self._state.fromDict(state)
+            self._state.map_store(state)
             self.contexts.set_context(self)
 
             container = self.render()

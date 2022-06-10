@@ -21,8 +21,8 @@ def serve_app(app: Dash, path="/", debug=False, logger: DashLogger =None):
     _log = logging.getLogger('redux_store')
     _log.setLevel(logging.INFO)
 
-    _log = logging.getLogger('dash_spa')
-    _log.setLevel(logging.WARN)
+    # _log = logging.getLogger('dash_spa')
+    # _log.setLevel(logging.WARN)
 
     # When running in a Docker container the internal port
     # is mapped onto a host port. Use the env variables passed
