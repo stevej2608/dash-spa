@@ -22,7 +22,25 @@ from dash_redux import ReduxStore
 SelfContextState = TypeVar("SelfContextState", bound="ContextState")
 
 @dataclass
-class ContextState(dict):
+class ContextState:
+    """ ContextState is a simple wrapper to enable dot
+    autocompletion to the underlying dcc.Store data dictionary
+
+    Usage:
+    ```
+        @dataclass
+        class TableState(ContextState):
+            current_page: int = 1
+            page_size: int = 10
+            last_page: int = 1
+            table_rows: int = 0
+            search_term: str = None
+
+        state = TableState()
+        state.map_store(store)
+
+    ```
+    """
 
     @property
     def state(self):
@@ -32,7 +50,7 @@ class ContextState(dict):
             return self.__dict__.copy()
 
     def map_store(self, store):
-        """Map the incoming dcc.Store state onto the context. When
+        """Map the incoming dcc.Store state onto the ContextState. When
         context attributes are changed the store value will be updated
 
         Args:
@@ -49,15 +67,9 @@ class ContextState(dict):
 
         self._state = store
 
-    # def map_state(self, state: dict):
-    #     self._state = state
-    #     for attr in state.keys():
-    #         if hasattr(self, attr):
-    #             setattr(self, attr, state[attr])
-
     def __setattr__(self, name, value):
 
-        if hasattr(self, '_state'):
+        if hasattr(self, '_state') and name != '_state':
             if name in self.__store_keys__:
                 self._state[name] = value
             else:
@@ -74,14 +86,13 @@ class ContextState(dict):
     def update(self, ref: str = None, state: SelfContextState = None) -> None:
 
         if ref is not None:
-            if ref in self._state:
-                if state is not None:
-                    self._state[ref] = state
+            if ref in self.__store_keys__:
+                setattr(self,ref, state)
                 return
 
             raise AttributeError(f"Unknown attribute {ref}")
 
-        for attr in self.__dict__.keys():
+        for attr in self.__store_keys__:
             if hasattr(state, attr):
                 value = getattr(state, attr)
                 if value is not None:
