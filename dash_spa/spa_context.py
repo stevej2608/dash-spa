@@ -158,8 +158,8 @@ class _Context:
                 args = list(_args)
 
                 state = args.pop()
-                ref_state = json.dumps(state)
-                self._state.map_store(state['spa'])
+                ref_state = json.dumps(state, sort_keys = True)
+                self._state.map_store(state)
 
                 log.info('******** On Event ***********')
                 log.info('state %s', state)
@@ -170,7 +170,7 @@ class _Context:
 
                 log.info('state %s', state)
 
-                if json.dumps(state) == ref_state:
+                if json.dumps(state, sort_keys = True) == ref_state:
                     new_state = NOUPDATE
 
                 return state
@@ -192,9 +192,7 @@ class _Context:
         # state can be provide when the context is created or passed in here
 
         self._state = copy(state) if state is not None else self._state
-
-        data = {'spa': self._state.state.copy()}
-        self._store = ReduxStore(id=pid(), data=data, storage_type='session')
+        self._store = ReduxStore(id=pid(), data=self._state.state, storage_type='session')
 
         def provider_decorator(func):
 
@@ -230,7 +228,7 @@ class _Context:
             log.info('******** Container render ***********')
             log.info('state %s', state)
 
-            self._state.map_store(state['spa'])
+            self._state.map_store(state)
             self.contexts.set_context(self)
 
             container = self.render()
