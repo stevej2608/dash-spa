@@ -60,13 +60,23 @@ class ContextState:
             store (dict): The latest dcc.Store state
         """
 
+        # Copy the incoming store values to the context attributes
+
         for attr in store.keys():
             if attr in self.__store_keys__:
                 setattr(self, attr, store[attr])
 
+        # Update the new shadow dict with the current context
+
         for attr in self.__store_keys__:
             value = getattr(self, attr)
-            store[attr] = value
+            if isinstance(value, ContextState):
+                child_store = store[attr] if attr in store else {}
+                value.map_store(child_store)
+                store[attr] = child_store
+            else:
+                store[attr] = value
+
 
         self._state = store
 

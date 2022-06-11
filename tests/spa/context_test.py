@@ -11,7 +11,7 @@ class TableState(ContextState):
     search_term: str = None
 
 
-def test_context():
+def test_context_wrapper():
 
     # Create a TableState
 
@@ -51,6 +51,40 @@ def test_context():
 
     assert state.current_page == 99
     assert state.search_term == 'AAA'
+
+
+def test_context_nesting():
+
+    @dataclass
+    class Node(ContextState):
+        value: int = 10
+        left = None
+        right = None
+
+    # Create a simple tree
+
+    root = Node(1)
+    left = Node(2)
+    right = Node(3)
+
+    root.left = left
+    root.right = right
+
+    assert root.value == 1
+    assert root.left.value == 2
+    assert root.right.value == 3
+
+    store = {}
+    root.map_store(store)
+
+    assert store == {'value': 1, 'left': {'value': 2}, 'right': {'value': 3}}
+
+    root.left.value = 88
+    root.right.value = 99
+
+    assert store =={'value': 1, 'left': {'value': 88}, 'right': {'value': 99}}
+
+
 
 
 
