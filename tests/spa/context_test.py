@@ -1,5 +1,5 @@
 import pytest
-from dash_spa.spa_context import ContextState
+from dash_spa.context_state import ContextState
 from dataclasses import dataclass
 
 @dataclass
@@ -56,33 +56,57 @@ def test_context_wrapper():
 def test_context_nesting():
 
     @dataclass
-    class Node(ContextState):
+    class NodeState(ContextState):
         value: int = 10
         left = None
         right = None
 
     # Create a simple tree
 
-    root = Node(1)
-    left = Node(2)
-    right = Node(3)
+    root = NodeState(1)
+    left = NodeState(2)
+    right = NodeState(3)
 
     root.left = left
     root.right = right
+
+    # Confirm the tree values are accessible
 
     assert root.value == 1
     assert root.left.value == 2
     assert root.right.value == 3
 
+    # Confirm a newly mapped store is updated correctly
+
     store = {}
     root.map_store(store)
-
     assert store == {'value': 1, 'left': {'value': 2}, 'right': {'value': 3}}
+
+    # Confirm attribute changes are mapped to the store
 
     root.left.value = 88
     root.right.value = 99
+    assert store == {'value': 1, 'left': {'value': 88}, 'right': {'value': 99}}
 
-    assert store =={'value': 1, 'left': {'value': 88}, 'right': {'value': 99}}
+    # Confirm mapping a new store updates the attributes correctly
+
+    store = {'value': 22, 'left': {'value': 33}, 'right': {'value': 44}}
+    root.map_store(store)
+
+    assert root.value == 22
+    assert root.left.value == 33
+    assert root.right.value == 44
+
+    # Confirm nested update works
+
+    new_tree = NodeState(100)
+    new_tree.left = NodeState(200)
+    root.update(state=new_tree)
+
+    assert root.value == 100
+    assert root.left.value == 200
+    assert root.right.value == 44
+
 
 
 
