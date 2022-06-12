@@ -125,6 +125,10 @@ class _Context:
 
                 # log.info('store initial_state = %s', self._store.data)
 
+                # The context may have changed during the update. We
+                # need to copy the state across to the Redux store data
+
+                self._store.data.update(self._state.state)
                 result.children.append(self._store)
 
                 return result
