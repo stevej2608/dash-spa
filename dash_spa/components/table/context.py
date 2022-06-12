@@ -7,6 +7,6 @@ class TableState(ContextState):
     page_size: int = 10
     last_page: int = 1
     table_rows: int = 0
-    search_term: str = ''
+    search_term: str = None
 
 TableContext = createContext(TableState);

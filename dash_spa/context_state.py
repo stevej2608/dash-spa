@@ -94,11 +94,11 @@ class ContextState:
 
         if ref is not None:
             if ref in self.__store_keys__:
-                value = getattr(self, attr)
+                value = getattr(self, ref)
                 if isinstance(value, ContextState):
                     value.update(state=state)
                 else:
-                    setattr(self, attr, state)
+                    setattr(self, ref, state)
                 return
 
             raise AttributeError(f"Unknown attribute {ref}")
