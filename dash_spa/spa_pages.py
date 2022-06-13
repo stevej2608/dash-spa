@@ -16,6 +16,7 @@ page_container = pages.page_container
 location = page_container.children[0]
 
 def page_container_append(component: Component):
+    """Append given component to the page container"""
 
     def get_id(component):
         if hasattr(component, 'id'):

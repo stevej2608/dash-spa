@@ -40,7 +40,7 @@ class _Context:
 
         def wrapper(user_func):
 
-            @callback(*_args, **_kwargs)
+            @callback(*_args, self._store.input.data, **_kwargs)
             def _proxy(*_args):
                 self.contexts.set_context(self)
                 result = user_func(*_args)
