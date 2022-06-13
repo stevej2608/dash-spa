@@ -1,15 +1,24 @@
 import uuid
 from dataclasses import dataclass
-from flask import session, app
+from flask import session
 from ..logging import log
 from ..context_state import ContextState
 
-"""Minimalistic Server side session storage
+"""Minimalistic Server side session storage plugin
+
+This plugin must be added to the Dash initialisation before use
+
+```
+import dash_spa as spa
+
+app = Dash(__name__,
+        plugins=[spa.spa_session],
+        ...
+```
 
 Usage:
 ```
-from dataclasses import dataclass
-from dash_spa import session_context, SessionContext
+from dash_spa import session_context, SessionContext, dataclass
 
 
 @dataclass
@@ -43,6 +52,7 @@ def plug(app):
         try:
             if not SPA_SESSION_ID in session:
                 session[SPA_SESSION_ID] = str(uuid.uuid4())
+                log.info('Created session id=%s', session[SPA_SESSION_ID])
         except Exception:
             pass
 

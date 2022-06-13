@@ -1,8 +1,7 @@
-from dataclasses import dataclass
 from dash import html, dcc
 from dash_spa import NOUPDATE, callback
 from dash_spa.logging import log
-from dash_spa import session_context, SessionContext
+from dash_spa import session_context, SessionContext, dataclass
 from dash_spa import register_page
 import colorlover as cl
 import pandas as pd
@@ -17,7 +16,7 @@ class TickerState(SessionContext):
 
 # https://github.com/plotly/dash-stock-tickers-demo-app
 #
-# The original app hs been modified adding a persistence store for the
+# The original app hs been modified adding a session store for the
 # ticker selection.
 
 colorscale = cl.scales['9']['qual']['Paired']
@@ -89,20 +88,24 @@ def update_graph(tickers=[]):
 
 # http://default:5026/ticker?tickers=TSLA+GOOGL
 
-def layout(tickers = None):
+def layout(tickers: str = None) -> html.Div:
+    """Layout the tickers page
 
-    log.info('******************** tickers=%s **************************', tickers)
+    layout() is only called when a new page opens or is refreshed manually.
+
+    Args:
+        tickers (str, optional): querystring tickers to be displayed. Defaults to None.
+
+    Returns:
+        html.Div: Ticker page markup
+    """
 
     tickers = tickers.split(' ') if tickers is not None else []
 
     ctx = session_context(TickerState)
+    ctx.tickers = tickers
 
-    if ctx.tickers != tickers:
-        ctx.tickers = tickers
-
-    #ticker_list = tickers.split('+') if tickers is not None else []
-
-    location = dcc.Location(id='ticker_loc')
+    location = dcc.Location(id='ticker_loc', refresh=False)
 
     ticker_dropdown = dcc.Dropdown(
         id=page.id('stock_ticker'),
@@ -111,8 +114,11 @@ def layout(tickers = None):
                     for s in zip(df.Stock.unique(), df.Stock.unique())],
         multi=True)
 
+    # Update the the location bar with the querystring values selected by the
+    # drop-down. This will not cause a page refresh
+
     @callback(location.output.href, ticker_dropdown.input.value, prevent_initial_callback=True)
-    def _update_location(value):
+    def _update_loc(value):
         ctx = session_context(TickerState)
         try:
             if value != ctx.tickers:
@@ -126,7 +132,16 @@ def layout(tickers = None):
         return NOUPDATE
 
     graphs = update_graph(tickers)
-    graph_container = html.Div(graphs)
+    graph_container = html.Div(graphs, id='graphs')
+
+    # Update the graphs displayed from the values selected by the drop-down
+
+    @callback(graph_container.output.children, ticker_dropdown.input.value, prevent_initial_callback=True)
+    def _update_graphs(value):
+        graphs = update_graph(value)
+        return graphs
+
+    # page content layout
 
     return html.Div([
         html.H2('Finance Explorer'),
