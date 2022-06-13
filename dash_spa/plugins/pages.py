@@ -33,11 +33,9 @@ _ID_STORE = "_pages_plugin_store"
 _ID_DUMMY = "_pages_plugin_dummy"
 
 
-# TODO: Is it ok to have refresh disabled?
-
 page_container = html.Div(
     [
-        dcc.Location(id=_ID_LOCATION, refresh=False),
+        dcc.Location(id=_ID_LOCATION),
         html.Div(id=_ID_CONTENT),
         dcc.Store(id=_ID_STORE),
         html.Div(id=_ID_DUMMY),

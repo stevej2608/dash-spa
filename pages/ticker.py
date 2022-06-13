@@ -1,7 +1,9 @@
 from dash import html, dcc
+import dash_holoniq_components as dhc
 from dash_spa import NOUPDATE, callback
 from dash_spa.logging import log
 from dash_spa import session_context, SessionContext, dataclass
+from dash_spa.spa_location import store
 from dash_spa import register_page
 import colorlover as cl
 import pandas as pd
@@ -91,8 +93,6 @@ def update_graph(tickers=[]):
 def layout(tickers: str = None) -> html.Div:
     """Layout the tickers page
 
-    layout() is only called when a new page opens or is refreshed manually.
-
     Args:
         tickers (str, optional): querystring tickers to be displayed. Defaults to None.
 
@@ -105,7 +105,7 @@ def layout(tickers: str = None) -> html.Div:
     ctx = session_context(TickerState)
     ctx.tickers = tickers
 
-    location = dcc.Location(id='ticker_loc', refresh=False)
+    #location = dhc.Location(id='ticker_loc', refresh=True)
 
     ticker_dropdown = dcc.Dropdown(
         id=page.id('stock_ticker'),
@@ -115,10 +115,10 @@ def layout(tickers: str = None) -> html.Div:
         multi=True)
 
     # Update the the location bar with the querystring values selected by the
-    # drop-down. This will not cause a page refresh
+    # drop-down. This will cause a page refresh
 
-    @callback(location.output.href, ticker_dropdown.input.value, prevent_initial_callback=True)
-    def _update_loc(value):
+    @store.update(ticker_dropdown.input.value, prevent_initial_callback=True)
+    def _update_loc(value, store):
         ctx = session_context(TickerState)
         try:
             if value != ctx.tickers:
@@ -134,20 +134,10 @@ def layout(tickers: str = None) -> html.Div:
     graphs = update_graph(tickers)
     graph_container = html.Div(graphs, id='graphs')
 
-    # Update the graphs displayed from the values selected by the drop-down
-
-    @callback(graph_container.output.children, ticker_dropdown.input.value, prevent_initial_callback=True)
-    def _update_graphs(value):
-        graphs = update_graph(value)
-        return graphs
-
-    # page content layout
-
     return html.Div([
         html.H2('Finance Explorer'),
         html.Br(),
         ticker_dropdown,
         html.Br(),
-        graph_container,
-        location
+        graph_container
     ], className="container")

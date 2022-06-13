@@ -136,7 +136,7 @@ class SearchAIO(html.Div):
         # User input arms/rearms the timer
 
         @TableContext.callback(delay.output.disabled, delay.output.interval, search.input.value, delay.state.interval, prevent_initial_call=True)
-        def delay_cb(value, interval):
+        def delay_cb(value, interval, state):
 
             # This is the only way I've found to get the timer to rearm
 
