@@ -6,6 +6,7 @@ import dash
 from dash.development.base_component import Component
 from dash_prefix import prefix
 from .logging import log
+
 from .plugins import pages
 
 

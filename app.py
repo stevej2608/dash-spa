@@ -27,7 +27,7 @@ def create_dash() -> Dash:
     server.config['SECRET_KEY'] = flask_options.SECRET_KEY
 
     app = Dash(__name__,
-            plugins=[spa.spa_pages],
+            plugins=[spa.spa_pages, spa.spa_session],
             prevent_initial_callbacks=True,
             suppress_callback_exceptions=True,
             external_stylesheets=external_stylesheets,

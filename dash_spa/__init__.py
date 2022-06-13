@@ -17,3 +17,6 @@ from .decorators import login_required
 from .callback import callback
 
 from dash_spa import themes
+
+from .plugins import spa_session
+from .plugins.spa_session import session_context, SessionContext

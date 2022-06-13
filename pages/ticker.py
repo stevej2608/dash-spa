@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from dash import html, dcc
 from dash_spa import NOUPDATE, callback
 from dash_spa.logging import log
-from dash_spa.spa_session import session_context, SessionContext
+from dash_spa import session_context, SessionContext
 from dash_spa import register_page
 import colorlover as cl
 import pandas as pd
