@@ -2,6 +2,7 @@ from attr import attr
 from dash import callback, Output, Input, html, dcc
 import dash
 import os
+import uuid
 import inspect
 import os
 import importlib
@@ -384,9 +385,19 @@ def plug(app):
     else:
         warnings.warn("A folder called `pages` does not exist.", stacklevel=2)
 
+    @app.server.before_request
+    def set_session_id():
+        try:
+            session = flask.session
+            SPA_SESSION_ID = "spa_session_id"
+            if not SPA_SESSION_ID in session:
+                session[SPA_SESSION_ID] = str(uuid.uuid4())
+                print(f"create session id {session[SPA_SESSION_ID]}")
+        except Exception:
+            pass
+
     @app.server.before_first_request
     def router():
-
 
         def page_layout(page, layout=None, path_variables={}, query_parameters={}):
 

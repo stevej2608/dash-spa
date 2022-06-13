@@ -1,12 +1,19 @@
-from dash import html, dcc, callback, no_update as NO_UPDATE
-import dash_bootstrap_components as dbc
+from dataclasses import dataclass
+from dash import html, dcc
+from dash_spa import NOUPDATE, callback
+from dash_spa.logging import log
+from dash_spa.spa_session import session_context, SessionContext
+from dash_spa import register_page
 import colorlover as cl
 import pandas as pd
-from dash_spa import register_page
 
 from pages import TICKER_SLUG
 
 page = register_page(__name__, path=TICKER_SLUG, title="Dash Ticker", short_name='Ticker')
+
+@dataclass
+class TickerState(SessionContext):
+    tickers: str = ""
 
 # https://github.com/plotly/dash-stock-tickers-demo-app
 #
@@ -22,39 +29,6 @@ except Exception:
     exit(0)
 
 
-ticker_store = dcc.Store(id=page.id('current_tickers'), storage_type='session')
-
-stock_ticker_dropdown = dcc.Dropdown(
-    id=page.id('stock_ticker'),
-    value="",
-    options=[{'label': s[0], 'value': str(s[1])}
-                for s in zip(df.Stock.unique(), df.Stock.unique())],
-    multi=True,
-)
-
-graphs = html.Div(id=page.id('graphs'))
-
-# Callback to create the charts for requested tickers
-
-@callback(graphs.output.children, ticker_store.output.data, stock_ticker_dropdown.input.value, ticker_store.state.data)
-def _update_graph(tickers, current_tickers):
-    if tickers is None:
-        tickers = current_tickers or []
-    return update_graph(tickers), tickers
-
-@callback(stock_ticker_dropdown.output.value, ticker_store.state.data, ticker_store.input.modified_timestamp )
-def _store_cb(data, ts):
-    return data if data else NO_UPDATE
-
-layout = html.Div([
-        html.H2('Finance Explorer'),
-        html.Br(),
-        stock_ticker_dropdown,
-        html.Br(),
-        graphs,
-        ticker_store
-    ], className="container")
-
 def bbands(price, window_size=10, num_of_std=5):
     rolling_mean = price.rolling(window=window_size).mean()
     rolling_std = price.rolling(window=window_size).std()
@@ -62,7 +36,7 @@ def bbands(price, window_size=10, num_of_std=5):
     lower_band = rolling_mean - (rolling_std*num_of_std)
     return rolling_mean, upper_band, lower_band
 
-def update_graph(tickers):
+def update_graph(tickers=[]):
     graphs = []
 
     if not tickers:
@@ -111,4 +85,54 @@ def update_graph(tickers):
 
             graphs.append(html.Br())
 
-    return graphs
+    return html.Div(graphs)
+
+# http://default:5026/ticker?tickers=TSLA+GOOGL
+
+def layout(tickers = None):
+
+    log.info('******************** tickers=%s **************************', tickers)
+
+    tickers = tickers.split(' ') if tickers is not None else []
+
+    ctx = session_context(TickerState)
+
+    if ctx.tickers != tickers:
+        ctx.tickers = tickers
+
+    #ticker_list = tickers.split('+') if tickers is not None else []
+
+    location = dcc.Location(id='ticker_loc')
+
+    ticker_dropdown = dcc.Dropdown(
+        id=page.id('stock_ticker'),
+        value=tickers,
+        options=[{'label': s[0], 'value': str(s[1])}
+                    for s in zip(df.Stock.unique(), df.Stock.unique())],
+        multi=True)
+
+    @callback(location.output.href, ticker_dropdown.input.value, prevent_initial_callback=True)
+    def _update_location(value):
+        ctx = session_context(TickerState)
+        try:
+            if value != ctx.tickers:
+                ctx.tickers = value
+                href = f"{page.path}?tickers={'+'.join(value)}"
+                log.info('href=%s', href)
+                return href
+        except Exception:
+            pass
+
+        return NOUPDATE
+
+    graphs = update_graph(tickers)
+    graph_container = html.Div(graphs)
+
+    return html.Div([
+        html.H2('Finance Explorer'),
+        html.Br(),
+        ticker_dropdown,
+        html.Br(),
+        graph_container,
+        location
+    ], className="container")
