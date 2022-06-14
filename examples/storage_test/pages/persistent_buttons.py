@@ -26,7 +26,7 @@ def button_group(gid):
             store[section] = {}
         return store[section]
 
-    @local_store.update(btn1.input.n_clicks, prevent_initial_callback=True)
+    @local_store.update(btn1.input.n_clicks, prevent_initial_call=True)
     def btn1_update(clicks, store):
         if clicks:
             section = get_section(store, gid)
@@ -38,7 +38,7 @@ def button_group(gid):
         return store
 
 
-    @local_store.update(btn2.input.n_clicks, prevent_initial_callback=True)
+    @local_store.update(btn2.input.n_clicks, prevent_initial_call=True)
     def btn2_update(clicks, store):
         if clicks:
             section = get_section(store, gid)

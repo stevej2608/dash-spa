@@ -13,6 +13,9 @@ logging.setLevel(options.level)
 logger = logging.getLogger('waitress')
 logger.setLevel(logging.WARN)
 
+_log = logging.getLogger('redux_store')
+_log.setLevel(logging.INFO)
+
 app = create_app(create_dash)
 
 app_with_logger = TransLogger(app.server, setup_console_handler=False)
