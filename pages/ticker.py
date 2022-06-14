@@ -1,7 +1,7 @@
 from dash import html, dcc
 from dash_spa import NOUPDATE, callback
 from dash_spa.logging import log
-from dash_spa import session_context, SessionContext, dataclass, SPA_LOCATION
+from dash_spa import SPA_LOCATION
 from dash_spa import register_page
 import colorlover as cl
 import pandas as pd
@@ -10,14 +10,10 @@ from pages import TICKER_SLUG
 
 page = register_page(__name__, path=TICKER_SLUG, title="Dash Ticker", short_name='Ticker')
 
-@dataclass
-class TickerState(SessionContext):
-    tickers: str = ""
-
 # https://github.com/plotly/dash-stock-tickers-demo-app
 #
-# The original app hs been modified adding a session store for the
-# ticker selection.
+# The original app hs been modified so that the browser location querystring
+# is updated with the ticker selection
 
 colorscale = cl.scales['9']['qual']['Paired']
 
@@ -102,11 +98,6 @@ def layout(tickers: str = None) -> html.Div:
 
     log.info('layout(%s)', tickers)
 
-    ctx = session_context(TickerState)
-    ctx.tickers = tickers
-
-    #location = dhc.Location(id='ticker_loc', refresh=True)
-
     ticker_dropdown = dcc.Dropdown(
         id=page.id('stock_ticker'),
         value=tickers,
@@ -120,15 +111,12 @@ def layout(tickers: str = None) -> html.Div:
     @SPA_LOCATION.update(ticker_dropdown.input.value)
     def _update_loc(value, store):
         log.info('update_loc, ticker_dropdown value = %s store = %s', value, store)
-        ctx = session_context(TickerState)
         try:
-            if value != ctx.tickers:
-                ctx.tickers = value
-                href = page.path
-                if value:
-                    href += f"?tickers={'+'.join(value)}"
-                log.info('update_loc, href=%s', href)
-                return { 'href': href }
+            href = page.path
+            if value:
+                href += f"?tickers={'+'.join(value)}"
+            log.info('update_loc, href=%s', href)
+            return { 'href': href }
         except Exception:
             pass
 
