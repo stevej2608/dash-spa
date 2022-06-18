@@ -1,10 +1,15 @@
 import uuid
 from diskcache import Cache
+import zlib
+import json
 from dataclasses import dataclass
 from flask import request
 from ..logging import log
 from ..spa_config import config
 from ..context_state import ContextState
+
+from ..utils.notify_dict import NotifyDict
+from ..utils.json_coder import json_decode, json_encode
 
 """Minimalistic Server side session storage plugin
 
@@ -41,9 +46,11 @@ options = config.get('session_storage')
 
 class ServerSessionCache:
 
+    COMPRESS_LEVEL = 6
+
     sessions = {}
 
-    def __init__(self, sid, days=0, hours=0, minutes=0, seconds=0):
+    def __init__(self, sid, days=0, hours=0, minutes=0, seconds=0, compress_level = COMPRESS_LEVEL):
         if sid in ServerSessionCache.sessions:
             self.cache = self.sessions[sid]
         else:
@@ -58,24 +65,21 @@ class ServerSessionCache:
 
         self.expiry = (((days * 24 + hours) * 60 + minutes) * 60) + seconds
 
+        self.compress_level = compress_level
 
 
-    def set(self, key, pstr):
-        self.cache.set(key, pstr, self.expiry)
-
-    def get(self, key):
-        """
-        Return cached entry if it exists, if not return None
-        """
+    def get_json(self, key):
         if key in self.cache:
-            page = self.cache[key]
+            json_str = zlib.decompress(self.cache[key]).decode()
+            return json.loads(json_str, object_hook=json_decode)
         else:
-            page = None
+            return {}
 
-        return page
+    def put_json(self, key, obj):
+        json_str = json.dumps(obj, default=json_encode)
+        data = zlib.compress(json_str.encode(), self.compress_level)
+        self.cache.set(key, data, self.expiry)
 
-    def put(self, key, pstr):
-        self.cache.set(key, pstr, self.expiry)
 
     def delete_page(self, key):
         self.cache.delete(key)
@@ -131,14 +135,25 @@ def session_context(ctx: SessionContext):
     try:
         req = request
         sid = req.cookies[SPA_SESSION_ID]
-        store = ServerSessionCache(sid)
+        cache = ServerSessionCache(sid)
 
         # Get the ctx context store for this session, create it if needed
 
-        if not ctx._context_id in store:
-            store[ctx._context_id] = {}
+        store = cache.get_json(ctx._context_id)
+        log.info('read  cache[%s] %s', ctx._context_id, store)
 
-        store = store.get(ctx._context_id)
+        # Add an update listener
+
+        enable_cache_update = False
+
+        def update_listener():
+            if enable_cache_update:
+                log.info('write cache[%s] %s', ctx._context_id, store)
+                cache.put_json(ctx._context_id, store)
+
+        store = NotifyDict(update_listener, **store)
+        enable_cache_update = True
+
 
     except Exception:
         store = {}

@@ -48,3 +48,6 @@ def test_button(dash_duo):
 
     _btn.click()
     assert wait_text("Button pressed 3 times!")
+
+    _btn.click()
+    assert wait_text("Button pressed 4 times!")
