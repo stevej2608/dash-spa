@@ -132,9 +132,10 @@ def session_context(ctx: SessionContext):
         SessionContext: The current context state
     """
 
+    req = request
+    sid = req.cookies[SPA_SESSION_ID]
+
     try:
-        req = request
-        sid = req.cookies[SPA_SESSION_ID]
         cache = ServerSessionCache(sid)
 
         # Get the ctx context store for this session, create it if needed
@@ -152,12 +153,21 @@ def session_context(ctx: SessionContext):
                 cache.put_json(ctx._context_id, store)
 
         store = NotifyDict(update_listener, **store)
-        enable_cache_update = True
 
+        # Create the requested context and map the session store
+
+        state = ctx()
+        state.map_store(store=store)
+
+        # Writes to the context will update the session cache from here
+        # onwards
+
+        enable_cache_update = True
+        return state
 
     except Exception:
+        log.warn('Using a dummy session store id=%s', sid)
         store = {}
-
-    state = ctx()
-    state.map_store(store=store)
-    return state
+        state = ctx()
+        state.map_store(store=store)
+        return state

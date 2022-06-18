@@ -18,7 +18,7 @@ def test_button(dash_duo):
     btn = html.Button("Button", id=pfx('btn'))
     container = html.Div(BUTTON_TEST, id=pfx('container'))
 
-    @callback(container.output.children, btn.input.n_clicks)
+    @callback(container.output.children, btn.input.n_clicks, prevent_initial_call=True)
     def btn1_update(clicks):
         ctx = session_context(ButtonState)
         if clicks:
