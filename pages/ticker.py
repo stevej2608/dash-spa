@@ -12,8 +12,13 @@ page = register_page(__name__, path=TICKER_SLUG, title="Dash Ticker", short_name
 
 # https://github.com/plotly/dash-stock-tickers-demo-app
 #
-# The original app hs been modified so that the browser location querystring
-# is updated with the ticker selection
+# The original app has been modified so that the browser location querystring
+# is updated with the ticker selection. This creates page links such as:
+#
+#  http://default:5026/ticker?tickers=TSLA+YHOO+GOOGL
+#
+# These links can be saved in the browser favourites and used to recall the
+# page and stock charts defined by the querystring tickers.
 
 colorscale = cl.scales['9']['qual']['Paired']
 

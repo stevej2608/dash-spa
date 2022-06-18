@@ -8,6 +8,7 @@ from ..context_state import ContextState
 
 This plugin must be added to the Dash initialisation before use
 
+*app.py*
 ```
 import dash_spa as spa
 

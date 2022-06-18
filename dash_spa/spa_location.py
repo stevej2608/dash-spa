@@ -4,14 +4,28 @@ from dash_spa.logging import log
 from dash_redux import ReduxStore
 import dash_holoniq_components as dhc
 
+# Use ReduxStore many-to-one capability to allow any event in any page to
+# update the browser location. Use SPA_LOCATION.update callback:
+#
+# from dash_spa import SPA_LOCATION
+#
+# @SPA_LOCATION.update(ticker_dropdown.input.value)
+# def _update_loc(value, store):
+#     ...
+#     return { 'href': href }
+#
+# See pages/ticker.py for working example
+
 SPA_LOCATION = ReduxStore(id='spa_location_store', data=None, storage_type='session')
 
 page_container_append(SPA_LOCATION)
 
-location = dhc.Location(id='spa_location', refresh=False)
-page_container_append(location)
+_location = dhc.Location(id='spa_location', refresh=False)
+page_container_append(_location)
 
-@callback(location.output.href, location.state.href, SPA_LOCATION.input.data, prevent_initial_call=True)
+# Accept SPA_LOCATION changes and output the requested href to the browser address bar
+
+@callback(_location.output.href, _location.state.href, SPA_LOCATION.input.data, prevent_initial_call=True)
 def _location_update(url, data):
     if data and 'href' in data:
         url = urlparse(url)
