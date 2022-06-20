@@ -38,11 +38,11 @@
     },
 
     {
-      "name": "1c. session_example.py",
+      "name": "1c. dataclass_exp.py",
       "type": "python",
       "request": "launch",
       "cwd": "${workspaceRoot}",
-      "program": "session_example.py",
+      "program": "dataclass_exp.py",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,

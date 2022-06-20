@@ -2,9 +2,15 @@ from typing import TypeVar
 from dataclasses import dataclass
 from dash_spa.logging import log
 
+# ContextState is a simple wrapper enabling dot notation
+# the underlying dictionary.
+#
+# Used by:
+#
+#  dash_spa/spa_context.py React.js style context pattern
+#  dash_spa/plugins/spa_session.py
 
 # https://docs.python.org/3/library/dataclasses.html
-
 
 SelfContextState = TypeVar("SelfContextState", bound="ContextState")
 

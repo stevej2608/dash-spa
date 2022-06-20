@@ -5,7 +5,7 @@ from dash_spa import prefix, callback, NOUPDATE, session_context, SessionContext
 
 @dataclass
 class ButtonState(SessionContext):
-    _context_id = SessionContext.id()
+    _context_id = "ButtonState"
     clicks: int = 0
 
 

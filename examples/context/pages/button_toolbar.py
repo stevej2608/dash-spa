@@ -1,14 +1,18 @@
 from dash import html, ALL
 from dash_spa import prefix, NOUPDATE, add_style
 from dash_spa.logging import log
-from dash_spa.spa_context import createContext
+from dash_spa.spa_context import createContext, ContextState, dataclass
 import dash_spa as spa
 
-ButtonContext = createContext();
+@dataclass
+class ButtonState(ContextState):
+    state: int = None
+
+ButtonContext = createContext(ButtonState);
 
 def button_toolbar(title, buttons, id):
     pid = prefix(id)
-    state, set_state = ButtonContext.useState(title, [{'id': btn, 'clicks' : 0} for btn in buttons])
+    state, set_state = ButtonContext.useState('state', initial_state={})
 
     button_match = spa.match({'type': pid('btn'), 'idx': ALL})
 

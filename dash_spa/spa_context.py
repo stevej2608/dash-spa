@@ -2,20 +2,21 @@ import json
 from copy import copy
 from flask import current_app as app
 from dash import Output
+from dataclasses import dataclass
 from dash_prefix import prefix
 from dash_spa.logging import log
 from dash_spa import callback, NOUPDATE
 from dash_redux import ReduxStore
 
 from .context_state import ContextState
+from dash_spa.logging import log
 
-# Provides a React.Js context pattern that allows state to be easily passed
-# between components
+# A ReduxStore wrapper that provides a React.Js style context pattern
+# that allows a components state change to trigger UI updates.
 #
-# See examples/react_pattern/pages/context_pattern.py
-
-# TODO: Look at how to make this thread safe
-
+# See examples/context/pages/context_pattern.py
+#
+# TODO: Is this thread safe?
 
 class _Context:
 
@@ -154,6 +155,7 @@ class _Context:
 
         return provider_decorator
 
+
     def useState(self, ref=None, initial_state: ContextState = None):
         if initial_state is not None:
             self._state.update(ref, initial_state)
@@ -170,7 +172,10 @@ class _Context:
 
 
     def getState(self, ref=None):
-        state = self._state[ref] if ref else self._state
+        if ref is not None:
+            state = getattr(self._state, ref)
+        else:
+            state = self._state
         return state
 
     def getStateDict(self, ref=None):
