@@ -2,11 +2,10 @@ import uuid
 from diskcache import Cache
 import zlib
 import json
-from dataclasses import dataclass
 from flask import request
 from ..logging import log
 from ..spa_config import config
-from ..context_state import ContextState
+from ..context_state import ContextState, dataclass
 
 from ..utils.notify_dict import NotifyDict
 from ..utils.json_coder import json_decode, json_encode
@@ -103,7 +102,7 @@ def plug(app):
 
     @app.server.before_request
     def req_session_id():
-        global sid
+        nonlocal sid
         try:
             req = request
             if not SPA_SESSION_ID in req.cookies:
@@ -114,7 +113,7 @@ def plug(app):
 
     @app.server.after_request
     def res_session_id(response):
-        global sid
+        nonlocal sid
         if sid is not None:
             log.info('Save session cookie id=%s', sid)
             response.set_cookie(SPA_SESSION_ID, sid)

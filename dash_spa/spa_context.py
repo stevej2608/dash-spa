@@ -2,13 +2,12 @@ import json
 from copy import copy
 from flask import current_app as app
 from dash import Output
-from dataclasses import dataclass
 from dash_prefix import prefix
 from dash_spa.logging import log
 from dash_spa import callback, NOUPDATE
 from dash_redux import ReduxStore
 
-from .context_state import ContextState
+from .context_state import ContextState, dataclass
 from dash_spa.logging import log
 
 # A ReduxStore wrapper that provides a React.Js style context pattern

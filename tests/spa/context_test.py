@@ -1,6 +1,5 @@
 import pytest
-from dash_spa.context_state import ContextState
-from dataclasses import dataclass
+from dash_spa.context_state import ContextState, dataclass
 
 @dataclass
 class TableState(ContextState):

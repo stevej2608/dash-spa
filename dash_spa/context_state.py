@@ -14,10 +14,9 @@ from dash_spa.logging import log
 
 SelfContextState = TypeVar("SelfContextState", bound="ContextState")
 
-@dataclass
 class ContextState:
     """ ContextState is a simple wrapper to enable dot
-    autocompletion to the underlying dcc.Store data dictionary
+    autocompletion to the underlying dictionary
 
     Usage:
     ```
