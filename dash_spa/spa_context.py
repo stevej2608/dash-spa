@@ -131,6 +131,8 @@ class _Context:
                 self._store.data.update(self._state.state)
                 result.children.append(self._store)
 
+                self.contexts.set_context(None)
+
                 return result
 
             self.render = func_wrapper
@@ -181,6 +183,7 @@ class _Context:
         state = self._state[ref] if ref else self._state
         return state.copy()
 
+_NO_CONTEXT_ERROR = "Context can only be used within the scope of a provider"
 
 class _ContextWrapper:
     """Interface that maps the global context onto the active context.
@@ -200,9 +203,11 @@ class _ContextWrapper:
         self.ctx = ctx
 
     def callback(self, *_args, **_kwargs):
-            return self.ctx.callback(*_args, **_kwargs)
+        assert self.ctx, _NO_CONTEXT_ERROR
+        return self.ctx.callback(*_args, **_kwargs)
 
     def On(self, *_args, **_kwargs):
+        assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.On(*_args, **_kwargs)
 
     def Provider(self, id=id, state:ContextState=None):
@@ -211,12 +216,15 @@ class _ContextWrapper:
         return self.ctx.Provider(state, id)
 
     def useState(self, ref=None, initial_state: ContextState = None):
+        assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.useState(ref, initial_state)
 
     def getState(self, ref=None):
+        assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.getState(ref)
 
     def getStateDict(self, ref=None):
+        assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.getStateDict(ref)
 
 def createContext(state: ContextState = None) -> _ContextWrapper:
