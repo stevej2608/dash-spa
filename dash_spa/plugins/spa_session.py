@@ -1,4 +1,5 @@
 import uuid
+from dataclasses import dataclass, _process_class
 from diskcache import Cache
 import zlib
 import json
@@ -25,11 +26,11 @@ app = Dash(__name__,
 
 Usage:
 ```
-from dash_spa import session_context, SessionContext, dataclass
+from dash_spa import session_context, , session_data
 
 
-@dataclass
-class TickerState(SessionContext):
+@session_data(id='ticker_state')
+class TickerState:
     tickers: str = ""
 
 
@@ -41,7 +42,6 @@ def layout(tickers = None):
 """
 
 options = config.get('session_storage')
-
 
 class ServerSessionCache:
 
@@ -88,14 +88,6 @@ class ServerSessionCache:
 
 SPA_SESSION_ID = "spa_session"
 
-@dataclass
-class SessionContext(ContextState):
-    """Base class from which all contexts should be derived"""
-
-    @staticmethod
-    def id():
-        return str(uuid.uuid4())
-
 def plug(app):
 
     sid = None
@@ -120,6 +112,9 @@ def plug(app):
             sid = None
         return response
 
+class SessionContext(ContextState):
+    pass
+
 def session_context(ctx: SessionContext):
     """Get the context for the given SessionContext template. Create it if
     none exists
@@ -139,8 +134,8 @@ def session_context(ctx: SessionContext):
 
         # Get the ctx context store for this session, create it if needed
 
-        store = cache.get_json(ctx._context_id)
-        log.info('read  cache[%s] %s', ctx._context_id, store)
+        store = cache.get_json(ctx.__session_data_id__)
+        log.info('read  cache[%s] %s', ctx.__session_data_id__, store)
 
         # Add an update listener
 
@@ -148,8 +143,8 @@ def session_context(ctx: SessionContext):
 
         def update_listener():
             if enable_cache_update:
-                log.info('write cache[%s] %s', ctx._context_id, store)
-                cache.put_json(ctx._context_id, store)
+                log.info('write cache[%s] %s', ctx.__session_data_id__, store)
+                cache.put_json(ctx.__session_data_id__, store)
 
         store = NotifyDict(update_listener, **store)
 
@@ -170,3 +165,27 @@ def session_context(ctx: SessionContext):
         state = ctx()
         state.map_store(store=store)
         return state
+
+
+def session_data(cls=None, init=True, repr=True, eq=True,
+                 order=False, unsafe_hash=False, frozen=False, id=None):
+    """Wrapper for @dataclass, same functionality with addition of id
+
+    Args:
+        id (str, optional): _description_. Defaults to None.
+    """
+
+
+    def _process_session_class(cls, init, repr, eq, order, unsafe_hash, frozen, id=None):
+        id = id if id else str(uuid.uuid4())
+        setattr(cls, '__session_data_id__', id)
+        cls = _process_class(cls, init, repr, eq, order, unsafe_hash, frozen)
+        return cls
+
+    def wrap(cls):
+        return _process_session_class(cls, init, repr, eq, order, unsafe_hash, frozen, id)
+
+    if cls is None:
+        return wrap
+
+    return wrap(cls)

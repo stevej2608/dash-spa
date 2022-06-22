@@ -1,11 +1,10 @@
 import dash
 from dash import html
-from dash_spa import prefix, callback, NOUPDATE, session_context, SessionContext, dataclass, spa_session
+from dash_spa import prefix, callback, NOUPDATE, session_context, session_data, SessionContext, spa_session
 
 
-@dataclass
+@session_data(id='button_state')
 class ButtonState(SessionContext):
-    _context_id = "ButtonState"
     clicks: int = 0
 
 

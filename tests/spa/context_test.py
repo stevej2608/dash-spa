@@ -1,5 +1,5 @@
 import pytest
-from dash_spa.context_state import ContextState, dataclass
+from dash_spa.context_state import ContextState, dataclass, field
 
 @dataclass
 class TableState(ContextState):
@@ -15,7 +15,8 @@ def test_context_wrapper():
     # Create a TableState
 
     state = TableState()
-    assert state.__store_keys__ == ['current_page', 'page_size', 'last_page', 'table_rows', 'search_term']
+    fields = list(state.__dataclass_fields__.keys())
+    assert fields == ['current_page', 'page_size', 'last_page', 'table_rows', 'search_term']
 
     # Back the TableState with a store and confirm store values shadow the TableState
 
@@ -57,8 +58,8 @@ def test_context_nesting():
     @dataclass
     class NodeState(ContextState):
         value: int = 10
-        left = None
-        right = None
+        left : ContextState = None
+        right : ContextState = None
 
     # Create a simple tree
 
@@ -79,13 +80,19 @@ def test_context_nesting():
 
     store = {}
     root.map_store(store)
-    assert store == {'value': 1, 'left': {'value': 2}, 'right': {'value': 3}}
+    assert store == {'value': 1,
+                     'left': {'value': 2, 'left': None, 'right': None},
+                     'right': {'value': 3, 'left': None, 'right': None}
+                    }
 
     # Confirm attribute changes are mapped to the store
 
     root.left.value = 88
     root.right.value = 99
-    assert store == {'value': 1, 'left': {'value': 88}, 'right': {'value': 99}}
+    assert store == {'value': 1,
+                     'left': {'value': 88, 'left': None, 'right': None},
+                     'right': {'value': 99, 'left': None, 'right': None}
+                    }
 
     # Confirm mapping a new store updates the attributes correctly
 

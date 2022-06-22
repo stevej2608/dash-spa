@@ -1,6 +1,6 @@
 from typing import TypeVar
-from dataclasses import dataclass
 from dash_spa.logging import log
+from dataclasses import dataclass, field
 
 # ContextState is a simple wrapper enabling dot notation
 # the underlying dictionary.
@@ -14,6 +14,7 @@ from dash_spa.logging import log
 
 SelfContextState = TypeVar("SelfContextState", bound="ContextState")
 
+# @dataclass
 class ContextState:
     """ ContextState is a simple wrapper to enable dot
     autocompletion to the underlying dictionary
@@ -40,23 +41,20 @@ class ContextState:
             return self._state
         else:
             state = self.__dict__.copy()
-            state.pop('__store_keys__', None)
+            # state.pop('__store_keys__', None)
             return state
 
+    # def __init__(self, *args):
+    #     for attr in self.__dict__.keys():
+    #         setattr(self, attr, args.pop(0))
 
     def __setattr__(self, name, value):
 
         if hasattr(self, '_state') and name != '_state':
-            if name in self.__store_keys__:
+            if name in self.__dataclass_fields__:
                 self._state[name] = value
             else:
                 raise AttributeError(f"Attempt to write to undefined attribute {name}")
-
-        elif name not in ['__store_keys__', '_state']:
-            if not hasattr(self, '__store_keys__'):
-                self.__store_keys__ = []
-            if name not in self.__store_keys__:
-                self.__store_keys__.append(name)
 
         super().__setattr__(name, value)
 
@@ -69,10 +67,10 @@ class ContextState:
             store (dict): The latest dcc.Store state
         """
 
-        # Copy the incoming store values to the context attributes
+        # Copy the incoming shadow dict values to the the current context
 
         for attr in store.keys():
-            if attr in self.__store_keys__:
+            if attr in self.__dataclass_fields__:
                 value = getattr(self, attr)
                 if isinstance(value, ContextState):
                     value.map_store(store[attr])
@@ -81,7 +79,7 @@ class ContextState:
 
         # Update the new shadow dict with the current context
 
-        for attr in self.__store_keys__:
+        for attr in self.__dataclass_fields__:
             value = getattr(self, attr)
             if isinstance(value, ContextState):
                 child_store = store[attr] if attr in store else {}
@@ -98,7 +96,7 @@ class ContextState:
         """ Copy the incoming state values to the context attributes """
 
         if ref is not None:
-            if ref in self.__store_keys__:
+            if ref in self.__dataclass_fields__:
                 value = getattr(self, ref)
                 if isinstance(value, ContextState):
                     value.update(state=state)
@@ -108,11 +106,10 @@ class ContextState:
 
             raise AttributeError(f"Unknown attribute {ref}")
 
-        for attr in self.__store_keys__:
+        for attr in self.__dataclass_fields__:
             if hasattr(state, attr):
                 value = getattr(state, attr)
                 if value is not None:
                     setattr(self, attr, value)
             else:
                 raise AttributeError(f"Unknown attribute {ref}")
-

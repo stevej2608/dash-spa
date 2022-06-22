@@ -1,18 +1,19 @@
 from dash import html, ALL
 from dash_spa import prefix, NOUPDATE, add_style
 from dash_spa.logging import log
-from dash_spa.spa_context import createContext, ContextState, dataclass
+from dash_spa.spa_context import createContext, ContextState, dataclass, field
 import dash_spa as spa
 
 @dataclass
 class ButtonState(ContextState):
-    state: int = None
+    state: int = 0
+    # state: dict = field(default_factory=lambda: {})
 
 ButtonContext = createContext(ButtonState);
 
 def button_toolbar(title, buttons, id):
     pid = prefix(id)
-    state, set_state = ButtonContext.useState('state', initial_state={})
+    state = ButtonContext.getState('state')
 
     button_match = spa.match({'type': pid('btn'), 'idx': ALL})
 
@@ -28,7 +29,7 @@ def button_toolbar(title, buttons, id):
     @ButtonContext.On(button_match.input.n_clicks, prevent_initial_call=True)
     def btn_update(clicks):
         index = spa.trigger_index()
-        state[index].clicks += 1
-        set_state(state)
+        state[title][index].clicks += 1
+
 
     return html.Div([btns, container], style={'background-color': '#e6e6e6'})
