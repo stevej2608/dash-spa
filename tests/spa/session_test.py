@@ -22,7 +22,7 @@ def test_button(dash_duo):
         ctx = session_context(ButtonState)
         if clicks:
             ctx.clicks += 1
-            return f"Button pressed {clicks} times! "
+            return f"Button pressed {ctx.clicks} times! "
         return NOUPDATE
 
     app.layout = html.Div([btn, container])

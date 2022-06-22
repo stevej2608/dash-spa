@@ -52,7 +52,6 @@ def test_context_wrapper():
     assert state.current_page == 99
     assert state.search_term == 'AAA'
 
-
 def test_context_nesting():
 
     @dataclass
@@ -112,9 +111,3 @@ def test_context_nesting():
     assert root.value == 100
     assert root.left.value == 200
     assert root.right.value == 44
-
-
-
-
-
-
