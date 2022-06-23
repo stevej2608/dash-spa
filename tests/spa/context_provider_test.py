@@ -66,7 +66,7 @@ def test_button(dash_duo):
     assert wait_text("Button pressed 4 times!")
 
 
-def test_no_context(dash_duo):
+def test_no_context():
 
     # Try and use context outside of provider - exception expected
 
