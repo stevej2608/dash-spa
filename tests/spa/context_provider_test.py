@@ -1,4 +1,5 @@
 import dash
+import pytest
 from dash import html
 from dash_spa.logging import log
 from dash_spa.spa_context import createContext, ContextState, dataclass
@@ -9,15 +10,15 @@ class ButtonState(ContextState):
 
 ButtonContext = createContext(ButtonState);
 
-# Define button with associated callback. Button context is incremented
+# Define button with associated context callback. Button context is incremented
 # on each click
 
 def Button():
+    state = ButtonContext.getState()
     btn = html.Button("Button", id='btn')
 
     @ButtonContext.On(btn.input.n_clicks, prevent_initial_call=True)
     def btn_click(clicks):
-        state = ButtonContext.getState()
         state.clicks += 1
 
     return btn
@@ -28,14 +29,13 @@ def test_button(dash_duo):
     btn = None
     container = None
 
-    # Dash layout() decorated with Context.Provider. This will be called
+    # Dash layout() decorated with Context.Provider. layout() will be called
     # every time the ButtonContext changes
 
     @ButtonContext.Provider(id='test')
     def layout():
         nonlocal btn, container
         state = ButtonContext.getState()
-        log.info('layout state=%s', state)
         btn = Button()
         container = html.Div(f"Button pressed {state.clicks} times!", id='container')
         return html.Div([btn, container])
@@ -64,3 +64,11 @@ def test_button(dash_duo):
 
     _btn.click()
     assert wait_text("Button pressed 4 times!")
+
+
+def test_no_context(dash_duo):
+
+    # Try and use context outside of provider - exception expected
+
+    with pytest.raises(Exception):
+        Button()

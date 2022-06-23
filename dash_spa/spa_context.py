@@ -66,25 +66,30 @@ class _Context:
             @self._store.update(*_args)
             def _proxy(*_args):
 
-                # pop the store reference
+                try:
+                    # pop the store reference
 
-                args = list(_args)
+                    args = list(_args)
 
-                state = args.pop()
-                ref_state = json.dumps(state, sort_keys = True)
-                self._state.map_store(state)
+                    state = args.pop()
+                    ref_state = json.dumps(state, sort_keys = True)
+                    self._state.map_store(state)
 
-                log.info('******** On Event ***********')
-                log.info('state %s', state)
+                    log.info('******** On Event ***********')
+                    log.info('state %s', state)
 
-                self.contexts.set_context(self)
+                    self.contexts.set_context(self)
+                    user_func(*args)
 
-                user_func(*args)
+                    log.info('state %s', state)
 
-                log.info('state %s', state)
+                except Exception as ex:
+                    log.warn('Dash/SPA context callback error %s', ex)
+                finally:
+                    self.contexts.set_context(None)
 
                 if json.dumps(state, sort_keys = True) == ref_state:
-                    new_state = NOUPDATE
+                    state = NOUPDATE
 
                 return state
 
@@ -113,25 +118,28 @@ class _Context:
 
                 # Call the Dash layout function we've wrapped
 
-                self.contexts.set_context(self)
-                result = func(*_args, **_kwargs)
+                try:
+                    self.contexts.set_context(self)
+                    result = func(*_args, **_kwargs)
 
-                result.id = container_id
+                    result.id = container_id
 
-                # Inject the context store into the layout
+                    # Inject the context store into the layout
 
-                if not isinstance(result.children, list):
-                    result.children = [result.children]
+                    if not isinstance(result.children, list):
+                        result.children = [result.children]
 
-                # log.info('store initial_state = %s', self._store.data)
+                    # log.info('store initial_state = %s', self._store.data)
 
-                # The context may have changed during the update. We
-                # need to copy the state across to the Redux store data
+                    # The context may have changed during the update. We
+                    # need to copy the state across to the Redux store data
 
-                self._store.data.update(self._state.state)
-                result.children.append(self._store)
-
-                self.contexts.set_context(None)
+                    self._store.data.update(self._state.state)
+                    result.children.append(self._store)
+                except Exception as ex:
+                    log.warn('Dash/SPA layout error %s', ex)
+                finally:
+                    self.contexts.set_context(None)
 
                 return result
 

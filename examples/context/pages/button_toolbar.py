@@ -6,8 +6,7 @@ import dash_spa as spa
 
 @dataclass
 class ButtonState(ContextState):
-    state: int = 0
-    # state: dict = field(default_factory=lambda: {})
+    state: dict = field(default_factory=lambda: {})
 
 ButtonContext = createContext(ButtonState);
 
