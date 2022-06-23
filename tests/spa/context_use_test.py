@@ -1,6 +1,6 @@
 import pytest
 from dash import html
-from dash_spa.spa_context import createContext, ContextState, dataclass
+from dash_spa.spa_context import createContext, ContextState, dataclass, field
 
 
 def test_context_simple():
@@ -40,3 +40,27 @@ def test_context_simple():
     # Confirm ButtonState dataclass is unchanged
 
     assert ButtonState.clicks == 10
+
+
+def test_context_list():
+
+    @dataclass
+    class SizesState(ContextState):
+        size: int = 10
+        sizes: list = field(default_factory=lambda: [10, 20, 30])
+
+    SizesContext = createContext(SizesState);
+
+    @SizesContext.Provider(id='test1')
+    def layout_test1(expected):
+        state = SizesContext.getState()
+        assert state.sizes[0] == expected
+        state.sizes[0] = expected + 10
+        return html.Div()
+
+    for value in [10, 20, 30, 40]:
+        layout_test1(value)
+
+   # Confirm ButtonState dataclass is unchanged
+
+    assert SizesState.size == 10
