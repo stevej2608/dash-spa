@@ -43,8 +43,8 @@ def layout_page():
 
     pid = prefix('test')
 
-    toolbar_1 = button_toolbar(TestContext, state.toolbar[0], id=pid('main'))
-    toolbar_2 = button_toolbar(TestContext, state.toolbar[1], id=pid('page'))
+    toolbar_1 = button_toolbar(TestContext, tb1, id=pid('main'))
+    toolbar_2 = button_toolbar(TestContext, tb2, id=pid('page'))
 
     button_report = html.Div([
         report(tb) for tb in state.toolbar

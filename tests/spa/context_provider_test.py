@@ -32,7 +32,7 @@ def test_button(dash_duo):
     # Dash layout() decorated with Context.Provider. layout() will be called
     # every time the ButtonContext changes
 
-    @ButtonContext.Provider(id='test')
+    @ButtonContext.Provider(id='test_btn')
     def layout():
         nonlocal btn, container
         state = ButtonContext.getState()

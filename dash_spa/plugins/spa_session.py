@@ -151,7 +151,7 @@ def session_context(ctx: SessionContext):
         # Create the requested context and map the session store
 
         state = ctx()
-        state.map_store(store=store)
+        state.set_shadow_store(store=store)
 
         # Writes to the context will update the session cache from here
         # onwards
@@ -163,7 +163,7 @@ def session_context(ctx: SessionContext):
         log.warn('Using a dummy session store id=%s', sid)
         store = {}
         state = ctx()
-        state.map_store(store=store)
+        state.set_shadow_store(store=store)
         return state
 
 
