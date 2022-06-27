@@ -8,7 +8,7 @@ from enum import IntEnum
 def printf(format, *args):
     sys.stdout.write(format % args)
 
-from .time import time_ms
+from ..utils.time import time_ms
 
 class DEBUG_LEVEL(IntEnum):
     NONE = 0
@@ -39,13 +39,10 @@ class DashLogger:
     count = 0
     tlast = time_ms()
 
-    def __init__(self, level:DEBUG_LEVEL = DEBUG_LEVEL.NONE):
-
+    def __init__(self, app, level:DEBUG_LEVEL = DEBUG_LEVEL.NONE):
         self.level = level
 
-    def init(self, app):
-
-        @app.before_request
+        @app.server.before_request
         def before_request_cb():
             self.count += 1
             try:
@@ -56,8 +53,7 @@ class DashLogger:
             except:
                 printf('Logger exception %s\n', request.path)
 
-
-        @app.after_request
+        @app.server.after_request
         def after_request_func(response):
             try:
                 if request.path in ['/_dash-update-component']:
@@ -66,6 +62,7 @@ class DashLogger:
                 printf('Logger exception %s\n', request.path)
 
             return response
+
 
     def get_dt(self):
         tlast = self.tlast
@@ -193,3 +190,7 @@ class DebugFormatter:
         element_list = ', '.join(element_list)
 
         return element_list
+
+
+def plug(app):
+    logger = DashLogger(app, level=DEBUG_LEVEL.VERBOSE)

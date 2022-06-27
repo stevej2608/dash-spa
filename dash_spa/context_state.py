@@ -18,7 +18,7 @@ SelfContextState = TypeVar("SelfContextState", bound="ContextState")
 EMPTY_LIST = field(default_factory=lambda: [])
 EMPTY_DICT = field(default_factory=lambda: {})
 
-@dataclass
+# @dataclass
 class ContextState:
     """ ContextState is a simple wrapper to enable dot
     autocompletion to the underlying dictionary
@@ -43,6 +43,10 @@ class ContextState:
     def cid(self):
         return id(self)
 
+    def __init__(self):
+        self.__shadow_store__ = {}
+
+
     def __setattr__(self, name, value):
 
         if hasattr(self, '__shadow_store__') and name != '__shadow_store__':
@@ -59,13 +63,17 @@ class ContextState:
         return self.__shadow_store__
 
     def set_shadow_store(self, store: dict) -> None:
-        """Add context attribute to shadow store mapping. When
-        context attributes are changed the store value will be updated.
+        """Use the given dict as the context shadow store.
 
-        The mapping proceeds as follows: The context structure is traversed depth
-        first (DFS) and elements in the store, if present, are used to update the
-        corresponding context attribute. As the DFX unwinds the context
-        attributes update  the store.
+        The mapping proceeds as follows: The context structure is traversed
+        and elements in the store, if present, are used to update the
+        corresponding context attribute. The context structure
+        is then traversed a again, this time context attributes use used
+        to update the store.
+
+        The given store is used as the new shadow store. Changes in
+        context attributes automatically update the corresponding
+        shadow store entry.
 
         Args:
             store (dict): The shadow store state

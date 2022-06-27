@@ -1,12 +1,7 @@
 import dash
 from dash import html
-from dash_spa import prefix, callback, NOUPDATE, session_context, session_data, SessionContext, spa_session
+from dash_spa import prefix, callback, NOUPDATE, session_context, session_data, SessionContext, spa_session, dash_logging
 from dash_spa.logging import log
-
-
-@session_data(id='button_state')
-class ButtonState(SessionContext):
-    clicks: int = 0
 
 # Simple Dash App, single button when clicked increments session
 # data clicks count. The test confirms that the session data is
@@ -17,7 +12,16 @@ def test_session_button(dash_duo):
     pfx = prefix("session_test")
     BUTTON_TEST ='Button Test'
 
-    app = dash.Dash(__name__, plugins=[spa_session])
+    app = dash.Dash(__name__,
+                    plugins=[
+                        spa_session,
+                        dash_logging
+                    ])
+
+
+    @session_data(id='button_state')
+    class ButtonState(SessionContext):
+        clicks: int = 0
 
     # Layout the test app
 

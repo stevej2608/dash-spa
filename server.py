@@ -1,10 +1,8 @@
 import os
 from dash import Dash
-
-from dash_spa.utils import  DashLogger
 from dash_spa import logging
 
-def serve_app(app: Dash, path="/", debug=False, logger: DashLogger =None):
+def serve_app(app: Dash, path="/", debug=False):
     """Serve Dash application
 
     Args:
@@ -33,8 +31,5 @@ def serve_app(app: Dash, path="/", debug=False, logger: DashLogger =None):
     hostport = os.environ.get("HOSTPORT", "5000")
 
     print(f' * Visit http://{hostname}:{hostport}{path}')
-
-    if logger:
-        logger.init(app.server)
 
     app.run_server(debug=debug, host='0.0.0.0', port=port, threaded=False, dev_tools_serve_dev_bundles=False)

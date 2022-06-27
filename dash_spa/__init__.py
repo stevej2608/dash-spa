@@ -20,6 +20,7 @@ from dash_spa import themes
 
 from .plugins import spa_session
 from .plugins.spa_session import session_context, session_data, SessionContext
+from .plugins import dash_logging
 
 from .spa_location import SPA_LOCATION
 

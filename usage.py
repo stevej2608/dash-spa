@@ -3,7 +3,6 @@ from dash import html
 from app import create_dash
 from dash_spa import page_container
 from dash_spa import logging, config
-from dash_spa.utils import DashLogger, DEBUG_LEVEL
 from server import serve_app
 
 from dash_spa_admin import AdminLoginManager
@@ -49,9 +48,4 @@ if __name__ == "__main__":
     logging.setLevel(options.level)
 
     app = create_app(create_dash)
-
-    if options.get('DASH_LOGGING', False):
-        logger=DashLogger(DEBUG_LEVEL.VERBOSE)
-        serve_app(app, debug=False, logger=logger)
-    else:
-        serve_app(app, debug=False)
+    serve_app(app, debug=False)
