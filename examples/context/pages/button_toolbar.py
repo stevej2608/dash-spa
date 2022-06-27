@@ -1,34 +1,46 @@
+from typing import List
 from dash import html, ALL
 from dash_spa import prefix, NOUPDATE, add_style
 from dash_spa.logging import log
-from dash_spa.spa_context import createContext, ContextState, dataclass, field
+from dash_spa.spa_context import  ContextState, dataclass, EMPTY_LIST
 import dash_spa as spa
 
+
 @dataclass
-class ButtonState(ContextState):
-    state: dict = field(default_factory=lambda: {})
+class TButton(ContextState):
+    name: str = ''
+    clicks: int = 0
 
-ButtonContext = createContext(ButtonState);
+@dataclass
+class TBState(ContextState):
+    title: str = ""
+    buttons: List[TButton] = EMPTY_LIST
 
-def button_toolbar(title, buttons, id):
+    def __post_init__(self):
+        self.buttons = [TButton(name, 0) for name in self.buttons]
+
+
+def button_toolbar(ctx, state: TBState, id):
     pid = prefix(id)
-    state = ButtonContext.getState('state')
+
+    log.info("button_toolbar state.cid=%s", state.cid)
 
     button_match = spa.match({'type': pid('btn'), 'idx': ALL})
 
     btns = html.Div([
-        html.Button(title, id=button_match.idx(index), type="button", className='btn btn-secondary me-1')
-        for index, title in enumerate(buttons)
+        html.Button(btn.name, id=button_match.idx(idx), type="button", className='btn btn-secondary me-1')
+        for idx, btn in enumerate(state.buttons)
         ]
     )
 
-    msg = [f"{btn.id} pressed {btn.clicks} times" for btn in state]
+    msg = [f"{btn.name} pressed {btn.clicks} times" for btn in state.buttons]
     container = html.H5(", ".join(msg))
 
-    @ButtonContext.On(button_match.input.n_clicks, prevent_initial_call=True)
+    @ctx.On(button_match.input.n_clicks, prevent_initial_call=True)
     def btn_update(clicks):
+        log.info("btn_update state.cid=%s", state.cid)
         index = spa.trigger_index()
-        state[title][index].clicks += 1
+        state.buttons[index].clicks += 1
 
 
     return html.Div([btns, container], style={'background-color': '#e6e6e6'})

@@ -7,7 +7,7 @@ from dash_spa.logging import log
 from dash_spa import callback, NOUPDATE
 from dash_redux import ReduxStore
 
-from .context_state import ContextState, dataclass, field
+from .context_state import ContextState, dataclass, field, EMPTY_DICT, EMPTY_LIST
 from dash_spa.logging import log
 
 # A ReduxStore wrapper that provides a React.Js style context pattern
@@ -17,30 +17,31 @@ from dash_spa.logging import log
 #
 # TODO: Is this thread safe?
 
-class _Context:
+class Context:
 
     @property
     def input(self):
-        return self._store.input
+        return self._redux_store.input
 
     @property
     def output(self):
-        return self._store.output
+        return self._redux_store.output
 
     @property
     def state(self):
-        return self._store.state
+        return self._redux_store.state
 
     def __init__(self, contexts, id, state: ContextState = None):
         self.contexts = contexts
         self.id = id
-        self._state = state
+        self._context_state = state
+        self.allow_initial_state = True
 
     def callback(self, *_args, **_kwargs):
 
         def wrapper(user_func):
 
-            @callback(*_args, self._store.input.data, **_kwargs)
+            @callback(*_args, self._redux_store.input.data, **_kwargs)
             def _proxy(*_args):
                 self.contexts.set_context(self)
                 result = user_func(*_args)
@@ -63,7 +64,7 @@ class _Context:
 
             # log.info("register callback %s", self.id)
 
-            @self._store.update(*_args)
+            @self._redux_store.update(*_args)
             def _proxy(*_args):
 
                 try:
@@ -73,10 +74,10 @@ class _Context:
 
                     state = args.pop()
                     ref_state = json.dumps(state, sort_keys = True)
-                    self._state.map_store(state)
+                    self._context_state.set_shadow_store(state)
 
                     log.info('******** On Event ***********')
-                    log.info('state %s', state)
+                    log.info('state cid=%s %s', self._context_state.cid, state)
 
                     self.contexts.set_context(self)
                     user_func(*args)
@@ -87,6 +88,8 @@ class _Context:
                     log.warn('Dash/SPA context callback error %s', ex)
                 finally:
                     self.contexts.set_context(None)
+
+                state = self._context_state.get_shadow_store()
 
                 if json.dumps(state, sort_keys = True) == ref_state:
                     state = NOUPDATE
@@ -109,8 +112,8 @@ class _Context:
 
         # state can be provide when the context is created or passed in here
 
-        self._state = copy(state) if state is not None else self._state
-        self._store = ReduxStore(id=pid(), data=self._state.state, storage_type='session')
+        self._context_state = copy(state) if state is not None else self._context_state
+        self._redux_store = ReduxStore(id=pid(), data=state.get_shadow_store(), storage_type='session')
 
         def provider_decorator(func):
 
@@ -134,11 +137,12 @@ class _Context:
                     # The context may have changed during the update. We
                     # need to copy the state across to the Redux store data
 
-                    self._store.data.update(self._state.state)
-                    result.children.append(self._store)
+                    self._redux_store.data.update(self._context_state.get_shadow_store())
+                    result.children.append(self._redux_store)
                 except Exception as ex:
                     log.warn('Dash/SPA layout error %s', ex)
                 finally:
+                    self.allow_initial_state = False
                     self.contexts.set_context(None)
 
                 return result
@@ -149,13 +153,13 @@ class _Context:
 
         # Render the container if the context store has been modified
 
-        @callback(Output(container_id, 'children'), self._store.input.data, prevent_initial_call=True)
+        @callback(Output(container_id, 'children'), self._redux_store.input.data, prevent_initial_call=True)
         def container_cb(state):
 
             log.info('******** Container render ***********')
             log.info('state %s', state)
 
-            self._state.map_store(state)
+            self._context_state.set_shadow_store(state)
             self.contexts.set_context(self)
 
             container = self.render()
@@ -166,34 +170,35 @@ class _Context:
 
 
     def useState(self, ref=None, initial_state: ContextState = None):
-        if initial_state is not None:
-            self._state.update(ref, initial_state)
+        if initial_state is not None and self.allow_initial_state:
+            self._context_state.update(ref, initial_state)
 
         def set_state(state):
-            self._state.update(ref, state)
+            self._context_state.update(ref, state)
 
         if ref is not None:
-            state = getattr(self._state, ref)
+            state = getattr(self._context_state, ref)
         else:
-            state = self._state
+            state = self._context_state
 
         return state, set_state
 
 
     def getState(self, ref=None):
         if ref is not None:
-            state = getattr(self._state, ref)
+            state = getattr(self._context_state, ref)
         else:
-            state = self._state
+            state = self._context_state
         return state
 
     def getStateDict(self, ref=None):
-        state = self._state[ref] if ref else self._state
-        return state.copy()
+        state = self._context_state[ref] if ref else self._context_state
+        return state.get_shadow_store().copy()
 
 _NO_CONTEXT_ERROR = "Context can only be used within the scope of a provider"
 
-class _ContextWrapper:
+@dataclass
+class ContextWrapper:
     """Interface that maps the global context onto the active context.
 
     The active context is in set by the @<context>.Provider() and remains
@@ -203,9 +208,8 @@ class _ContextWrapper:
 
     """
 
-    def __init__(self, state: ContextState):
-        self.ctx = None
-        self.state_dataclass = state
+    ctx: Context = None
+    dataclass: ContextState = None
 
     def set_context(self, ctx):
         self.ctx = ctx
@@ -219,8 +223,8 @@ class _ContextWrapper:
         return self.ctx.On(*_args, **_kwargs)
 
     def Provider(self, id=id, state:ContextState=None):
-        state = state if state else self.state_dataclass()
-        self.ctx = _Context(self, id, state)
+        state = state if state else self.dataclass()
+        self.ctx = Context(self, id, state)
         return self.ctx.Provider(state, id)
 
     def useState(self, ref=None, initial_state: ContextState = None):
@@ -235,8 +239,8 @@ class _ContextWrapper:
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.getStateDict(ref)
 
-def createContext(state: ContextState = None) -> _ContextWrapper:
-    return _ContextWrapper(state)
+def createContext(state: ContextState = None) -> ContextWrapper:
+    return ContextWrapper(None, state)
 
 # def useContext(ctx: _ContextWrapper):
 #     return ctx
