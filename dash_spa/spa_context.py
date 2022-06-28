@@ -1,3 +1,4 @@
+from typing import Dict
 import json
 from copy import copy
 from flask import current_app as app
@@ -89,7 +90,7 @@ class Context:
                 finally:
                     self.contexts.set_context(None)
 
-                state = self._context_state.get_shadow_store()
+                # state = self._context_state.get_shadow_store()
 
                 if json.dumps(state, sort_keys = True) == ref_state:
                     state = NOUPDATE
@@ -174,7 +175,7 @@ class Context:
             self._context_state.update(ref, initial_state)
 
         def set_state(state):
-            self._context_state.update(ref, state)
+            setattr(self._context_state, ref, state)
 
         if ref is not None:
             state = getattr(self._context_state, ref)
@@ -208,8 +209,9 @@ class ContextWrapper:
 
     """
 
+    dataclass: ContextState
+    ctx_lookup : Dict[str, Context] = EMPTY_DICT
     ctx: Context = None
-    dataclass: ContextState = None
 
     def set_context(self, ctx):
         self.ctx = ctx
@@ -224,7 +226,12 @@ class ContextWrapper:
 
     def Provider(self, id=id, state:ContextState=None):
         state = state if state else self.dataclass()
-        self.ctx = Context(self, id, state)
+
+        if not id in self.ctx_lookup:
+            self.ctx_lookup[id] = Context(self, id, state)
+
+        self.ctx = self.ctx_lookup[id]
+
         return self.ctx.Provider(state, id)
 
     def useState(self, ref=None, initial_state: ContextState = None):
@@ -240,7 +247,7 @@ class ContextWrapper:
         return self.ctx.getStateDict(ref)
 
 def createContext(state: ContextState = None) -> ContextWrapper:
-    return ContextWrapper(None, state)
+    return ContextWrapper(state)
 
 # def useContext(ctx: _ContextWrapper):
 #     return ctx

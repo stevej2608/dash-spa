@@ -22,11 +22,12 @@ def newPlanButton():
     ], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
 
 
-@TableContext.Provider(id='transactions_table_context')
+@TableContext.Provider(id='transactions_table')
 def layout():
-    # log.info('layout - transactions_table')
-    pid = prefix('transactions_table')
 
+    log.info('layout - transactions_table')
+
+    pid = prefix('transactions_table')
     table = create_table(id=pid())
     header = create_header(id=pid('header'))
     paginator = TableAIOPaginator(className='pagination mb-0', id=pid('paginator'))
