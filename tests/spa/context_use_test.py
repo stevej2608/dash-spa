@@ -51,7 +51,7 @@ def test_context_list():
 
     SizesContext = createContext(SizesState);
 
-    @SizesContext.Provider(id='test1')
+    @SizesContext.Provider(id='test_context_list')
     def layout_test1(expected):
         state = SizesContext.getState()
         assert state.sizes[0] == expected
@@ -75,7 +75,7 @@ def test_context_dict():
 
     ColourContext = createContext(ColourState);
 
-    @ColourContext.Provider(id='test1')
+    @ColourContext.Provider(id='test_context_dict')
     def layout_test1(index):
         state = ColourContext.getState()
         assert state.selected == state.colours[index]

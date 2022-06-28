@@ -12,11 +12,7 @@ def test_session_button(dash_duo):
     pfx = prefix("session_test")
     BUTTON_TEST ='Button Test'
 
-    app = dash.Dash(__name__,
-                    plugins=[
-                        spa_session,
-                        dash_logging
-                    ])
+    app = dash.Dash(__name__, plugins=[spa_session])
 
 
     @session_data(id='button_state')
