@@ -1,8 +1,14 @@
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET, FATAL, WARN
 import logging
+from .spa_config import config
+
+options = config.get('logging')
+
+def getOptionsLevel(default='WARN'):
+    return options.get('level', default=default)
 
 logging.basicConfig(
-    level = "WARNING",
+    level = getOptionsLevel(),
     # format = '%(levelname)s %(asctime)s.%(msecs)03d %(module)10s/%(lineno)-5d %(message)s'
     format = '%(levelname)s %(module)13s/%(lineno)-5d %(message)s'
 )

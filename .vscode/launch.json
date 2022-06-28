@@ -22,11 +22,11 @@
     },
 
     {
-      "name": "1b. Python: examples.button_test.app",
+      "name": "1b. Python: examples.context.app",
       "type": "python",
       "request": "launch",
       //"module": "tmp.context_skeleton",
-      "module": "examples.button_test.app",
+      "module": "examples.context.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,

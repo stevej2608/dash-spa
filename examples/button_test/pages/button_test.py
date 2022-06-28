@@ -1,8 +1,5 @@
-from dash import html, no_update as NOUPDATE
-from dash import html, callback, Output
-import dash_holoniq_components as dhc
-from dash_spa import prefix, register_page, page_container_append
-from dash_spa.logging import log
+from dash import html
+from dash_spa import prefix, register_page, callback, NOUPDATE
 
 from dash_redux import ReduxStore
 
@@ -10,13 +7,14 @@ register_page(__name__, path='/', title="Button Test", short_name='Buttons')
 
 # Example demonstrates basic use of ReduxStore to manage several instances
 # of a button_toolbar(). Button clicks update the redux store. The toolbar
-# state is reported locally. In addition the the last button clicked in
-# any of the toolbars is reported.
+# state is reported locally within toolbar UI. In addition the the last
+# button clicked in any of the toolbars is reported.
 #
-# Note since the ReduxStore default storage type is "session" the button state
-# is persistent. This would make a good pattern for a shopping trolley.
-
-# TODO: Make this into a generic toolbar supporting any number of buttons
+# Since the ReduxStore default storage type is "session" the button state
+# is persistent. This would make a useful pattern for a shopping trolley.
+#
+# See examples/context/pages/context_pattern.py for a far better
+# generic toolbar supporting any number of buttons
 
 pfx = prefix("redux_test")
 
@@ -33,7 +31,7 @@ def button_toolbar(toolbar_title: str):
     title = html.H4(f"Button {toolbar_title}")
     btn1 = html.Button("Button1", id=pfx('btn1'))
     btn2 = html.Button("Button2", id=pfx("btn2"))
-    container = html.Div("btn1 0 clicks, btn2 0 clicks", id=pfx('container'))
+    container = html.Div("", id=pfx('container'))
 
     @store.update(btn1.input.n_clicks)
     def btn1_update(clicks, store):
@@ -52,7 +50,7 @@ def button_toolbar(toolbar_title: str):
             store['last'] = f"{toolbar_title}.btn2"
         return store
 
-    # Report toolbar state
+    # Report toolbar state locally
 
     @callback(container.output.children, store.input.data)
     def btn_message(store):
@@ -74,7 +72,10 @@ def page_layout():
 
     @callback(report.output.children, store.input.data, prevent_initial_call=True)
     def cb_update(store):
-        return f"Button {store['last']} clicked last"
+        if 'last' in store:
+            return f"Button {store['last']} clicked last"
+        else:
+            return NOUPDATE
 
     # Return page layout
 

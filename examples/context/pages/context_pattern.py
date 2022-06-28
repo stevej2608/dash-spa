@@ -25,16 +25,19 @@ class ToolbarList(ContextState):
 TestContext = createContext(ToolbarList)
 
 @TestContext.Provider(id='test')
-def layout_page():
+def layout():
 
-    tb1 = TBState("main", ['close', "exit", 'refresh'])
-    tb2 = TBState("page", ['next', "prev", 'top', 'bottom'])
+    # Define some random toolbars
 
-    # TODO: Page refresh clears values to zero but they are restored on next click
+    state, _ = TestContext.useState(initial_state=ToolbarList([
+                    TBState("main", ['close', "exit", 'refresh']),
+                    TBState("page", ['next', "prev", 'top', 'bottom'])
+                    ]))
 
-    state, _ = TestContext.useState(initial_state=ToolbarList([tb1, tb2]))
+    tb1 = state.toolbar[0]
+    tb2 = state.toolbar[1]
 
-    log.info('state.cid=%s', state.cid)
+    log.info('layout_page() state.cid=%s', state.cid)
 
     # Changes in the ButtonContext state will force
     # layout_page() to update the UI
@@ -57,4 +60,4 @@ def layout_page():
     return html.Div([title, toolbar_1, toolbar_2, button_report])
 
 
-layout = layout_page()
+
