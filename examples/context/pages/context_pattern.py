@@ -30,6 +30,8 @@ def layout_page():
     tb1 = TBState("main", ['close', "exit", 'refresh'])
     tb2 = TBState("page", ['next', "prev", 'top', 'bottom'])
 
+    # TODO: Page refresh clears values to zero but they are restored on next click
+
     state, _ = TestContext.useState(initial_state=ToolbarList([tb1, tb2]))
 
     log.info('state.cid=%s', state.cid)
@@ -38,7 +40,7 @@ def layout_page():
     # layout_page() to update the UI
 
     def report(tb: TBState):
-        msg = [f'{btn.name} clicks={btn.clicks}' for btn in tb.buttons]
+        msg = [f'{btn.name}={btn.clicks}' for btn in tb.buttons]
         return html.H4(f'{tb.title} : {", ".join(msg)}')
 
     pid = prefix('test')
