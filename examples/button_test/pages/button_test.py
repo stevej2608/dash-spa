@@ -38,7 +38,7 @@ def button_toolbar(toolbar_title: str):
         tb_store = store_ref(toolbar_title, store)
         if clicks:
             tb_store['btn1'] += 1
-            store['last'] = f"{toolbar_title}.btn1"
+            store['last'] = f"{toolbar_title}.btn1(clicks={tb_store['btn1']})"
 
         return store
 
@@ -47,7 +47,7 @@ def button_toolbar(toolbar_title: str):
         tb_store = store_ref(toolbar_title, store)
         if clicks:
             tb_store['btn2'] += 1
-            store['last'] = f"{toolbar_title}.btn2"
+            store['last'] = f"{toolbar_title}.btn2(clicks={tb_store['btn2']})"
         return store
 
     # Report toolbar state locally
@@ -70,7 +70,7 @@ def page_layout():
 
     report = html.H3("", id=pfx('report'))
 
-    @callback(report.output.children, store.input.data, prevent_initial_call=True)
+    @callback(report.output.children, store.input.data)
     def cb_update(store):
         if 'last' in store:
             return f"Button {store['last']} clicked last"
