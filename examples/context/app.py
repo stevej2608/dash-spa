@@ -4,7 +4,6 @@ import dash_bootstrap_components as dbc
 from dash_spa import logging
 
 from dash_spa import page_container, spa_pages
-from dash_spa.utils import DashLogger, DEBUG_LEVEL
 from server import serve_app
 
 
@@ -40,8 +39,4 @@ def create_app(dash_factory) -> Dash:
 if __name__ == "__main__":
     logging.setLevel("INFO")
     app = create_app(create_dash)
-
     serve_app(app, debug=False)
-
-    # logger = DashLogger(DEBUG_LEVEL.VERBOSE)
-    # serve_app(app, debug=False, logger=logger)

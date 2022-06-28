@@ -2,7 +2,6 @@ from dash_spa.logging import log
 import dash
 from dash import html
 import dash_bootstrap_components as dbc
-from dash_spa.utils import DashLogger, DEBUG_LEVEL
 
 from dash_spa import page_container, spa_pages
 from server import serve_app
@@ -42,5 +41,4 @@ def layout():
 if __name__ == "__main__":
     log.info('__main__')
     app.layout = layout()
-    # logger=DashLogger(DEBUG_LEVEL.VERBOSE)
     serve_app(app, path='/login')

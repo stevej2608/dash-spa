@@ -25,7 +25,7 @@ def test_register(mocker, spa, duo):
 
     delete_user(login_manager, USER_EMAIL)
 
-    # Mock the tempate emailer
+    # Mock the template emailer
 
     def mock_send(self, receiver, subject, test_mode=True):
         mail_args.update(self.args)
