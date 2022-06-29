@@ -142,6 +142,7 @@ class Context:
                     result.children.append(self._redux_store)
                 except Exception as ex:
                     log.warn('Dash/SPA layout error %s', ex)
+                    result = NOUPDATE
                 finally:
                     self.allow_initial_state = False
                     self.contexts.set_context(None)
@@ -212,6 +213,10 @@ class ContextWrapper:
     dataclass: ContextState
     ctx_lookup : Dict[str, Context] = EMPTY_DICT
     ctx: Context = None
+
+    @property
+    def store(self):
+        return self.ctx
 
     def set_context(self, ctx):
         self.ctx = ctx

@@ -127,7 +127,7 @@ class SearchAIO(html.Div):
         # log.info('search init term=[%s]', search_term)
 
         # The search input has an associated one-shot retriggerable timer that
-        # is rearmed each time the user enters a character. Only when the timer
+        # is re-armed each time the user enters a character. Only when the timer
         # expires is the search term updated.
 
         search = dcc.Input(id=pid('search'), className='form-control', type="text", value=search_term, placeholder=placeholder)

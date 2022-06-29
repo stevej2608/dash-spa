@@ -16,8 +16,8 @@ def serve_app(app: Dash, path="/", debug=False):
     _log = logging.getLogger('werkzeug')
     _log.setLevel(logging.ERROR)
 
-    # _log = logging.getLogger('redux_store')
-    # _log.setLevel(logging.WARN)
+    _log = logging.getLogger('redux_store')
+    _log.setLevel(logging.WARN)
 
     # _log = logging.getLogger('dash_spa')
     # _log.setLevel(logging.INFO)

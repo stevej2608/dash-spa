@@ -233,11 +233,13 @@ def page_for(module:str) -> str:
         return DashPage(page)
     raise Exception(f"No page for module \"{module}\" defined")
 
-def url_for(module:str, args: dict =None) -> str:
+def url_for(module:str, args: dict=None, attr=None) -> str:
     if module in dash.page_registry:
         page = dash.page_registry[module]
         path = page['path']
         if args:
+            if attr:
+                args = {k:v for k,v in args.items() if k in attr and v is not None}
             path += '?' + parse.urlencode(args)
         return path
 

@@ -1,3 +1,4 @@
+from flask import current_app as app
 from urllib.parse import urlparse
 from dash_spa import page_container_append, callback, NOUPDATE
 from dash_spa.logging import log
@@ -16,7 +17,22 @@ import dash_holoniq_components as dhc
 #
 # See pages/ticker.py for working example
 
-SPA_LOCATION = ReduxStore(id='spa_location_store', data=None, storage_type='session')
+
+class LocationStore(ReduxStore):
+
+    def update(self, *_args, **_kwargs):
+
+        def callback_stub(self, *_args, **_kwargs):
+            pass
+
+        if app and app.got_first_request:
+            return callback_stub
+
+        return super().update(*_args, **_kwargs)
+
+
+
+SPA_LOCATION = LocationStore(id='spa_location_store', data=None, storage_type='session')
 
 page_container_append(SPA_LOCATION)
 

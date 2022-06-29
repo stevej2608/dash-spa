@@ -80,13 +80,14 @@ class OrdersTable(TableAIO):
 
 
 def create_table(id) -> OrdersTable:
-    state = TableContext.getState()
 
     # TODO: Cache previous df search results
 
     # [index, isActive, balance, age, eyeColor, name, gender, company, email, phone, address, registered]
 
     df1 = df[['index', 'isActive', 'balance', 'age', 'name', 'company']]
+
+    state = TableContext.getState()
 
     df1 = filter_str(df1, state.search_term)
 
