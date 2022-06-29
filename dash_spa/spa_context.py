@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 import json
 from copy import copy
 from flask import current_app as app
@@ -171,7 +171,7 @@ class Context:
         return provider_decorator
 
 
-    def useState(self, ref=None, initial_state: ContextState = None):
+    def useState(self, ref:str=None, initial_state: ContextState = None) -> ContextState:
         if initial_state is not None and self.allow_initial_state:
             self._context_state.update(ref, initial_state)
 
@@ -186,14 +186,18 @@ class Context:
         return state, set_state
 
 
-    def getState(self, ref=None):
+    def getState(self, ref:str=None, update:Union[ContextState, dict]=None) -> ContextState:
         if ref is not None:
-            state = getattr(self._context_state, ref)
+            state = getattr(self._context_state, ref, update)
         else:
             state = self._context_state
+
+        if update:
+            state.update(state=update)
+
         return state
 
-    def getStateDict(self, ref=None):
+    def getStateDict(self, ref:str=None) -> dict:
         state = self._context_state[ref] if ref else self._context_state
         return state.get_shadow_store().copy()
 
@@ -239,15 +243,15 @@ class ContextWrapper:
 
         return self.ctx.Provider(state, id)
 
-    def useState(self, ref=None, initial_state: ContextState = None):
+    def useState(self, ref:str=None, initial_state: ContextState = None) -> ContextState:
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.useState(ref, initial_state)
 
-    def getState(self, ref=None):
+    def getState(self, ref:str=None, update: Union[ContextState, dict]=None) -> ContextState:
         assert self.ctx, _NO_CONTEXT_ERROR
-        return self.ctx.getState(ref)
+        return self.ctx.getState(ref, update)
 
-    def getStateDict(self, ref=None):
+    def getStateDict(self, ref:str=None) -> dict:
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.getStateDict(ref)
 
