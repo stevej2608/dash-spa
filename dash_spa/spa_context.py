@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Union, Tuple, Callable, Any
 import json
 from copy import copy
 from flask import current_app as app
@@ -171,7 +171,28 @@ class Context:
         return provider_decorator
 
 
-    def useState(self, ref:str=None, initial_state: ContextState = None) -> ContextState:
+    def useState(self, ref:str=None, initial_state: ContextState = None) -> Tuple[ContextState, Callable[[Any], None]]:
+        """Return the current context state
+
+        Args:
+            ref (str, optional): return partial state indexed by ref. Defaults to None.
+            initial_state (ContextState, optional): initialise the state prior to return. Defaults to None.
+
+        Returns:
+            Tuple[ContextState, callable]: The requested state and a setter function
+
+        Note: initial_state value, if present, is only actioned on the first layout call. On following
+        calls the initial_state value is ignored. Alternatively, use the getState(update={...})
+
+        The returned tuple contains a callable that is used set the state, if required.
+
+        Example:
+
+            current_page, set_page = TableContext.useState('current_page')
+
+            set_page(99)
+        """
+
         if initial_state is not None and self.allow_initial_state:
             self._context_state.update(ref, initial_state)
 
@@ -187,6 +208,15 @@ class Context:
 
 
     def getState(self, ref:str=None, update:Union[ContextState, dict]=None) -> ContextState:
+        """Get current the context state
+
+        Args:
+            ref (str, optional): offset into the context. Defaults to None.
+            update (Union[ContextState, dict], optional): Update the state with given values prior to return. Defaults to None.
+
+        Returns:
+            ContextState: The current context, updated as required
+        """
         if ref is not None:
             state = getattr(self._context_state, ref, update)
         else:
@@ -243,11 +273,41 @@ class ContextWrapper:
 
         return self.ctx.Provider(state, id)
 
-    def useState(self, ref:str=None, initial_state: ContextState = None) -> ContextState:
+    def useState(self, ref:str=None, initial_state: ContextState = None) -> Tuple[ContextState, Callable[[Any], None]]:
+        """Return the current context state
+
+        Args:
+            ref (str, optional): return partial state indexed by ref. Defaults to None.
+            initial_state (ContextState, optional): initialise the state prior to return. Defaults to None.
+
+        Returns:
+            Tuple[ContextState, callable]: The requested state and a setter function
+
+        Note: initial_state value, if present, is only actioned on the first layout call. On following
+        calls the initial_state value is ignored. Alternatively, use the getState(update={...})
+
+        The returned tuple contains a callable that is used set the state, if required.
+
+        Example:
+
+            current_page, set_page = TableContext.useState('current_page')
+
+            set_page(99)
+
+        """
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.useState(ref, initial_state)
 
     def getState(self, ref:str=None, update: Union[ContextState, dict]=None) -> ContextState:
+        """Get current the context state
+
+        Args:
+            ref (str, optional): offset into the context. Defaults to None.
+            update (Union[ContextState, dict], optional): Update the state with given values prior to return. Defaults to None.
+
+        Returns:
+            ContextState: The current context, updated as required
+        """
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.getState(ref, update)
 
