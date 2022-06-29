@@ -8,7 +8,7 @@ from dash_spa.logging import log
 from dash_spa import callback, NOUPDATE
 from dash_redux import ReduxStore
 
-from .context_state import ContextState, dataclass, field, EMPTY_DICT, EMPTY_LIST
+from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
 from dash_spa.logging import log
 
 # A ReduxStore wrapper that provides a React.Js style context pattern

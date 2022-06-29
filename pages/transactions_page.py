@@ -1,5 +1,4 @@
 from dash_spa.logging import log
-from dacite import from_dict, Config
 from dash import html
 from dash_svg import Svg, Path
 from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE
@@ -26,25 +25,29 @@ def newPlanButton():
 @TableContext.Provider(id='transactions_table')
 def layout_transactions_table(query_string: dict = None):
 
-    # Called when page is loaded or whenever TableContext state changes
+    # This method is called when page is loaded or
+    # whenever TableContext state changes
+
+    pid = prefix('transactions_table')
 
     state = TableContext.getState(update=query_string)
 
     log.info('layout_transactions_table: %s', state)
 
-    pid = prefix('transactions_table')
+    # Create the table components
+
     table = create_table(id=pid())
     header = create_header(id=pid('header'))
     paginator = TableAIOPaginator(className='pagination mb-0', id=pid('paginator'))
     viewer = TableAIOPaginatorView()
 
+    # Update the browser address bar whenever the table state changes
+
     @SPA_LOCATION.update(TableContext.store.input.data, prevent_initial_call=True)
     def update_location(state, location):
         if state:
             try:
-                log.info('update_location %s', state)
                 href = url_for(page.module, state, attr=['current_page', 'search_term'])
-                log.info('update_loc, href=%s', href)
                 return { 'href': href }
             except Exception:
                 pass

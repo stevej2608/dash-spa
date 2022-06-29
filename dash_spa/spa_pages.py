@@ -234,6 +234,7 @@ def page_for(module:str) -> str:
     raise Exception(f"No page for module \"{module}\" defined")
 
 def url_for(module:str, args: dict=None, attr=None) -> str:
+
     if module in dash.page_registry:
         page = dash.page_registry[module]
         path = page['path']

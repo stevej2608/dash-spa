@@ -1,8 +1,7 @@
 from typing import List
-from dataclasses import asdict
 from dash import html
 from dash_spa.logging import log
-from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_LIST
+from dash_spa.spa_context import  createContext, ContextState, asdict, dataclass, EMPTY_LIST
 
 # https://github.com/konradhalas/dacite
 

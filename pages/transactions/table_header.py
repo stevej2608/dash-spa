@@ -55,6 +55,7 @@ def _settingsDropdown(id) -> html.Div:
 
 
 def create_header(id) -> html.Div:
+    """Create the search input and page size drop-down"""
 
     search = SearchAIO(id=id, placeholder='Search customers')
 

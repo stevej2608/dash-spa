@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import TypeVar, Union
 import copy
 from dash_spa.logging import log
 from dataclasses import dataclass, field, _is_dataclass_instance, fields
@@ -192,7 +192,7 @@ class ContextState:
         setattr(self, '__shadow_store__', store)
 
 
-    def update(self, ref: str = None, state: SelfContextState = None) -> None:
+    def update(self, ref: str = None, state: Union[SelfContextState, dict]= None) -> None:
         """ Copy the incoming state values to the context attributes """
 
         if ref is not None:
