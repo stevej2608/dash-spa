@@ -1,7 +1,6 @@
 from typing import Callable, Union
 from urllib import parse
 from collections import OrderedDict
-from attr import has
 import dash
 from dash.development.base_component import Component
 from dash_prefix import prefix

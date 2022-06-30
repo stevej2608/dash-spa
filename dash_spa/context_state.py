@@ -126,6 +126,8 @@ class ContextState:
         if hasattr(self, '__shadow_store__') and name != '__shadow_store__':
             if name in self.__dataclass_fields__:
                 self.__shadow_store__[name] = value
+                if hasattr(self, '__shadow_update_listener__'):
+                    self.__shadow_update_listener__()
             else:
                 raise AttributeError(f"Attempt to write to undefined attribute {name}")
 
@@ -136,7 +138,7 @@ class ContextState:
             self.set_shadow_store({})
         return self.__shadow_store__
 
-    def set_shadow_store(self, store: dict) -> None:
+    def set_shadow_store(self, store: dict, update_listener=None) -> None:
         """Use the given dict as the context shadow store.
 
         The mapping proceeds as follows: The context structure is traversed
@@ -159,11 +161,11 @@ class ContextState:
             if attr in self.__dataclass_fields__:
                 current_value = getattr(self, attr)
                 if isinstance(current_value, ContextState):
-                    current_value.set_shadow_store(store[attr])
+                    current_value.set_shadow_store(store[attr], update_listener)
                 elif isinstance(current_value, list):
                     for idx, entry in enumerate(current_value):
                         if isinstance(entry, ContextState):
-                            entry.set_shadow_store(store[attr][idx])
+                            entry.set_shadow_store(store[attr][idx], update_listener)
                 else:
                     setattr(self, attr, store[attr])
 
@@ -175,7 +177,7 @@ class ContextState:
             if isinstance(current_value, ContextState):
                 if not field in store:
                     store[field] = {}
-                current_value.set_shadow_store(store[field])
+                current_value.set_shadow_store(store[field], update_listener)
                 #setattr(current_value, '__shadow_store__', store[field] )
             elif isinstance(current_value, list):
                 if not field in store:
@@ -183,11 +185,14 @@ class ContextState:
                 for idx, entry in enumerate(current_value):
                     if isinstance(entry, ContextState):
                         child_store = {}
-                        entry.set_shadow_store(child_store)
+                        entry.set_shadow_store(child_store, update_listener)
                         store[field][idx] = child_store
                         setattr(entry, '__shadow_store__', child_store)
             else:
                 store[field] = current_value
+
+        if update_listener:
+            setattr(self, '__shadow_update_listener__', update_listener)
 
         setattr(self, '__shadow_store__', store)
 

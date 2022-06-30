@@ -12,6 +12,8 @@ def test_session_button(dash_duo):
     pfx = prefix("session_test")
     BUTTON_TEST ='Button Test'
 
+    # dash_duo.driver.delete_all_cookies()
+
     app = dash.Dash(__name__, plugins=[spa_session])
 
 

@@ -1,7 +1,6 @@
 import uuid
 from dataclasses import dataclass, _process_class
 from diskcache import Cache
-import zlib
 import json
 from flask import request
 from ..logging import log
@@ -43,49 +42,6 @@ def layout(tickers = None):
 
 options = config.get('session_storage')
 
-class ServerSessionCache:
-
-    COMPRESS_LEVEL = 6
-
-    sessions = {}
-
-    def __init__(self, sid, days=0, hours=0, minutes=0, seconds=0, compress_level = COMPRESS_LEVEL):
-        if sid in ServerSessionCache.sessions:
-            self.cache = self.sessions[sid]
-        else:
-            self.cache = Cache(f"{options.folder}/spa_session_{sid}")
-            self.sessions[sid] = self.cache
-
-        if days == 0 and options.get('days', None) is not None:
-            days = options.days
-
-        if (days == 0 and hours == 0 and minutes == 0 ):
-            minutes = 15
-
-        self.expiry = (((days * 24 + hours) * 60 + minutes) * 60) + seconds
-
-        self.compress_level = compress_level
-
-
-    def get_json(self, key):
-        if key in self.cache:
-            json_str = zlib.decompress(self.cache[key]).decode()
-            return json.loads(json_str, object_hook=json_decode)
-        else:
-            return {}
-
-    def put_json(self, key, obj):
-        json_str = json.dumps(obj, default=json_encode)
-        data = zlib.compress(json_str.encode(), self.compress_level)
-        self.cache.set(key, data, self.expiry)
-
-
-    def delete_page(self, key):
-        self.cache.delete(key)
-
-    def clear_cache(self):
-        self.cache.clear()
-
 SPA_SESSION_ID = "spa_session"
 
 def plug(app):
@@ -108,6 +64,49 @@ def plug(app):
             response.set_cookie(SPA_SESSION_ID, req.sid)
             req.sid = None
         return response
+
+
+class ServerSessionCache:
+    """Wrapper for an individual session
+
+    A single json string, indexed on session_id, is held in
+    the server-side session cache.
+
+    Use get(key) to get the value of an individual element in session dict.
+
+    Use update() to save the entire session data dict
+
+
+
+    """
+
+    cache =  Cache(directory = f"{options.folder}/spa_session")
+
+    expiry = options.get('days', 30) * 24 * 60 * 60
+
+    def __init__(self, session_id):
+        self.session_id = session_id
+
+        if self.session_id in ServerSessionCache.cache:
+            json_str = ServerSessionCache.cache[self.session_id]
+            store = json.loads(json_str, object_hook=json_decode)
+        else:
+            log.info("Create new session id=%s", session_id)
+            store = {}
+
+        self.session_store = store
+
+    def update(self):
+        log.info('write cache[%s]=%s', self.session_id, self.session_store)
+        json_str = json.dumps(self.session_store, default=json_encode)
+        ServerSessionCache.cache.set(self.session_id, json_str, self.expiry)
+
+
+    def get(self, key) -> dict:
+        if not key in self.session_store:
+            self.session_store[key] = {}
+        return self.session_store[key]
+
 
 class SessionContext(ContextState):
     pass
@@ -140,29 +139,14 @@ def session_context(ctx: SessionContext):
 
         # Get the ctx context store for this session, create it if needed
 
-        store = cache.get_json(ctx.__session_data_id__)
+        store = cache.get(ctx.__session_data_id__)
         log.info('read  cache[%s] %s', ctx.__session_data_id__, store)
-
-        # Add an update listener
-
-        enable_cache_update = False
-
-        def update_listener():
-            if enable_cache_update:
-                log.info('write cache[%s] %s', ctx.__session_data_id__, store)
-                cache.put_json(ctx.__session_data_id__, store)
-
-        store = NotifyDict(update_listener, **store)
 
         # Create the requested context and map the session store
 
         state = ctx()
-        state.set_shadow_store(store=store)
+        state.set_shadow_store(store=store, update_listener=cache.update)
 
-        # Writes to the context will update the session cache from here
-        # onwards
-
-        enable_cache_update = True
         return state
 
     except Exception:

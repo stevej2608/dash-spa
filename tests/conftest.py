@@ -13,7 +13,7 @@ aps_log.setLevel(logging.ERROR)
 def pytest_setup_options():
     options = Options()
     options.add_argument('--disable-gpu')
-    #options.add_argument("user-data-dir=tmp/pytest/custom/profile")
+    # options.add_argument("user-data-dir=tmp/pytest/custom/profile")
 
     # This is needed to force Chrome to run without sandbox enabled. Docker
     # does not support namespaces so running Chrome in a sandbox is not possible.
