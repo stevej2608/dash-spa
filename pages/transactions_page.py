@@ -68,7 +68,6 @@ def layout(**kwargs):
 
     log.info('********** layout transactions.page %s ****************', kwargs)
 
-
     transactions_table = layout_transactions_table(query_string=kwargs)
 
     return transactions_table

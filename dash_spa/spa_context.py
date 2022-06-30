@@ -179,7 +179,7 @@ class Context:
             initial_state (ContextState, optional): initialise the state prior to return. Defaults to None.
 
         Returns:
-            Tuple[ContextState, callable]: The requested state and a setter function
+            Tuple[ContextState, Callable[[Any], None]]: The requested state and a setter function
 
         Note: initial_state value, if present, is only actioned on the first layout call. On following
         calls the initial_state value is ignored. Alternatively, use the getState(update={...})
@@ -204,6 +204,7 @@ class Context:
         else:
             state = self._context_state
 
+
         return state, set_state
 
 
@@ -224,6 +225,7 @@ class Context:
 
         if update:
             state.update(state=update)
+
 
         return state
 
@@ -281,7 +283,7 @@ class ContextWrapper:
             initial_state (ContextState, optional): initialise the state prior to return. Defaults to None.
 
         Returns:
-            Tuple[ContextState, callable]: The requested state and a setter function
+            Tuple[ContextState, Callable[[Any], None]]: The requested state and a setter function
 
         Note: initial_state value, if present, is only actioned on the first layout call. On following
         calls the initial_state value is ignored. Alternatively, use the getState(update={...})

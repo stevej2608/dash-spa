@@ -90,26 +90,23 @@ SPA_SESSION_ID = "spa_session"
 
 def plug(app):
 
-    sid = None
-
+    @app.server.before_first_request
     @app.server.before_request
     def req_session_id():
-        nonlocal sid
         try:
             req = request
             if not SPA_SESSION_ID in req.cookies:
-                sid = str(uuid.uuid4())
-                log.info('Created session id=%s', sid)
+                req.sid = str(uuid.uuid4())
         except Exception:
             pass
 
     @app.server.after_request
     def res_session_id(response):
-        nonlocal sid
-        if sid is not None:
-            log.info('Save session cookie id=%s', sid)
-            response.set_cookie(SPA_SESSION_ID, sid)
-            sid = None
+        req = request
+        if hasattr(req,'sid') and req.sid is not None:
+            log.info('Save session cookie id=%s', req.sid)
+            response.set_cookie(SPA_SESSION_ID, req.sid)
+            req.sid = None
         return response
 
 class SessionContext(ContextState):
@@ -127,9 +124,18 @@ def session_context(ctx: SessionContext):
     """
 
     req = request
-    sid = req.cookies[SPA_SESSION_ID]
 
     try:
+
+        # Get the session id from the client cookies. If this
+        # is the first request the cookie will not have been set
+        # yes but it is available on the request object
+
+        if SPA_SESSION_ID in req.cookies:
+            sid = req.cookies[SPA_SESSION_ID]
+        elif hasattr(req,'sid') and req.sid is not None:
+            sid = req.sid
+
         cache = ServerSessionCache(sid)
 
         # Get the ctx context store for this session, create it if needed

@@ -91,7 +91,7 @@ def create_table(id) -> OrdersTable:
 
     df1 = filter_str(df1, state.search_term)
 
-    log.info("create_table %s %s", id, state)
+    #log.info("create_table %s %s", id, state)
 
     ordersTable = OrdersTable(
         data=df1.to_dict('records'),
