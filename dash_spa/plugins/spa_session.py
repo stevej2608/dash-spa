@@ -80,40 +80,61 @@ class ServerSessionCache:
 
     """
 
-    cache =  Cache(directory = f"{options.folder}/spa_session")
+    disk_cache =  Cache(directory = f"{options.folder}/spa_session")
+    mem_cache = {}
 
     expiry = options.get('days', 30) * 24 * 60 * 60
 
-    def __init__(self, session_id):
+    def __init__(self):
+
+        try:
+            req = request
+
+            # Get the session id from the client cookies. If this
+            # is the first request the cookie will not have been set
+            # yes but it is available on the request object
+
+            if SPA_SESSION_ID in req.cookies:
+                session_id = req.cookies[SPA_SESSION_ID]
+            elif hasattr(req,'sid') and req.sid is not None:
+                session_id = req.sid
+
+        except Exception:
+            log.warn('Using a dummy session store')
+            session_id = "dummy"
+
         self.session_id = session_id
 
-        if self.session_id in ServerSessionCache.cache:
-            json_str = ServerSessionCache.cache[self.session_id]
+        if session_id in ServerSessionCache.mem_cache:
+            return
+
+        if self.session_id in ServerSessionCache.disk_cache:
+            json_str = ServerSessionCache.disk_cache[self.session_id]
             store = json.loads(json_str, object_hook=json_decode)
         else:
-            log.info("Create new session id=%s", session_id)
+            log.info("Create new session store id=%s", session_id)
             store = {}
 
-        self.session_store = store
+        ServerSessionCache.mem_cache[session_id] = store
 
     def update(self):
-        log.info('write cache[%s]=%s', self.session_id, self.session_store)
-        json_str = json.dumps(self.session_store, default=json_encode)
-        ServerSessionCache.cache.set(self.session_id, json_str, self.expiry)
+        session_store = ServerSessionCache.mem_cache[self.session_id]
+        log.info('write cache[%s]=%s', self.session_id, session_store)
+        json_str = json.dumps(session_store, default=json_encode)
+        ServerSessionCache.disk_cache.set(self.session_id, json_str, self.expiry)
 
-
-    def get(self, key) -> dict:
-        if not key in self.session_store:
-            self.session_store[key] = {}
-        return self.session_store[key]
+    def get(self, obj_key) -> dict:
+        session_store = ServerSessionCache.mem_cache[self.session_id]
+        if not obj_key in session_store:
+            session_store[obj_key] = {}
+        return session_store[obj_key]
 
 
 class SessionContext(ContextState):
     pass
 
 def session_context(ctx: SessionContext):
-    """Get the context for the given SessionContext template. Create it if
-    none exists
+    """Get the context for the given SessionContext template
 
     Args:
         ctx (ContextState): The context template to be returned
@@ -122,39 +143,21 @@ def session_context(ctx: SessionContext):
         SessionContext: The current context state
     """
 
-    req = request
+    cache = ServerSessionCache()
 
-    try:
+    # Get the ctx context store for this session, create it if needed
 
-        # Get the session id from the client cookies. If this
-        # is the first request the cookie will not have been set
-        # yes but it is available on the request object
+    store = cache.get(ctx.__session_data_id__)
+    log.info('read  cache[%s] %s', ctx.__session_data_id__, store)
 
-        if SPA_SESSION_ID in req.cookies:
-            sid = req.cookies[SPA_SESSION_ID]
-        elif hasattr(req,'sid') and req.sid is not None:
-            sid = req.sid
+    # Create the requested context and map the session store
 
-        cache = ServerSessionCache(sid)
+    state = ctx()
+    state.set_shadow_store(store=store, update_listener=cache.update)
 
-        # Get the ctx context store for this session, create it if needed
+    return state
 
-        store = cache.get(ctx.__session_data_id__)
-        log.info('read  cache[%s] %s', ctx.__session_data_id__, store)
 
-        # Create the requested context and map the session store
-
-        state = ctx()
-        state.set_shadow_store(store=store, update_listener=cache.update)
-
-        return state
-
-    except Exception:
-        log.warn('Using a dummy session store id=%s', sid)
-        store = {}
-        state = ctx()
-        state.set_shadow_store(store=store)
-        return state
 
 
 def session_data(cls=None, init=True, repr=True, eq=True,
