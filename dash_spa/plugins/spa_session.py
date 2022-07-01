@@ -60,17 +60,21 @@ class ServerSessionCache:
     """Wrapper for an individual session
 
     A single json string, indexed on session_id, is held in
-    the server-side session cache.
+    the server-side session cache. The cache should be thread and
+    multi-process safe since each session has a uniq uuid and all the
+    session data is stored in a single key.
 
     Use get(key) to get the value of an individual element in session dict.
 
     Use update() to save the entire session data dict
 
-
+    Use clear() to remove all session entries from the cache
 
     """
 
-    disk_cache =  Cache(directory = f"{options.folder}/spa_session")
+    # TODO: Figure out how to test if this is thread & process safe
+
+    _disk_cache =  Cache(directory = f"{options.folder}/spa_session")
 
     expiry = options.get('days', 30) * 24 * 60 * 60
 
@@ -99,8 +103,8 @@ class ServerSessionCache:
             self.session_id = "aaaaaaaa-bbbb-cccc-dddd-000000000000"
 
 
-        if self.session_id in ServerSessionCache.disk_cache:
-            json_str = ServerSessionCache.disk_cache[self.session_id]
+        if self.session_id in ServerSessionCache._disk_cache:
+            json_str = ServerSessionCache._disk_cache[self.session_id]
             self.session_store = json.loads(json_str, object_hook=json_decode)
         else:
             log.info("Create new session store id=%s", self.session_id)
@@ -108,10 +112,9 @@ class ServerSessionCache:
 
 
     def update(self):
-        session_store = self.session_store
-        log.info('write cache[%s]=%s', self.session_id, session_store)
-        json_str = json.dumps(session_store, default=json_encode)
-        ServerSessionCache.disk_cache.set(self.session_id, json_str, self.expiry)
+        log.info('write cache[%s]=%s', self.session_id, self.session_store)
+        json_str = json.dumps(self.session_store, default=json_encode)
+        ServerSessionCache._disk_cache.set(self.session_id, json_str, self.expiry)
 
 
     def get(self, obj_key) -> dict:
@@ -120,24 +123,19 @@ class ServerSessionCache:
         return self.session_store[obj_key]
 
 
-    def put(self, obj_key, value):
-        session_store = self.session_store
-
-        if not obj_key in session_store:
-            session_store[obj_key] = {}
-
-        store = session_store[obj_key]
-        store.update(value)
+    def put(self, obj_key, value: dict):
+        self.session_store[obj_key] = value
         self.update()
 
 
-    def clear(self):
+    @staticmethod
+    def clear():
         """Remove all items from cache.
 
         Removing items is an iterative process. In each iteration, a subset of
         items is removed. Concurrent writes may occur between iterations.
         """
-        self.disk_cache.clear()
+        ServerSessionCache._disk_cache.clear()
 
 
 class SessionContext(ContextState):
