@@ -129,6 +129,16 @@ class ServerSessionCache:
             session_store[obj_key] = {}
         return session_store[obj_key]
 
+    def put(self, obj_key, value):
+        session_store = ServerSessionCache.mem_cache[self.session_id]
+
+        if not obj_key in session_store:
+            session_store[obj_key] = {}
+
+        store = session_store[obj_key]
+        store.update(value)
+        self.update()
+
 
 class SessionContext(ContextState):
     pass
@@ -150,7 +160,9 @@ def session_context(ctx: SessionContext):
     store = cache.get(ctx.__session_data_id__)
     log.info('read  cache[%s] %s', ctx.__session_data_id__, store)
 
-    # Create the requested context and map the session store
+    # Create the requested context and map the session store. Use
+    # the context.update_listener() capability to force an update
+    # if the server cache whenever a state value is updated
 
     state = ctx()
     state.set_shadow_store(store=store, update_listener=cache.update)

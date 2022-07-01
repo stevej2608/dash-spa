@@ -5,7 +5,7 @@ from flask import current_app as app
 from dash import Output
 from dash_prefix import prefix
 from dash_spa.logging import log
-from dash_spa import callback, NOUPDATE
+from dash_spa import callback, NOUPDATE, ServerSessionCache
 from dash_redux import ReduxStore
 
 from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
@@ -151,7 +151,35 @@ class Context:
 
             self.render = func_wrapper
 
-            return func_wrapper
+            # The context provider state is stored in the browser using a ReduxStore. Any
+            # dash events from components that are defined in the provider markup update
+            # the redux store. The store update generates an event & callback containing the latest
+            # state. This is loaded into the provider context and the layout() method is called.
+            #
+            # Because the provider context state is held in the browser, this mechanism works
+            # for multiple context instances on multiple simultaneous browser sessions.
+            #
+            # There is a gotcha. When a page containing context provider(s) is re-rendered following
+            # a page refresh, via browser history for instance, the context state used for the refresh
+            # will be a stale, probably from a browser different session.
+            #
+            # To counter this we store the context state here, on completion of a valid
+            # render, into the server-side session storage. When a page is refreshed from the
+            # browser history the state is restored from the server-side session prior to calling
+            # the layout.
+
+            def session_restore(*_args, **_kwargs):
+
+                cache = ServerSessionCache()
+                state = cache.get(self.id)
+
+                log.info('Restore state from session store[%s] %s', self.id, state)
+
+                self._context_state.set_shadow_store(state)
+
+                return func_wrapper(*_args, **_kwargs)
+
+            return session_restore
 
         # Render the container if the context store has been modified
 
@@ -165,6 +193,28 @@ class Context:
             self.contexts.set_context(self)
 
             container = self.render()
+
+            # The context provider state is stored in the browser using a ReduxStore. Any
+            # dash events from components that are defined in the provider markup update
+            # the redux store. The store update generates an event & callback containing the latest
+            # state. This is loaded into the provider context and the layout() method is called.
+            #
+            # Because the provider context state is held in the browser, this mechanism works
+            # for multiple context instances on multiple simultaneous browser sessions.
+            #
+            # There is a gotcha. When a page containing context provider(s) is re-rendered following
+            # a page refresh, via browser history for instance, the context state used for the refresh
+            # will be a stale, probably from a browser different session.
+            #
+            # To counter this we store the context state here, on completion of a valid
+            # render, into the server-side session storage. When a page is refreshed from the
+            # browser history the state is restored from the server-side session prior to calling
+            # the layout.
+
+            log.info('Save state to session store[%s] %s', self.id, state)
+
+            cache = ServerSessionCache()
+            cache.put(self.id, state)
 
             return container.children
 
