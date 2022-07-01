@@ -97,7 +97,7 @@ class ServerSessionCache:
 
         except Exception:
             log.info('No request object - using a dummy session store')
-            self.session_id = "dummy"
+            self.session_id = "aaaaaaaa-bbbb-cccc-dddd-000000000000"
 
 
         if self.session_id in ServerSessionCache.mem_cache:
