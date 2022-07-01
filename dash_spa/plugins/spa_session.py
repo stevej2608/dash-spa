@@ -71,7 +71,6 @@ class ServerSessionCache:
     """
 
     disk_cache =  Cache(directory = f"{options.folder}/spa_session")
-    mem_cache = {}
 
     expiry = options.get('days', 30) * 24 * 60 * 60
 
@@ -100,32 +99,29 @@ class ServerSessionCache:
             self.session_id = "aaaaaaaa-bbbb-cccc-dddd-000000000000"
 
 
-        if self.session_id in ServerSessionCache.mem_cache:
-            return
-
         if self.session_id in ServerSessionCache.disk_cache:
             json_str = ServerSessionCache.disk_cache[self.session_id]
-            store = json.loads(json_str, object_hook=json_decode)
+            self.session_store = json.loads(json_str, object_hook=json_decode)
         else:
             log.info("Create new session store id=%s", self.session_id)
-            store = {}
+            self.session_store = {}
 
-        ServerSessionCache.mem_cache[self.session_id] = store
 
     def update(self):
-        session_store = ServerSessionCache.mem_cache[self.session_id]
+        session_store = self.session_store
         log.info('write cache[%s]=%s', self.session_id, session_store)
         json_str = json.dumps(session_store, default=json_encode)
         ServerSessionCache.disk_cache.set(self.session_id, json_str, self.expiry)
 
+
     def get(self, obj_key) -> dict:
-        session_store = ServerSessionCache.mem_cache[self.session_id]
-        if not obj_key in session_store:
-            session_store[obj_key] = {}
-        return session_store[obj_key]
+        if not obj_key in self.session_store:
+            self.session_store[obj_key] = {}
+        return self.session_store[obj_key]
+
 
     def put(self, obj_key, value):
-        session_store = ServerSessionCache.mem_cache[self.session_id]
+        session_store = self.session_store
 
         if not obj_key in session_store:
             session_store[obj_key] = {}
@@ -141,8 +137,6 @@ class ServerSessionCache:
         Removing items is an iterative process. In each iteration, a subset of
         items is removed. Concurrent writes may occur between iterations.
         """
-
-        self.mem_cache = {}
         self.disk_cache.clear()
 
 
@@ -174,8 +168,6 @@ def session_context(ctx: SessionContext):
     state.set_shadow_store(store=store, update_listener=cache.update)
 
     return state
-
-
 
 
 def session_data(cls=None, init=True, repr=True, eq=True,
