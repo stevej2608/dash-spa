@@ -95,27 +95,25 @@ class ServerSessionCache:
             # yes but it is available on the request object
 
             if SPA_SESSION_ID in req.cookies:
-                session_id = req.cookies[SPA_SESSION_ID]
-            elif hasattr(req,'sid') and req.sid is not None:
-                session_id = req.sid
+                self.session_id = req.cookies[SPA_SESSION_ID]
+            else:
+                self.session_id = req.sid
 
         except Exception:
             log.warn('Using a dummy session store')
-            session_id = "dummy"
+            self.session_id = "dummy"
 
-        self.session_id = session_id
-
-        if session_id in ServerSessionCache.mem_cache:
+        if self.session_id in ServerSessionCache.mem_cache:
             return
 
         if self.session_id in ServerSessionCache.disk_cache:
             json_str = ServerSessionCache.disk_cache[self.session_id]
             store = json.loads(json_str, object_hook=json_decode)
         else:
-            log.info("Create new session store id=%s", session_id)
+            log.info("Create new session store id=%s", self.session_id)
             store = {}
 
-        ServerSessionCache.mem_cache[session_id] = store
+        ServerSessionCache.mem_cache[self.session_id] = store
 
     def update(self):
         session_store = ServerSessionCache.mem_cache[self.session_id]
