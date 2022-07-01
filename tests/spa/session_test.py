@@ -29,7 +29,7 @@ def test_session_button(dash_duo):
     @callback(container.output.children, btn.input.n_clicks, prevent_initial_call=True)
     def btn1_update(clicks):
         ctx = session_context(ButtonState)
-        # log.warn('btn1_update clicks=%s', ctx.clicks)
+        log.info('btn1_update clicks=%s', ctx.clicks)
         if clicks:
             ctx.clicks += 1
             return f"Button pressed {ctx.clicks} times!"

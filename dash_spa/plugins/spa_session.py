@@ -46,16 +46,6 @@ SPA_SESSION_ID = "spa_session"
 
 def plug(app):
 
-    @app.server.before_first_request
-    @app.server.before_request
-    def req_session_id():
-        try:
-            req = request
-            if not SPA_SESSION_ID in req.cookies:
-                req.sid = str(uuid.uuid4())
-        except Exception:
-            pass
-
     @app.server.after_request
     def res_session_id(response):
         req = request
@@ -92,16 +82,23 @@ class ServerSessionCache:
 
             # Get the session id from the client cookies. If this
             # is the first request the cookie will not have been set
-            # yes but it is available on the request object
+            # yet.
 
             if SPA_SESSION_ID in req.cookies:
                 self.session_id = req.cookies[SPA_SESSION_ID]
             else:
-                self.session_id = req.sid
+
+                # Create an unattached session.This will be turned into
+                # an attached session when the cookie is set. See:
+                # @app.server.after_request
+
+                self.session_id = str(uuid.uuid4())
+                req.sid = self.session_id
 
         except Exception:
-            log.warn('Using a dummy session store')
+            log.info('No request object - using a dummy session store')
             self.session_id = "dummy"
+
 
         if self.session_id in ServerSessionCache.mem_cache:
             return
@@ -136,6 +133,17 @@ class ServerSessionCache:
         store = session_store[obj_key]
         store.update(value)
         self.update()
+
+
+    def clear(self):
+        """Remove all items from cache.
+
+        Removing items is an iterative process. In each iteration, a subset of
+        items is removed. Concurrent writes may occur between iterations.
+        """
+
+        self.mem_cache = {}
+        self.disk_cache.clear()
 
 
 class SessionContext(ContextState):

@@ -91,7 +91,8 @@
       "args": [
         "--headless",
         "-sv",
-        "${file}"
+        "tests/spa"
+        // "${file}"
       ],
       "cwd": "${workspaceRoot}",
       "env": {},
