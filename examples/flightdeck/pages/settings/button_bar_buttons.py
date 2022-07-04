@@ -1,7 +1,7 @@
 from dash import html
 
-from components.dropdown_button_aoi import DropdownButtonAIO, dropdownLink
-from icons.hero import DOCUMENT_ICON, MESSAGE_ICON, UPLOAD_ICON, FIRE_ICON_DANGER, CALENDER_ICON
+from dash_spa.components.dropdown_button_aoi import DropdownButtonAIO, dropdownLink
+from ..icons.hero import DOCUMENT_ICON, MESSAGE_ICON, UPLOAD_ICON, FIRE_ICON_DANGER, CALENDER_ICON
 
 def newButton():
     return DropdownButtonAIO([

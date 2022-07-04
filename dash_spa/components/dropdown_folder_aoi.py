@@ -1,7 +1,7 @@
 from dash import html, dcc, callback, MATCH
 from dash_spa import match, component_id
 
-from icons.hero import ARROW_ICON
+from .icons import ARROW_ICON
 
 def dropdownFolderEntry(text, href):
     return html.Li([

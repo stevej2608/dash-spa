@@ -1,6 +1,6 @@
 from dash import html,dcc
 
-from icons.hero import EARTH_ICON, COUNTRY_ICON, CATEGORY_ICON, ICON1_ICON, ICON1_ICON, ICON1_ICON, UP_ARROW_ICON
+from ..icons.hero import EARTH_ICON, COUNTRY_ICON, CATEGORY_ICON, ICON1_ICON, ICON1_ICON, ICON1_ICON, UP_ARROW_ICON
 
 def _categoryRank(category, categoryIcon, rank, rankIcon):
     return html.Div([

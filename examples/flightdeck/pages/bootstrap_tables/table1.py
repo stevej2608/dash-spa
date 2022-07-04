@@ -2,6 +2,7 @@ from collections import OrderedDict
 import pandas as pd
 from dash import html
 from dash_svg import Svg, Path
+from dash_spa.components.table import TableContext
 from .basic_table import BasicTable
 
 EARTH_ICON =  Svg([
@@ -66,7 +67,7 @@ def progressBar(value):
 
 class TrafficTable(BasicTable):
 
-    def tableRow(self, args):
+    def tableRow(self, index, args):
 
         cid, ts, st, cat, rank, share, change = args.values()
 
@@ -85,13 +86,16 @@ class TrafficTable(BasicTable):
             self.numberAndArrow(change)
         ])
 
-table = TrafficTable(
-    data=df.to_dict('records'),
-    columns=[{'id': c, 'name': c} for c in df.columns])
 
 def table1():
+
+    table = TrafficTable(
+        data=df.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df.columns])
+
+
     return html.Div([
         html.Div([
-            html.Div(table.layout(), className='table-responsive')
+            html.Div(table, className='table-responsive')
         ], className='card-body')
     ], className='card border-0 shadow mb-4')

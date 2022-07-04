@@ -1,6 +1,6 @@
 from dash import html
 
-from icons.hero import CHART_ICON, BARCHART_ICON
+from ..icons.hero import CHART_ICON, BARCHART_ICON
 
 
 def acquisition():

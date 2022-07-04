@@ -4,7 +4,7 @@ from dash_svg import Svg, Path
 
 from .components import sideBar, mobileNavBar, topNavBar, footer
 
-from icons.hero import QUESTION_MARK_ICON, HOME_ICON
+from .icons.hero import QUESTION_MARK_ICON, HOME_ICON
 
 from .bootstrap_tables import table1, table2
 

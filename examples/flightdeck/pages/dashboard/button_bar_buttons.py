@@ -1,7 +1,7 @@
 
-from components.dropdown_button_aoi import DropdownButtonAIO, dropdownLink
+from dash_spa.components.dropdown_button_aoi import DropdownButtonAIO, dropdownLink
 
-from icons.hero import USER_ADD_ICON, WIDGET_ICON, UPLOAD_ICON, SECURITY_ICON, FIRE_ICON_DANGER
+from ..icons.hero import USER_ADD_ICON, WIDGET_ICON, UPLOAD_ICON, SECURITY_ICON, FIRE_ICON_DANGER
 
 
 def newTasksButton():

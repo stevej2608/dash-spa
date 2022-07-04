@@ -1,6 +1,6 @@
 from dash import html, dcc
 
-from icons.hero import CALENDER_ICON
+from ..icons.hero import CALENDER_ICON
 
 def _contact_button(contact):
     return dcc.Link([

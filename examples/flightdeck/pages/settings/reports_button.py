@@ -1,7 +1,7 @@
 from dash import html
 
-from components.dropdown_button_aoi import DropdownButtonAIO, dropdownLink
-from icons.hero import CLIPBOARD_ICON, PRODUCTS_ICON, CUSTOMERS_ICON, ORDERS_ICON, CONSOLE_ICON, ALL_REPORTS_ICON
+from dash_spa.components.dropdown_button_aoi import DropdownButtonAIO, dropdownLink
+from ..icons.hero import CLIPBOARD_ICON, PRODUCTS_ICON, CUSTOMERS_ICON, ORDERS_ICON, CONSOLE_ICON, ALL_REPORTS_ICON
 
 def reportsDropdown():
     return DropdownButtonAIO([

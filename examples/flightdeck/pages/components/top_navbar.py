@@ -1,6 +1,6 @@
 from dash import html, dcc
 
-from icons.hero import SEARCH_ICON
+from ..icons.hero import SEARCH_ICON
 
 def searchForm():
     return  html.Form([

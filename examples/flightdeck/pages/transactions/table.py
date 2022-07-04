@@ -1,8 +1,8 @@
 from collections import OrderedDict
 from dash import html
 import pandas as pd
-from components.dropdown_aio import DropdownAIO
-from components.table import TableAIO, TableAIOPaginator, TableAIOPaginatorView
+from dash_spa.components.dropdown_aio import DropdownAIO
+from dash_spa.components.table import TableContext, TableAIO, TableAIOPaginator, TableAIOPaginatorView
 
 
 data = OrderedDict([
@@ -91,11 +91,14 @@ class OrdersTable(TableAIO):
         return CompositePaginator(paginator, viewer)
 
 
-ordersTable = OrdersTable(
-    data=df.to_dict('records'),
-    columns=[{'id': c, 'name': c} for c in df.columns],
-    page_size=7
-)
 
+@TableContext.Provider(id='orders_table')
 def table(page):
-    return ordersTable.layout(page)
+
+    ordersTable = OrdersTable(
+        data=df.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df.columns],
+        page_size=7
+    )
+
+    return ordersTable

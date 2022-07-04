@@ -4,7 +4,7 @@ from dash import html, dcc
 from dash_svg import Svg, Path
 import pandas as pd
 
-from components.table import TableAIO
+from dash_spa.components.table import TableAIO, TableContext
 
 data = OrderedDict(
  [
@@ -49,11 +49,13 @@ class PageVisitsTable(TableAIO):
         ])
 
 
-table = PageVisitsTable(
-    data=df.to_dict('records'),
-    columns=[{'id': c, 'name': c} for c in df.columns])
 
+@TableContext.Provider(id='page_visits_table')
 def pageVisitsTable():
+
+    table = PageVisitsTable(
+        data=df.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df.columns])
 
     return html.Div([
         html.Div([
@@ -67,6 +69,6 @@ def pageVisitsTable():
                     ], className='col text-end')
                 ], className='row align-items-center')
             ], className='card-header'),
-            html.Div(table.layout(), className='table-responsive')
+            html.Div(table, className='table-responsive')
         ], className='card border-0 shadow')
     ], className='col-12 mb-4')

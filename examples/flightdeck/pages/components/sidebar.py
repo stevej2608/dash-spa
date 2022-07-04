@@ -1,8 +1,8 @@
 from dash import html, dcc
-from icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, CREDIT_CARD_ICON
+from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, CREDIT_CARD_ICON
 
 from .mobile_nav import mobileSidebarHeader
-from components.dropdown_folder_aoi import DropdownFolderAIO, dropdownFolderEntry
+from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, dropdownFolderEntry
 
 def _sidebarLink(text, icon, href, active="", hyperlink=False, target=""):
     Element = html.A if hyperlink else dcc.Link

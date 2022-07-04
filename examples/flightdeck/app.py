@@ -1,7 +1,7 @@
-import flask
+import dash
 from dash import Dash
-import dash_labs as dl
-from components.store_aio import StoreAIO
+from dash_spa import page_container, spa_pages
+from server import serve_app
 
 external_stylesheets = [
     "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css",
@@ -15,18 +15,26 @@ external_scripts = [
     ]
 
 
-def create_app(layout, scripts=external_scripts, stylesheets=external_stylesheets, plugins=[dl.plugins.pages]) -> Dash:
-    # Server definition
+def create_dash():
+    app = dash.Dash( __name__,
+        plugins=[spa_pages],
+        prevent_initial_callbacks=True,
+        suppress_callback_exceptions=True,
+        external_stylesheets=external_stylesheets)
+    return app
 
-    server = flask.Flask(__name__)
-    app = Dash(__name__,
-            plugins=plugins,
-            external_stylesheets=stylesheets,
-            external_scripts=scripts, server=server)
 
-    if layout == dl.plugins.page_container:
-        dl.plugins.page_container.children.insert(0, StoreAIO.container)
+def create_app(dash_factory) -> Dash:
+    app = dash_factory()
+
+    def layout():
+        return page_container
 
     app.layout = layout
-
     return app
+
+# python -m examples.flightdeck.app
+
+if __name__ == "__main__":
+    app = create_app(create_dash)
+    serve_app(app, debug=False)

@@ -1,6 +1,6 @@
 from dash import html, dcc, register_page
 from dash_svg import Svg, Path
-from pages.components import background_img
+from .components import background_img
 
 register_page(__name__, path="/pages/sign-in.html", title="Dash/Flightdeck - Sign in")
 

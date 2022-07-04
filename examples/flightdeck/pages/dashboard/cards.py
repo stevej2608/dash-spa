@@ -1,6 +1,6 @@
 from dash import html
 
-from icons.hero import PEOPLE_ICON, BAG_ICON, CHART_ICON, GLOBE_ICON, GLOBE_ICON, UP_ARROW_ICON, DOWN_ARROW_ICON
+from ..icons.hero import PEOPLE_ICON, BAG_ICON, CHART_ICON, GLOBE_ICON, GLOBE_ICON, UP_ARROW_ICON, DOWN_ARROW_ICON
 
 def cardFrame(content):
     return html.Div([

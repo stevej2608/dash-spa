@@ -12,6 +12,10 @@ diskcache>=5.4.0
 colorlover>=0.3.0
 pandas>=1.4.2
 
+# For /examples/flighdeck
+
+dash-chartist>=0.0.2
+
 # For dash_admin_spa
 
 cachetools>=5.0.0

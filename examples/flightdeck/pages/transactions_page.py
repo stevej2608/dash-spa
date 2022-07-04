@@ -1,6 +1,6 @@
-from holoniq.utils import log
 from dash import html, register_page
 from dash_svg import Svg, Path
+from dash_spa.logging import log
 
 from .components import sideBar, mobileNavBar, topNavBar, footer
 from .transactions import breadCrumbs, table, tableHeader

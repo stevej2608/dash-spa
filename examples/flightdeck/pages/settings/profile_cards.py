@@ -1,8 +1,7 @@
 from dash import html, dcc
 
-from pages.components import background_img
-
-from icons.hero import PAPER_CLIP_ICON, USER_ADD_BTN_ICON
+from ..components import background_img
+from ..icons.hero import PAPER_CLIP_ICON, USER_ADD_BTN_ICON
 
 
 def userPhotoCard():
