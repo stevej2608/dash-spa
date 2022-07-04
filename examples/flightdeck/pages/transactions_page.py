@@ -2,7 +2,6 @@ from dash import html
 from dash_svg import Svg, Path
 from dash_spa import register_page, prefix
 from dash_spa.components.table import TableContext
-from dash_spa.logging import log
 
 from .components import sideBar, mobileNavBar, topNavBar, footer
 from .transactions import breadCrumbs, create_table, create_header

@@ -1,3 +1,4 @@
+import re
 from dash import callback, Output, Input, html, dcc
 import dash
 import os
@@ -423,14 +424,21 @@ def plug(app):
             # updates layout on page navigation
             # updates the stored page title which will trigger the clientside callback to update the app title
 
+            def get_page_ref(module_name):
+                for ref in dash.page_registry.keys():
+                    if ref.endswith(module_name):
+                        return ref
+                return None
+
             query_parameters = _parse_query_string(search)
             page, path_variables = _path_to_page(app, app.strip_relative_path(pathname))
 
             # get layout
             if page == {}:
-                if "pages.not_found_404" in dash.page_registry:
-                    layout = dash.page_registry["pages.not_found_404"]["layout"]
-                    title = dash.page_registry["pages.not_found_404"]["title"]
+                pref = get_page_ref('pages.not_found_404')
+                if pref in dash.page_registry:
+                    layout = dash.page_registry[pref]["layout"]
+                    title = dash.page_registry[pref]["title"]
                 else:
                     layout = html.H1("404")
                     title = app.title

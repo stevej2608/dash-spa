@@ -1,11 +1,9 @@
 import logging
-from dash import html, dcc, register_page
-from dash_svg import Svg, Path
+from dash import html
+from dash_spa import register_page
 
 from .components import sideBar, mobileNavBar, topNavBar, footer
-
 from .icons.hero import QUESTION_MARK_ICON, HOME_ICON
-
 from .bootstrap_tables import table1, table2
 
 

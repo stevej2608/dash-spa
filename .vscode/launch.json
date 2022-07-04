@@ -38,11 +38,10 @@
     },
 
     {
-      "name": "1c. dataclass_exp.py",
+      "name": "1c. Python: examples.flightdeck.app",
       "type": "python",
       "request": "launch",
-      "cwd": "${workspaceRoot}",
-      "program": "dataclass_exp.py",
+      "module": "examples.flightdeck.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,

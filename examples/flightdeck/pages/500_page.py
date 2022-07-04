@@ -1,4 +1,5 @@
-from dash import html, dcc, register_page
+from dash import html, dcc
+from dash_spa import register_page
 from dash_svg import Svg, Path
 
 register_page(__name__, path="/pages/500.html", title="Dash/Flightdeck - 500")

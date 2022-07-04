@@ -1,5 +1,6 @@
-from dash import html, dcc, register_page
+from dash import html, dcc
 from dash_svg import Svg, Path
+from dash_spa import register_page
 
 register_page(__name__, path="/pages/reset-password.html", title="Dash/Flightdeck - Reset password")
 
