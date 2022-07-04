@@ -1,9 +1,11 @@
-from dash import html, register_page
+from dash import html
 from dash_svg import Svg, Path
+from dash_spa import register_page, prefix
+from dash_spa.components.table import TableContext
 from dash_spa.logging import log
 
 from .components import sideBar, mobileNavBar, topNavBar, footer
-from .transactions import breadCrumbs, table, tableHeader
+from .transactions import breadCrumbs, create_table, create_header
 
 
 register_page(__name__, path="/pages/transactions", title="Dash/Flightdeck - Transactions")
@@ -20,7 +22,15 @@ def newPlanButton():
     ], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
 
 
+@TableContext.Provider(id='transactions_table')
 def layout(page=1):
+
+    pid = prefix('transactions_table')
+
+    table = create_table(id=pid())
+    header = create_header(id=pid('header'))
+
+
     page = int(page)
     #log.info('page=%s', page)
     return html.Div([
@@ -43,8 +53,8 @@ def layout(page=1):
                 ], className='btn-toolbar mb-2 mb-md-0')
 
             ], className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4'),
-            tableHeader(),
-            table(page),
+            header,
+            table,
             footer()
         ], className='content')
     ])

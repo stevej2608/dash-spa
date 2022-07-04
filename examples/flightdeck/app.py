@@ -1,6 +1,6 @@
 import dash
 from dash import Dash
-from dash_spa import page_container, spa_pages
+import dash_spa as spa
 from server import serve_app
 
 external_stylesheets = [
@@ -16,8 +16,14 @@ external_scripts = [
 
 
 def create_dash():
+
+    plugins=[
+        spa.spa_session,
+        spa.spa_pages
+        ]
+
     app = dash.Dash( __name__,
-        plugins=[spa_pages],
+        plugins=plugins,
         prevent_initial_callbacks=True,
         suppress_callback_exceptions=True,
         external_stylesheets=external_stylesheets)
@@ -28,7 +34,7 @@ def create_app(dash_factory) -> Dash:
     app = dash_factory()
 
     def layout():
-        return page_container
+        return spa.page_container
 
     app.layout = layout
     return app
@@ -37,4 +43,4 @@ def create_app(dash_factory) -> Dash:
 
 if __name__ == "__main__":
     app = create_app(create_dash)
-    serve_app(app, debug=False)
+    serve_app(app, debug=False, path="/pages/dashboard.html")

@@ -141,7 +141,7 @@ class Context:
                     self._redux_store.data.update(self._context_state.get_shadow_store())
                     result.children.append(self._redux_store)
                 except Exception as ex:
-                    log.warn('Dash/SPA layout error %s', ex)
+                    log.exception('Dash/SPA layout error %s', ex)
                     result = NOUPDATE
                 finally:
                     self.allow_initial_state = False

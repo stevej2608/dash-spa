@@ -33,7 +33,7 @@ class PageVisitsTable(TableAIO):
 
     TABLE_CLASS_NAME = 'table align-items-center table-flush'
 
-    def tableRow(self, args):
+    def tableRow(self, index, args):
         name, views, value, rate, change = args.values()
         icon = UP_ICON if change == "Up" else DOWN_ICON
         return  html.Tr([

@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from dash import html
 import pandas as pd
+from dash_spa import prefix
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.table import TableContext, TableAIO, TableAIOPaginator, TableAIOPaginatorView
 
@@ -28,13 +29,16 @@ class OrdersTable(TableAIO):
 
     TABLE_CLASS_NAME = 'card card-body border-0 shadow table-wrapper table-responsive'
 
-    def tableAction(self):
+    def tableAction(self, row):
+
+        pid = prefix('orders_table_row_action')
+
         button = DropdownAIO.Button([
             html.Span(html.Span(className='fas fa-ellipsis-h icon-dark'), className='icon icon-sm'),
             html.Span("Toggle Dropdown", className='visually-hidden')
-        ], className='btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0')
+        ], className='btn btn-link text-dark dropdown-toggle-split m-0 p-0')
 
-        # dropdown bottom-left. Ripped from the Volt transactons table using Firefox debug tools
+        # Action column dropdown bottom-left. Ripped from the Volt transactions table using Firefox debug tools
 
         style={"position": "absolute",
                 "inset": "0px 0px auto auto",
@@ -48,13 +52,13 @@ class OrdersTable(TableAIO):
             html.A([html.Span(className='fas fa-trash-alt me-2'), "Remove" ], className='dropdown-item text-danger rounded-bottom', href='#')
         ], className='dropdown-menu py-0', style=style)
 
-        return html.Div(DropdownAIO(button, container), className='btn-group')
+        return html.Div(DropdownAIO(button, container, id=pid(row)), className='btn-group')
 
 
-    def tableRow(self, args):
+    def tableRow(self, row_index, args):
 
         cid, product, issue_date, due_date, total, status = args.values()
-        action = self.tableAction()
+        action = self.tableAction(row_index)
 
         return html.Tr([
             html.Td(html.A(cid, href='#', className='fw-bold')),
@@ -63,7 +67,7 @@ class OrdersTable(TableAIO):
             html.Td(html.Span(due_date, className='fw-normal')),
             html.Td(html.Span(total, className='fw-bold')),
             html.Td(html.Span(status, className='fw-bold text-warning')),
-            html.Td("...")
+            html.Td(action)
         ])
 
     def paginator_init(self, page:int, page_size, total_items) -> TableAIOPaginator:
@@ -92,13 +96,16 @@ class OrdersTable(TableAIO):
 
 
 
-@TableContext.Provider(id='orders_table')
-def table(page):
+def create_table(id):
+
+    state = TableContext.getState()
 
     ordersTable = OrdersTable(
         data=df.to_dict('records'),
         columns=[{'id': c, 'name': c} for c in df.columns],
-        page_size=7
+        page = state.current_page,
+        page_size = state.page_size,
+        id=id
     )
 
     return ordersTable
