@@ -1,13 +1,12 @@
 import uuid
-from dataclasses import dataclass, _process_class
+from dataclasses import _process_class
 from diskcache import Cache
 import json
 from flask import request
 from ..logging import log
 from ..spa_config import config
-from ..context_state import ContextState, dataclass
+from ..context_state import ContextState
 
-from ..utils.notify_dict import NotifyDict
 from ..utils.json_coder import json_decode, json_encode
 
 """Minimalistic Server side session storage plugin

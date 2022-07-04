@@ -1,8 +1,6 @@
 from dash import html, dcc
-from dash_spa import NOUPDATE, callback
+from dash_spa import register_page, url_for, SPA_LOCATION,  NOUPDATE, callback
 from dash_spa.logging import log
-from dash_spa import SPA_LOCATION
-from dash_spa import register_page
 import colorlover as cl
 import pandas as pd
 
@@ -111,21 +109,18 @@ def layout(tickers: str = None) -> html.Div:
         multi=True)
 
     # Update the the location bar with the querystring values selected by the
-    # drop-down. This will cause a page refresh
+    # drop-down
 
     @SPA_LOCATION.update(ticker_dropdown.input.value)
     def _update_loc(value, store):
-        log.info('update_loc, ticker_dropdown value = %s store = %s', value, store)
         try:
-            href = page.path
-            if value:
-                href += f"?tickers={'+'.join(value)}"
-            log.info('update_loc, href=%s', href)
+            href = url_for(page.module, {'tickers': ' '.join(value)})
             return { 'href': href }
         except Exception:
             pass
 
         return NOUPDATE
+
 
     graphs = update_graph(tickers)
     graph_container = html.Div(graphs, id='graphs')
