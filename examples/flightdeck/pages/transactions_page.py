@@ -3,7 +3,7 @@ from dash_svg import Svg, Path
 from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE
 from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext
 
-from .components import sideBar, mobileNavBar, topNavBar, footer
+from .common import sideBar, mobileNavBar, topNavBar, footer
 from .transactions import breadCrumbs, create_table, create_header
 
 

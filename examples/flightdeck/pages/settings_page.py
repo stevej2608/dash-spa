@@ -2,7 +2,7 @@ import logging
 from dash import html
 from dash_spa import register_page
 
-from .components import sideBar, mobileNavBar, topNavBar, footer, buttonBar
+from .common import sideBar, mobileNavBar, topNavBar, footer, buttonBar
 from .settings import userPhotoCard, profilePhotoCard, coverPhotoCard, generalInformationForm, alertsNotifications, reportsDropdown, newButton, calenderButton
 
 

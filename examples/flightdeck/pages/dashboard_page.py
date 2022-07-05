@@ -1,7 +1,7 @@
 from dash import html
 from dash_spa import register_page
 
-from .components import sideBar, mobileNavBar, topNavBar, footer, buttonBar
+from .common import sideBar, mobileNavBar, topNavBar, footer, buttonBar
 from .dashboard import salesChart, customers, revenue, bounceRate, pageVisitsTable, teamMembers, progressTrack, totalOrdersBarChart, rankingPanel, acquisition, newTasksButton
 
 register_page(__name__, path="/pages/dashboard.html", title="Dash/Flightdeck - Dashboard")

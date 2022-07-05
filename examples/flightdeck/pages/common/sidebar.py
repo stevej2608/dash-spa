@@ -1,5 +1,5 @@
 from dash import html, dcc
-from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, CREDIT_CARD_ICON
+from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, CRATE_ICON, CREDIT_CARD_ICON
 
 from .mobile_nav import mobileSidebarHeader
 from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, dropdownFolderEntry
@@ -57,6 +57,12 @@ def sideBar():
                     dropdownFolderEntry("404 Not Found", '/pages/???.html'),
                     dropdownFolderEntry("500 Not Found", '/pages/500.html'),
                 ], "Page examples", PAGES_ICON),
+
+                # Components  drop down
+
+                DropdownFolderAIO([
+                    dropdownFolderEntry("Buttons", '/pages/components/buttons.html'),
+                ], "Components", CRATE_ICON),
 
 
                 # Bottom Item
