@@ -296,6 +296,8 @@ class ContextWrapper:
 
     """
 
+    # TODO: Add global lock to stop context being switched mid update
+
     dataclass: ContextState
     ctx_lookup : Dict[str, Context] = EMPTY_DICT
     ctx: Context = None
