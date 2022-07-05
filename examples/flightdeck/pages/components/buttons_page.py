@@ -118,13 +118,18 @@ FOLLOW_US_BTN = html.Button([
 
 
 def buttons():
+
+    whitespace = "\n"
+
     return html.Div([
         html.Div([
             html.Div([
                 html.Div([
                     html.Div(html.H2("Sizes", className='h5'), className='mb-3'),
                     html.Button("Small", className='btn btn-sm btn-primary', type='button'),
+                    whitespace,
                     html.Button("Regular", className='btn btn-primary', type='button'),
+                    whitespace,
                     html.Button("Large Button", className='btn btn-lg btn-primary', type='button'),
 
                     html.H2("With Icons", className='h5 fw-bold mt-4 mb-3'),
@@ -135,6 +140,8 @@ def buttons():
                             Path(clipRule='evenodd', d='M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z', fillRule='evenodd')
                         ], className='icon icon-xxs ms-2', viewBox='0 0 20 20', fill="currentColor", xmlns='http://www.w3.org/2000/svg')
                     ], className='btn btn-primary d-inline-flex align-items-center', type='button'),
+
+                    whitespace,
 
                     html.Button([
                         Svg([
@@ -203,62 +210,101 @@ def buttons():
                     ], className='text-primary d-inline-flex align-items-center', href='#'),
 
                     html.Div(html.H2("Tooltips", className='h5'), className='mb-3 mt-5'),
+                    whitespace,
                     html.Button("Tooltip on top", className='btn btn-secondary', title='', type='button', **{"data-bs-original-title": "Tooltip on top", "data-bs-placement": "top", "data-bs-toggle": "tooltip"}),
+                    whitespace,
                     html.Button("Tooltip on right", className='btn btn-secondary', title='', type='button', **{"data-bs-original-title": "Tooltip on right", "data-bs-placement": "right", "data-bs-toggle": "tooltip"}),
+                    whitespace,
                     html.Button("Tooltip on bottom", className='btn btn-secondary', title='', type='button', **{"data-bs-original-title": "Tooltip on bottom", "data-bs-placement": "bottom", "data-bs-toggle": "tooltip"}),
+                    whitespace,
                     html.Button("Tooltip on left", className='btn btn-secondary', title='', type='button', **{"data-bs-original-title": "Tooltip on left", "data-bs-placement": "left", "data-bs-toggle": "tooltip"}),
 
                     html.Div(html.H2("Popovers", className='h5'), className='mb-3 mt-5'),
                     html.Button("Popover on top", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Top popover", "data-bs-original-title": "", "data-bs-placement": "top", "data-bs-toggle": "popover"}),
+                    whitespace,
                     html.Button("Popover on right", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Right popover", "data-bs-original-title": "", "data-bs-placement": "right", "data-bs-toggle": "popover"}),
+                    whitespace,
                     html.Button("Popover on bottom", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Bottom popover", "data-bs-original-title": "", "data-bs-placement": "bottom", "data-bs-toggle": "popover"}),
+                    whitespace,
                     html.Button("Popover on left", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Left popover", "data-bs-original-title": "", "data-bs-placement": "left", "data-bs-toggle": "popover"}),
 
                     html.Div(html.H2("Choose your color", className='h5'), className='mb-3 mt-5'),
-                    html.Div([
-                        html.Small("Main", className='text-uppercase fw-bold')
-                    ], className='mb-3 mt-5'),
+                    html.Div(html.Small("Main", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
+                    whitespace,
                     html.Button("Primary", className='btn btn-primary', type='button'),
+                    whitespace,
                     html.Button("Secondary", className='btn btn-secondary', type='button'),
+                    whitespace,
                     html.Button("Tertiary", className='btn btn-tertiary', type='button'),
+                    whitespace,
                     html.Button("Info", className='btn btn-info', type='button'),
+                    whitespace,
                     html.Button("Success", className='btn btn-success', type='button'),
+                    whitespace,
                     html.Button("Warning", className='btn btn-warning', type='button'),
+                    whitespace,
                     html.Button("Danger", className='btn btn-danger', type='button'),
+                    whitespace,
                     html.Button("Dark", className='btn btn-gray-800', type='button'),
+                    whitespace,
                     html.Button("Gray", className='btn btn-gray-200', type='button'),
+                    whitespace,
                     html.Button("Light", className='btn btn-gray-50', type='button'),
+                    whitespace,
                     html.Button("White", className='btn btn-white', type='button'),
 
                     html.Div(html.Small("Outline", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
+                    whitespace,
                     html.Button("Primary", className='btn btn-outline-primary', type='button'),
+                    whitespace,
                     html.Button("Secondary", className='btn btn-outline-secondary', type='button'),
+                    whitespace,
                     html.Button("Tertiary", className='btn btn-outline-tertiary', type='button'),
+                    whitespace,
                     html.Button("Info", className='btn btn-outline-info', type='button'),
+                    whitespace,
                     html.Button("Success", className='btn btn-outline-success', type='button'),
+                    whitespace,
                     html.Button("Danger", className='btn btn-outline-danger', type='button'),
+                    whitespace,
                     html.Button("Dark", className='btn btn-outline-gray-800', type='button'),
+                    whitespace,
                     html.Button("Gray", className='btn btn-outline-gray-500', type='button'),
 
                     html.Div(html.Small("Round Outline", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
                     html.Button("Primary", className='btn btn-pill btn-outline-primary', type='button'),
+                    whitespace,
                     html.Button("Secondary", className='btn btn-pill btn-outline-secondary', type='button'),
+                    whitespace,
                     html.Button("Tertiary", className='btn btn-pill btn-outline-tertiary', type='button'),
+                    whitespace,
                     html.Button("Info", className='btn btn-pill btn-outline-info', type='button'),
+                    whitespace,
                     html.Button("Success", className='btn btn-pill btn-outline-success', type='button'),
+                    whitespace,
                     html.Button("Danger", className='btn btn-pill btn-outline-danger', type='button'),
+                    whitespace,
                     html.Button("Dark", className='btn btn-pill btn-outline-gray-800', type='button'),
+                    whitespace,
                     html.Button("Gray", className='btn btn-pill btn-outline-gray-500', type='button'),
 
                     html.Div(html.Small("Links", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
                     html.A("Default", className='text-default me-3', href='#'),
+                    whitespace,
                     html.A("Primary", className='text-primary me-3', href='#'),
+                    whitespace,
                     html.A("Secondary", className='text-secondary me-3', href='#'),
+                    whitespace,
                     html.A("Tertiary", className='text-tertiary me-3', href='#'),
+                    whitespace,
                     html.A("Info", className='text-info me-3', href='#'),
+                    whitespace,
                     html.A("Success", className='text-success me-3', href='#'),
+                    whitespace,
                     html.A("Danger", className='text-danger me-3', href='#'),
+                    whitespace,
                     html.A("Dark", className='text-dark me-3', href='#'),
+                    whitespace,
                     html.A("Gray", className='text-gray', href='#'),
 
                     html.Div([
