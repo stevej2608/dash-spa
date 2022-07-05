@@ -171,6 +171,8 @@ def session_data(cls=None, init=True, repr=True, eq=True,
                  order=False, unsafe_hash=False, frozen=False, id=None):
     """Wrapper for @dataclass, same functionality with addition of id
 
+    TODO: Define cache expiry argument
+
     Args:
         id (str, optional): _description_. Defaults to None.
     """

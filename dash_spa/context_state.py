@@ -1,3 +1,4 @@
+from logging import exception
 from typing import TypeVar, Union
 import copy
 from dash_spa.logging import log
@@ -230,13 +231,15 @@ class ContextState:
                 current_value.update(state=new_value)
 
             else:
+                try:
 
-                if type(current_value) != type(new_value):
-                    if isinstance(current_value, int):
-                        new_value = int(new_value)
-                    elif isinstance(current_value, float):
-                        new_value = float(new_value)
-                    else:
-                        raise TypeError(f"Context update error, {attr}, unable to assign type {new_value}")
+                    if type(current_value) != type(new_value):
+                        if isinstance(current_value, int):
+                            new_value = int(new_value)
+                        elif isinstance(current_value, float):
+                            new_value = float(new_value)
 
-                setattr(self, attr, new_value)
+                    setattr(self, attr, new_value)
+
+                except Exception:
+                    raise TypeError(f"Context update error, {attr}, unable to assign type {new_value}")

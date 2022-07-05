@@ -26,9 +26,6 @@ def newPlanButton():
 @TableContext.Provider(id='transactions_table')
 def layout_transactions_table(query_string: dict = None):
 
-    # This method is called when page is loaded or
-    # whenever TableContext state changes
-
     pid = prefix('transactions_table')
 
     state = TableContext.getState(update=query_string)

@@ -3,9 +3,7 @@ import pandas as pd
 from dash_spa import prefix
 from dash_spa.logging import log
 from dash_spa.components.dropdown_aio import DropdownAIO
-from dash_spa.components.table import TableAIO
-
-from dash_spa.components.table import TableContext, filter_str
+from dash_spa.components.table import TableAIO, TableContext, filter_str
 
 #
 # https://json-generator.com/#

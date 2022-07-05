@@ -239,7 +239,7 @@ def url_for(module:str, args: dict=None, attr=None) -> str:
         path = page['path']
         if args:
             if attr:
-                args = {k:v for k,v in args.items() if k in attr and v is not None}
+                args = {k:v for k,v in args.items() if k in attr and v is not (None or "")}
             path += '?' + parse.urlencode(args)
         return path
 
