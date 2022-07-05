@@ -1,6 +1,8 @@
+from pydoc import classname
 from dash import html
+import dash_bootstrap_components as dbc
 from dash_svg import Svg, Path
-from dash_spa import register_page
+from dash_spa import register_page, add_style
 from ..icons.hero import HOME_ICON
 from ..common import sideBar, mobileNavBar, topNavBar, footer
 
@@ -117,9 +119,35 @@ FOLLOW_US_BTN = html.Button([
     ], className='btn btn-icon-only btn-behance d-inline-flex align-items-center', type='button')
 
 
+
+def TTButtonX(children, className, title, type, placement):
+    # https://getbootstrap.com/docs/5.0/components/tooltips/
+    btn = html.Button(children, className=className, type=type,
+                        **{"data-bs-original-title": title,
+                        "data-bs-placement": placement,
+                        "data-bs-toggle": "tooltip"
+                        })
+
+    return btn
+
+def TTButton(children, className, title, type, placement):
+    # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/
+    id=f"tooltip-target-{title.replace(' ', '-')}"
+
+    if not isinstance(children, list):
+        children = [children]
+
+    children.append(dbc.Tooltip(title,  target=id, placement=placement))
+
+    btn = html.Button(children, id=id, className=className, type=type)
+    return btn
+
+whitespace = "\n"
+
 def buttons():
 
-    whitespace = "\n"
+
+    tooltips = []
 
     return html.Div([
         html.Div([
@@ -210,16 +238,17 @@ def buttons():
                     ], className='text-primary d-inline-flex align-items-center', href='#'),
 
                     html.Div(html.H2("Tooltips", className='h5'), className='mb-3 mt-5'),
+
+                    TTButton("Tooltip on top", className='btn btn-secondary', title='Tooltip on top', type='button', placement='top'),
                     whitespace,
-                    html.Button("Tooltip on top", className='btn btn-secondary', title='', type='button', **{"data-bs-original-title": "Tooltip on top", "data-bs-placement": "top", "data-bs-toggle": "tooltip"}),
+                    TTButton("Tooltip on right", className='btn btn-secondary', title='Tooltip on right', type='button', placement='right'),
                     whitespace,
-                    html.Button("Tooltip on right", className='btn btn-secondary', title='', type='button', **{"data-bs-original-title": "Tooltip on right", "data-bs-placement": "right", "data-bs-toggle": "tooltip"}),
+                    TTButton("Tooltip on bottom", className='btn btn-secondary', title='Tooltip on bottom', type='button', placement='bottom'),
                     whitespace,
-                    html.Button("Tooltip on bottom", className='btn btn-secondary', title='', type='button', **{"data-bs-original-title": "Tooltip on bottom", "data-bs-placement": "bottom", "data-bs-toggle": "tooltip"}),
-                    whitespace,
-                    html.Button("Tooltip on left", className='btn btn-secondary', title='', type='button', **{"data-bs-original-title": "Tooltip on left", "data-bs-placement": "left", "data-bs-toggle": "tooltip"}),
+                    TTButton("Tooltip on left", className='btn btn-secondary', title='Tooltip on left', type='button', placement='left'),
 
                     html.Div(html.H2("Popovers", className='h5'), className='mb-3 mt-5'),
+
                     html.Button("Popover on top", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Top popover", "data-bs-original-title": "", "data-bs-placement": "top", "data-bs-toggle": "popover"}),
                     whitespace,
                     html.Button("Popover on right", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Right popover", "data-bs-original-title": "", "data-bs-placement": "right", "data-bs-toggle": "popover"}),
@@ -229,6 +258,7 @@ def buttons():
                     html.Button("Popover on left", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Left popover", "data-bs-original-title": "", "data-bs-placement": "left", "data-bs-toggle": "popover"}),
 
                     html.Div(html.H2("Choose your color", className='h5'), className='mb-3 mt-5'),
+
                     html.Div(html.Small("Main", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
                     whitespace,
                     html.Button("Primary", className='btn btn-primary', type='button'),
@@ -254,6 +284,7 @@ def buttons():
                     html.Button("White", className='btn btn-white', type='button'),
 
                     html.Div(html.Small("Outline", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
+
                     whitespace,
                     html.Button("Primary", className='btn btn-outline-primary', type='button'),
                     whitespace,
@@ -272,6 +303,7 @@ def buttons():
                     html.Button("Gray", className='btn btn-outline-gray-500', type='button'),
 
                     html.Div(html.Small("Round Outline", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
+
                     html.Button("Primary", className='btn btn-pill btn-outline-primary', type='button'),
                     whitespace,
                     html.Button("Secondary", className='btn btn-pill btn-outline-secondary', type='button'),
@@ -333,6 +365,19 @@ def buttons():
         ], className='col-12 mb-4')
     ])
 
+# Following is needed to make the tooltips align correctly with the
+# associated button. The volt.css margin is 2rem which results in
+# the tt being placed some distance away from the button
+#
+# https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.css
+
+TOOLTIP_CSS_MIN = """
+    .tooltip {
+        margin: 0;
+    }
+"""
+
+add_style(TOOLTIP_CSS_MIN)
 
 layout = html.Div([
         mobileNavBar(),
