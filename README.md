@@ -111,6 +111,53 @@ navbar = spa.NavBar(NAV_BAR_ITEMS)
 layout = navbar.layout()
 
 ```
+**Dash/SPA** Tables
+
+It's easy it create great looking tables with optional search and pagination. Table cells
+can contain text and active components. Table, search and pagination layout is completely flexible.
+
+![](./docs/img/tables-1.png)
+
+Table are defined in a few lines:
+
+```
+def create_table(id):
+
+    state = TableContext.getState()
+
+    df1 = filter_str(df, state.search_term)
+
+    ordersTable = OrdersTable(
+        data=df1.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df.columns],
+        page = state.current_page,
+        page_size = state.page_size,
+        id=id
+    )
+
+    return ordersTable
+```
+
+Tables are customised by creating a custom *tableRow* method for the table:
+
+```
+def tableRow(self, index, args):
+    name, views, value, rate, change = args.values()
+    icon = UP_ICON if change == "Up" else DOWN_ICON
+    return  html.Tr([
+        html.Th(name, className='text-gray-900', scope='row'),
+        html.Td(views, className='fw-bolder text-gray-500'),
+        html.Td(value, className='fw-bolder text-gray-500'),
+        html.Td([
+            html.Div([
+                icon,
+                rate
+            ], className='d-flex')
+        ], className='fw-bolder text-gray-500')
+    ])
+```
+
+![](./docs/img/tables-2.png)
 
 **Dash/SPA** Allows easy creation of interactive forms
 ```
@@ -245,19 +292,50 @@ def layout():
   return "Big ADMIN SECRET for {current_user.name}"
 ```
 
+**Dash/SPA** Has a simple server-side session data cache based on [diskcache]. The shape of session data
+is defined using [dataclasses]. An observer pattern is used to automatically update the cache
+on change.
+
+```
+@session_data(id='button_state')
+class ButtonState(SessionContext):
+    clicks: int = 0
+
+ctx = session_context(ButtonState)
+ctx.clicks += 1
+```
+
+Any number of session data objects can be defined.
+
+
 ### Dash/SPA Examples
 
-Several example are available:
+Several example are available. The most comprehensive is *Flightdeck*. Other examples are minimalistic and
+focus on Dash/SPA specifics.
 
-**Minimal MultiPage** An example of a multi-page app with navbar and footer in less than sixty lines of code.
+**1. Flightdeck** is a, 100% python, clone of the [Volt Bootstrap 5 Dashboard] from [themesberg](https://themesberg.com/). The
+example demonstrates how a rich UI experience can be easily created using Dash/SPA components and patterns.
+
+    python -m examples.flightdeck.app
+
+![](./docs/img/flightdeck-1.png)
+
+The example shows how easy it is to create great looking tables with optional search and pagination. Table cells
+can contain text and active components. Table, search and pagination layout is completely flexible.
+
+![](./docs/img/tables-1.png)
+
+
+**2. Minimal MultiPage** An example of a multi-page app with navbar and footer in less than sixty lines of code.
 
     python -m examples.multipage.app
 
-**React CRA clone**
+
+**3. React CRA clone**
 
     python -m examples.cra.app
 
-**Dash/SPA forms example**
+**4. Dash/SPA forms example**
 
     python -m examples.forms.app
 
@@ -373,3 +451,6 @@ To run the tests:
 [pypi]: https://pypi.org/project/dash-spa/
 [Dash]: https://dash.plot.ly/introduction
 [plugin]: https://community.plotly.com/t/introducing-dash-pages-a-dash-2-x-feature-preview/57775
+[Volt Bootstrap 5 Dashboard]:https://demo.themesberg.com/volt/pages/dashboard/dashboard.html
+[diskcache]: https://grantjenks.com/docs/diskcache/
+[dataclasses]: https://realpython.com/python-data-classes/
