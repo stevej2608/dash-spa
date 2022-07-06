@@ -15,20 +15,32 @@ from dash_spa import prefix, copy_factory
 
 class SweetAlert(html.Div):
 
-    def __init__(self, id, title, text, show_confirm_button=True, timer=1500):
+    def __init__(self, id, title, text, icon=None, footer=None, show_confirm_button=False, timer=None):
         pid = prefix(id)
-        # app = get_app()
 
-        swal2 = {
-                'icon': 'success',
-                'title': title,
-                'text': text,
-                'showConfirmButton': show_confirm_button,
-                'timer': timer
-            }
+        swal2 = {}
+
+        if title:
+            swal2['title'] = title
+
+        if text:
+            swal2['text'] = text
+
+        if icon:
+            swal2['icon'] = icon
+
+        if footer:
+            swal2['footer'] = footer
+
+        if show_confirm_button:
+            swal2['showConfirmButton'] = show_confirm_button
+
+        if timer:
+            swal2['timer'] = timer
+
 
         store = dcc.Store(id=pid('store'), data=swal2, storage_type='memory')
-        dummy = html.Div("Waiting...", id=pid('dummy'))
+        dummy = html.Div(id=pid('dummy'))
 
 
         clientside_callback(

@@ -8,12 +8,14 @@ external_stylesheets = [
     "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css",
     "https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.4/chartist.min.css",
     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.2.0/css/all.min.css",
+    "https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css",
     VOLT,
     ]
 
 external_scripts = [
     "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js",
-    "https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.all.min.js"
+    "https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.all.min.js",
+    "https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"
     ]
 
 def create_dash():

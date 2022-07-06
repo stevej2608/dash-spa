@@ -2,6 +2,7 @@ from dash import html
 from dash_svg import Svg, Path
 from dash_spa import register_page,  callback
 from dash_spa.alert import SweetAlert
+from dash_spa.notyf import Notyf
 from dash_spa.logging import log
 from ..icons.hero import HOME_ICON
 from ..common import sideBar, mobileNavBar, topNavBar, footer
@@ -50,18 +51,123 @@ def DocumentationLink(href):
     ], className='card-header border-gray-100 d-flex justify-content-between align-items-center')
 
 
-def notifications_test():
+def basic_alert(title, className, id):
+    alert = SweetAlert(id=id, title=title, text='You clicked the button!')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
 
-    success_alert = SweetAlert(id='test', title='Success alert', text='Your work has been saved', show_confirm_button=True, timer=10000)
-    btn = html.Button("Success alert", className='btn btn-success', id='successAlert')
-
-    @callback(success_alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
     def alert_cb(time_stamp):
         log.info('alert_cb %s', time_stamp)
         return time_stamp
 
-    return html.Div([success_alert, btn])
+    return html.Div([alert, btn])
 
+
+def info_alert(title, className, id):
+    alert = SweetAlert(id=id, title=title, text='You clicked the button!', icon='info')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def alert_cb(time_stamp):
+        log.info('alert_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([alert, btn])
+
+
+def success_alert(title, className, id):
+    alert = SweetAlert(id=id, title=title, text='Your work has been saved', show_confirm_button=True, timer=10000)
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def alert_cb(time_stamp):
+        log.info('alert_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([alert, btn])
+
+
+def danger_alert(title, className, id):
+    alert = SweetAlert(id=id, title='Oops...', text='Something went wrong!', footer='<a href>Why do I have this issue?</a>', icon='error')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def alert_cb(time_stamp):
+        log.info('alert_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([alert, btn])
+
+
+def warning_alert(title, className, id):
+    alert = SweetAlert(id=id, title=title, text='Something went wrong!', icon='warning')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def alert_cb(time_stamp):
+        log.info('alert_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([alert, btn])
+
+
+def question_alert(title, className, id):
+    alert = SweetAlert(id=id, title='The Internet?', text='That thing is still around?', icon='question')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def alert_cb(time_stamp):
+        log.info('alert_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([alert, btn])
+
+
+def notyf_default(title, className, id):
+    notyf = Notyf(id=id, message='Send us <b>an email</b> to get support')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(notyf.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def notyf_cb(time_stamp):
+        log.info('notyf_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([notyf, btn])
+
+def notyf_error(title, className, id):
+    notyf = Notyf(id=id, message='This action is not allowed.', type='error')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(notyf.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def notyf_cb(time_stamp):
+        log.info('notyf_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([notyf, btn])
+
+
+def notyf_warning(title, className, id):
+    notyf = Notyf(id=id, message='This might be dangerous.', type='warning')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(notyf.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def notyf_cb(time_stamp):
+        log.info('notyf_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([notyf, btn])
+
+
+def notyf_info(title, className, id):
+    notyf = Notyf(id=id, message='John Garreth: Are you ready for the presentation?', type='info')
+    btn = html.Button(title, className=className, id=f'{id}_btn')
+
+    @callback(notyf.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
+    def notyf_cb(time_stamp):
+        log.info('notyf_cb %s', time_stamp)
+        return time_stamp
+
+    return html.Div([notyf, btn])
 
 def notifications():
 
@@ -73,12 +179,12 @@ def notifications():
                         DocumentationLink('https://themesberg.com/docs/volt-bootstrap-5-dashboard/plugins/sweet-alerts/')
                     ], className='card-header border-gray-100 d-flex justify-content-between align-items-center'),
                     html.Div([
-                        html.Button("Basic alert", className='btn btn-gray-800', id='basicAlert'),
-                        html.Button("Info alert", className='btn btn-info', id='infoAlert'),
-                        html.Button("Success alert", className='btn btn-success', id='successAlert'),
-                        html.Button("Danger alert", className='btn btn-danger', id='dangerAlert'),
-                        html.Button("Warning alert", className='btn btn-warning', id='warningAlert'),
-                        html.Button("Question", className='btn btn-gray-200', id='questionAlert')
+                        basic_alert("Basic alert", className='btn btn-gray-800', id='basicAlert'),
+                        info_alert("Info alert", className='btn btn-info', id='infoAlert'),
+                        success_alert("Success alert", className='btn btn-success', id='successAlert'),
+                        danger_alert("Danger alert", className='btn btn-danger', id='dangerAlert'),
+                        warning_alert("Warning alert", className='btn btn-warning', id='warningAlert'),
+                        question_alert("Question", className='btn btn-gray-200', id='questionAlert')
                     ], className='card-body')
                 ], className='card border-0 shadow')
             ], className='col-12 col-lg-6'),
@@ -89,10 +195,10 @@ def notifications():
                         DocumentationLink('https://themesberg.com/docs/volt-bootstrap-5-dashboard/plugins/notifications/')
                     ], className='card-header border-gray-100 d-flex justify-content-between align-items-center'),
                     html.Div([
-                        html.Button("Top left info", className='btn btn-info', id='notifyTopLeft'),
-                        html.Button("Top right danger", className='btn btn-danger', id='notifyTopRight'),
-                        html.Button("Bottom left warning", className='btn btn-warning', id='notifyBottomLeft'),
-                        html.Button("Primary bottom right", className='btn btn-gray-800', id='notifyBottomRight')
+                        notyf_default("Top left info", className='btn btn-info', id='notifyTopLeft'),
+                        notyf_error("Top right danger", className='btn btn-danger', id='notifyTopRight'),
+                        notyf_warning("Bottom left warning", className='btn btn-warning', id='notifyBottomLeft'),
+                        notyf_info("Primary bottom right", className='btn btn-gray-800', id='notifyBottomRight')
                     ], className='card-body')
                 ], className='card border-0 shadow')
             ], className='col-12 col-lg-6')
@@ -108,7 +214,7 @@ layout = html.Div([
                 breadCrumbs(),
                 banner()
             ], className='py-4'),
-            notifications_test(),
+            notifications(),
             footer()
         ], className='content')
     ])
