@@ -13,8 +13,8 @@ external_stylesheets = [
 
 external_scripts = [
     "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js",
+    "https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.all.min.js"
     ]
-
 
 def create_dash():
 
