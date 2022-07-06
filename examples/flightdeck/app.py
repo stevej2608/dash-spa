@@ -12,7 +12,7 @@ external_stylesheets = [
     ]
 
 external_scripts = [
-    # "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js",
     ]
 
 
@@ -27,6 +27,7 @@ def create_dash():
         plugins=plugins,
         prevent_initial_callbacks=True,
         suppress_callback_exceptions=True,
+        external_scripts=external_scripts,
         external_stylesheets=external_stylesheets)
     return app
 
