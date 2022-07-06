@@ -74,7 +74,7 @@ PAYPAL_TEXT_BTN = html.Button([
         "Donate with PayPal"
     ], className='btn btn-paypal d-inline-flex align-items-center', type='button')
 
-FOLLOW_US_TEXT_BTN = html.Button([
+BEHANCE_TEXT_BTN = html.Button([
         Svg([
             Path(d='M232 237.2c31.8-15.2 48.4-38.2 48.4-74 0-70.6-52.6-87.8-113.3-87.8H0v354.4h171.8c64.4 0 124.9-30.9 124.9-102.9 0-44.5-21.1-77.4-64.7-89.7zM77.9 135.9H151c28.1 0 53.4 7.9 53.4 40.5 0 30.1-19.7 42.2-47.5 42.2h-79v-82.7zm83.3 233.7H77.9V272h84.9c34.3 0 56 14.3 56 50.6 0 35.8-25.9 47-57.6 47zm358.5-240.7H376V94h143.7v34.9zM576 305.2c0-75.9-44.4-139.2-124.9-139.2-78.2 0-131.3 58.8-131.3 135.8 0 79.9 50.3 134.7 131.3 134.7 61.3 0 101-27.6 120.1-86.3H509c-6.7 21.9-34.3 33.5-55.7 33.5-41.3 0-63-24.2-63-65.3h185.1c.3-4.2.6-8.7.6-13.2zM390.4 274c2.3-33.7 24.7-54.8 58.5-54.8 35.4 0 53.2 20.8 56.2 54.8H390.4z', fill='currentColor')
         ], className='icon icon-xxs me-2', role='img', viewBox='0 0 576 512', xmlns='http://www.w3.org/2000/svg', **{"aria-hidden": "true", "data-icon": "behance", "data-prefix": "fab"}),
@@ -112,23 +112,13 @@ PAYPAL_BTN = html.Button([
         ], className='icon icon-xxs', role='img', viewBox='0 0 384 512', xmlns='http://www.w3.org/2000/svg', **{"aria-hidden": "true", "data-icon": "paypal", "data-prefix": "fab"})
     ], className='btn btn-icon-only btn-paypal d-inline-flex align-items-center', type='button')
 
-FOLLOW_US_BTN = html.Button([
+BEHANCE_BTN = html.Button([
         Svg([
             Path(d='M232 237.2c31.8-15.2 48.4-38.2 48.4-74 0-70.6-52.6-87.8-113.3-87.8H0v354.4h171.8c64.4 0 124.9-30.9 124.9-102.9 0-44.5-21.1-77.4-64.7-89.7zM77.9 135.9H151c28.1 0 53.4 7.9 53.4 40.5 0 30.1-19.7 42.2-47.5 42.2h-79v-82.7zm83.3 233.7H77.9V272h84.9c34.3 0 56 14.3 56 50.6 0 35.8-25.9 47-57.6 47zm358.5-240.7H376V94h143.7v34.9zM576 305.2c0-75.9-44.4-139.2-124.9-139.2-78.2 0-131.3 58.8-131.3 135.8 0 79.9 50.3 134.7 131.3 134.7 61.3 0 101-27.6 120.1-86.3H509c-6.7 21.9-34.3 33.5-55.7 33.5-41.3 0-63-24.2-63-65.3h185.1c.3-4.2.6-8.7.6-13.2zM390.4 274c2.3-33.7 24.7-54.8 58.5-54.8 35.4 0 53.2 20.8 56.2 54.8H390.4z', fill='currentColor')
         ], className='icon icon-xxs', role='img', viewBox='0 0 576 512', xmlns='http://www.w3.org/2000/svg', **{"aria-hidden": "true", "data-icon": "behance", "data-prefix": "fab"})
     ], className='btn btn-icon-only btn-behance d-inline-flex align-items-center', type='button')
 
 
-
-def TTButtonX(children, className, title, type, placement):
-    # https://getbootstrap.com/docs/5.0/components/tooltips/
-    btn = html.Button(children, className=className, type=type,
-                        **{"data-bs-original-title": title,
-                        "data-bs-placement": placement,
-                        "data-bs-toggle": "tooltip"
-                        })
-
-    return btn
 
 def TTButton(children, className, title, type, placement):
     # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/
@@ -140,6 +130,19 @@ def TTButton(children, className, title, type, placement):
     children.append(dbc.Tooltip(title,  target=id, placement=placement))
 
     btn = html.Button(children, id=id, className=className, type=type)
+    return btn
+
+
+def PopoverButton(children, className, placement, content, trigger='legacy'):
+    # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/popover/
+    id=f"popover-target-{content.replace(' ', '-')}"
+
+    if not isinstance(children, list):
+        children = [children]
+
+    children.append(dbc.Popover(content,  body=True, target=id, placement=placement, trigger=trigger))
+
+    btn = html.Button(children, id=id, className=className, type='button')
     return btn
 
 WS = "\n"
@@ -269,6 +272,146 @@ def tooltip_buttons():
     ])
 
 
+def popover_buttons():
+    return  html.Div([
+
+        html.Div(html.H2("Popovers", className='h5'), className='mb-3 mt-5'),
+
+        PopoverButton("Popover on top", className='btn btn-secondary', placement="top", content="Top popover"),
+        WS,
+        PopoverButton("Popover on right", className='btn btn-secondary', placement="right", content="Right popover"),
+        WS,
+        PopoverButton("Popover on bottom", className='btn btn-secondary', placement="bottom", content="Bottom popover"),
+        WS,
+        PopoverButton("Popover on left", className='btn btn-secondary', placement="left", content="Left popover"),
+
+    ])
+
+def buttons_colours():
+    return  html.Div([
+        html.Div(html.H2("Choose your color", className='h5'), className='mb-3 mt-5'),
+
+        html.Div(html.Small("Main", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
+        WS,
+        html.Button("Primary", className='btn btn-primary', type='button'),
+        WS,
+        html.Button("Secondary", className='btn btn-secondary', type='button'),
+        WS,
+        html.Button("Tertiary", className='btn btn-tertiary', type='button'),
+        WS,
+        html.Button("Info", className='btn btn-info', type='button'),
+        WS,
+        html.Button("Success", className='btn btn-success', type='button'),
+        WS,
+        html.Button("Warning", className='btn btn-warning', type='button'),
+        WS,
+        html.Button("Danger", className='btn btn-danger', type='button'),
+        WS,
+        html.Button("Dark", className='btn btn-gray-800', type='button'),
+        WS,
+        html.Button("Gray", className='btn btn-gray-200', type='button'),
+        WS,
+        html.Button("Light", className='btn btn-gray-50', type='button'),
+        WS,
+        html.Button("White", className='btn btn-white', type='button'),
+
+    ])
+
+
+def button_outline():
+    return  html.Div([
+        html.Div(html.Small("Outline", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
+
+        WS,
+        html.Button("Primary", className='btn btn-outline-primary', type='button'),
+        WS,
+        html.Button("Secondary", className='btn btn-outline-secondary', type='button'),
+        WS,
+        html.Button("Tertiary", className='btn btn-outline-tertiary', type='button'),
+        WS,
+        html.Button("Info", className='btn btn-outline-info', type='button'),
+        WS,
+        html.Button("Success", className='btn btn-outline-success', type='button'),
+        WS,
+        html.Button("Danger", className='btn btn-outline-danger', type='button'),
+        WS,
+        html.Button("Dark", className='btn btn-outline-gray-800', type='button'),
+        WS,
+        html.Button("Gray", className='btn btn-outline-gray-500', type='button'),
+
+    ])
+
+
+def button_rounded_outline():
+    return  html.Div([
+
+        html.Div(html.Small("Round Outline", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
+
+        html.Button("Primary", className='btn btn-pill btn-outline-primary', type='button'),
+        WS,
+        html.Button("Secondary", className='btn btn-pill btn-outline-secondary', type='button'),
+        WS,
+        html.Button("Tertiary", className='btn btn-pill btn-outline-tertiary', type='button'),
+        WS,
+        html.Button("Info", className='btn btn-pill btn-outline-info', type='button'),
+        WS,
+        html.Button("Success", className='btn btn-pill btn-outline-success', type='button'),
+        WS,
+        html.Button("Danger", className='btn btn-pill btn-outline-danger', type='button'),
+        WS,
+        html.Button("Dark", className='btn btn-pill btn-outline-gray-800', type='button'),
+        WS,
+        html.Button("Gray", className='btn btn-pill btn-outline-gray-500', type='button'),
+    ])
+
+
+def button_links():
+    return  html.Div([
+        html.Div(html.Small("Links", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
+        html.A("Default", className='text-default me-3', href='#'),
+        WS,
+        html.A("Primary", className='text-primary me-3', href='#'),
+        WS,
+        html.A("Secondary", className='text-secondary me-3', href='#'),
+        WS,
+        html.A("Tertiary", className='text-tertiary me-3', href='#'),
+        WS,
+        html.A("Info", className='text-info me-3', href='#'),
+        WS,
+        html.A("Success", className='text-success me-3', href='#'),
+        WS,
+        html.A("Danger", className='text-danger me-3', href='#'),
+        WS,
+        html.A("Dark", className='text-dark me-3', href='#'),
+        WS,
+        html.A("Gray", className='text-gray', href='#'),
+    ])
+
+
+def social_buttons():
+    return  html.Div([
+            html.Div([
+                html.Div(html.H2("Social Buttons", className='h5 fw-bold'), className='mb-4 mt-5'),
+                FACEBOOK_TEXT_BTN, html.Br(),
+                TWITTER_TEXT_BTN, html.Br(),
+                YOUTUBE_TEXT_BTN, html.Br(),
+                GITHUB_TEXT_BTN, html.Br(),
+                PAYPAL_TEXT_BTN, html.Br(),
+                BEHANCE_TEXT_BTN
+            ], className='col-lg-4 col-md-6'),
+
+            html.Div([
+                html.Div(html.H2("Only Icon", className='h5'), className='mb-4 mt-5'),
+                FACEBOOK_BTN, html.Br(),
+                TWITTER_BTN, html.Br(),
+                YOUTUBE_BTN, html.Br(),
+                GITHUB_BTN, html.Br(),
+                PAYPAL_BTN, html.Br(),
+                BEHANCE_BTN
+                ], className='col-12 col-lg-6')
+        ], className='row')
+
+
 def buttons():
 
     return html.Div([
@@ -280,122 +423,13 @@ def buttons():
                     dropdown_buttons(),
                     link_buttons(),
                     tooltip_buttons(),
+                    popover_buttons(),
+                    buttons_colours(),
+                    button_outline(),
+                    button_rounded_outline(),
+                    button_links(),
+                    social_buttons()
 
-
-
-                    html.Div(html.H2("Popovers", className='h5'), className='mb-3 mt-5'),
-
-                    html.Button("Popover on top", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Top popover", "data-bs-original-title": "", "data-bs-placement": "top", "data-bs-toggle": "popover"}),
-                    WS,
-                    html.Button("Popover on right", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Right popover", "data-bs-original-title": "", "data-bs-placement": "right", "data-bs-toggle": "popover"}),
-                    WS,
-                    html.Button("Popover on bottom", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Bottom popover", "data-bs-original-title": "", "data-bs-placement": "bottom", "data-bs-toggle": "popover"}),
-                    WS,
-                    html.Button("Popover on left", className='btn btn-secondary', title='', type='button', **{"data-bs-container": "body", "data-bs-content": "Left popover", "data-bs-original-title": "", "data-bs-placement": "left", "data-bs-toggle": "popover"}),
-
-                    html.Div(html.H2("Choose your color", className='h5'), className='mb-3 mt-5'),
-
-                    html.Div(html.Small("Main", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
-                    WS,
-                    html.Button("Primary", className='btn btn-primary', type='button'),
-                    WS,
-                    html.Button("Secondary", className='btn btn-secondary', type='button'),
-                    WS,
-                    html.Button("Tertiary", className='btn btn-tertiary', type='button'),
-                    WS,
-                    html.Button("Info", className='btn btn-info', type='button'),
-                    WS,
-                    html.Button("Success", className='btn btn-success', type='button'),
-                    WS,
-                    html.Button("Warning", className='btn btn-warning', type='button'),
-                    WS,
-                    html.Button("Danger", className='btn btn-danger', type='button'),
-                    WS,
-                    html.Button("Dark", className='btn btn-gray-800', type='button'),
-                    WS,
-                    html.Button("Gray", className='btn btn-gray-200', type='button'),
-                    WS,
-                    html.Button("Light", className='btn btn-gray-50', type='button'),
-                    WS,
-                    html.Button("White", className='btn btn-white', type='button'),
-
-                    html.Div(html.Small("Outline", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
-
-                    WS,
-                    html.Button("Primary", className='btn btn-outline-primary', type='button'),
-                    WS,
-                    html.Button("Secondary", className='btn btn-outline-secondary', type='button'),
-                    WS,
-                    html.Button("Tertiary", className='btn btn-outline-tertiary', type='button'),
-                    WS,
-                    html.Button("Info", className='btn btn-outline-info', type='button'),
-                    WS,
-                    html.Button("Success", className='btn btn-outline-success', type='button'),
-                    WS,
-                    html.Button("Danger", className='btn btn-outline-danger', type='button'),
-                    WS,
-                    html.Button("Dark", className='btn btn-outline-gray-800', type='button'),
-                    WS,
-                    html.Button("Gray", className='btn btn-outline-gray-500', type='button'),
-
-                    html.Div(html.Small("Round Outline", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
-
-                    html.Button("Primary", className='btn btn-pill btn-outline-primary', type='button'),
-                    WS,
-                    html.Button("Secondary", className='btn btn-pill btn-outline-secondary', type='button'),
-                    WS,
-                    html.Button("Tertiary", className='btn btn-pill btn-outline-tertiary', type='button'),
-                    WS,
-                    html.Button("Info", className='btn btn-pill btn-outline-info', type='button'),
-                    WS,
-                    html.Button("Success", className='btn btn-pill btn-outline-success', type='button'),
-                    WS,
-                    html.Button("Danger", className='btn btn-pill btn-outline-danger', type='button'),
-                    WS,
-                    html.Button("Dark", className='btn btn-pill btn-outline-gray-800', type='button'),
-                    WS,
-                    html.Button("Gray", className='btn btn-pill btn-outline-gray-500', type='button'),
-
-                    html.Div(html.Small("Links", className='text-uppercase fw-bold'), className='mb-3 mt-5'),
-                    html.A("Default", className='text-default me-3', href='#'),
-                    WS,
-                    html.A("Primary", className='text-primary me-3', href='#'),
-                    WS,
-                    html.A("Secondary", className='text-secondary me-3', href='#'),
-                    WS,
-                    html.A("Tertiary", className='text-tertiary me-3', href='#'),
-                    WS,
-                    html.A("Info", className='text-info me-3', href='#'),
-                    WS,
-                    html.A("Success", className='text-success me-3', href='#'),
-                    WS,
-                    html.A("Danger", className='text-danger me-3', href='#'),
-                    WS,
-                    html.A("Dark", className='text-dark me-3', href='#'),
-                    WS,
-                    html.A("Gray", className='text-gray', href='#'),
-
-                    html.Div([
-                        html.Div([
-                            html.Div(html.H2("Social Buttons", className='h5 fw-bold'), className='mb-4 mt-5'),
-                            FACEBOOK_TEXT_BTN, html.Br(),
-                            TWITTER_TEXT_BTN, html.Br(),
-                            YOUTUBE_TEXT_BTN, html.Br(),
-                            GITHUB_TEXT_BTN, html.Br(),
-                            PAYPAL_TEXT_BTN, html.Br(),
-                            FOLLOW_US_TEXT_BTN
-                        ], className='col-lg-4 col-md-6'),
-
-                        html.Div([
-                            html.Div(html.H2("Only Icon", className='h5'), className='mb-4 mt-5'),
-                            FACEBOOK_BTN, html.Br(),
-                            TWITTER_BTN, html.Br(),
-                            YOUTUBE_BTN, html.Br(),
-                            GITHUB_BTN, html.Br(),
-                            PAYPAL_BTN, html.Br(),
-                            FOLLOW_US_BTN
-                            ], className='col-12 col-lg-6')
-                    ], className='row')
                 ], className='card-body')
             ], className='card border-light shadow-sm components-section')
         ], className='col-12 mb-4')
