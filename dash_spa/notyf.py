@@ -1,5 +1,7 @@
+from flask import current_app as app
+from dash_redux import ReduxStore
 from dash import dcc, html, clientside_callback
-from dash_spa import prefix, copy_factory
+from dash_spa import prefix, copy_factory, page_container_append
 
 # Note: requires notyf library. Make sure the following is included
 # in the dash app instantiation:
@@ -13,7 +15,7 @@ from dash_spa import prefix, copy_factory
 #     )
 #
 
-class Notyf(html.Div):
+class Notyf:
 
     Default = {
         'position': {
@@ -91,9 +93,7 @@ class Notyf(html.Div):
                 ]
             }
 
-
-    def __init__(self, id, message, type=None, template=None):
-        pid = prefix(id)
+    def __init__(self, message, type=None, template=None):
 
         if template == None:
             if type == 'error':
@@ -106,19 +106,26 @@ class Notyf(html.Div):
                 type = 'info'
                 template = Notyf.Default
 
-        notyf = {}
-        notyf.update(template)
+        self.notyf = {}
+        self.notyf.update(template)
 
-        notyf['_message'] = message
-        notyf['_type'] = type
+        self.notyf['_message'] = message
+        self.notyf['_type'] = type
 
-        store = dcc.Store(id=pid('store'), data=notyf, storage_type='memory')
-        dummy = html.Div(id=pid('dummy'))
+    def report(self):
+        return self.notyf
 
+class NotyfViewer(ReduxStore):
+
+    def __init__(self, id):
+        super().__init__(id=id, storage_type='memory', data={})
+
+        dummy = html.Div(id=f"{id}_dummy")
+        self.children.append(dummy)
 
         clientside_callback(
             """
-            function(timestamp, data) {
+            function(data) {
 
                 console.log('Notyf.clientside_callback %s', data)
 
@@ -131,15 +138,24 @@ class Notyf(html.Div):
                     message: _message
                 });
 
-                return ""
-
             }
             """,
             dummy.output.children,
-            store.input.modified_timestamp,
-            store.state.data,
+            self.store.input.data,
             prevent_initial_call=True
         )
 
-        super().__init__([store, dummy])
-        copy_factory(store, self)
+
+    def update(self, *_args, **_kwargs):
+
+        def callback_stub(self, *_args, **_kwargs):
+            pass
+
+        if app and app.got_first_request:
+            return callback_stub
+
+        return super().update(*_args, **_kwargs)
+
+
+SPA_NOTIFY = NotyfViewer(id='spa_notify')
+page_container_append(SPA_NOTIFY)

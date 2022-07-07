@@ -28,10 +28,10 @@ app = dash.Dash( __name__,
 """
 
 from flask import current_app as app
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from dash_redux import ReduxStore
 from dash import dcc, html, clientside_callback
-from dash_spa import prefix, copy_factory, page_container_append, callback
+from dash_spa import page_container_append
 
 
 @dataclass
@@ -78,12 +78,6 @@ class SweetAlert(ReduxStore):
             prevent_initial_call=True
         )
 
-
-        # @callback(dummy.output.children, self.store.input.data, prevent_initial_call=True)
-        # def _alert_cb(store):
-        #     return json.dumps(store)
-
-
     def update(self, *_args, **_kwargs):
 
         def callback_stub(self, *_args, **_kwargs):
@@ -94,15 +88,6 @@ class SweetAlert(ReduxStore):
 
         return super().update(*_args, **_kwargs)
 
-
-# btn2 = html.Button("Info alert", className='btn btn-info', id='infoAlert')
-# @SPA_ALERT.update(btn2.input.n_clicks, prevent_initial_call=True)
-# def btn_cb(clicks, store):
-#     if clicks:
-#         alert = Alert("Info alert", f'You clicked the button {clicks} times!', 'info')
-#         return alert.report()
-#     else:
-#         return NOUPDATE
 
 SPA_ALERT = SweetAlert(id='spa_alert')
 page_container_append(SPA_ALERT)

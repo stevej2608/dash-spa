@@ -12,11 +12,13 @@ def default_container(layout,  **kwargs):
 
     return html.Div([
         html.Br(),
-        html.Main([
-            html.Div(content, className="col-md-12")
-        ], className='content')
-
-    ])
+        html.Div(
+            html.Div([
+                html.Div(content, className="col-10"),
+                html.Div(className="col-2")
+            ], className='row'),
+            className='container')
+        ])
 
 
 spa.register_container(default_container)

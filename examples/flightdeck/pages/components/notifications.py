@@ -1,9 +1,9 @@
 from dash import html
 from dash_svg import Svg, Path
-from dash_spa import register_page,  callback
-from dash_spa.alert import SweetAlert
-from dash_spa.notyf import Notyf
-from dash_spa.logging import log
+from dash_spa import register_page,  callback, NOUPDATE
+from dash_spa.alert import Alert, SPA_ALERT
+from dash_spa.notyf import Notyf, SPA_NOTIFY
+
 from ..icons.hero import HOME_ICON
 from ..common import sideBar, mobileNavBar, topNavBar, footer
 
@@ -18,9 +18,9 @@ def breadCrumbs():
                 ], href='#')
             ], className='breadcrumb-item'),
             html.Li([
-                html.A("Notifications", href='#')
+                html.A("components", href='#')
             ], className='breadcrumb-item'),
-            html.Li("Buttons", className='breadcrumb-item active', **{"aria-current": "page"})
+            html.Li("Notifications", className='breadcrumb-item active', **{"aria-current": "page"})
         ], className='breadcrumb breadcrumb-dark breadcrumb-transparent')
     ], className='d-none d-md-inline-block', **{"aria-label": "breadcrumb"})
 
@@ -51,123 +51,104 @@ def DocumentationLink(href):
     ], className='card-header border-gray-100 d-flex justify-content-between align-items-center')
 
 
-def basic_alert(title, className, id):
-    alert = SweetAlert(id=id, title=title, text='You clicked the button!')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
+def alert_buttons():
 
-    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def alert_cb(time_stamp):
-        log.info('alert_cb %s', time_stamp)
-        return time_stamp
+    btn1 = html.Button("Basic alert", className='btn btn-gray-800', id='basicAlert1')
+    @SPA_ALERT.update(btn1.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            alert = Alert("Basic alert", f'You clicked the button {clicks} times!')
+            return alert.report()
+        else:
+            return NOUPDATE
 
-    return html.Div([alert, btn])
+    btn2 = html.Button("Info alert", className='btn btn-info', id='infoAlert')
+    @SPA_ALERT.update(btn2.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            alert = Alert("Info alert", f'You clicked the button {clicks} times!', 'info')
+            return alert.report()
+        else:
+            return NOUPDATE
 
+    btn3 = html.Button("Success alert", className='btn btn-success', id='successAlert')
+    @SPA_ALERT.update(btn3.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            alert = Alert("Success alert", 'Your work has been saved', showConfirmButton=True, timer=1500)
+            return alert.report()
+        else:
+            return NOUPDATE
 
-def info_alert(title, className, id):
-    alert = SweetAlert(id=id, title=title, text='You clicked the button!', icon='info')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
+    btn4 = html.Button("Warning alert", className='btn btn-warning', id='warningAlert')
+    @SPA_ALERT.update(btn4.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            alert = Alert("Warning alert", 'Something went wrong!', icon='warning')
+            return alert.report()
+        else:
+            return NOUPDATE
 
-    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def alert_cb(time_stamp):
-        log.info('alert_cb %s', time_stamp)
-        return time_stamp
+    btn5 = html.Button("Question", className='btn btn-gray-200', id='questionAlert')
+    @SPA_ALERT.update(btn5.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            alert = Alert('The Internet?', 'That thing is still around?', icon='question')
+            return alert.report()
+        else:
+            return NOUPDATE
 
-    return html.Div([alert, btn])
+    # Return page layout
 
+    WS = "\n"
 
-def success_alert(title, className, id):
-    alert = SweetAlert(id=id, title=title, text='Your work has been saved', show_confirm_button=True, timer=10000)
-    btn = html.Button(title, className=className, id=f'{id}_btn')
-
-    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def alert_cb(time_stamp):
-        log.info('alert_cb %s', time_stamp)
-        return time_stamp
-
-    return html.Div([alert, btn])
-
-
-def danger_alert(title, className, id):
-    alert = SweetAlert(id=id, title='Oops...', text='Something went wrong!', footer='<a href>Why do I have this issue?</a>', icon='error')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
-
-    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def alert_cb(time_stamp):
-        log.info('alert_cb %s', time_stamp)
-        return time_stamp
-
-    return html.Div([alert, btn])
-
-
-def warning_alert(title, className, id):
-    alert = SweetAlert(id=id, title=title, text='Something went wrong!', icon='warning')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
-
-    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def alert_cb(time_stamp):
-        log.info('alert_cb %s', time_stamp)
-        return time_stamp
-
-    return html.Div([alert, btn])
+    return [btn1, WS, btn2, WS, btn3, WS, btn4, WS, btn5]
 
 
-def question_alert(title, className, id):
-    alert = SweetAlert(id=id, title='The Internet?', text='That thing is still around?', icon='question')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
+def notyf_buttons():
 
-    @callback(alert.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def alert_cb(time_stamp):
-        log.info('alert_cb %s', time_stamp)
-        return time_stamp
+    btn1 = html.Button("Top left info", className='btn btn-info', id='notifyTopLeft')
+    @SPA_NOTIFY.update(btn1.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            notyf = Notyf(message='Send us <b>an email</b> to get support')
+            return notyf.report()
+        else:
+            return NOUPDATE
 
-    return html.Div([alert, btn])
+    btn2 = html.Button("Top right danger", className='btn btn-danger', id='notifyTopRight')
+    @SPA_NOTIFY.update(btn2.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            notyf = Notyf(message='This action is not allowed.', type='error')
+            return notyf.report()
+        else:
+            return NOUPDATE
 
+    btn3 = html.Button("Bottom left warning", className='btn btn-warning', id='notifyBottomLeft')
+    @SPA_NOTIFY.update(btn3.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            notyf = Notyf(message='This might be dangerous.', type='warning')
+            return notyf.report()
+        else:
+            return NOUPDATE
 
-def notyf_default(title, className, id):
-    notyf = Notyf(id=id, message='Send us <b>an email</b> to get support')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
+    btn4 = html.Button("Primary bottom right", className='btn btn-gray-800', id='notifyBottomRight')
+    @SPA_NOTIFY.update(btn4.input.n_clicks, prevent_initial_call=True)
+    def btn_cb(clicks, store):
+        if clicks:
+            notyf = Notyf(message='John Garreth: Are you ready for the presentation?', type='info')
+            return notyf.report()
+        else:
+            return NOUPDATE
 
-    @callback(notyf.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def notyf_cb(time_stamp):
-        log.info('notyf_cb %s', time_stamp)
-        return time_stamp
+    # Return page layout
 
-    return html.Div([notyf, btn])
+    WS = "\n"
 
-def notyf_error(title, className, id):
-    notyf = Notyf(id=id, message='This action is not allowed.', type='error')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
+    return html.Div([btn1, WS, btn2, WS, btn3, WS, btn4, WS, ])
 
-    @callback(notyf.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def notyf_cb(time_stamp):
-        log.info('notyf_cb %s', time_stamp)
-        return time_stamp
-
-    return html.Div([notyf, btn])
-
-
-def notyf_warning(title, className, id):
-    notyf = Notyf(id=id, message='This might be dangerous.', type='warning')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
-
-    @callback(notyf.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def notyf_cb(time_stamp):
-        log.info('notyf_cb %s', time_stamp)
-        return time_stamp
-
-    return html.Div([notyf, btn])
-
-
-def notyf_info(title, className, id):
-    notyf = Notyf(id=id, message='John Garreth: Are you ready for the presentation?', type='info')
-    btn = html.Button(title, className=className, id=f'{id}_btn')
-
-    @callback(notyf.output.modified_timestamp, btn.input.n_clicks_timestamp, prevent_initial_call=True)
-    def notyf_cb(time_stamp):
-        log.info('notyf_cb %s', time_stamp)
-        return time_stamp
-
-    return html.Div([notyf, btn])
 
 def notifications():
 
@@ -178,14 +159,7 @@ def notifications():
                         html.H2("Sweet alerts", className='h4 mb-0'),
                         DocumentationLink('https://themesberg.com/docs/volt-bootstrap-5-dashboard/plugins/sweet-alerts/')
                     ], className='card-header border-gray-100 d-flex justify-content-between align-items-center'),
-                    html.Div([
-                        basic_alert("Basic alert", className='btn btn-gray-800', id='basicAlert'),
-                        info_alert("Info alert", className='btn btn-info', id='infoAlert'),
-                        success_alert("Success alert", className='btn btn-success', id='successAlert'),
-                        danger_alert("Danger alert", className='btn btn-danger', id='dangerAlert'),
-                        warning_alert("Warning alert", className='btn btn-warning', id='warningAlert'),
-                        question_alert("Question", className='btn btn-gray-200', id='questionAlert')
-                    ], className='card-body')
+                    html.Div(alert_buttons(), className='card-body')
                 ], className='card border-0 shadow')
             ], className='col-12 col-lg-6'),
             html.Div([
@@ -194,12 +168,7 @@ def notifications():
                         html.H2("Notyf", className='h4 mb-0'),
                         DocumentationLink('https://themesberg.com/docs/volt-bootstrap-5-dashboard/plugins/notifications/')
                     ], className='card-header border-gray-100 d-flex justify-content-between align-items-center'),
-                    html.Div([
-                        notyf_default("Top left info", className='btn btn-info', id='notifyTopLeft'),
-                        notyf_error("Top right danger", className='btn btn-danger', id='notifyTopRight'),
-                        notyf_warning("Bottom left warning", className='btn btn-warning', id='notifyBottomLeft'),
-                        notyf_info("Primary bottom right", className='btn btn-gray-800', id='notifyBottomRight')
-                    ], className='card-body')
+                    html.Div(notyf_buttons(), className='card-body')
                 ], className='card border-0 shadow')
             ], className='col-12 col-lg-6')
         ], className='row')
