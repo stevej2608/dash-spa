@@ -52,6 +52,21 @@
       }
     },
 
+    {
+      "name": "1d. Python: examples.notifications.app",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.notifications.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
 
     {
       "name": "3. Python: Current Module",
