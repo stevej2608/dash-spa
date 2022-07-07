@@ -120,17 +120,11 @@ class NotyfViewer(ReduxStore):
     def __init__(self, id):
         super().__init__(id=id, storage_type='memory', data={})
 
-        dummy = html.Div(id=f"{id}_dummy")
-        self.children.append(dummy)
-
         clientside_callback(
             """
             function(data) {
 
-                console.log('Notyf.clientside_callback %s', data)
-
                 const {_message, _type, ...template} = data
-
                 const notyf = new Notyf(template);
 
                 notyf.open({
@@ -140,7 +134,7 @@ class NotyfViewer(ReduxStore):
 
             }
             """,
-            dummy.output.children,
+            self.store.output.modified_timestamp,
             self.store.input.data,
             prevent_initial_call=True
         )
