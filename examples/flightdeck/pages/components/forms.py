@@ -31,8 +31,8 @@ def banner():
         html.Div([
             html.A([
                 html.I(className='far fa-question-circle me-1'),
-                "Buttons Docs"
-            ], href='https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/buttons/', className='btn btn-outline-gray')
+                "Forms Docs"
+            ], href='https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/forms/', className='btn btn-outline-gray')
         ])
     ], className='d-flex justify-content-between w-100 flex-wrap')
 

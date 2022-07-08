@@ -64,6 +64,8 @@ def sideBar():
                     dropdownFolderEntry("Buttons", '/pages/components/buttons.html'),
                     dropdownFolderEntry("Notifications", '/pages/components/notifications.html'),
                     dropdownFolderEntry("Forms", '/pages/components/forms.html'),
+                    dropdownFolderEntry("Modals", '/pages/components/modals.html'),
+                    dropdownFolderEntry("Typography", '/pages/components/typography.html'),
                 ], "Components", CRATE_ICON),
 
 
