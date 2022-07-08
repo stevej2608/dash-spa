@@ -63,6 +63,7 @@ def sideBar():
                 DropdownFolderAIO([
                     dropdownFolderEntry("Buttons", '/pages/components/buttons.html'),
                     dropdownFolderEntry("Notifications", '/pages/components/notifications.html'),
+                    dropdownFolderEntry("Forms", '/pages/components/forms.html'),
                 ], "Components", CRATE_ICON),
 
 
