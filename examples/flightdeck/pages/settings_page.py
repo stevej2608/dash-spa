@@ -1,18 +1,13 @@
-import logging
 from dash import html
 from dash_spa import register_page
 
-from .common import sideBar, mobileNavBar, topNavBar, footer, buttonBar
+from .common import topNavBar, footer, buttonBar
 from .settings import userPhotoCard, profilePhotoCard, coverPhotoCard, generalInformationForm, alertsNotifications, reportsDropdown, newButton, calenderButton
 
 
 register_page(__name__, path="/pages/settings.html", title="Dash/Flightdeck - Settings")
 
-layout = html.Div([
-    mobileNavBar(),
-    sideBar(),
-
-    html.Main([
+layout = html.Main([
         topNavBar(),
         buttonBar(
             lhs=newButton(),
@@ -38,4 +33,4 @@ layout = html.Div([
         # settingsPopupButton(),
         footer()
     ], className='content')
-])
+

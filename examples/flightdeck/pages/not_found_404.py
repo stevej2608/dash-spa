@@ -2,7 +2,7 @@ from dash import html, dcc
 from dash_spa import register_page
 from .icons import ARROW_NARROW_LEFT_ICON
 
-register_page(__name__, path="/pages/404.html", title="Dash/Flightdeck - 404")
+register_page(__name__, path="/pages/404.html", title="Dash/Flightdeck - 404", container='full_page')
 
 layout = html.Div([
     # NOTICE: You can use the _analytics.html partial to include production code specific code & trackers

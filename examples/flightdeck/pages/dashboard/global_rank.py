@@ -44,8 +44,8 @@ def rankingPanel():
         html.Div([
             html.Div([
                 _categoryRank("Global Rank", EARTH_ICON, '#755', ICON1_ICON),
-                _categoryRankExt("Country Rank", COUNTRY_ICON, '#32', "United States", UP_ARROW_ICON, ICON1_ICON),
-                _categoryRankExt("Category Rank", CATEGORY_ICON, '#11', "Computers Electronics > Technology", UP_ARROW_ICON, ICON1_ICON),
+                _categoryRankExt("Country Rank", COUNTRY_ICON, '#32', "United States", UP_ARROW_ICON.XS, ICON1_ICON),
+                _categoryRankExt("Category Rank", CATEGORY_ICON, '#11', "Computers Electronics > Technology", UP_ARROW_ICON.XS, ICON1_ICON),
            ], className='card-body')
         ], className='card border-0 shadow')
     ], className='col-12 px-0 mb-4')

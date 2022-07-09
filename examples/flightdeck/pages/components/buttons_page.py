@@ -4,7 +4,7 @@ from dash import html
 import dash_bootstrap_components as dbc
 from dash_svg import Svg, Path
 from dash_spa import register_page, add_style
-from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, banner, topNavBar, footer
 from ..icons import FACEBOOK_ICON, TWITTER_ICON, YOUTUBE_ICON, GITHUB_ICON, PAYPAL_ICON, BEHANCE_ICON, DOWN_ARROW_ICON, DOWNLOAD_ICON
 
 register_page(__name__, path="/pages/components/buttons.html", title="Dash/Flightdeck - Buttons")
@@ -361,16 +361,12 @@ TOOLTIP_CSS_MIN = """
 
 add_style(TOOLTIP_CSS_MIN)
 
-layout = html.Div([
-        mobileNavBar(),
-        sideBar(),
-        html.Main([
-            topNavBar(),
-            html.Div([
-                breadCrumbs(["Components", "Buttons"]),
-                banner("Buttons", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/buttons/')
-            ], className='py-4'),
-            buttons(),
-            footer()
-        ], className='content')
-    ])
+layout =html.Main([
+        topNavBar(),
+        html.Div([
+            breadCrumbs(["Components", "Buttons"]),
+            banner("Buttons", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/buttons/')
+        ], className='py-4'),
+        buttons(),
+        footer()
+    ], className='content')

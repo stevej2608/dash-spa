@@ -3,7 +3,7 @@ from dash_spa import register_page
 from .common import background_img
 from .icons import LOCK_CLOSED_ICON, ARROW_NARROW_LEFT_ICON
 
-register_page(__name__, path="/pages/lock.html", title="Dash/Flightdeck - Lock")
+register_page(__name__, path="/pages/lock.html", title="Dash/Flightdeck - Lock", container='full_page')
 
 layout = html.Div([
     # NOTICE: You can use the _analytics.html partial to include production code specific code & trackers

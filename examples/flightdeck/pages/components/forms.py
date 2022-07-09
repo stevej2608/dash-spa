@@ -1,6 +1,6 @@
 from dash import html, dcc
 from dash_spa import register_page
-from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, banner, topNavBar, footer
 from ..icons import CALENDER_ICON, SEARCH_ICON, LOCK_CLOSED_ICON
 
 register_page(__name__, path="/pages/components/forms.html", title="Dash/Flightdeck - Forms")
@@ -200,16 +200,12 @@ def forms():
         ], className='col-12 mb-4')
     ], className='row')
 
-layout = html.Div([
-        mobileNavBar(),
-        sideBar(),
-        html.Main([
-            topNavBar(),
-            html.Div([
-                breadCrumbs(["Components", "Forms"]),
-                banner("Forms", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/forms/')
-            ], className='py-4'),
-            forms(),
-            footer()
-        ], className='content')
-    ])
+layout = html.Main([
+        topNavBar(),
+        html.Div([
+            breadCrumbs(["Components", "Forms"]),
+            banner("Forms", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/forms/')
+        ], className='py-4'),
+        forms(),
+        footer()
+    ], className='content')

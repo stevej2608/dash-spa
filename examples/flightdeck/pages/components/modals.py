@@ -1,7 +1,7 @@
 from dash import html, dcc
 from dash_svg import Svg, Path
 from dash_spa import register_page
-from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, banner, topNavBar, footer
 
 from ..icons import LOCK_CLOSED_ICON, INBOX_IN_ICON, MAIL_ICON, FACEBOOK_ICON, TWITTER_ICON, GITHUB_ICON
 
@@ -313,16 +313,12 @@ def modals():
         ], className='col-12 mb-4')
     ], className='row')
 
-layout = html.Div([
-        mobileNavBar(),
-        sideBar(),
-        html.Main([
-            topNavBar(),
-            html.Div([
-                breadCrumbs(["Components", "Modals"]),
-                banner("Modals", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/modals/')
-            ], className='py-4'),
-            modals(),
-            footer()
-        ], className='content')
-    ])
+layout = html.Main([
+        topNavBar(),
+        html.Div([
+            breadCrumbs(["Components", "Modals"]),
+            banner("Modals", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/modals/')
+        ], className='py-4'),
+        modals(),
+        footer()
+    ], className='content')

@@ -2,7 +2,7 @@ from dash import html, dcc
 from dash_svg import Svg, Path
 from dash_spa import register_page,  callback, NOUPDATE
 from ..icons.hero import HOME_ICON
-from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, banner, topNavBar, footer
 
 register_page(__name__, path="/pages/components/typography.html", title="Dash/Flightdeck - Typography")
 
@@ -178,16 +178,12 @@ def typography():
         ], className='row')
 
 
-layout = html.Div([
-        mobileNavBar(),
-        sideBar(),
-        html.Main([
-            topNavBar(),
-            html.Div([
-                breadCrumbs(['components', 'Typography']),
-                banner("Typography", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/foundation/typography/')
-            ], className='py-4'),
-            typography(),
-            footer()
-        ], className='content')
-    ])
+layout = html.Main([
+        topNavBar(),
+        html.Div([
+            breadCrumbs(['components', 'Typography']),
+            banner("Typography", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/foundation/typography/')
+        ], className='py-4'),
+        typography(),
+        footer()
+    ], className='content')

@@ -3,7 +3,7 @@ from dash_svg import Svg, Path
 from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE
 from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext
 
-from .common import breadCrumbs, sideBar, mobileNavBar, topNavBar, footer
+from .common import breadCrumbs, topNavBar, footer
 from .transactions import create_table, create_header
 
 
@@ -48,10 +48,7 @@ def layout(query_string: dict = None):
 
         return NOUPDATE
 
-    return html.Div([
-        mobileNavBar(),
-        sideBar(),
-        html.Main([
+    return html.Main([
             topNavBar(),
             html.Div([
                 html.Div([
@@ -76,4 +73,3 @@ def layout(query_string: dict = None):
             ], className='card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between'),
             footer()
         ], className='content')
-    ])

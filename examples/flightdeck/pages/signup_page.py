@@ -2,7 +2,7 @@ from dash import html, dcc
 from dash_spa import register_page
 from .icons import LOCK_CLOSED_ICON, MAIL_ICON, ARROW_NARROW_LEFT_ICON, FACEBOOK_ICON, TWITTER_ICON, GITHUB_ICON
 
-register_page(__name__, path="/pages/sign-up.html", title="Dash/Flightdeck - Sign up")
+register_page(__name__, path="/pages/sign-up.html", title="Dash/Flightdeck - Sign up", container='full_page')
 
 
 layout = html.Div([

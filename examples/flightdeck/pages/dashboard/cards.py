@@ -37,7 +37,7 @@ def customers():
             html.Div([
                 html.Div([
                     "Since last month",
-                    UP_ARROW_ICON,
+                    UP_ARROW_ICON.XS,
                     html.Span("22%", className='text-success fw-bolder')
                 ])
             ], className='small d-flex mt-1')
@@ -97,7 +97,7 @@ def bounceRate():
             html.Div([
                 html.Div([
                     "Since last month",
-                    UP_ARROW_ICON,
+                    UP_ARROW_ICON.XS,
                     html.Span("4%", className='text-success fw-bolder')
                 ])
             ], className='small d-flex mt-1')
