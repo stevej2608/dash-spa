@@ -5,45 +5,40 @@ import dash_bootstrap_components as dbc
 from dash_svg import Svg, Path
 from dash_spa import register_page, add_style
 from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
-from ..icons import FACEBOOK_ICON, TWITTER_ICON, YOUTUBE_ICON, GITHUB_ICON, PAYPAL_ICON, BEHANCE_ICON
+from ..icons import FACEBOOK_ICON, TWITTER_ICON, YOUTUBE_ICON, GITHUB_ICON, PAYPAL_ICON, BEHANCE_ICON, DOWN_ARROW_ICON
 
 register_page(__name__, path="/pages/components/buttons.html", title="Dash/Flightdeck - Buttons")
 
-def me2(icon):
-    icon = deepcopy(icon)
-    icon.className += " me-2"
-    return icon
-
-FACEBOOK_TEXT_BTN = html.Button([me2(FACEBOOK_ICON), "Login with Facebook"
+FACEBOOK_TEXT_BTN = html.Button([FACEBOOK_ICON.ME2, "Login with Facebook"
     ], className='btn btn-facebook d-inline-flex align-items-center', type='button')
 
-TWITTER_TEXT_BTN = html.Button([me2(TWITTER_ICON), "Share on Twitter"
+TWITTER_TEXT_BTN = html.Button([TWITTER_ICON.ME2, "Share on Twitter"
     ], className='btn btn-twitter text-white d-inline-flex align-items-center', type='button')
 
-YOUTUBE_TEXT_BTN = html.Button([me2(YOUTUBE_ICON), "Watch on YouTube"
+YOUTUBE_TEXT_BTN = html.Button([YOUTUBE_ICON.ME2, "Watch on YouTube"
     ], className='btn btn-youtube d-inline-flex align-items-center', type='button')
 
-GITHUB_TEXT_BTN = html.Button([me2(GITHUB_ICON), "Login with GitHub"
+GITHUB_TEXT_BTN = html.Button([GITHUB_ICON.ME2, "Login with GitHub"
     ], className='btn btn-github d-inline-flex align-items-center', type='button')
 
-PAYPAL_TEXT_BTN = html.Button([me2(PAYPAL_ICON), "Donate with PayPal"
+PAYPAL_TEXT_BTN = html.Button([PAYPAL_ICON.ME2, "Donate with PayPal"
     ], className='btn btn-paypal d-inline-flex align-items-center', type='button')
 
-BEHANCE_TEXT_BTN = html.Button([me2(BEHANCE_ICON), "Follow us"
+BEHANCE_TEXT_BTN = html.Button([BEHANCE_ICON.ME2, "Follow us"
     ], className='btn btn-behance d-inline-flex align-items-center', type='button')
 
 
-FACEBOOK_BTN = html.Button(FACEBOOK_ICON, className='btn btn-icon-only btn-facebook d-inline-flex align-items-center', type='button')
+FACEBOOK_BTN = html.Button(FACEBOOK_ICON.XXS, className='btn btn-icon-only btn-facebook d-inline-flex align-items-center', type='button')
 
-TWITTER_BTN = html.Button(TWITTER_ICON, className='btn btn-icon-only btn-twitter text-white d-inline-flex align-items-center', type='button')
+TWITTER_BTN = html.Button(TWITTER_ICON.XXS, className='btn btn-icon-only btn-twitter text-white d-inline-flex align-items-center', type='button')
 
-YOUTUBE_BTN = html.Button(YOUTUBE_ICON, className='btn btn-icon-only btn-youtube d-inline-flex align-items-center', type='button')
+YOUTUBE_BTN = html.Button(YOUTUBE_ICON.XXS, className='btn btn-icon-only btn-youtube d-inline-flex align-items-center', type='button')
 
-GITHUB_BTN = html.Button(GITHUB_ICON, className='btn btn-icon-only btn-github d-inline-flex align-items-center', type='button')
+GITHUB_BTN = html.Button(GITHUB_ICON.XXS, className='btn btn-icon-only btn-github d-inline-flex align-items-center', type='button')
 
-PAYPAL_BTN = html.Button(PAYPAL_ICON, className='btn btn-icon-only btn-paypal d-inline-flex align-items-center', type='button')
+PAYPAL_BTN = html.Button(PAYPAL_ICON.XXS, className='btn btn-icon-only btn-paypal d-inline-flex align-items-center', type='button')
 
-BEHANCE_BTN = html.Button(BEHANCE_ICON, className='btn btn-icon-only btn-behance d-inline-flex align-items-center', type='button')
+BEHANCE_BTN = html.Button(BEHANCE_ICON.XXS, className='btn btn-icon-only btn-behance d-inline-flex align-items-center', type='button')
 
 
 
@@ -135,9 +130,7 @@ def dropdown_buttons():
 
                 html.Button("Reference", className='btn btn-secondary', type='button'),
                 html.Button([
-                    Svg([
-                        Path(clipRule='evenodd', d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z', fillRule='evenodd')
-                    ], className='icon icon-xs', viewBox='0 0 20 20', xmlns='http://www.w3.org/2000/svg'),
+                    DOWN_ARROW_ICON.XS,
                     html.Span("Toggle Dropdown", className='visually-hidden')
                 ], className='btn btn-secondary dropdown-toggle dropdown-toggle-split', id='dropdownMenuReference', type='button', **{"aria-expanded": "false", "data-bs-reference": "parent", "data-bs-toggle": "dropdown"}),
                 html.Ul([

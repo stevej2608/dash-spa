@@ -125,9 +125,9 @@ def sign_in():
                                 html.Span("or login with", className='fw-normal')
                             ], className='mt-3 mb-4 text-center'),
                             html.Div([
-                                html.A(FACEBOOK_ICON, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
-                                html.A(TWITTER_ICON, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
-                                html.A(GITHUB_ICON, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
+                                html.A(FACEBOOK_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
+                                html.A(TWITTER_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
+                                html.A(GITHUB_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
                             ], className='d-flex justify-content-center my-4'),
                             html.Div([
                                 html.Span([
@@ -205,9 +205,9 @@ def sign_out():
                                 html.Span("or login with", className='fw-normal')
                             ], className='mt-3 mb-4 text-center'),
                             html.Div([
-                                html.A(FACEBOOK_ICON, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
-                                html.A(TWITTER_ICON, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
-                                html.A(GITHUB_ICON, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
+                                html.A(FACEBOOK_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
+                                html.A(TWITTER_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
+                                html.A(GITHUB_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
                             ], className='d-flex justify-content-center my-3'),
                             html.Div([
                                 html.Span([

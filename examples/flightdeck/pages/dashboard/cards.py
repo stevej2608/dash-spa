@@ -69,7 +69,7 @@ def revenue():
             html.Div([
                 html.Div([
                     "Since last month",
-                    DOWN_ARROW_ICON,
+                    DOWN_ARROW_ICON.XS,
                     html.Span("2%", className='text-danger fw-bolder')
                 ])
             ], className='small d-flex mt-1')
