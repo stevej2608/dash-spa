@@ -1,5 +1,5 @@
 from dash import html, dcc
-from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, CRATE_ICON, CREDIT_CARD_ICON
+from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, ARCHIVE_ICON, CREDIT_CARD_ICON
 
 from .mobile_nav import mobileSidebarHeader
 from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, dropdownFolderEntry
@@ -66,7 +66,7 @@ def sideBar():
                     dropdownFolderEntry("Forms", '/pages/components/forms.html'),
                     dropdownFolderEntry("Modals", '/pages/components/modals.html'),
                     dropdownFolderEntry("Typography", '/pages/components/typography.html'),
-                ], "Components", CRATE_ICON),
+                ], "Components", ARCHIVE_ICON),
 
 
                 # Bottom Item
