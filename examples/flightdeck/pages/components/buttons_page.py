@@ -3,23 +3,9 @@ from dash import html
 import dash_bootstrap_components as dbc
 from dash_svg import Svg, Path
 from dash_spa import register_page, add_style
-from ..common import breadCrumbs, sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
 
 register_page(__name__, path="/pages/components/buttons.html", title="Dash/Flightdeck - Buttons")
-
-def banner():
-    return html.Div([
-        html.Div([
-            html.H1("Buttons", className='h4'),
-            html.P("Dozens of reusable components built to provide buttons, alerts, popovers, and more.", className='mb-0')
-        ], className='mb-3 mb-lg-0'),
-        html.Div([
-            html.A([
-                html.I(className='far fa-question-circle me-1'),
-                "Buttons Docs"
-            ], href='https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/buttons/', className='btn btn-outline-gray')
-        ])
-    ], className='d-flex justify-content-between w-100 flex-wrap')
 
 
 FACEBOOK_TEXT_BTN = html.Button([
@@ -439,7 +425,7 @@ layout = html.Div([
             topNavBar(),
             html.Div([
                 breadCrumbs(["Components", "Buttons"]),
-                banner()
+                banner("Buttons", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/buttons/')
             ], className='py-4'),
             buttons(),
             footer()

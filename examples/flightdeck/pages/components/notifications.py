@@ -5,24 +5,9 @@ from dash_spa.alert import Alert, SPA_ALERT
 from dash_spa.notyf import Notyf, SPA_NOTIFY
 
 from ..icons.hero import HOME_ICON
-from ..common import breadCrumbs, sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
 
 register_page(__name__, path="/pages/components/notifications.html", title="Dash/Flightdeck - Notification")
-
-
-def banner():
-    return html.Div([
-        html.Div([
-            html.H1("Notifications", className='h4'),
-            html.P("Dozens of reusable components built to provide buttons, alerts, popovers, and more.", className='mb-0')
-        ], className='mb-3 mb-lg-0'),
-        html.Div([
-            html.A([
-                html.I(className='far fa-question-circle me-1'),
-                "Buttons Docs"
-            ], href='https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/buttons/', className='btn btn-outline-gray')
-        ])
-    ], className='d-flex justify-content-between w-100 flex-wrap')
 
 
 def DocumentationLink(href):
@@ -166,7 +151,7 @@ layout = html.Div([
             topNavBar(),
             html.Div([
                 breadCrumbs(['components', 'Notifications']),
-                banner()
+                banner("Notifications", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/buttons/')
             ], className='py-4'),
             notifications(),
             footer()

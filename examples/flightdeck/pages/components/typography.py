@@ -2,23 +2,9 @@ from dash import html, dcc
 from dash_svg import Svg, Path
 from dash_spa import register_page,  callback, NOUPDATE
 from ..icons.hero import HOME_ICON
-from ..common import breadCrumbs, sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
 
 register_page(__name__, path="/pages/components/typography.html", title="Dash/Flightdeck - Typography")
-
-def banner():
-    return html.Div([
-        html.Div([
-            html.H1("Typography", className='h4'),
-            html.P("Dozens of reusable components built to provide buttons, alerts, popovers, and more.", className='mb-0')
-        ], className='mb-3 mb-lg-0'),
-        html.Div([
-            html.A([
-                html.I(className='far fa-question-circle me-1'),
-                "Typography Docs"
-            ], href='https://themesberg.com/docs/volt-bootstrap-5-dashboard/foundation/typography/', className='btn btn-outline-gray')
-        ])
-    ], className='d-flex justify-content-between w-100 flex-wrap')
 
 def typography():
     return html.Div([
@@ -199,7 +185,7 @@ layout = html.Div([
             topNavBar(),
             html.Div([
                 breadCrumbs(['components', 'Typography']),
-                banner()
+                banner("Typography", 'https://themesberg.com/docs/volt-bootstrap-5-dashboard/foundation/typography/')
             ], className='py-4'),
             typography(),
             footer()
