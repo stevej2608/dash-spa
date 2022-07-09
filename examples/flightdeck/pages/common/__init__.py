@@ -5,3 +5,4 @@ from .button_bar import buttonBar
 from .settings_popup import settingsPopupButton, settingsPopupPanel
 from .footer import footer
 from .background_image import background_img
+from .bread_crumbs import breadCrumbs

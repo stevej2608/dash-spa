@@ -3,26 +3,9 @@ from dash import html
 import dash_bootstrap_components as dbc
 from dash_svg import Svg, Path
 from dash_spa import register_page, add_style
-from ..icons.hero import HOME_ICON
-from ..common import sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, sideBar, mobileNavBar, topNavBar, footer
 
 register_page(__name__, path="/pages/components/buttons.html", title="Dash/Flightdeck - Buttons")
-
-def breadCrumbs():
-    return  html.Nav([
-        html.Ol([
-            html.Li([
-                html.A([
-                    HOME_ICON
-                ], href='#')
-            ], className='breadcrumb-item'),
-            html.Li([
-                html.A("Components", href='#')
-            ], className='breadcrumb-item'),
-            html.Li("Buttons", className='breadcrumb-item active', **{"aria-current": "page"})
-        ], className='breadcrumb breadcrumb-dark breadcrumb-transparent')
-    ], className='d-none d-md-inline-block', **{"aria-label": "breadcrumb"})
-
 
 def banner():
     return html.Div([
@@ -455,7 +438,7 @@ layout = html.Div([
         html.Main([
             topNavBar(),
             html.Div([
-                breadCrumbs(),
+                breadCrumbs(["Components", "Buttons"]),
                 banner()
             ], className='py-4'),
             buttons(),

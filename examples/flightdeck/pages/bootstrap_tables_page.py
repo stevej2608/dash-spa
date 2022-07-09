@@ -2,28 +2,12 @@ import logging
 from dash import html
 from dash_spa import register_page
 
-from .common import sideBar, mobileNavBar, topNavBar, footer
+from .common import breadCrumbs, sideBar, mobileNavBar, topNavBar, footer
 from .icons.hero import QUESTION_MARK_ICON, HOME_ICON
 from .bootstrap_tables import table1, table2
 
 
 register_page(__name__, path="/pages/tables/boostrap-tables.html", title="Dash/Flightdeck - Bootstrap Tables")
-
-def breadCrumbs():
-    return  html.Nav([
-        html.Ol([
-            html.Li([
-                html.A([
-                    HOME_ICON
-                ], href='#')
-            ], className='breadcrumb-item'),
-            html.Li([
-                html.A("Tables", href='#')
-            ], className='breadcrumb-item'),
-            html.Li("Bootstrap tables", className='breadcrumb-item active', **{"aria-current": "page"})
-        ], className='breadcrumb breadcrumb-dark breadcrumb-transparent')
-    ], className='d-none d-md-inline-block', **{"aria-label": "breadcrumb"})
-
 
 def banner():
     return html.Div([
@@ -48,7 +32,7 @@ layout = html.Div([
         html.Main([
             topNavBar(),
             html.Div([
-                breadCrumbs(),
+                breadCrumbs(["Tables","Bootstrap tables"]),
                 banner()
             ], className='py-4'),
             table1(),

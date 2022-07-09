@@ -5,24 +5,9 @@ from dash_spa.alert import Alert, SPA_ALERT
 from dash_spa.notyf import Notyf, SPA_NOTIFY
 
 from ..icons.hero import HOME_ICON
-from ..common import sideBar, mobileNavBar, topNavBar, footer
+from ..common import breadCrumbs, sideBar, mobileNavBar, topNavBar, footer
 
 register_page(__name__, path="/pages/components/notifications.html", title="Dash/Flightdeck - Notification")
-
-def breadCrumbs():
-    return  html.Nav([
-        html.Ol([
-            html.Li([
-                html.A([
-                    HOME_ICON
-                ], href='#')
-            ], className='breadcrumb-item'),
-            html.Li([
-                html.A("components", href='#')
-            ], className='breadcrumb-item'),
-            html.Li("Notifications", className='breadcrumb-item active', **{"aria-current": "page"})
-        ], className='breadcrumb breadcrumb-dark breadcrumb-transparent')
-    ], className='d-none d-md-inline-block', **{"aria-label": "breadcrumb"})
 
 
 def banner():
@@ -180,7 +165,7 @@ layout = html.Div([
         html.Main([
             topNavBar(),
             html.Div([
-                breadCrumbs(),
+                breadCrumbs(['components', 'Notifications']),
                 banner()
             ], className='py-4'),
             notifications(),

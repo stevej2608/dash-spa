@@ -3,11 +3,12 @@ from dash_svg import Svg, Path
 from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE
 from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext
 
-from .common import sideBar, mobileNavBar, topNavBar, footer
-from .transactions import breadCrumbs, create_table, create_header
+from .common import breadCrumbs, sideBar, mobileNavBar, topNavBar, footer
+from .transactions import create_table, create_header
 
 
 page = register_page(__name__, path="/pages/transactions", title="Dash/Flightdeck - Transactions")
+
 
 def button(text):
     return html.Button(text, type='button', className='btn btn-sm btn-outline-gray-600')
@@ -54,7 +55,7 @@ def layout(query_string: dict = None):
             topNavBar(),
             html.Div([
                 html.Div([
-                    breadCrumbs(),
+                    breadCrumbs(["Volt", "Transactions"]),
                     html.H2("All Orders", className='h4'),
                     html.P("Your web analytics dashboard template.", className='mb-0')
                 ], className='d-block mb-4 mb-md-0'),
