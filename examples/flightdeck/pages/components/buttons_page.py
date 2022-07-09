@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 from dash_svg import Svg, Path
 from dash_spa import register_page, add_style
 from ..common import breadCrumbs, banner, sideBar, mobileNavBar, topNavBar, footer
-from ..icons import FACEBOOK_ICON, TWITTER_ICON, YOUTUBE_ICON, GITHUB_ICON, PAYPAL_ICON, BEHANCE_ICON, DOWN_ARROW_ICON
+from ..icons import FACEBOOK_ICON, TWITTER_ICON, YOUTUBE_ICON, GITHUB_ICON, PAYPAL_ICON, BEHANCE_ICON, DOWN_ARROW_ICON, DOWNLOAD_ICON
 
 register_page(__name__, path="/pages/components/buttons.html", title="Dash/Flightdeck - Buttons")
 
@@ -162,19 +162,11 @@ def dropdown_buttons():
 def link_buttons():
     return  html.Div([
         html.Div(html.H2("Link Buttons", className='h5'), className='mb-3 mt-5'),
-        html.A("Primary", className='text-default fw-bold me-3', href='#'),
-        html.A([
-            Svg([
-                Path(clipRule='evenodd', d='M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z', fillRule='evenodd')
-            ], className='icon icon-xxs me-2', viewBox='0 0 20 20', xmlns='http://www.w3.org/2000/svg'),
-            "Icon Left"
-        ], className='text-primary d-inline-flex align-items-center me-3', href='#'),
-        html.A([
-            "Icon Right",
-            Svg([
-                Path(clipRule='evenodd', d='M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z', fillRule='evenodd')
-            ], className='icon icon-xxs ms-2', viewBox='0 0 20 20', xmlns='http://www.w3.org/2000/svg')
-        ], className='text-primary d-inline-flex align-items-center', href='#'),
+        html.Div([
+            html.A("Primary", className='text-default fw-bold me-3', href='#'),
+            html.A([DOWNLOAD_ICON,"Icon Left"], className='text-primary d-inline-flex align-items-center me-3', href='#'),
+            html.A(["Icon Right", DOWNLOAD_ICON], className='text-primary d-inline-flex align-items-center', href='#'),
+        ], className="d-inline-flex align-items-center")
     ])
 
 
