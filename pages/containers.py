@@ -6,7 +6,7 @@ from dash_spa.logging import log
 from dash_spa_admin import AdminNavbarComponent
 from dash_spa.exceptions import InvalidAccess
 
-def default_container(layout,  **kwargs):
+def default_container(page, layout,  **kwargs):
     """Default page content container. All pages are wrapped by this content unless
     registered with container=None or container='some_other_container
 

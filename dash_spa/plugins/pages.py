@@ -1,9 +1,7 @@
-import re
 from dash import callback, Output, Input, html, dcc
 import dash
 import os
 import inspect
-import os
 import importlib
 from collections import OrderedDict
 import flask
@@ -399,7 +397,7 @@ def plug(app):
                     return (
                             container(layout, **path_variables, **query_parameters)
                             if path_variables
-                            else container(layout, **query_parameters)
+                            else container(page, layout, **query_parameters)
                         )
 
             # No container handle the page layout directly

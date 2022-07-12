@@ -1,8 +1,9 @@
 from dash import html, dcc
-from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, ARCHIVE_ICON, CREDIT_CARD_ICON
-
-from .mobile_nav import mobileSidebarHeader
+from dash_spa import prefix
 from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, dropdownFolderEntry
+
+from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, ARCHIVE_ICON, CREDIT_CARD_ICON
+from .mobile_nav import mobileSidebarHeader
 
 def _sidebarLink(text, icon, href, active="", hyperlink=False, target=""):
     Element = html.A if hyperlink else dcc.Link
@@ -27,7 +28,8 @@ def _sidebarButtonLink(text, icon, href, active=""):
     ], className=f'nav-item {active}')
 
 
-def sideBar():
+def sideBar(id):
+    pid = prefix(id)
     return html.Nav([
         html.Div([
 
@@ -44,7 +46,7 @@ def sideBar():
 
                 DropdownFolderAIO([
                     dropdownFolderEntry("Bootstrap Tables", '/pages/tables/boostrap-tables.html'),
-                ], "Tables", TABLE_ICON),
+                ], "Tables", TABLE_ICON, id=pid('tables')),
 
                 # Page examples drop down
 
@@ -56,7 +58,7 @@ def sideBar():
                     dropdownFolderEntry("Lock", '/pages/lock.html'),
                     dropdownFolderEntry("404 Not Found", '/pages/???.html'),
                     dropdownFolderEntry("500 Not Found", '/pages/500.html'),
-                ], "Page examples", PAGES_ICON),
+                ], "Page examples", PAGES_ICON, id=pid('examples')),
 
                 # Components  drop down
 
@@ -66,7 +68,7 @@ def sideBar():
                     dropdownFolderEntry("Forms", '/pages/components/forms.html'),
                     dropdownFolderEntry("Modals", '/pages/components/modals.html'),
                     dropdownFolderEntry("Typography", '/pages/components/typography.html'),
-                ], "Components", ARCHIVE_ICON),
+                ], "Components", ARCHIVE_ICON, id=pid('components')),
 
 
                 # Bottom Item

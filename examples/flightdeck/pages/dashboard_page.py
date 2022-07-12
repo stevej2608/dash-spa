@@ -9,7 +9,7 @@ register_page(__name__, path="/pages/dashboard.html", title="Dash/Flightdeck - D
 layout = html.Main([
         topNavBar(),
         buttonBar(
-            lhs=newTasksButton()
+            newTasksButton()
         ),
         html.Div([
             salesChart(),

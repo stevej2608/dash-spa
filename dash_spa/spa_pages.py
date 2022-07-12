@@ -1,4 +1,5 @@
 from typing import Callable, Union
+import re
 from urllib import parse
 from collections import OrderedDict
 import dash
@@ -245,6 +246,9 @@ def url_for(module:str, args: dict=None, attr=None) -> str:
 
     raise Exception(f"No page for module \"{module}\" defined")
 
+def page_id(page:dict):
+    id = re.sub('^.*?pages\.', '', page['module'])
+    return prefix(id.replace('.','_'))
 
 def register_container(module, name='default'):
     """Register a container wih the given name"""

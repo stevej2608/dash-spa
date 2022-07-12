@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import _process_class
+from dataclasses import _process_class, dataclass
 from diskcache import Cache
 import json
 from flask import request
@@ -140,7 +140,7 @@ class ServerSessionCache:
 class SessionContext(ContextState):
     pass
 
-def session_context(ctx: SessionContext):
+def session_context(ctx: SessionContext, id=None):
     """Get the context for the given SessionContext template
 
     Args:
@@ -154,8 +154,10 @@ def session_context(ctx: SessionContext):
 
     # Get the ctx context store for this session, create it if needed
 
-    store = cache.get(ctx.__session_data_id__)
-    log.info('read  cache[%s] %s', ctx.__session_data_id__, store)
+    id = id if id is not None else ctx.__session_data_id__
+
+    store = cache.get(id)
+    log.info('read  cache[%s] %s', id, store)
 
     # Create the requested context and map the session store. Use
     # the context.update_listener() capability to force an update
