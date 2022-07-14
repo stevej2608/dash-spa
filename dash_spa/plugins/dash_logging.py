@@ -41,11 +41,17 @@ class DashLogger:
 
     def __init__(self, app, level:DEBUG_LEVEL = DEBUG_LEVEL.NONE):
         self.level = level
+        self.transferred = 0
 
         @app.server.before_request
         def before_request_cb():
             self.count += 1
             try:
+
+                if request.path.endswith('.html'):
+                    self.transferred = 0
+                    self.count = 0
+
                 if request.path in ['/_dash-update-component']:
                     self.dash_request_logger(request)
                 else:
@@ -58,6 +64,10 @@ class DashLogger:
             try:
                 if request.path in ['/_dash-update-component']:
                     self.dash_response_logger(response)
+                else:
+                    count = self.count
+                    self.transferred += response.content_length
+                    printf('%03d res %s (%s bytes/%s total)\n', count, request.path, response.content_length, self.transferred)
             except:
                 printf('Logger exception %s\n', request.path)
 
