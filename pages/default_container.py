@@ -28,7 +28,7 @@ CSS = """
     }
 """
 
-def default_container(layout,  **kwargs):
+def default_container(pages, layout,  **kwargs):
     """Default page content container. All pages are wrapped by this content unless
     registered with container=None or container='some_other_container
 
