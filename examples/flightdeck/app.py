@@ -24,7 +24,8 @@ def create_dash():
 
     plugins=[
         spa.spa_session,
-        spa.spa_pages
+        spa.spa_pages,
+        spa.dash_logging
         ]
 
     app = dash.Dash( __name__,

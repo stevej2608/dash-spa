@@ -41,7 +41,7 @@ def layout_transactions_table(query_string: dict = None):
 
     # Update the browser address bar whenever the table state changes
 
-    @SPA_LOCATION.update(TableContext.store.input.data, prevent_initial_call=True)
+    @SPA_LOCATION=True)
     def update_location(state, location):
         if state:
             try:

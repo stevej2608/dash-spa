@@ -1,11 +1,11 @@
 from dash import html
-from dash_svg import Svg, Path
 from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE
 from dash_spa.logging import log
 from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext
 
 from .common import breadCrumbs, topNavBar, footer
 from .transactions import create_table, create_header
+from .icons import PLUS_ICON
 
 
 page = register_page(__name__, path="/pages/transactions", title="Dash/Flightdeck - Transactions")
@@ -15,12 +15,7 @@ def button(text):
     return html.Button(text, type='button', className='btn btn-sm btn-outline-gray-600')
 
 def newPlanButton():
-    return html.A([
-        Svg([
-            Path(strokeLinecap='round', strokeLinejoin='round', strokeWidth='2', d='M12 6v6m0 0v6m0-6h6m-6 0H6')
-        ], className='icon icon-xs me-2', fill='none', stroke='currentColor', viewBox='0 0 24 24', xmlns='http://www.w3.org/2000/svg'),
-        "New Plan"
-    ], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
+    return html.A([PLUS_ICON, "New Plan"], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
 
 
 @TableContext.Provider(id='transactions_table')
@@ -41,7 +36,7 @@ def layout_transactions_table(**_kwargs):
 
     # Update the browser address bar whenever the table state changes
 
-    @SPA_LOCATION.update(TableContext.store.input.data, prevent_initial_call=True)
+    @SPA_LOCATION.update(TableContext.store.input.data)
     def update_location(state, location):
         if state:
             try:

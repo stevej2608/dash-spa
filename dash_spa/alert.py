@@ -4,7 +4,7 @@ Usage:
 
 ```
     btn1 = html.Button("Basic alert", className='btn btn-gray-800', id='basicAlert1')
-    @SPA_ALERT.update(btn1.input.n_clicks, prevent_initial_call=True)
+    @SPA_ALERT.update(btn1.input.n_clicks)
     def btn_cb(clicks, store):
         if clicks:
             alert = Alert("Basic alert", f'You clicked the button {clicks} times!')

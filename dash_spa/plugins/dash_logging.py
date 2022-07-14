@@ -112,11 +112,15 @@ class DashLogger:
 
     def dash_response_logger(self, response):
         count = self.count
+        self.transferred += response.content_length
+
         if self.level > DEBUG_LEVEL.NONE:
             element_list = self.formatter.outputs2str(response)
-            printf('%03d res %s\n', count, element_list)
+            printf('%03d res %s', count, element_list)
         else:
-            printf('%03d res %d bytes\n', count, len(response.data))
+            printf('%03d res', count)
+
+        printf(' (%s bytes/%s total)\n', response.content_length, self.transferred)
 
 class DebugFormatter:
 
