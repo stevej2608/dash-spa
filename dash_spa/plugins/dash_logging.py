@@ -48,9 +48,13 @@ class DashLogger:
             self.count += 1
             try:
 
-                if request.path.endswith('.html'):
+                dt = self.get_dt()
+                if dt > 1000:
+                    printf('[*** %sms ***]\n', dt)
                     self.transferred = 0
-                    self.count = 0
+                    self.count = 1
+                else:
+                    printf('\n')
 
                 if request.path in ['/_dash-update-component']:
                     self.dash_request_logger(request)
@@ -86,13 +90,6 @@ class DashLogger:
     def dash_request_logger(self, request):
         body = request.get_json()
         self.formatter = DebugFormatter(body)
-
-        dt = self.get_dt()
-
-        if dt > 1000:
-            printf('[*** %sms ***]\n', dt)
-        else:
-            printf('\n')
 
         # Create input report
 

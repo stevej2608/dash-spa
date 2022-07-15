@@ -1,11 +1,21 @@
 from dataclasses import dataclass
+from locale import strcoll
 from dash import html, dcc
 from dash_spa import prefix, callback, session_context, SessionContext, session_data
 from dash_spa.logging import log
 
 from .icons import ARROW_ICON
 
-def dropdownFolderEntry(text, href):
+def dropdownFolderEntry(text:str, href:str) -> html.Li:
+    """Drop-down folder entry (decorated dcc.Link)
+
+    Args:
+        text (str): The link text
+        href (str): the link href
+
+    Returns:
+        _type_: _description_
+    """
     return html.Li([
         dcc.Link([
             html.Span(text, className='sidebar-text')

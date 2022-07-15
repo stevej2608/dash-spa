@@ -5,16 +5,21 @@ from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, dropdownF
 from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, ARCHIVE_ICON, CREDIT_CARD_ICON
 from .mobile_nav import mobileSidebarHeader
 
+
 def _sidebarLink(text, icon, href, active="", hyperlink=False, target=""):
     Element = html.A if hyperlink else dcc.Link
-    return  html.Li([
-        Element([
+    el = Element([
             html.Span([
                 icon
             ], className='sidebar-icon'),
             html.Span(text, className='mt-1 ms-1 sidebar-text')
-        ], href=href, className='nav-link', target=target)
-    ], className=f'nav-item {active}')
+        ], href=href, className='nav-link')
+
+    if target:
+        el.target = target
+
+    return  html.Li(el, className=f'nav-item {active}')
+
 
 
 def _sidebarButtonLink(text, icon, href, active=""):
@@ -38,9 +43,9 @@ def sideBar(id):
             # Sidebar List of entries
 
             html.Ul([
-                _sidebarLink("Volt Overview", LIGHTENING_ICON, 'https://demo.themesberg.com/volt/pages/dashboard/dashboard', hyperlink=True, target="_blank"),
+                _sidebarLink("Volt Overview", LIGHTENING_ICON, 'https://demo.themesberg.com/volt/index.html', target="_blank"),
                 _sidebarLink("Dashboard", CHART_PIE_ICON, '/pages/dashboard'),
-                _sidebarLink("Tansactions", CREDIT_CARD_ICON, '/pages/transactions'),
+                _sidebarLink("Transactions", CREDIT_CARD_ICON, '/pages/transactions'),
                 _sidebarLink("Settings", VIEW_GRID_ICON, '/pages/settings'),
                 _sidebarLink("Calendar", CALENDER_ICON, 'https://demo.themesberg.com/volt-pro/pages/calendar'),
 
