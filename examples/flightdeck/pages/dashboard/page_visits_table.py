@@ -9,7 +9,7 @@ from dash_spa.components.table import TableAIO, TableContext
 data = OrderedDict(
  [
 
-    ('Page name',['/demo/admin/index.html', '/demo/admin/forms.html', '/demo/admin/util.html', '/demo/admin/validation.html', '/demo/admin/modals.html']),
+    ('Page name',['/demo/admin/index', '/demo/admin/forms', '/demo/admin/util', '/demo/admin/validation', '/demo/admin/modals']),
     ('Page Views',['3,225', '2,987', '2,844', '2,050', '1,483']),
     ('Page Value',['$20', '0', '294', '$147', '$19']),
     ('Bounce rate',['42,55%', '43,24%', '32,35%', '50,87%', '26,12%']),

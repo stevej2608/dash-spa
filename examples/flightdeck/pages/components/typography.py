@@ -4,7 +4,7 @@ from dash_spa import register_page,  callback, NOUPDATE
 from ..icons.hero import HOME_ICON
 from ..common import breadCrumbs, banner, topNavBar, footer
 
-register_page(__name__, path="/pages/components/typography.html", title="Dash/Flightdeck - Typography")
+register_page(__name__, path="/pages/components/typography", title="Dash/Flightdeck - Typography")
 
 def typography():
     return html.Div([

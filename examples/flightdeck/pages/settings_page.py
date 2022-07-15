@@ -5,7 +5,7 @@ from .common import topNavBar, footer, buttonBar
 from .settings import userPhotoCard, profilePhotoCard, coverPhotoCard, generalInformationForm, alertsNotifications, reportsDropdown, newButton, calenderButton
 
 
-register_page(__name__, path="/pages/settings.html", title="Dash/Flightdeck - Settings")
+register_page(__name__, path="/pages/settings", title="Dash/Flightdeck - Settings")
 
 layout = html.Main([
         topNavBar(),

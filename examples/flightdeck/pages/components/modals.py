@@ -17,7 +17,7 @@ MAIL_OPEN_ICON = Svg([
         Path(fillRule='evenodd', d='M2.94 6.412A2 2 0 002 8.108V16a2 2 0 002 2h12a2 2 0 002-2V8.108a2 2 0 00-.94-1.696l-6-3.75a2 2 0 00-2.12 0l-6 3.75zm2.615 2.423a1 1 0 10-1.11 1.664l5 3.333a1 1 0 001.11 0l5-3.333a1 1 0 00-1.11-1.664L10 11.798 5.555 8.835z', clipRule='evenodd')
     ], className='icon icon-xl text-gray-200 mb-4', fill='currentColor', viewBox='0 0 20 20', xmlns='http://www.w3.org/2000/svg')
 
-register_page(__name__, path="/pages/components/modals.html", title="Dash/Flightdeck - Modals")
+register_page(__name__, path="/pages/components/modals", title="Dash/Flightdeck - Modals")
 
 def default():
     return  html.Div([
@@ -113,7 +113,7 @@ def sign_in():
                                             html.Label("Remember me", className='form-check-label mb-0', htmlFor='remember')
                                         ], className='form-check'),
                                         html.Div([
-                                            html.A("Lost password?", href='./forgot-password.html', className='small text-right')
+                                            html.A("Lost password?", href='./forgot-password', className='small text-right')
                                         ])
                                     ], className='d-flex justify-content-between align-items-top mb-4')
                                 ], className='form-group'),
@@ -132,7 +132,7 @@ def sign_in():
                             html.Div([
                                 html.Span([
                                     "Not registered?",
-                                    html.A("Create account", href='./sign-up.html', className='fw-bold')
+                                    html.A("Create account", href='./sign-up', className='fw-bold')
                                 ], className='fw-normal')
                             ], className='d-flex justify-content-center align-items-center mt-4')
                         ], className='card p-3 p-lg-4')
@@ -212,7 +212,7 @@ def sign_out():
                             html.Div([
                                 html.Span([
                                     "Already have an account?",
-                                    html.A("Login here", href='./sign-in.html', className='fw-bold')
+                                    html.A("Login here", href='./sign-in', className='fw-bold')
                                 ], className='fw-normal')
                             ], className='d-flex justify-content-center align-items-center mt-4')
                         ], className='card p-3 p-lg-4')

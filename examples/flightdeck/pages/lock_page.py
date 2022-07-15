@@ -3,7 +3,7 @@ from dash_spa import register_page
 from .common import background_img
 from .icons import LOCK_CLOSED_ICON, ARROW_NARROW_LEFT_ICON
 
-register_page(__name__, path="/pages/lock.html", title="Dash/Flightdeck - Lock", container='full_page')
+register_page(__name__, path="/pages/lock", title="Dash/Flightdeck - Lock", container='full_page')
 
 layout = html.Div([
     # NOTICE: You can use the _analytics.html partial to include production code specific code & trackers
@@ -12,7 +12,7 @@ layout = html.Div([
         html.Section([
             html.Div([
                 dcc.Link([ARROW_NARROW_LEFT_ICON, "Back to homepage"
-                ], href='dashboard.html', className='d-flex align-items-center justify-content-center mb-4'),
+                ], href='dashboard', className='d-flex align-items-center justify-content-center mb-4'),
                 html.Div([
                     html.Div([
                         html.Div([

@@ -3,7 +3,7 @@ from dash_spa import register_page
 from ..common import breadCrumbs, banner, topNavBar, footer
 from ..icons import CALENDER_ICON, SEARCH_ICON, LOCK_CLOSED_ICON
 
-register_page(__name__, path="/pages/components/forms.html", title="Dash/Flightdeck - Forms")
+register_page(__name__, path="/pages/components/forms", title="Dash/Flightdeck - Forms")
 
 def email():
     return  html.Div([

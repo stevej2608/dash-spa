@@ -2,7 +2,7 @@ from dash import html, dcc
 from dash_spa import register_page
 from .icons import LOCK_CLOSED_ICON, MAIL_ICON, ARROW_NARROW_LEFT_ICON, FACEBOOK_ICON, TWITTER_ICON, GITHUB_ICON
 
-register_page(__name__, path="/pages/sign-up.html", title="Dash/Flightdeck - Sign up", container='full_page')
+register_page(__name__, path="/pages/sign-up", title="Dash/Flightdeck - Sign up", container='full_page')
 
 
 layout = html.Div([
@@ -12,7 +12,7 @@ layout = html.Div([
         html.Section([
             html.Div([
                 html.P([
-                    dcc.Link([ARROW_NARROW_LEFT_ICON,"Back to homepage"], href='dashboard.html', className='d-flex align-items-center justify-content-center')
+                    dcc.Link([ARROW_NARROW_LEFT_ICON,"Back to homepage"], href='dashboard', className='d-flex align-items-center justify-content-center')
                 ], className='text-center'),
                 html.Div([
                     html.Div([
@@ -74,7 +74,7 @@ layout = html.Div([
                             html.Div([
                                 html.Span([
                                     "Already have an account?",
-                                    dcc.Link("Login here", href='./sign-in.html', className='fw-bold')
+                                    dcc.Link("Login here", href='./sign-in', className='fw-bold')
                                 ], className='fw-normal')
                             ], className='d-flex justify-content-center align-items-center mt-4')
                         ], className='bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500')

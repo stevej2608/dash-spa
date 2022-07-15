@@ -7,7 +7,7 @@ from dash_spa.notyf import Notyf, SPA_NOTIFY
 from ..icons.hero import HOME_ICON
 from ..common import breadCrumbs, banner, topNavBar, footer
 
-register_page(__name__, path="/pages/components/notifications.html", title="Dash/Flightdeck - Notification")
+register_page(__name__, path="/pages/components/notifications", title="Dash/Flightdeck - Notification")
 
 
 def DocumentationLink(href):

@@ -3,7 +3,7 @@ from dash_spa import register_page
 from .common import background_img
 from .icons import LOCK_CLOSED_ICON, MAIL_ICON, FACEBOOK_ICON, TWITTER_ICON, GITHUB_ICON, ARROW_NARROW_LEFT_ICON
 
-register_page(__name__, path="/pages/sign-in.html", title="Dash/Flightdeck - Sign in", container='full_page')
+register_page(__name__, path="/pages/sign-in", title="Dash/Flightdeck - Sign in", container='full_page')
 
 layout = html.Div([
     # NOTICE: You can use the _analytics.html partial to include production code specific code & trackers
@@ -13,7 +13,7 @@ layout = html.Div([
             html.Div([
                 html.P([
                     dcc.Link([ARROW_NARROW_LEFT_ICON, "Back to homepage"
-                    ], href='dashboard.html', className='d-flex align-items-center justify-content-center')
+                    ], href='dashboard', className='d-flex align-items-center justify-content-center')
                 ], className='text-center'),
                 html.Div([
                     html.Div([
@@ -47,7 +47,7 @@ layout = html.Div([
                                             html.Label("Remember me", className='form-check-label mb-0', htmlFor='remember')
                                         ], className='form-check'),
                                         html.Div([
-                                            dcc.Link("Lost password?", href='./forgot-password.html', className='small text-right')
+                                            dcc.Link("Lost password?", href='./forgot-password', className='small text-right')
                                         ])
                                     ], className='d-flex justify-content-between align-items-top mb-4')
                                 ], className='form-group'),
@@ -66,7 +66,7 @@ layout = html.Div([
                             html.Div([
                                 html.Span([
                                     "Not registered?",
-                                    dcc.Link("Create account", href='./sign-up.html', className='fw-bold')
+                                    dcc.Link("Create account", href='./sign-up', className='fw-bold')
                                 ], className='fw-normal')
                             ], className='d-flex justify-content-center align-items-center mt-4')
                         ], className='bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500')

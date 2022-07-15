@@ -5,7 +5,7 @@ from .common import breadCrumbs, banner, topNavBar, footer
 from .bootstrap_tables import table1, table2
 
 
-register_page(__name__, path="/pages/tables/boostrap-tables.html", title="Dash/Flightdeck - Bootstrap Tables")
+register_page(__name__, path="/pages/tables/boostrap-tables", title="Dash/Flightdeck - Bootstrap Tables")
 
 layout = html.Main([
         topNavBar(),

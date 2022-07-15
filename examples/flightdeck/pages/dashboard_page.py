@@ -4,7 +4,7 @@ from dash_spa import register_page
 from .common import topNavBar, footer, buttonBar
 from .dashboard import salesChart, customers, revenue, bounceRate, pageVisitsTable, teamMembers, progressTrack, totalOrdersBarChart, rankingPanel, acquisition, newTasksButton
 
-register_page(__name__, path="/pages/dashboard.html", title="Dash/Flightdeck - Dashboard")
+register_page(__name__, path="/pages/dashboard", title="Dash/Flightdeck - Dashboard")
 
 layout = html.Main([
         topNavBar(),

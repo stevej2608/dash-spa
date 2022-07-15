@@ -64,4 +64,4 @@ def create_app(dash_factory) -> Dash:
 
 if __name__ == "__main__":
     app = create_app(create_dash)
-    serve_app(app, debug=False, path="/pages/dashboard.html")
+    serve_app(app, debug=False, path="/pages/dashboard")

@@ -8,7 +8,7 @@ def mobileNavBar():
         html.A([
             html.Img(className='navbar-brand-dark', src='../../assets/img/brand/light.svg', alt='Volt logo'),
             html.Img(className='navbar-brand-light', src='../../assets/img/brand/dark.svg', alt='Volt logo')
-        ], className='navbar-brand me-lg-5', href='../../index.html'),
+        ], className='navbar-brand me-lg-5', href='../../index'),
         html.Div([
             html.Button([
 
@@ -31,7 +31,7 @@ def mobileSidebarHeader():
                 html.A([
                     html.Img(className='icon icon-sm', src='../../assets/img/icons/sign_out.svg', height='20', width='20', alt='upgrade'),
                     "Sign Out"
-                ], href='../../pages/examples/sign-in.html', className='btn btn-secondary btn-sm d-inline-flex align-items-center')
+                ], href='../../pages/examples/sign-in', className='btn btn-secondary btn-sm d-inline-flex align-items-center')
             ], className='d-block')
         ], className='d-flex align-items-center'),
 

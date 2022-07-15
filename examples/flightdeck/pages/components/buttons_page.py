@@ -7,7 +7,7 @@ from dash_spa import register_page, add_style
 from ..common import breadCrumbs, banner, topNavBar, footer
 from ..icons import FACEBOOK_ICON, TWITTER_ICON, YOUTUBE_ICON, GITHUB_ICON, PAYPAL_ICON, BEHANCE_ICON, DOWN_ARROW_ICON, DOWNLOAD_ICON
 
-register_page(__name__, path="/pages/components/buttons.html", title="Dash/Flightdeck - Buttons")
+register_page(__name__, path="/pages/components/buttons", title="Dash/Flightdeck - Buttons")
 
 FACEBOOK_TEXT_BTN = html.Button([FACEBOOK_ICON.ME2, "Login with Facebook"
     ], className='btn btn-facebook d-inline-flex align-items-center', type='button')
