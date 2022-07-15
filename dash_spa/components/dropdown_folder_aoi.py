@@ -42,7 +42,7 @@ class DropdownFolderAIO(html.Div):
         pid = prefix(id)
         state = session_context(DropdownFolderContext, id=pid('state'))
 
-        log.info('DropdownFolderAIO id=%s, state %s', id, state.className)
+        # log.info('DropdownFolderAIO id=%s, state %s', id, state.className)
 
         button = html.Span([
             html.Span([

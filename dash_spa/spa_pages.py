@@ -31,7 +31,7 @@ def page_container_append(component: Component):
         return "NO ID"
 
     id = get_id(component)
-    log.info('page_container_append id=%s', id)
+    # log.info('page_container_append id=%s', id)
     page_container.children.append(component)
 
 
@@ -255,19 +255,3 @@ def register_container(module, name='default'):
     dash.register_container(module, name)
 
 dash.internal_stylesheets = []
-
-# @server.route('/internal/<path:path>')
-# def send_static(path):
-#     if f"/{path}" in dash.internal_stylesheets:
-#         return flask.send_from_directory('/', path)
-
-# def add_stylesheets(files):
-#     files = [files] if isinstance(files, str) else files
-#     path = inspect.stack()[1].filename
-#     dir_path = os.path.dirname(path)
-#     for file in files:
-#         css_file = os.path.join(dir_path, file)
-#         if not os.path.exists(css_file):
-#             raise FileNotFoundError(f'Unable to access css file {css_file}')
-#         if css_file not in dash.internal_stylesheets:
-#             dash.internal_stylesheets.append(css_file)

@@ -173,7 +173,7 @@ class Context:
                 cache = ServerSessionCache()
                 state = cache.get(self.id)
 
-                log.info('Restore state from session store[%s] %s', self.id, state)
+                # log.info('Restore state from session store[%s] %s', self.id, state)
 
                 self._context_state.set_shadow_store(state)
 

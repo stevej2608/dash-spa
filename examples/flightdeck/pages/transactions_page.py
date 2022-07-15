@@ -25,7 +25,7 @@ def layout_transactions_table(**_kwargs):
 
     state = TableContext.getState(update=_kwargs)
 
-    log.info('layout_transactions_table: %s', state)
+    # log.info('layout_transactions_table: %s', state)
 
     # Create the table components
 
@@ -59,7 +59,7 @@ def layout_transactions_table(**_kwargs):
 
 def layout(**kwargs):
 
-    log.info('********** layout transactions.page %s ****************', kwargs)
+    # log.info('********** layout transactions.page %s ****************', kwargs)
 
     transactions_table = layout_transactions_table(**kwargs)
 

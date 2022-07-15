@@ -157,7 +157,7 @@ def session_context(ctx: SessionContext, id=None):
     id = id if id is not None else ctx.__session_data_id__
 
     store = cache.get(id)
-    log.info('read  cache[%s] %s', id, store)
+    # log.info('read  cache[%s] %s', id, store)
 
     # Create the requested context and map the session store. Use
     # the context.update_listener() capability to force an update

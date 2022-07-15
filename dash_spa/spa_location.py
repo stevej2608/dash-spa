@@ -48,7 +48,7 @@ def _location_update(url, data):
         href = data['href']
         new_url = urlparse(href)
         if url.path != new_url.path or url.query != new_url.query:
-            log.info('location update, href=%s', href)
+            # log.info('location update, href=%s', href)
             return href
 
     return NOUPDATE

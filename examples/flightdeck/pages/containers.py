@@ -18,7 +18,7 @@ def default_container(page, layout,  **kwargs):
         layout wrapped by container markup
     """
 
-    log.info("*************** default_container page=%s *********************", page['module'])
+    # log.info("*************** default_container page=%s *********************", page['module'])
 
     try:
 
