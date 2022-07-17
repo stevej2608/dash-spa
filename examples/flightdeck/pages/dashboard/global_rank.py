@@ -1,6 +1,6 @@
 from dash import html,dcc
 
-from ..icons.hero import EARTH, COUNTRY, CATEGORY, ICON1, ICON1, ICON1, UP_ARROW
+from ..icons.hero import ICON
 
 def _categoryRank(category, categoryIcon, rank, rankIcon):
     return html.Div([
@@ -43,9 +43,9 @@ def rankingPanel():
     return html.Div([
         html.Div([
             html.Div([
-                _categoryRank("Global Rank", EARTH, '#755', ICON1),
-                _categoryRankExt("Country Rank", COUNTRY, '#32', "United States", UP_ARROW.XS, ICON1),
-                _categoryRankExt("Category Rank", CATEGORY, '#11', "Computers Electronics > Technology", UP_ARROW.XS, ICON1),
+                _categoryRank("Global Rank", ICON.EARTH, '#755', ICON.ICON1),
+                _categoryRankExt("Country Rank", ICON.COUNTRY, '#32', "United States", ICON.UP_ARROW.XS, ICON.ICON1),
+                _categoryRankExt("Category Rank", ICON.CATEGORY, '#11', "Computers Electronics > Technology", ICON.UP_ARROW.XS, ICON.ICON1),
            ], className='card-body')
         ], className='card border-0 shadow')
     ], className='col-12 px-0 mb-4')

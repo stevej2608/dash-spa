@@ -5,7 +5,7 @@ from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, 
 
 from .common import breadCrumbs, topNavBar, footer
 from .transactions import create_table, create_header
-from .icons import PLUS
+from .icons import ICON
 
 
 page = register_page(__name__, path="/pages/transactions", title="Dash/Flightdeck - Transactions")
@@ -15,7 +15,7 @@ def button(text):
     return html.Button(text, type='button', className='btn btn-sm btn-outline-gray-600')
 
 def newPlanButton():
-    return html.A([PLUS, "New Plan"], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
+    return html.A([ICON.PLUS, "New Plan"], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
 
 
 @TableContext.Provider(id='transactions_table')

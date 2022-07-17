@@ -1,7 +1,7 @@
 from dash import html, dcc
 
 from ..common import background_img
-from ..icons.hero import PAPER_CLIP, USER_ADD_BTN
+from ..icons.hero import ICON
 
 
 def userPhotoCard():
@@ -14,7 +14,7 @@ def userPhotoCard():
                 html.H5("Senior Software Engineer", className='fw-normal'),
                 html.P("New York, USA", className='text-gray mb-4'),
                 dcc.Link([
-                    USER_ADD_BTN,
+                    ICON.USER_ADD_BTN,
                     "Connect"
                 ], className='btn btn-sm btn-gray-800 d-inline-flex align-items-center me-2', href='#'),
                 dcc.Link("Send Message", className='btn btn-sm btn-secondary', href='#')
@@ -34,7 +34,7 @@ def profilePhotoCard():
                 html.Div([
                     html.Div([
                         html.Div([
-                            PAPER_CLIP,
+                            ICON.PAPER_CLIP,
                             dcc.Input(type='file'),
                             html.Div([
                                 html.Div("Choose Image", className='fw-normal text-dark mb-1'),
@@ -60,7 +60,7 @@ def coverPhotoCard():
                 html.Div([
                     html.Div([
                         html.Div([
-                            PAPER_CLIP,
+                            ICON.PAPER_CLIP,
                             dcc.Input(type='file'),
                             html.Div([
                                 html.Div("Choose Image", className='fw-normal text-dark mb-1'),

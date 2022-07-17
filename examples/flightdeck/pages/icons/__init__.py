@@ -1,5 +1,2 @@
-from .hero import (CALENDER, SEARCH, LOCK_CLOSED, INBOX_IN,
-                   MAIL, ARROW_NARROW_LEFT,
-                   DOWN_ARROW, UP_ARROW, DOWNLOAD, PLUS)
-
+from .hero import ICON
 from .social import FACEBOOK, TWITTER, YOUTUBE, GITHUB, PAYPAL, BEHANCE

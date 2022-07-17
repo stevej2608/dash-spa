@@ -1,14 +1,14 @@
 
 from dash_spa.components.dropdown_button_aoi import DropdownButtonAIO, dropdownLink
 
-from ..icons.hero import USER_ADD, WIDGET, UPLOAD, SECURITY, FIRE_DANGER
+from ..icons.hero import ICON
 
 
 def newTasksButton():
     return DropdownButtonAIO([
-        dropdownLink("Add User", USER_ADD),
-        dropdownLink("Add Widget", WIDGET),
-        dropdownLink("Upload Files", UPLOAD),
-        dropdownLink("Preview Security", SECURITY),
-        dropdownLink("Upgrade to Pro", FIRE_DANGER),
+        dropdownLink("Add User", ICON.USER_ADD),
+        dropdownLink("Add Widget", ICON.WIDGET),
+        dropdownLink("Upload Files", ICON.UPLOAD),
+        dropdownLink("Preview Security", ICON.SECURITY),
+        dropdownLink("Upgrade to Pro", ICON.FIRE_DANGER),
     ], "New Task", buttonColor="gray-800")

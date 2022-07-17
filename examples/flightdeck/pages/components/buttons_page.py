@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 from dash_svg import Svg, Path
 from dash_spa import register_page, add_style
 from ..common import breadCrumbs, banner, topNavBar, footer
-from ..icons import FACEBOOK, TWITTER, YOUTUBE, GITHUB, PAYPAL, BEHANCE, DOWN_ARROW, DOWNLOAD
+from ..icons import ICON, FACEBOOK, TWITTER, YOUTUBE, GITHUB, PAYPAL, BEHANCE
 
 register_page(__name__, path="/pages/components/buttons", title="Dash/Flightdeck - Buttons")
 
@@ -130,7 +130,7 @@ def dropdown_buttons():
 
                 html.Button("Reference", className='btn btn-secondary', type='button'),
                 html.Button([
-                    DOWN_ARROW.XS,
+                    ICON.DOWN_ARROW.XS,
                     html.Span("Toggle Dropdown", className='visually-hidden')
                 ], className='btn btn-secondary dropdown-toggle dropdown-toggle-split', id='dropdownMenuReference', type='button', **{"aria-expanded": "false", "data-bs-reference": "parent", "data-bs-toggle": "dropdown"}),
                 html.Ul([
@@ -164,8 +164,8 @@ def link_buttons():
         html.Div(html.H2("Link Buttons", className='h5'), className='mb-3 mt-5'),
         html.Div([
             html.A("Primary", className='text-default fw-bold me-3', href='#'),
-            html.A([DOWNLOAD,"Icon Left"], className='text-primary d-inline-flex align-items-center me-3', href='#'),
-            html.A(["Icon Right", DOWNLOAD], className='text-primary d-inline-flex align-items-center', href='#'),
+            html.A([ICON.DOWNLOAD,"Icon Left"], className='text-primary d-inline-flex align-items-center me-3', href='#'),
+            html.A(["Icon Right", ICON.DOWNLOAD], className='text-primary d-inline-flex align-items-center', href='#'),
         ], className="d-inline-flex align-items-center")
     ])
 

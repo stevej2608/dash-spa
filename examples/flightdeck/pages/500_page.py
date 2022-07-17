@@ -1,6 +1,6 @@
 from dash import html, dcc
 from dash_spa import register_page
-from .icons import ARROW_NARROW_LEFT
+from .icons import ICON
 
 register_page(__name__, path="/pages/500", title="Dash/Flightdeck - 500", container='full_page')
 
@@ -17,7 +17,7 @@ layout = html.Div([
                             "wrong"
                         ], className='mt-5'),
                         html.P("It's always time for a coffee break. We should be back by the time you finish your coffee.", className='lead my-4'),
-                        dcc.Link([ARROW_NARROW_LEFT, "Back to homepage"
+                        dcc.Link([ICON.ARROW_NARROW_LEFT, "Back to homepage"
                         ], href='dashboard', className='btn btn-gray-800 d-inline-flex align-items-center justify-content-center mb-4')
                     ], className='col-12 col-lg-5 order-2 order-lg-1 text-center text-lg-left'),
                     html.Div([

@@ -1,10 +1,9 @@
 from dash import html
 from dash_svg import Svg, Path
-from dash_spa import register_page,  callback, NOUPDATE
+from dash_spa import register_page, NOUPDATE
 from dash_spa.alert import Alert, SPA_ALERT
 from dash_spa.notyf import Notyf, SPA_NOTIFY
 
-from ..icons.hero import HOME
 from ..common import breadCrumbs, banner, topNavBar, footer
 
 register_page(__name__, path="/pages/components/notifications", title="Dash/Flightdeck - Notification")

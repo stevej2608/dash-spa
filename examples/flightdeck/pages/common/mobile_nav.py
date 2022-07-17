@@ -1,6 +1,6 @@
 from dash import html, dcc
 
-from ..icons.hero import CROSS
+from ..icons.hero import ICON
 
 def mobileNavBar():
     """ Mobile only navbar - Volt logo & burger button """
@@ -39,7 +39,7 @@ def mobileSidebarHeader():
 
         html.Div([
             html.A([
-                CROSS,
+                ICON.CROSS,
             ], href='#sidebarMenu', **{"data-bs-toggle": "collapse", "data-bs-target": "#sidebarMenu", "aria-controls": "sidebarMenu", "aria-expanded": "true", "aria-label": "Toggle navigation"})
         ], className='collapse-close d-md-none')
 

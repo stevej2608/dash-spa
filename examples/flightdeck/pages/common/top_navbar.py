@@ -1,12 +1,12 @@
 from dash import html, dcc
 
-from ..icons.hero import SEARCH
+from ..icons.hero import ICON
 
 def searchForm():
     return  html.Form([
         html.Div([
             html.Span([
-                SEARCH
+                ICON.SEARCH
             ], className='input-group-text', id='topbar-addon'),
             dcc.Input(type='text', className='form-control', id='topbarInputIconLeft', placeholder='Search')
         ], className='input-group input-group-merge search-bar')

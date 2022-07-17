@@ -2,7 +2,7 @@ from abc import abstractmethod
 from dash import html
 from dash_svg import Svg, Path
 from dash_spa.components.table import TableAIO
-from ..icons import DOWN_ARROW, UP_ARROW
+from ..icons import ICON
 
 
 class BasicTable(TableAIO):
@@ -26,8 +26,8 @@ class BasicTable(TableAIO):
 
         def normalise(v):
             if v == '-': return None, v, None
-            if v[0] =='-': return DOWN_ARROW.ME1, v[1:], 'text-danger'
-            return UP_ARROW.ME1, v, 'text-success'
+            if v[0] =='-': return ICON.DOWN_ARROW.ME1, v[1:], 'text-danger'
+            return ICON.UP_ARROW.ME1, v, 'text-success'
 
         icon, text, text_colour = normalise(value)
 

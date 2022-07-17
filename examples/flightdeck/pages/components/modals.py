@@ -3,7 +3,7 @@ from dash_svg import Svg, Path
 from dash_spa import register_page
 from ..common import breadCrumbs, banner, topNavBar, footer
 
-from ..icons import LOCK_CLOSED, INBOX_IN, MAIL, FACEBOOK, TWITTER, GITHUB
+from ..icons import ICON, FACEBOOK, TWITTER, GITHUB
 
 # https://heroicons.com/
 
@@ -59,7 +59,7 @@ def notification():
                     ], className='modal-header'),
                     html.Div([
                         html.Div([
-                            html.Span(INBOX_IN, className='modal-icon'),
+                            html.Span(ICON.INBOX_IN, className='modal-icon'),
                             html.H2("Important message!", className='h4 modal-title my-3'),
                             html.P("Do you know that you can assign status and relation to a company right in the visit list?")
                         ], className='py-3 text-center')
@@ -92,7 +92,7 @@ def sign_in():
                                 html.Div([
                                     html.Label("Your Email", htmlFor='email'),
                                     html.Div([
-                                        html.Span(MAIL, className='input-group-text', id='basic-addon1'),
+                                        html.Span(ICON.MAIL, className='input-group-text', id='basic-addon1'),
                                         dcc.Input(type='email', className='form-control', placeholder='example@company.com', id='email', required='')
                                     ], className='input-group')
                                 ], className='form-group mb-4'),
@@ -102,7 +102,7 @@ def sign_in():
                                     html.Div([
                                         html.Label("Your Password", htmlFor='password'),
                                         html.Div([
-                                            html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
+                                            html.Span(ICON.LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                             dcc.Input(type='password', placeholder='Password', className='form-control', id='password', required='')
                                         ], className='input-group')
                                     ], className='form-group mb-4'),
@@ -163,7 +163,7 @@ def sign_out():
                                 html.Div([
                                     html.Label("Your Email", htmlFor='email'),
                                     html.Div([
-                                        html.Span(MAIL, className='input-group-text', id='basic-addon1'),
+                                        html.Span(ICON.MAIL, className='input-group-text', id='basic-addon1'),
                                         dcc.Input(type='email', className='form-control', placeholder='example@company.com', id='email', required='')
                                     ], className='input-group')
                                 ], className='form-group mb-4'),
@@ -173,7 +173,7 @@ def sign_out():
                                     html.Div([
                                         html.Label("Your Password", htmlFor='password'),
                                         html.Div([
-                                            html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
+                                            html.Span(ICON.LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                             dcc.Input(type='password', placeholder='Password', className='form-control', id='password', required='')
                                         ], className='input-group')
                                     ], className='form-group mb-4'),
@@ -182,7 +182,7 @@ def sign_out():
                                     html.Div([
                                         html.Label("Confirm Password", htmlFor='confirm_password'),
                                         html.Div([
-                                            html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
+                                            html.Span(ICON.LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                             dcc.Input(type='password', placeholder='Confirm Password', className='form-control', id='confirm_password', required='')
                                         ], className='input-group')
                                     ], className='form-group mb-4'),
