@@ -1,6 +1,6 @@
 from dash import html
 
-from ..icons.hero import CHART_ICON, BARCHART_ICON
+from ..icons.hero import CHART, BARCHART
 
 
 def acquisition():
@@ -12,7 +12,7 @@ def acquisition():
                 html.Div([
                     html.Div([
                         html.Div([
-                            CHART_ICON
+                            CHART
                        ], className='icon-shape icon-sm icon-shape-danger rounded me-3'),
                         html.Div([
                             html.Label("Bounce Rate", className='mb-0'),
@@ -21,7 +21,7 @@ def acquisition():
                     ], className='d-flex align-items-center me-5'),
                     html.Div([
                         html.Div([
-                            BARCHART_ICON
+                            BARCHART
                         ], className='icon-shape icon-sm icon-shape-purple rounded me-3'),
                         html.Div([
                             html.Label("Sessions", className='mb-0'),

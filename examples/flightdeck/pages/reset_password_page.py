@@ -1,6 +1,6 @@
 from dash import html, dcc
 from dash_spa import register_page
-from .icons import LOCK_CLOSED_ICON, ARROW_NARROW_LEFT_ICON
+from .icons import LOCK_CLOSED, ARROW_NARROW_LEFT
 
 register_page(__name__, path="/pages/reset-password", title="Dash/Flightdeck - Reset password", container='full_page')
 
@@ -12,7 +12,7 @@ layout = html.Div([
             html.Div([
                 html.Div([
                     html.P([
-                        dcc.Link([ARROW_NARROW_LEFT_ICON, "Back to log in"
+                        dcc.Link([ARROW_NARROW_LEFT, "Back to log in"
                         ], href='./sign-in', className='d-flex align-items-center justify-content-center')
                     ], className='text-center'),
                     html.Div([
@@ -31,7 +31,7 @@ layout = html.Div([
                                 html.Div([
                                     html.Label("Your Password", htmlFor='password'),
                                     html.Div([
-                                        html.Span(LOCK_CLOSED_ICON, className='input-group-text', id='basic-addon2'),
+                                        html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                         dcc.Input(type='password', placeholder='Password', className='form-control', id='password', required='')
                                     ], className='input-group')
                                 ], className='form-group mb-4'),
@@ -40,7 +40,7 @@ layout = html.Div([
                                 html.Div([
                                     html.Label("Confirm Password", htmlFor='confirm_password'),
                                     html.Div([
-                                        html.Span(LOCK_CLOSED_ICON, className='input-group-text', id='basic-addon2'),
+                                        html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                         dcc.Input(type='password', placeholder='Confirm Password', className='form-control', id='confirm_password', required='')
                                     ], className='input-group')
                                 ], className='form-group mb-4'),

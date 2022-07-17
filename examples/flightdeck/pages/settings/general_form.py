@@ -1,5 +1,5 @@
 from dash import html, dcc
-from ..icons import CALENDER_ICON
+from ..icons import CALENDER
 
 
 def generalInformationForm():
@@ -24,7 +24,7 @@ def generalInformationForm():
                 html.Div([
                     html.Label("Birthday", htmlFor='birthday'),
                     html.Div([
-                        html.Span(CALENDER_ICON, className='input-group-text'),
+                        html.Span(CALENDER, className='input-group-text'),
                         dcc.Input(className='form-control', id='birthday', type='text', placeholder='dd/mm/yyyy', required='')
                     ], className='input-group')
                 ], className='col-md-6 mb-3'),

@@ -3,7 +3,7 @@ from dash import html, dcc
 from dash_spa import prefix, callback, session_context, SessionContext, session_data, component_id
 from dash_spa.logging import log
 
-from .icons import ARROW_ICON
+from .icons import ARROW
 
 
 
@@ -88,7 +88,7 @@ class DropdownFolderAIO(html.Div):
                 html.Span(icon, className='sidebar-icon'),
                 html.Span(text, className='sidebar-text')
             ]),
-            html.Span(ARROW_ICON, className='link-arrow')
+            html.Span(ARROW, className='link-arrow')
         ], id=pid('btn'), className='nav-link collapsed d-flex justify-content-between align-items-center')
 
         # Drop down container

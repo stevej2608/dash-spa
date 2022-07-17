@@ -1,7 +1,7 @@
 from dash import html, dcc
 from dash_svg import Svg, Path
 from dash_spa import register_page,  callback, NOUPDATE
-from ..icons.hero import HOME_ICON
+from ..icons.hero import HOME
 from ..common import breadCrumbs, banner, topNavBar, footer
 
 register_page(__name__, path="/pages/components/typography", title="Dash/Flightdeck - Typography")

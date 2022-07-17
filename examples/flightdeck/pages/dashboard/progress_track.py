@@ -1,6 +1,6 @@
 from dash import html, dcc
 
-from ..icons.hero import CLIPBOARD_ICON
+from ..icons.hero import CLIPBOARD
 
 def _progressBar100(value, color='success', margin='mb-0'):
     return html.Div([
@@ -11,7 +11,7 @@ def _progressBar100(value, color='success', margin='mb-0'):
 def _progressDetails(title, value, color="success"):
     return html.Div([
         html.Div([
-            CLIPBOARD_ICON
+            CLIPBOARD
         ], className='col-auto'),
         html.Div([
             html.Div([

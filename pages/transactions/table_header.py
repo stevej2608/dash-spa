@@ -3,7 +3,7 @@ from dash import html
 from dash_spa import prefix, trigger_index
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.components.button_container_aoi import ButtonContainerAIO
-from .icons import TICK_ICON, GEAR_ICON
+from .icons import TICK, GEAR
 
 from dash_spa.components.table import SearchAIO, TableContext
 
@@ -30,7 +30,7 @@ class PageSizeSelect(ButtonContainerAIO):
 
         def render_button(text):
             if int(text) == state.page_size:
-                element = html.Div([text, TICK_ICON], className='dropdown-item d-flex align-items-center fw-bold')
+                element = html.Div([text, TICK], className='dropdown-item d-flex align-items-center fw-bold')
             else:
                 element = html.Div(text, className='dropdown-item fw-bold')
 
@@ -45,7 +45,7 @@ def _settingsDropdown(id) -> html.Div:
     pid = prefix(id)
 
     button = DropdownAIO.Button([
-       GEAR_ICON,html.Span("Toggle Dropdown", className='visually-hidden')
+       GEAR,html.Span("Toggle Dropdown", className='visually-hidden')
     ], className='btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1')
 
     container = PageSizeSelect(["10", "20", "30"], 0, id=pid('settings_container'))

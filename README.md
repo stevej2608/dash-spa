@@ -143,7 +143,7 @@ Tables are customised by creating a custom *tableRow* method for the table:
 ```
 def tableRow(self, index, args):
     name, views, value, rate, change = args.values()
-    icon = UP_ICON if change == "Up" else DOWN_ICON
+    icon = UP if change == "Up" else DOWN
     return  html.Tr([
         html.Th(name, className='text-gray-900', scope='row'),
         html.Td(views, className='fw-bolder text-gray-500'),

@@ -2,7 +2,7 @@ from dash import html, dcc
 from dash_spa import prefix
 from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, SidebarNavItem, dropdownFolderEntry
 
-from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, ARCHIVE_ICON, CREDIT_CARD_ICON
+from ..icons.hero import LIGHTENING, CHART_PIE, VIEW_GRID, CALENDER, TABLE, FIRE, PAGES, ARCHIVE, CREDIT_CARD
 from .mobile_nav import mobileSidebarHeader
 
 
@@ -42,15 +42,15 @@ def sideBar(id):
             # Sidebar List of entries
 
             html.Ul([
-                _sidebarLink("Volt Overview", LIGHTENING_ICON, 'https://demo.themesberg.com/volt/index.html', target="_blank"),
-                _sidebarLink("Dashboard", CHART_PIE_ICON, '/pages/dashboard'),
-                _sidebarLink("Transactions", CREDIT_CARD_ICON, '/pages/transactions'),
-                _sidebarLink("Settings", VIEW_GRID_ICON, '/pages/settings'),
-                _sidebarLink("Calendar", CALENDER_ICON, 'https://demo.themesberg.com/volt-pro/pages/calendar'),
+                _sidebarLink("Volt Overview", LIGHTENING, 'https://demo.themesberg.com/volt/index.html', target="_blank"),
+                _sidebarLink("Dashboard", CHART_PIE, '/pages/dashboard'),
+                _sidebarLink("Transactions", CREDIT_CARD, '/pages/transactions'),
+                _sidebarLink("Settings", VIEW_GRID, '/pages/settings'),
+                _sidebarLink("Calendar", CALENDER, 'https://demo.themesberg.com/volt-pro/pages/calendar'),
 
                 DropdownFolderAIO([
                     dropdownFolderEntry("Bootstrap Tables", '/pages/tables/boostrap-tables'),
-                ], "Tables", TABLE_ICON, id=pid('tables')),
+                ], "Tables", TABLE, id=pid('tables')),
 
                 # Page examples drop down
 
@@ -62,7 +62,7 @@ def sideBar(id):
                     dropdownFolderEntry("Lock", '/pages/lock'),
                     dropdownFolderEntry("404 Not Found", '/pages/???'),
                     dropdownFolderEntry("500 Not Found", '/pages/500'),
-                ], "Page examples", PAGES_ICON, id=pid('examples')),
+                ], "Page examples", PAGES, id=pid('examples')),
 
                 # Components  drop down
 
@@ -72,12 +72,12 @@ def sideBar(id):
                     dropdownFolderEntry("Forms", '/pages/components/forms'),
                     dropdownFolderEntry("Modals", '/pages/components/modals'),
                     dropdownFolderEntry("Typography", '/pages/components/typography'),
-                ], "Components", ARCHIVE_ICON, id=pid('components')),
+                ], "Components", ARCHIVE, id=pid('components')),
 
 
                 # Bottom Item
 
-                _sidebarButtonLink("Upgrade to Pro", FIRE_ICON, '../pages/upgrade-to-pro')
+                _sidebarButtonLink("Upgrade to Pro", FIRE, '../pages/upgrade-to-pro')
 
             ], className='nav flex-column pt-3 pt-md-0')
         ], className='sidebar-inner px-4 pt-3')

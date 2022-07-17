@@ -1,6 +1,6 @@
 from dash import html
 
-from ..icons.hero import PEOPLE_ICON, BAG_ICON, CHART_ICON, GLOBE_ICON, GLOBE_ICON, UP_ARROW_ICON, DOWN_ARROW_ICON
+from ..icons.hero import PEOPLE, BAG, CHART, GLOBE, GLOBE, UP_ARROW, DOWN_ARROW
 
 def cardFrame(content):
     return html.Div([
@@ -17,7 +17,7 @@ def customers():
     return cardFrame([
         html.Div([
             html.Div([
-                PEOPLE_ICON
+                PEOPLE
             ], className='icon-shape icon-shape-primary rounded me-4 me-sm-0'),
             html.Div([
                 html.H2("Customers", className='h5'),
@@ -31,13 +31,13 @@ def customers():
             ], className='d-none d-sm-block'),
             html.Small([
                 "Feb 1 - Apr 1,",
-                GLOBE_ICON,
+                GLOBE,
                 "USA"
             ], className='d-flex align-items-center text-gray-500'),
             html.Div([
                 html.Div([
                     "Since last month",
-                    UP_ARROW_ICON.XS,
+                    UP_ARROW.XS,
                     html.Span("22%", className='text-success fw-bolder')
                 ])
             ], className='small d-flex mt-1')
@@ -49,7 +49,7 @@ def revenue():
     return cardFrame([
         html.Div([
             html.Div([
-                BAG_ICON
+                BAG
             ], className='icon-shape icon-shape-secondary rounded me-4 me-sm-0'),
             html.Div([
                 html.H2("Revenue", className='fw-extrabold h5'),
@@ -63,13 +63,13 @@ def revenue():
             ], className='d-none d-sm-block'),
             html.Small([
                 "Feb 1 - Apr 1,",
-                GLOBE_ICON,
+                GLOBE,
                 "GER"
             ], className='d-flex align-items-center text-gray-500'),
             html.Div([
                 html.Div([
                     "Since last month",
-                    DOWN_ARROW_ICON.XS,
+                    DOWN_ARROW.XS,
                     html.Span("2%", className='text-danger fw-bolder')
                 ])
             ], className='small d-flex mt-1')
@@ -81,7 +81,7 @@ def bounceRate():
     return cardFrame([
         html.Div([
             html.Div([
-                CHART_ICON
+                CHART
             ], className='icon-shape icon-shape-tertiary rounded me-4 me-sm-0'),
             html.Div([
                 html.H2("Bounce Rate", className='fw-extrabold h5'),
@@ -97,7 +97,7 @@ def bounceRate():
             html.Div([
                 html.Div([
                     "Since last month",
-                    UP_ARROW_ICON.XS,
+                    UP_ARROW.XS,
                     html.Span("4%", className='text-success fw-bolder')
                 ])
             ], className='small d-flex mt-1')

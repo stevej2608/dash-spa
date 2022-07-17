@@ -3,7 +3,7 @@ from dash import html, dcc
 from dash_spa import prefix
 from pandas import DataFrame
 
-from .icons import SEARCH_ICON
+from .icons import SEARCH
 from .context import TableContext
 
 # https://dash.plotly.com/datatable/callbacks#backend-paging-with-filtering
@@ -149,7 +149,7 @@ class SearchAIO(html.Div):
             setSearchTerm(value)
 
         ui = html.Div([
-            html.Span(SEARCH_ICON, className='input-group-text'),
+            html.Span(SEARCH, className='input-group-text'),
             search,
             delay
         ], className='input-group me-2 me-lg-3 fmxw-400')

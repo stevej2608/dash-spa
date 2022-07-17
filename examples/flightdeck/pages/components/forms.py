@@ -1,7 +1,7 @@
 from dash import html, dcc
 from dash_spa import register_page
 from ..common import breadCrumbs, banner, topNavBar, footer
-from ..icons import CALENDER_ICON, SEARCH_ICON, LOCK_CLOSED_ICON
+from ..icons import CALENDER, SEARCH, LOCK_CLOSED
 
 register_page(__name__, path="/pages/components/forms", title="Dash/Flightdeck - Forms")
 
@@ -17,7 +17,7 @@ def left_icon():
     return  html.Div([
         html.Label("Icon Left", htmlFor='exampleInputIconLeft'),
         html.Div([
-            html.Span(SEARCH_ICON, className='input-group-text', id='basic-addon1'),
+            html.Span(SEARCH, className='input-group-text', id='basic-addon1'),
             dcc.Input(type='text', className='form-control', id='exampleInputIconLeft', placeholder='Search')
         ], className='input-group')
     ], className='mb-3')
@@ -27,7 +27,7 @@ def right_icon():
         html.Label("Icon Right", htmlFor='exampleInputIconRight'),
         html.Div([
             dcc.Input(type='text', className='form-control', id='exampleInputIconRight', placeholder='Search'),
-            html.Span(SEARCH_ICON, className='input-group-text', id='basic-addon2')
+            html.Span(SEARCH, className='input-group-text', id='basic-addon2')
         ], className='input-group')
     ], className='mb-3')
 
@@ -36,7 +36,7 @@ def password():
         html.Label("Password", htmlFor='exampleInputIconPassword'),
         html.Div([
             dcc.Input(type='password', className='form-control', id='exampleInputIconPassword', placeholder='Password'),
-            html.Span(LOCK_CLOSED_ICON, className='input-group-text', id='basic-addon3')
+            html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon3')
             ], className='input-group-text', id='basic-addon3')
         ], className='mb-3')
 
@@ -68,7 +68,7 @@ def birthday():
     return html.Div([
         html.Label("Birthday", htmlFor='birthday'),
         html.Div([
-            html.Span(CALENDER_ICON, className='input-group-text'),
+            html.Span(CALENDER, className='input-group-text'),
             dcc.Input(className='form-control', id='birthday', type='text', placeholder='dd/mm/yyyy', required='')
         ], className='input-group')
     ], className='mb-3')

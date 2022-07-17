@@ -5,40 +5,40 @@ import dash_bootstrap_components as dbc
 from dash_svg import Svg, Path
 from dash_spa import register_page, add_style
 from ..common import breadCrumbs, banner, topNavBar, footer
-from ..icons import FACEBOOK_ICON, TWITTER_ICON, YOUTUBE_ICON, GITHUB_ICON, PAYPAL_ICON, BEHANCE_ICON, DOWN_ARROW_ICON, DOWNLOAD_ICON
+from ..icons import FACEBOOK, TWITTER, YOUTUBE, GITHUB, PAYPAL, BEHANCE, DOWN_ARROW, DOWNLOAD
 
 register_page(__name__, path="/pages/components/buttons", title="Dash/Flightdeck - Buttons")
 
-FACEBOOK_TEXT_BTN = html.Button([FACEBOOK_ICON.ME2, "Login with Facebook"
+FACEBOOK_TEXT_BTN = html.Button([FACEBOOK.ME2, "Login with Facebook"
     ], className='btn btn-facebook d-inline-flex align-items-center', type='button')
 
-TWITTER_TEXT_BTN = html.Button([TWITTER_ICON.ME2, "Share on Twitter"
+TWITTER_TEXT_BTN = html.Button([TWITTER.ME2, "Share on Twitter"
     ], className='btn btn-twitter text-white d-inline-flex align-items-center', type='button')
 
-YOUTUBE_TEXT_BTN = html.Button([YOUTUBE_ICON.ME2, "Watch on YouTube"
+YOUTUBE_TEXT_BTN = html.Button([YOUTUBE.ME2, "Watch on YouTube"
     ], className='btn btn-youtube d-inline-flex align-items-center', type='button')
 
-GITHUB_TEXT_BTN = html.Button([GITHUB_ICON.ME2, "Login with GitHub"
+GITHUB_TEXT_BTN = html.Button([GITHUB.ME2, "Login with GitHub"
     ], className='btn btn-github d-inline-flex align-items-center', type='button')
 
-PAYPAL_TEXT_BTN = html.Button([PAYPAL_ICON.ME2, "Donate with PayPal"
+PAYPAL_TEXT_BTN = html.Button([PAYPAL.ME2, "Donate with PayPal"
     ], className='btn btn-paypal d-inline-flex align-items-center', type='button')
 
-BEHANCE_TEXT_BTN = html.Button([BEHANCE_ICON.ME2, "Follow us"
+BEHANCE_TEXT_BTN = html.Button([BEHANCE.ME2, "Follow us"
     ], className='btn btn-behance d-inline-flex align-items-center', type='button')
 
 
-FACEBOOK_BTN = html.Button(FACEBOOK_ICON.XXS, className='btn btn-icon-only btn-facebook d-inline-flex align-items-center', type='button')
+FACEBOOK_BTN = html.Button(FACEBOOK.XXS, className='btn btn-icon-only btn-facebook d-inline-flex align-items-center', type='button')
 
-TWITTER_BTN = html.Button(TWITTER_ICON.XXS, className='btn btn-icon-only btn-twitter text-white d-inline-flex align-items-center', type='button')
+TWITTER_BTN = html.Button(TWITTER.XXS, className='btn btn-icon-only btn-twitter text-white d-inline-flex align-items-center', type='button')
 
-YOUTUBE_BTN = html.Button(YOUTUBE_ICON.XXS, className='btn btn-icon-only btn-youtube d-inline-flex align-items-center', type='button')
+YOUTUBE_BTN = html.Button(YOUTUBE.XXS, className='btn btn-icon-only btn-youtube d-inline-flex align-items-center', type='button')
 
-GITHUB_BTN = html.Button(GITHUB_ICON.XXS, className='btn btn-icon-only btn-github d-inline-flex align-items-center', type='button')
+GITHUB_BTN = html.Button(GITHUB.XXS, className='btn btn-icon-only btn-github d-inline-flex align-items-center', type='button')
 
-PAYPAL_BTN = html.Button(PAYPAL_ICON.XXS, className='btn btn-icon-only btn-paypal d-inline-flex align-items-center', type='button')
+PAYPAL_BTN = html.Button(PAYPAL.XXS, className='btn btn-icon-only btn-paypal d-inline-flex align-items-center', type='button')
 
-BEHANCE_BTN = html.Button(BEHANCE_ICON.XXS, className='btn btn-icon-only btn-behance d-inline-flex align-items-center', type='button')
+BEHANCE_BTN = html.Button(BEHANCE.XXS, className='btn btn-icon-only btn-behance d-inline-flex align-items-center', type='button')
 
 
 
@@ -81,12 +81,12 @@ def button_sizes():
 
 # https://heroicons.com/
 
-CLOUD_DOWNLOAD_ICON = Svg([
+CLOUD_DOWNLOAD = Svg([
         Path(clipRule='evenodd', d='M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z', fillRule='evenodd')
     ], className='icon icon-xxs ms-2', viewBox='0 0 20 20', fill="currentColor", xmlns='http://www.w3.org/2000/svg')
 
 
-CHAT_ICON = Svg([
+CHAT = Svg([
         Path(d='M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z',
              fillRule="evenodd", clipRule="evenodd")
     ], className='icon icon-xxs me-2', viewBox='0 0 20 20', fill="currentColor", xmlns='http://www.w3.org/2000/svg')
@@ -94,9 +94,9 @@ CHAT_ICON = Svg([
 
 def button_with_icons():
     return  html.Div([
-        html.Button(["Download", CLOUD_DOWNLOAD_ICON], className='btn btn-primary d-inline-flex align-items-center', type='button'),
+        html.Button(["Download", CLOUD_DOWNLOAD], className='btn btn-primary d-inline-flex align-items-center', type='button'),
         WS,
-        html.Button([CHAT_ICON, "Contact Us" ], className='btn btn-primary d-inline-flex align-items-center', type='button'),
+        html.Button([CHAT, "Contact Us" ], className='btn btn-primary d-inline-flex align-items-center', type='button'),
     ])
 
 
@@ -130,7 +130,7 @@ def dropdown_buttons():
 
                 html.Button("Reference", className='btn btn-secondary', type='button'),
                 html.Button([
-                    DOWN_ARROW_ICON.XS,
+                    DOWN_ARROW.XS,
                     html.Span("Toggle Dropdown", className='visually-hidden')
                 ], className='btn btn-secondary dropdown-toggle dropdown-toggle-split', id='dropdownMenuReference', type='button', **{"aria-expanded": "false", "data-bs-reference": "parent", "data-bs-toggle": "dropdown"}),
                 html.Ul([
@@ -164,8 +164,8 @@ def link_buttons():
         html.Div(html.H2("Link Buttons", className='h5'), className='mb-3 mt-5'),
         html.Div([
             html.A("Primary", className='text-default fw-bold me-3', href='#'),
-            html.A([DOWNLOAD_ICON,"Icon Left"], className='text-primary d-inline-flex align-items-center me-3', href='#'),
-            html.A(["Icon Right", DOWNLOAD_ICON], className='text-primary d-inline-flex align-items-center', href='#'),
+            html.A([DOWNLOAD,"Icon Left"], className='text-primary d-inline-flex align-items-center me-3', href='#'),
+            html.A(["Icon Right", DOWNLOAD], className='text-primary d-inline-flex align-items-center', href='#'),
         ], className="d-inline-flex align-items-center")
     ])
 

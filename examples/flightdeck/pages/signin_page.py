@@ -1,7 +1,7 @@
 from dash import html, dcc
 from dash_spa import register_page
 from .common import background_img
-from .icons import LOCK_CLOSED_ICON, MAIL_ICON, FACEBOOK_ICON, TWITTER_ICON, GITHUB_ICON, ARROW_NARROW_LEFT_ICON
+from .icons import LOCK_CLOSED, MAIL, FACEBOOK, TWITTER, GITHUB, ARROW_NARROW_LEFT
 
 register_page(__name__, path="/pages/sign-in", title="Dash/Flightdeck - Sign in", container='full_page')
 
@@ -12,7 +12,7 @@ layout = html.Div([
         html.Section([
             html.Div([
                 html.P([
-                    dcc.Link([ARROW_NARROW_LEFT_ICON, "Back to homepage"
+                    dcc.Link([ARROW_NARROW_LEFT, "Back to homepage"
                     ], href='dashboard', className='d-flex align-items-center justify-content-center')
                 ], className='text-center'),
                 html.Div([
@@ -26,7 +26,7 @@ layout = html.Div([
                                 html.Div([
                                     html.Label("Your Email", htmlFor='email'),
                                     html.Div([
-                                        html.Span(MAIL_ICON, className='input-group-text', id='basic-addon1'),
+                                        html.Span(MAIL, className='input-group-text', id='basic-addon1'),
                                         dcc.Input(type='email', className='form-control', placeholder='example@company.com', id='email', required='')
                                     ], className='input-group')
                                 ], className='form-group mb-4'),
@@ -36,7 +36,7 @@ layout = html.Div([
                                     html.Div([
                                         html.Label("Your Password", htmlFor='password'),
                                         html.Div([
-                                            html.Span(LOCK_CLOSED_ICON, className='input-group-text', id='basic-addon2'),
+                                            html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                             dcc.Input(type='password', placeholder='Password', className='form-control', id='password', required='')
                                         ], className='input-group')
                                     ], className='form-group mb-4'),
@@ -59,9 +59,9 @@ layout = html.Div([
                                 html.Span("or login with", className='fw-normal')
                             ], className='mt-3 mb-4 text-center'),
                             html.Div([
-                                dcc.Link(FACEBOOK_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button'),
-                                dcc.Link(TWITTER_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button'),
-                                dcc.Link(GITHUB_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button')
+                                dcc.Link(FACEBOOK.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button'),
+                                dcc.Link(TWITTER.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button'),
+                                dcc.Link(GITHUB.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button')
                             ], className='d-flex justify-content-center my-4'),
                             html.Div([
                                 html.Span([

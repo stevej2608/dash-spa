@@ -3,17 +3,17 @@ from dash_svg import Svg, Path
 from dash_spa import register_page
 from ..common import breadCrumbs, banner, topNavBar, footer
 
-from ..icons import LOCK_CLOSED_ICON, INBOX_IN_ICON, MAIL_ICON, FACEBOOK_ICON, TWITTER_ICON, GITHUB_ICON
+from ..icons import LOCK_CLOSED, INBOX_IN, MAIL, FACEBOOK, TWITTER, GITHUB
 
 # https://heroicons.com/
 
-FIRE_ICON = Svg([
+FIRE = Svg([
         Path(fillRule='evenodd', d='M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z', clipRule='evenodd')
     ], className='icon icon-lg text-gray-200', fill='currentColor', viewBox='0 0 20 20', xmlns='http://www.w3.org/2000/svg')
 
 # https://heroicons.com/
 
-MAIL_OPEN_ICON = Svg([
+MAIL_OPEN = Svg([
         Path(fillRule='evenodd', d='M2.94 6.412A2 2 0 002 8.108V16a2 2 0 002 2h12a2 2 0 002-2V8.108a2 2 0 00-.94-1.696l-6-3.75a2 2 0 00-2.12 0l-6 3.75zm2.615 2.423a1 1 0 10-1.11 1.664l5 3.333a1 1 0 001.11 0l5-3.333a1 1 0 00-1.11-1.664L10 11.798 5.555 8.835z', clipRule='evenodd')
     ], className='icon icon-xl text-gray-200 mb-4', fill='currentColor', viewBox='0 0 20 20', xmlns='http://www.w3.org/2000/svg')
 
@@ -59,7 +59,7 @@ def notification():
                     ], className='modal-header'),
                     html.Div([
                         html.Div([
-                            html.Span(INBOX_IN_ICON, className='modal-icon'),
+                            html.Span(INBOX_IN, className='modal-icon'),
                             html.H2("Important message!", className='h4 modal-title my-3'),
                             html.P("Do you know that you can assign status and relation to a company right in the visit list?")
                         ], className='py-3 text-center')
@@ -92,7 +92,7 @@ def sign_in():
                                 html.Div([
                                     html.Label("Your Email", htmlFor='email'),
                                     html.Div([
-                                        html.Span(MAIL_ICON, className='input-group-text', id='basic-addon1'),
+                                        html.Span(MAIL, className='input-group-text', id='basic-addon1'),
                                         dcc.Input(type='email', className='form-control', placeholder='example@company.com', id='email', required='')
                                     ], className='input-group')
                                 ], className='form-group mb-4'),
@@ -102,7 +102,7 @@ def sign_in():
                                     html.Div([
                                         html.Label("Your Password", htmlFor='password'),
                                         html.Div([
-                                            html.Span(LOCK_CLOSED_ICON, className='input-group-text', id='basic-addon2'),
+                                            html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                             dcc.Input(type='password', placeholder='Password', className='form-control', id='password', required='')
                                         ], className='input-group')
                                     ], className='form-group mb-4'),
@@ -125,9 +125,9 @@ def sign_in():
                                 html.Span("or login with", className='fw-normal')
                             ], className='mt-3 mb-4 text-center'),
                             html.Div([
-                                html.A(FACEBOOK_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
-                                html.A(TWITTER_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
-                                html.A(GITHUB_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
+                                html.A(FACEBOOK.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
+                                html.A(TWITTER.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
+                                html.A(GITHUB.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
                             ], className='d-flex justify-content-center my-4'),
                             html.Div([
                                 html.Span([
@@ -163,7 +163,7 @@ def sign_out():
                                 html.Div([
                                     html.Label("Your Email", htmlFor='email'),
                                     html.Div([
-                                        html.Span(MAIL_ICON, className='input-group-text', id='basic-addon1'),
+                                        html.Span(MAIL, className='input-group-text', id='basic-addon1'),
                                         dcc.Input(type='email', className='form-control', placeholder='example@company.com', id='email', required='')
                                     ], className='input-group')
                                 ], className='form-group mb-4'),
@@ -173,7 +173,7 @@ def sign_out():
                                     html.Div([
                                         html.Label("Your Password", htmlFor='password'),
                                         html.Div([
-                                            html.Span(LOCK_CLOSED_ICON, className='input-group-text', id='basic-addon2'),
+                                            html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                             dcc.Input(type='password', placeholder='Password', className='form-control', id='password', required='')
                                         ], className='input-group')
                                     ], className='form-group mb-4'),
@@ -182,7 +182,7 @@ def sign_out():
                                     html.Div([
                                         html.Label("Confirm Password", htmlFor='confirm_password'),
                                         html.Div([
-                                            html.Span(LOCK_CLOSED_ICON, className='input-group-text', id='basic-addon2'),
+                                            html.Span(LOCK_CLOSED, className='input-group-text', id='basic-addon2'),
                                             dcc.Input(type='password', placeholder='Confirm Password', className='form-control', id='confirm_password', required='')
                                         ], className='input-group')
                                     ], className='form-group mb-4'),
@@ -205,9 +205,9 @@ def sign_out():
                                 html.Span("or login with", className='fw-normal')
                             ], className='mt-3 mb-4 text-center'),
                             html.Div([
-                                html.A(FACEBOOK_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
-                                html.A(TWITTER_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
-                                html.A(GITHUB_ICON.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
+                                html.A(FACEBOOK.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
+                                html.A(TWITTER.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
+                                html.A(GITHUB.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
                             ], className='d-flex justify-content-center my-3'),
                             html.Div([
                                 html.Span([
@@ -238,7 +238,7 @@ def achievement():
                     ], className='modal-header mx-auto'),
                     html.Div([
                         html.Div([
-                            html.Span(FIRE_ICON, className='modal-icon display-1 text-white'),
+                            html.Span(FIRE, className='modal-icon display-1 text-white'),
                             html.H2("Author Level 5", className='h3 modal-title mb-3 text-white'),
                             html.P("One Thousand Dollars! Well done mate - heads are turning your way.", className='mb-4 text-white'),
                             html.Div([
@@ -267,7 +267,7 @@ def subscribe():
                         html.Button(type='button', className='btn-close btn-close-white text-white', **{"data-bs-dismiss": "modal", "aria-label": "Close"})
                     ], className='modal-header'),
                     html.Div([
-                        html.Span(MAIL_OPEN_ICON, className='modal-icon'),
+                        html.Span(MAIL_OPEN, className='modal-icon'),
                         html.H3("Join our 1,360,462 subscribers", className='modal-title mb-3'),
                         html.P("Get exclusive access to freebies, premium products and news.", className='mb-4 lead'),
                         html.Div([

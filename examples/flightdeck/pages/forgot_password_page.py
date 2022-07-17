@@ -1,6 +1,6 @@
 from dash import html, dcc
 from dash_spa import register_page
-from .icons import ARROW_NARROW_LEFT_ICON
+from .icons import ARROW_NARROW_LEFT
 
 register_page(__name__, path="/pages/forgot-password", title="Dash/Flightdeck - Forgot password", container='full_page')
 
@@ -12,7 +12,7 @@ layout = html.Div([
             html.Div([
                 html.Div([
                     html.P([
-                        dcc.Link([ ARROW_NARROW_LEFT_ICON,"Back to log in"
+                        dcc.Link([ ARROW_NARROW_LEFT,"Back to log in"
                         ], href='./sign-in', className='d-flex align-items-center justify-content-center')
                     ], className='text-center'),
                     html.Div([

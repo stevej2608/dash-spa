@@ -1,5 +1,5 @@
 from dash import html
-from ..icons.hero import HOME_ICON
+from ..icons.hero import HOME
 
 def breadCrumbs(trail: list):
 
@@ -7,7 +7,7 @@ def breadCrumbs(trail: list):
 
     def links():
         result = []
-        trail.insert(0, HOME_ICON)
+        trail.insert(0, HOME)
         for el in trail:
             if el != trail[-1]:
                 link = html.Li(html.A(el, href='#'), className='breadcrumb-item')
