@@ -6,7 +6,7 @@ from ..icons import ICON, TWITTER, YOUTUBE, GOOGLE, YAHOO
 
 
 icons = {
-    "Direct": ICON.GLOBE,
+    "Direct": ICON.GLOBE.ME2,
     "Google Search": GOOGLE,
     "youtube.com": YOUTUBE.ME2,
     "yahoo.com": YAHOO,

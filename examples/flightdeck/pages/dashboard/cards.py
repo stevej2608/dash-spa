@@ -31,7 +31,7 @@ def customers():
             ], className='d-none d-sm-block'),
             html.Small([
                 "Feb 1 - Apr 1,",
-                ICON.GLOBE,
+                ICON.GLOBE.ME1,
                 "USA"
             ], className='d-flex align-items-center text-gray-500'),
             html.Div([
@@ -63,7 +63,7 @@ def revenue():
             ], className='d-none d-sm-block'),
             html.Small([
                 "Feb 1 - Apr 1,",
-                ICON.GLOBE,
+                ICON.GLOBE.ME1,
                 "GER"
             ], className='d-flex align-items-center text-gray-500'),
             html.Div([
