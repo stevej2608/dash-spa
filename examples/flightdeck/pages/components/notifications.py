@@ -1,21 +1,17 @@
 from dash import html
-from dash_svg import Svg, Path
 from dash_spa import register_page, NOUPDATE
 from dash_spa.alert import Alert, SPA_ALERT
 from dash_spa.notyf import Notyf, SPA_NOTIFY
 
 from ..common import breadCrumbs, banner, topNavBar, footer
+from ..icons import ICON
 
 register_page(__name__, path="/pages/components/notifications", title="Dash/Flightdeck - Notification")
 
 
 def DocumentationLink(href):
     return html.Div([
-        html.A([
-            Svg([
-                Path(fillRule='evenodd', d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z', clipRule='evenodd')
-            ], className='icon icon-xxs me-2', fill='currentColor', viewBox='0 0 20 20', xmlns='http://www.w3.org/2000/svg'),
-            'Documentation'
+        html.A([ICON.QUESTION_MARK,'Documentation'
         ], href=href, className='btn btn-outline-gray-500 d-inline-flex align-items-center')
     ], className='card-header border-gray-100 d-flex justify-content-between align-items-center')
 

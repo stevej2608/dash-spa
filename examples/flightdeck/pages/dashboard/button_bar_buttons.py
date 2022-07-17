@@ -10,5 +10,5 @@ def newTasksButton():
         dropdownLink("Add Widget", ICON.WIDGET),
         dropdownLink("Upload Files", ICON.UPLOAD),
         dropdownLink("Preview Security", ICON.SECURITY),
-        dropdownLink("Upgrade to Pro", ICON.FIRE_DANGER),
+        dropdownLink("Upgrade to Pro", ICON.FIRE.ME2_DANGER),
     ], "New Task", buttonColor="gray-800")

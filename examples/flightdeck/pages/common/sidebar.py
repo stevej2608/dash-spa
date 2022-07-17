@@ -77,7 +77,7 @@ def sideBar(id):
 
                 # Bottom Item
 
-                _sidebarButtonLink("Upgrade to Pro", ICON.FIRE, '../pages/upgrade-to-pro')
+                _sidebarButtonLink("Upgrade to Pro", ICON.FIRE.ME2, '../pages/upgrade-to-pro')
 
             ], className='nav flex-column pt-3 pt-md-0')
         ], className='sidebar-inner px-4 pt-3')

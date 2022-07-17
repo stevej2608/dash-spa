@@ -1,12 +1,10 @@
-from requests import session
 from dash_spa.logging import log
 from dash import html
-from dash_svg import Svg, Path
-from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE, ServerSessionCache
+from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE
 from pages import TRANSACTIONS_SLUG
+from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext
 from .transactions import create_table, create_header
-
-from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext, TableState
+from .transactions.icons import ICON
 
 
 page = register_page(__name__, path=TRANSACTIONS_SLUG, title="Dash/Flightdeck - Transactions", short_name='Transactions')
@@ -15,12 +13,7 @@ def button(text):
     return html.Button(text, type='button', className='btn btn-sm btn-outline-gray-600')
 
 def newPlanButton():
-    return html.A([
-        Svg([
-            Path(strokeLinecap='round', strokeLinejoin='round', strokeWidth='2', d='M12 6v6m0 0v6m0-6h6m-6 0H6')
-        ], className='icon icon-xs me-2', fill='none', stroke='currentColor', viewBox='0 0 24 24', xmlns='http://www.w3.org/2000/svg'),
-        "New Plan"
-    ], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
+    return html.A([ICON.PLUS, "New Plan"], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
 
 
 @TableContext.Provider(id='transactions_table')

@@ -1,5 +1,4 @@
-from dash import html, dcc
-from dash_svg import Svg, Path
+from dash import html
 from dash_spa import register_page
 from ..common import breadCrumbs, banner, topNavBar, footer
 

@@ -1,6 +1,5 @@
 from abc import abstractmethod
 from dash import html
-from dash_svg import Svg, Path
 from dash_spa.components.table import TableAIO
 from ..icons import ICON
 

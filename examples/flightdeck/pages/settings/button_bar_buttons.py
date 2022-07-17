@@ -8,7 +8,7 @@ def newButton():
         dropdownLink("Document", ICON.DOCUMENT),
         dropdownLink("Message", ICON.MESSAGE),
         dropdownLink("Product", ICON.UPLOAD),
-        dropdownLink("My Plan", ICON.FIRE_DANGER),
+        dropdownLink("My Plan", ICON.FIRE.ME2_DANGER),
     ], "New")
 
 def calenderButton():

@@ -2,7 +2,6 @@ from copy import deepcopy
 from pydoc import classname
 from dash import html
 import dash_bootstrap_components as dbc
-from dash_svg import Svg, Path
 from dash_spa import register_page, add_style
 from ..common import breadCrumbs, banner, topNavBar, footer
 from ..icons import ICON, FACEBOOK, TWITTER, YOUTUBE, GITHUB, PAYPAL, BEHANCE
@@ -79,24 +78,12 @@ def button_sizes():
         html.Button("Large Button", className='btn btn-lg btn-primary', type='button'),
     ])
 
-# https://heroicons.com/
-
-CLOUD_DOWNLOAD = Svg([
-        Path(clipRule='evenodd', d='M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z', fillRule='evenodd')
-    ], className='icon icon-xxs ms-2', viewBox='0 0 20 20', fill="currentColor", xmlns='http://www.w3.org/2000/svg')
-
-
-CHAT = Svg([
-        Path(d='M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z',
-             fillRule="evenodd", clipRule="evenodd")
-    ], className='icon icon-xxs me-2', viewBox='0 0 20 20', fill="currentColor", xmlns='http://www.w3.org/2000/svg')
-
 
 def button_with_icons():
     return  html.Div([
-        html.Button(["Download", CLOUD_DOWNLOAD], className='btn btn-primary d-inline-flex align-items-center', type='button'),
+        html.Button(["Download", ICON.DOWNLOAD.ME2_XXS], className='btn btn-primary d-inline-flex align-items-center', type='button'),
         WS,
-        html.Button([CHAT, "Contact Us" ], className='btn btn-primary d-inline-flex align-items-center', type='button'),
+        html.Button([ICON.MESSAGE.ME2_XXS, "Contact Us" ], className='btn btn-primary d-inline-flex align-items-center', type='button'),
     ])
 
 
@@ -164,8 +151,8 @@ def link_buttons():
         html.Div(html.H2("Link Buttons", className='h5'), className='mb-3 mt-5'),
         html.Div([
             html.A("Primary", className='text-default fw-bold me-3', href='#'),
-            html.A([ICON.DOWNLOAD,"Icon Left"], className='text-primary d-inline-flex align-items-center me-3', href='#'),
-            html.A(["Icon Right", ICON.DOWNLOAD], className='text-primary d-inline-flex align-items-center', href='#'),
+            html.A([ICON.DOWNLOAD.ME2,"Icon Left"], className='text-primary d-inline-flex align-items-center me-3', href='#'),
+            html.A(["Icon Right", ICON.DOWNLOAD.ME2], className='text-primary d-inline-flex align-items-center', href='#'),
         ], className="d-inline-flex align-items-center")
     ])
 
