@@ -8,4 +8,4 @@ class TableState(ContextState):
     table_rows: int = 0
     search_term: str = None
 
-TableContext = createContext(TableState);
+TableContext = createContext(TableState)

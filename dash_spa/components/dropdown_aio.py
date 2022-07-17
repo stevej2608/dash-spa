@@ -4,7 +4,7 @@ from dash.development.base_component import Component
 import dash_holoniq_components as dhc
 from dash_spa.logging import log
 
-from dash_prefix import prefix, match, component_id
+from dash_prefix import prefix
 
 class DropdownAIO(html.Div):
     """Button and container. The container is shown when the

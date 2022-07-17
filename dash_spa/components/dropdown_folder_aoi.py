@@ -1,10 +1,49 @@
-from dataclasses import dataclass
-from locale import strcoll
+from flask import request
 from dash import html, dcc
-from dash_spa import prefix, callback, session_context, SessionContext, session_data
+from dash_spa import prefix, callback, session_context, SessionContext, session_data, component_id
 from dash_spa.logging import log
 
 from .icons import ARROW_ICON
+
+
+
+class SidebarNavItem(html.Li):
+    """Sidebar NavItem with 'active' added/removed from className when
+    selected/deselected
+
+    Note: For convenience item id's are globally allocated so only one sidebar is
+    allowed in the application.
+    """
+
+    @staticmethod
+    def is_active(href:str) -> bool:
+        """Return true if given href is the currently active page
+
+        Args:
+            href (str): href is the currently active page
+
+        Returns:
+            bool: true if given href is the currently active page
+        """
+
+        try:
+            return request.dash_pathname.startswith(href)
+        except:
+            return False
+
+
+    def __init__(self, children, active, **_kwargs):
+
+        className = _kwargs.pop('className', 'nav-item')
+
+        if not 'nav-item' in className:
+            className += ' nav-item'
+
+        if active:
+            className += ' active'
+
+        super().__init__(children, className=className, **_kwargs)
+
 
 def dropdownFolderEntry(text:str, href:str) -> html.Li:
     """Drop-down folder entry (decorated dcc.Link)
@@ -16,11 +55,11 @@ def dropdownFolderEntry(text:str, href:str) -> html.Li:
     Returns:
         _type_: _description_
     """
-    return html.Li([
+    return SidebarNavItem([
         dcc.Link([
             html.Span(text, className='sidebar-text')
         ], className='nav-link', href=href)
-    ], className='nav-item')
+    ], SidebarNavItem.is_active(href))
 
 
 @session_data

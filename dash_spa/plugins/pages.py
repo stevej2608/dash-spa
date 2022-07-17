@@ -444,6 +444,8 @@ def plug(app):
                 layout = page["layout"]
                 title = page["title"]
 
+            flask.request.dash_pathname = pathname
+
             layout = page_layout(page, layout, path_variables, query_parameters)
 
             if callable(title):

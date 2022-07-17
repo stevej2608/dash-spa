@@ -1,12 +1,12 @@
 from dash import html, dcc
 from dash_spa import prefix
-from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, dropdownFolderEntry
+from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, SidebarNavItem, dropdownFolderEntry
 
 from ..icons.hero import LIGHTENING_ICON, CHART_PIE_ICON, VIEW_GRID_ICON, CALENDER_ICON, TABLE_ICON, FIRE_ICON, PAGES_ICON, ARCHIVE_ICON, CREDIT_CARD_ICON
 from .mobile_nav import mobileSidebarHeader
 
 
-def _sidebarLink(text, icon, href, active="", hyperlink=False, target=""):
+def _sidebarLink(text, icon, href, hyperlink=False, target=""):
     Element = html.A if hyperlink else dcc.Link
     el = Element([
             html.Span([
@@ -18,19 +18,18 @@ def _sidebarLink(text, icon, href, active="", hyperlink=False, target=""):
     if target:
         el.target = target
 
-    return  html.Li(el, className=f'nav-item {active}')
+    return SidebarNavItem(el, SidebarNavItem.is_active(href))
 
 
-
-def _sidebarButtonLink(text, icon, href, active=""):
-    return  html.Li([
+def _sidebarButtonLink(text, icon, href):
+    return  SidebarNavItem([
         dcc.Link([
             html.Span([
                 icon
             ], className='sidebar-icon d-inline-flex align-items-center justify-content-center'),
             html.Span(text, className="sidebar-text")
         ], href=href, className='btn btn-secondary d-flex align-items-center justify-content-center btn-upgrade-pro')
-    ], className=f'nav-item {active}')
+    ], active=SidebarNavItem.is_active(href))
 
 
 def sideBar(id):
