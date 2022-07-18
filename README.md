@@ -160,6 +160,9 @@ def tableRow(self, index, args):
 ![](./docs/img/tables-2.png)
 
 **Dash/SPA** Allows easy creation of interactive forms
+
+TODO: Revisit forms - add session storage for field values, pytest forms
+
 ```
 from dash_spa import SpaForm, isTriggered
 
@@ -313,7 +316,7 @@ Any number of session data objects can be defined.
 Several example are available. The most comprehensive is *Flightdeck*. Other examples are minimalistic and
 focus on Dash/SPA specifics.
 
-**1. Flightdeck** is a, 100% python, clone of the [Volt Bootstrap 5 Dashboard] from [themesberg](https://themesberg.com/). The
+**1. Flightdeck** is a 100% python clone of the [Volt Bootstrap 5 Dashboard] from [themesberg](https://themesberg.com/). The
 example demonstrates how a rich UI experience can be easily created using Dash/SPA components and patterns.
 
     python -m examples.flightdeck.app
