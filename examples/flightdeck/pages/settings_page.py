@@ -29,8 +29,6 @@ layout = html.Main([
                 ], className='row')
             ], className='col-12 col-xl-4')
         ], className='row'),
-        # settingsPopupPanel(),
-        # settingsPopupButton(),
         footer()
     ], className='content')
 

@@ -32,8 +32,8 @@ def _sidebarButtonLink(text, icon, href):
     ], active=SidebarNavItem.is_active(href))
 
 
-def sideBar(id):
-    pid = prefix(id)
+def sideBar():
+    pid = prefix('sidebar')
     return html.Nav([
         html.Div([
 
@@ -49,7 +49,7 @@ def sideBar(id):
                 _sidebarLink("Calendar", ICON.CALENDER, 'https://demo.themesberg.com/volt-pro/pages/calendar'),
 
                 DropdownFolderAIO([
-                    dropdownFolderEntry("Bootstrap Tables", '/pages/tables/boostrap-tables'),
+                    dropdownFolderEntry("Bootstrap Tables", '/pages/tables/bootstrap-tables'),
                 ], "Tables", ICON.TABLE, id=pid('tables')),
 
                 # Page examples drop down

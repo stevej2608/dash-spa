@@ -7,7 +7,7 @@ from dash_spa.logging import log
 from .common import sideBar, mobileNavBar
 
 
-def default_container(page, layout,  **kwargs):
+def default_container(page, layout,  **_kwargs):
     """Default page content container. All pages are wrapped by this content unless
     registered with container=None or container='some_other_container
 
@@ -23,7 +23,7 @@ def default_container(page, layout,  **kwargs):
     try:
 
         try:
-            content = layout(**kwargs) if callable(layout) else layout
+            content = layout(**_kwargs) if callable(layout) else layout
         except InvalidAccess:
 
             # To force the user to the login page uncomment the following lines
@@ -36,7 +36,7 @@ def default_container(page, layout,  **kwargs):
 
         return html.Div([
             mobileNavBar(),
-            sideBar(id='sidebar'),
+            sideBar(),
             content
         ])
 

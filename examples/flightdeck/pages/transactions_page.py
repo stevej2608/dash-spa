@@ -1,6 +1,5 @@
 from dash import html
 from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE
-from dash_spa.logging import log
 from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext
 
 from .common import breadCrumbs, topNavBar, footer

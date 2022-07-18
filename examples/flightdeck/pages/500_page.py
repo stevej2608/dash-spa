@@ -5,7 +5,6 @@ from .icons import ICON
 register_page(__name__, path="/pages/500", title="Dash/Flightdeck - 500", container='full_page')
 
 layout = html.Div([
-    # NOTICE: You can use the _analytics.html partial to include production code specific code & trackers
     html.Main([
         html.Section([
             html.Div([
@@ -21,7 +20,6 @@ layout = html.Div([
                         ], href='dashboard', className='btn btn-gray-800 d-inline-flex align-items-center justify-content-center mb-4')
                     ], className='col-12 col-lg-5 order-2 order-lg-1 text-center text-lg-left'),
                     html.Div([
-                        # html.Img(className='img-fluid w-75', style=background_img('/assets/img/illustrations/500.svg', 416, 390))
                         html.Img(src='/assets/img/illustrations/500.svg')
                     ], className='col-12 col-lg-7 order-1 order-lg-2 text-center d-flex align-items-center justify-content-center')
                 ], className='row align-items-center')

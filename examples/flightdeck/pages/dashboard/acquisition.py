@@ -2,7 +2,6 @@ from dash import html
 
 from ..icons.hero import ICON
 
-
 def acquisition():
     return html.Div([
         html.Div([

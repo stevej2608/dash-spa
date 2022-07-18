@@ -1,10 +1,8 @@
 import dash
-from dash import Dash, html
+from dash import Dash
 import dash_spa as spa
-from dash_spa.themes import VOLT, VOLT_BOOTSTRAP
+from dash_spa.themes import VOLT
 from server import serve_app
-
-#from .pages.common import sideBar, mobileNavBar
 
 external_stylesheets = [
     "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css",
@@ -25,7 +23,7 @@ def create_dash():
     plugins=[
         spa.spa_session,
         spa.spa_pages,
-        spa.dash_logging
+        # spa.dash_logging
         ]
 
     app = dash.Dash( __name__,
@@ -45,20 +43,6 @@ def create_app(dash_factory) -> Dash:
 
     app.layout = layout()
     return app
-
-# def create_app(dash_factory) -> Dash:
-#     app = dash_factory()
-
-#     def layout():
-#         return html.Div([
-#             mobileNavBar(),
-#             sideBar(id='sidebar'),
-#             spa.page_container
-#         ])
-
-
-#     app.layout = layout()
-#     return app
 
 # python -m examples.flightdeck.app
 
