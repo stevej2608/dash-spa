@@ -6,7 +6,7 @@ from ..icons.hero import ICON
 def newButton():
     return DropdownButtonAIO([
         dropdownLink("Document", ICON.DOCUMENT),
-        dropdownLink("Message", ICON.MESSAGE),
+        dropdownLink("Message", ICON.MESSAGE.ME2),
         dropdownLink("Product", ICON.UPLOAD),
         dropdownLink("My Plan", ICON.FIRE.ME2_DANGER),
     ], "New")
