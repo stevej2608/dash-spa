@@ -36,10 +36,10 @@ class BEHANCE:
 
 GOOGLE = Svg([
         Path(fill='currentColor', d='M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z')
-    ], className='icon icon-xxs text-gray-500 me-2', role='img', xmlns='http://www.w3.org/2000/svg', viewBox='0 0 488 512', **{"aria-hidden": "true", "data-prefix": "fab", "data-icon": "google"})
+    ], className='icon icon-xxs text-gray-500 me-2', role='img', xmlns='http://www.w3.org/2000/svg', viewBox='0 0 488 512')
 
 YAHOO = Svg([
         Path(fill='currentColor', d='M223.69,141.06,167,284.23,111,141.06H14.93L120.76,390.19,82.19,480h94.17L317.27,141.06Zm105.4,135.79a58.22,58.22,0,1,0,58.22,58.22A58.22,58.22,0,0,0,329.09,276.85ZM394.65,32l-93,223.47H406.44L499.07,32Z')
-    ], className='icon icon-xxs text-gray-500 me-2', role='img', xmlns='http://www.w3.org/2000/svg', viewBox='0 0 512 512', **{"aria-hidden": "true", "data-prefix": "fab", "data-icon": "yahoo"})
+    ], className='icon icon-xxs text-gray-500 me-2', role='img', xmlns='http://www.w3.org/2000/svg', viewBox='0 0 512 512')
 
 

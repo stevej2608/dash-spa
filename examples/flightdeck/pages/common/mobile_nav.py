@@ -16,7 +16,7 @@ def mobileNavBar():
 
                 html.Span(className='navbar-toggler-icon')
 
-            ], className='navbar-toggler d-lg-none collapsed', type='button', **{"data-bs-toggle": "collapse", "data-bs-target": "#sidebarMenu", "aria-controls": "sidebarMenu", "aria-expanded": "false", "aria-label": "Toggle navigation"})
+            ], className='navbar-toggler d-lg-none collapsed', type='button')
         ], className='d-flex align-items-center')
     ], className='navbar navbar-dark navbar-theme-primary px-4 col-12 d-lg-none')
 
@@ -40,7 +40,7 @@ def mobileSidebarHeader():
         html.Div([
             html.A([
                 ICON.CROSS,
-            ], href='#sidebarMenu', **{"data-bs-toggle": "collapse", "data-bs-target": "#sidebarMenu", "aria-controls": "sidebarMenu", "aria-expanded": "true", "aria-label": "Toggle navigation"})
+            ], href='#sidebarMenu')
         ], className='collapse-close d-md-none')
 
     ], className='user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4')

@@ -4,7 +4,7 @@ from ..icons.hero import ICON
 
 def _progressBar100(value, color='success', margin='mb-0'):
     return html.Div([
-        html.Div(role='progressbar', className=f'progress-bar bg-{color}', style={"width": f"{value}%"}, **{"aria-valuenow": f"{value}", "aria-valuemin": "0", "aria-valuemax": "100"}),
+        html.Div(role='progressbar', className=f'progress-bar bg-{color}', style={"width": f"{value}%"}),
     ], className=f'{margin} progress')
 
 

@@ -97,7 +97,7 @@ def dropdown_buttons():
 
             html.Div([
 
-                html.Button("Offset", className='btn btn-secondary dropdown-toggle', id='dropdownMenuOffset', type='button', **{"aria-expanded": "false", "data-bs-offset": "10,20", "data-bs-toggle": "dropdown"}),
+                html.Button("Offset", className='btn btn-secondary dropdown-toggle', id='dropdownMenuOffset', type='button'),
                 html.Ul([
                     html.Li([
                         html.A("Action", className='dropdown-item rounded-top', href='#')
@@ -108,7 +108,7 @@ def dropdown_buttons():
                     html.Li([
                         html.A("Something else here", className='dropdown-item rounded-bottom', href='#')
                     ])
-                ], className='dropdown-menu py-0', **{"aria-labelledby": "dropdownMenuOffset"})
+                ], className='dropdown-menu py-0')
             ], className='dropdown me-1'),
 
             # Reference dropdown
@@ -119,7 +119,7 @@ def dropdown_buttons():
                 html.Button([
                     ICON.DOWN_ARROW.XS,
                     html.Span("Toggle Dropdown", className='visually-hidden')
-                ], className='btn btn-secondary dropdown-toggle dropdown-toggle-split', id='dropdownMenuReference', type='button', **{"aria-expanded": "false", "data-bs-reference": "parent", "data-bs-toggle": "dropdown"}),
+                ], className='btn btn-secondary dropdown-toggle dropdown-toggle-split', id='dropdownMenuReference', type='button'),
                 html.Ul([
                     html.Li([
                         html.A("Action", className='dropdown-item rounded-top', href='#')
@@ -136,7 +136,7 @@ def dropdown_buttons():
                     html.Li([
                         html.A("Separated link", className='dropdown-item rounded-bottom', href='#')
                     ])
-                ], className='dropdown-menu py-0', **{"aria-labelledby": "dropdownMenuReference"})
+                ], className='dropdown-menu py-0')
 
             ], className='btn-group'),
 

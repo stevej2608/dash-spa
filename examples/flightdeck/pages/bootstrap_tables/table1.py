@@ -37,7 +37,7 @@ def progressBar(value):
                 html.Div([
                     html.Div(className='progress-bar bg-dark',
                              role='progressbar',
-                             style={"width": f"{value}%"}, **{"aria-valuenow": f"{value}", "aria-valuemin": "0", "aria-valuemax": "100"})
+                             style={"width": f"{value}%"})
                 ], className='progress progress-lg mb-0')
             ], className='col-12 col-xl-10 px-0 px-xl-1')
         ], className='row d-flex align-items-center')

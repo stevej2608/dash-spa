@@ -34,7 +34,7 @@ def generalInformationForm():
                         html.Option("Gender", selected=''),
                         html.Option("Female", value='1'),
                         html.Option("Male", value='2')
-                    ], className='form-select mb-0', id='gender', **{"aria-label": "Gender select example"})
+                    ], className='form-select mb-0', id='gender')
                 ], className='col-md-6 mb-3')
             ], className='row align-items-center'),
             html.Div([
@@ -128,7 +128,7 @@ def generalInformationForm():
                         html.Option("West Virginia", value='WV'),
                         html.Option("Wisconsin", value='WI'),
                         html.Option("Wyoming", value='WY')
-                    ], className='form-select w-100 mb-0', id='state', name='state', **{"aria-label": "State select example"})
+                    ], className='form-select w-100 mb-0', id='state', name='state')
                 ], className='col-sm-4 mb-3'),
                 html.Div([
                     html.Div([

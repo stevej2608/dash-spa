@@ -9,9 +9,9 @@ def settingsPopupPanel():
             html.Div([
                 html.P([
                     "Open source",
-                    html.Span("💛", role='img', **{"aria-label": "gratitude"})
+                    html.Span("💛", role='img')
                 ], className='m-0 mb-1 me-4 fs-7'),
-                dcc.Link("Star", className='github-button', href='https://github.com/themesberg/volt-bootstrap-5-dashboard', **{"data-color-scheme": "no-preference: dark; light: light; dark: light;", "data-icon": "octicon-star", "data-size": "large", "data-show-count": "true", "aria-label": "Star themesberg/volt-bootstrap-5-dashboard on GitHub"})
+                dcc.Link("Star", className='github-button', href='https://github.com/themesberg/volt-bootstrap-5-dashboard')
             ], className='d-flex justify-content-between align-items-center mb-3'),
             dcc.Link([
                 "Download",

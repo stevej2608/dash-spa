@@ -81,4 +81,4 @@ def sideBar():
 
             ], className='nav flex-column pt-3 pt-md-0')
         ], className='sidebar-inner px-4 pt-3')
-    ], id='sidebarMenu', className='sidebar d-lg-block bg-gray-800 text-white collapse', **{"data-simplebar": ""})
+    ], id='sidebarMenu', className='sidebar d-lg-block bg-gray-800 text-white collapse')

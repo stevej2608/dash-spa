@@ -97,7 +97,7 @@ def country():
             html.Option("One", value='1'),
             html.Option("Two", value='2'),
             html.Option("Three", value='3')
-        ], className='form-select', id='country', **{"aria-label": "Default select example"})
+        ], className='form-select', id='country')
     ], className='mb-4')
 
 def file_input():

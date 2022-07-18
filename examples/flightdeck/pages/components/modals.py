@@ -9,14 +9,14 @@ register_page(__name__, path="/pages/components/modals", title="Dash/Flightdeck 
 def default():
     return  html.Div([
         # Button Modal
-        html.Button("Default", type='button', className='btn btn-block btn-gray-800 mb-3', **{"data-bs-toggle": "modal", "data-bs-target": "#modal-default"}),
+        html.Button("Default", type='button', className='btn btn-block btn-gray-800 mb-3'),
         # Modal Content
         html.Div([
             html.Div([
                 html.Div([
                     html.Div([
                         html.H2("Terms of Service", className='h6 modal-title'),
-                        html.Button(type='button', className='btn-close', **{"data-bs-dismiss": "modal", "aria-label": "Close"})
+                        html.Button(type='button', className='btn-close')
                     ], className='modal-header'),
                     html.Div([
                         html.P("With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply."),
@@ -24,23 +24,23 @@ def default():
                     ], className='modal-body'),
                     html.Div([
                         html.Button("Accept", type='button', className='btn btn-secondary'),
-                        html.Button("Close", type='button', className='btn btn-link text-gray-600 ms-auto', **{"data-bs-dismiss": "modal"})
+                        html.Button("Close", type='button', className='btn btn-link text-gray-600 ms-auto')
                     ], className='modal-footer')
                 ], className='modal-content')
             ], className='modal-dialog modal-dialog-centered', role='document')
-        ], className='modal fade', id='modal-default', role='dialog', **{"aria-labelledby": "modal-default", "aria-hidden": "true"}),
+        ], className='modal fade', id='modal-default', role='dialog'),
         # End of Modal Content
     ], className='col-lg-4')
 
 def notification():
     return html.Div([
         # Button Modal
-        html.Button("Notification", type='button', className='btn btn-block btn-gray-800 mb-3', **{"data-bs-toggle": "modal", "data-bs-target": "#modal-notification"}),
+        html.Button("Notification", type='button', className='btn btn-block btn-gray-800 mb-3'),
         # Modal Content
         html.Div([
             html.Div([
                 html.Div([
-                    html.Button(type='button', className='btn-close theme-settings-close fs-6 ms-auto', **{"data-bs-dismiss": "modal", "aria-label": "Close"}),
+                    html.Button(type='button', className='btn-close theme-settings-close fs-6 ms-auto'),
                     html.Div([
                         html.P("A new experience, personalized for you.", className='modal-title text-gray-200', id='modal-title-notification')
                     ], className='modal-header'),
@@ -56,21 +56,21 @@ def notification():
                     ], className='modal-footer')
                 ], className='modal-content bg-gradient-secondary')
             ], className='modal-dialog modal-info modal-dialog-centered', role='document')
-        ], className='modal fade', id='modal-notification', role='dialog', **{"aria-labelledby": "modal-notification", "aria-hidden": "true"}),
+        ], className='modal fade', id='modal-notification', role='dialog'),
         # End of Modal Content
     ], className='col-lg-4')
 
 def sign_in():
     return  html.Div([
         # Button Modal
-        html.Button("Sign In", type='button', className='btn btn-block btn-gray-800 mb-3', **{"data-bs-toggle": "modal", "data-bs-target": "#modal-form"}),
+        html.Button("Sign In", type='button', className='btn btn-block btn-gray-800 mb-3'),
         # Modal Content
         html.Div([
             html.Div([
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.Button(type='button', className='btn-close ms-auto', **{"data-bs-dismiss": "modal", "aria-label": "Close"}),
+                            html.Button(type='button', className='btn-close ms-auto'),
                             html.Div([
                                 html.H1("Sign in to our platform", className='mb-0 h4')
                             ], className='text-center text-md-center mb-4 mt-md-0'),
@@ -112,9 +112,9 @@ def sign_in():
                                 html.Span("or login with", className='fw-normal')
                             ], className='mt-3 mb-4 text-center'),
                             html.Div([
-                                html.A(FACEBOOK.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
-                                html.A(TWITTER.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
-                                html.A(GITHUB.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
+                                html.A(FACEBOOK.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button'),
+                                html.A(TWITTER.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button'),
+                                html.A(GITHUB.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button')
                             ], className='d-flex justify-content-center my-4'),
                             html.Div([
                                 html.Span([
@@ -126,7 +126,7 @@ def sign_in():
                     ], className='modal-body p-0')
                 ], className='modal-content')
             ], className='modal-dialog modal-dialog-centered', role='document')
-        ], className='modal fade', id='modal-form', role='dialog', **{"aria-labelledby": "modal-form", "aria-hidden": "true"}),
+        ], className='modal fade', id='modal-form', role='dialog'),
         # End of Modal Content
     ], className='col-lg-4')
 
@@ -134,14 +134,14 @@ def sign_in():
 def sign_out():
     return html.Div([
         # Button Modal
-        html.Button("Sign Up", type='button', className='btn btn-block btn-gray-800 mb-3', **{"data-bs-toggle": "modal", "data-bs-target": "#modal-form-signup"}),
+        html.Button("Sign Up", type='button', className='btn btn-block btn-gray-800 mb-3'),
         # Modal Content
         html.Div([
             html.Div([
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.Button(type='button', className='btn-close ms-auto', **{"data-bs-dismiss": "modal", "aria-label": "Close"}),
+                            html.Button(type='button', className='btn-close ms-auto'),
                             html.Div([
                                 html.H1("Create Account", className='mb-0 h4')
                             ], className='text-center text-md-center mb-4 mt-md-0'),
@@ -192,9 +192,9 @@ def sign_out():
                                 html.Span("or login with", className='fw-normal')
                             ], className='mt-3 mb-4 text-center'),
                             html.Div([
-                                html.A(FACEBOOK.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button', **{"aria-label": "facebook button"}),
-                                html.A(TWITTER.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button', **{"aria-label": "twitter button"}),
-                                html.A(GITHUB.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button', **{"aria-label": "github button"})
+                                html.A(FACEBOOK.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='facebook button'),
+                                html.A(TWITTER.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500 me-2', title='twitter button'),
+                                html.A(GITHUB.XXS, href='#', className='btn btn-icon-only btn-pill btn-outline-gray-500', title='github button')
                             ], className='d-flex justify-content-center my-3'),
                             html.Div([
                                 html.Span([
@@ -206,7 +206,7 @@ def sign_out():
                     ], className='modal-body p-0')
                 ], className='modal-content')
             ], className='modal-dialog modal-dialog-centered', role='document')
-        ], className='modal fade', id='modal-form-signup', role='dialog', **{"aria-labelledby": "modal-form-signup", "aria-hidden": "true"}),
+        ], className='modal fade', id='modal-form-signup', role='dialog'),
         # End of Modal Content
     ], className='col-lg-4')
 
@@ -214,12 +214,12 @@ def sign_out():
 def achievement():
     return  html.Div([
         # Button Modal
-        html.Button("Achievement", type='button', className='btn btn-block btn-gray-800 mb-3', **{"data-bs-toggle": "modal", "data-bs-target": "#modal-achievement"}),
+        html.Button("Achievement", type='button', className='btn btn-block btn-gray-800 mb-3'),
         # Modal Content
         html.Div([
             html.Div([
                 html.Div([
-                    html.Button(type='button', className='btn-close theme-settings-close fs-6 ms-auto', **{"data-bs-dismiss": "modal", "aria-label": "Close"}),
+                    html.Button(type='button', className='btn-close theme-settings-close fs-6 ms-auto'),
                     html.Div([
                         html.P("You just unlocked a new badge", className='lead mb-0 text-white')
                     ], className='modal-header mx-auto'),
@@ -229,29 +229,29 @@ def achievement():
                             html.H2("Author Level 5", className='h3 modal-title mb-3 text-white'),
                             html.P("One Thousand Dollars! Well done mate - heads are turning your way.", className='mb-4 text-white'),
                             html.Div([
-                                html.Div(className='progress-bar bg-secondary', role='progressbar', style={'width': '50%'}, **{"aria-valuenow": "50", "aria-valuemin": "0", "aria-valuemax": "100"})
+                                html.Div(className='progress-bar bg-secondary', role='progressbar', style={'width': '50%'})
                             ], className='progress mb-0')
                         ], className='py-3 px-5 text-center')
                     ], className='modal-body pt-0'),
                     html.Div([
-                        html.Button("Awesome!", type='button', className='btn btn-sm btn-white text-tertiary', **{"data-bs-dismiss": "modal"})
+                        html.Button("Awesome!", type='button', className='btn btn-sm btn-white text-tertiary')
                     ], className='modal-footer d-flex justify-content-center pt-0 pb-3')
                 ], className='modal-content')
             ], className='modal-dialog modal-tertiary modal-dialog-centered', role='document')
-        ], className='modal fade', id='modal-achievement', role='dialog', **{"aria-labelledby": "modal-achievement", "aria-hidden": "true"}),
+        ], className='modal fade', id='modal-achievement', role='dialog'),
         # End of Modal Content
     ], className='col-lg-4')
 
 def subscribe():
     return html.Div([
         # Button Modal
-        html.Button("Subscribe", type='button', className='btn btn-block btn-gray-800 mb-3', **{"data-bs-toggle": "modal", "data-bs-target": "#modal-subscribe"}),
+        html.Button("Subscribe", type='button', className='btn btn-block btn-gray-800 mb-3'),
         # Modal Content
         html.Div([
             html.Div([
                 html.Div([
                     html.Div([
-                        html.Button(type='button', className='btn-close btn-close-white text-white', **{"data-bs-dismiss": "modal", "aria-label": "Close"})
+                        html.Button(type='button', className='btn-close btn-close-white text-white')
                     ], className='modal-header'),
                     html.Div([
                         html.Span(ICON.MAIL_OPEN, className='modal-icon'),
@@ -277,7 +277,7 @@ def subscribe():
                     ], className='modal-footer z-2 mx-auto text-center')
                 ], className='modal-content bg-dark text-white')
             ], className='modal-dialog modal-tertiary modal-dialog-centered modal-lg', role='document')
-        ], className='modal fade', id='modal-subscribe', role='dialog', **{"aria-labelledby": "modal-subscribe", "aria-hidden": "true"}),
+        ], className='modal fade', id='modal-subscribe', role='dialog'),
         # End of Modal Content
     ], className='col-lg-4')
 
