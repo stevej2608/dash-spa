@@ -109,7 +109,7 @@ class DropdownFolderAIO(html.Div):
             else:
                 state.className = className + ' collapse'
 
-            log.info('update_dropdown  id=%s, state %s', id, state.className)
+            # log.info('update_dropdown  id=%s, state %s', id, state.className)
 
             return state.className
 

@@ -111,7 +111,7 @@ class ServerSessionCache:
 
 
     def update(self):
-        log.info('write cache[%s]=%s', self.session_id, self.session_store)
+        # log.info('write cache[%s]=%s', self.session_id, self.session_store)
         json_str = json.dumps(self.session_store, default=json_encode)
         ServerSessionCache._disk_cache.set(self.session_id, json_str, self.expiry)
 

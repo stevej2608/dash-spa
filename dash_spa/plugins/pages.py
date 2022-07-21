@@ -395,7 +395,7 @@ def plug(app):
                 if container_name in dash.container_registry:
                     container = dash.container_registry[container_name]
                     return (
-                            container(layout, **path_variables, **query_parameters)
+                            container(page, layout, **path_variables, **query_parameters)
                             if path_variables
                             else container(page, layout, **query_parameters)
                         )

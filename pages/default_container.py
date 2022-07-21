@@ -28,7 +28,7 @@ CSS = """
     }
 """
 
-def default_container(pages, layout,  **kwargs):
+def default_container(page, layout,  **kwargs):
     """Default page content container. All pages are wrapped by this content unless
     registered with container=None or container='some_other_container
 
@@ -38,6 +38,8 @@ def default_container(pages, layout,  **kwargs):
     Returns:
         layout wrapped by container markup
     """
+
+    log.info("*************** default_container page=%s *********************", page['module'])
 
     try:
 
