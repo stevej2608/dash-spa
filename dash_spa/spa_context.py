@@ -105,16 +105,25 @@ class Context:
         assert id, "The context.Provider must have an id"
 
         self.id = id
-        pid = prefix(id)
+        _pid = prefix(id)
 
         # log.info('Provider id=%s', self.id)
 
-        container_id = pid('container')
+        container_id = _pid('ctx_container')
 
         # state can be provide when the context is created or passed in here
 
         self._context_state = copy(state) if state is not None else self._context_state
-        self._redux_store = ReduxStore(id=pid(), data=state.get_shadow_store(), storage_type='session')
+        self._redux_store = ReduxStore(id=_pid(), data=state.get_shadow_store(), storage_type='session')
+
+        # The ID passed in is unique, use it to inject a prefix method into the
+        # context state. This can then be used create ID's for dash element that are
+        # declared in the scope of the active context
+
+        def pid(id):
+            return _pid(id)
+
+        self._context_state.pid = pid
 
         def provider_decorator(func):
 

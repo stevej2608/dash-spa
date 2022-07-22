@@ -16,7 +16,7 @@ ButtonContext = createContext(ButtonState);
 
 def Button():
     state = ButtonContext.getState()
-    btn = html.Button("Button", id='btn')
+    btn = html.Button("Button", state.pid('btn'))
 
     @ButtonContext.On(btn.input.n_clicks, prevent_initial_call=True)
     def btn_click(clicks):
@@ -30,7 +30,6 @@ def test_button(dash_duo):
     # Dash layout() decorated with Context.Provider. layout() will be called
     # every time the ButtonContext changes
 
-    @ButtonContext.Provider(id='test_btn')
     def widget_layout():
 
         # The context Provider calls the wrapped function, in this
@@ -45,13 +44,15 @@ def test_button(dash_duo):
         state = ButtonContext.getState()
 
         btn = Button()
-        container = html.Div(f"Button pressed {state.clicks} times!", id='container')
+        container = html.Div(f"Button pressed {state.clicks} times!", state.pid('container'))
 
         return _Wrapper(btn, container)
 
+
     # Create Dash UI and start the test server
 
-    app.layout = widget = widget_layout()
+    widget = ButtonContext.Provider(id='test_btn')(widget_layout)()
+    app.layout = widget
     dash_duo.start_server(app)
 
     # Test code
