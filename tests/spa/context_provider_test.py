@@ -4,6 +4,7 @@ from dash import html
 from dash_spa.logging import log
 from dash_spa.spa_context import createContext, ContextState, dataclass
 
+
 @dataclass
 class ButtonState(ContextState):
     clicks: int = 1000
@@ -26,36 +27,39 @@ def Button():
 def test_button(dash_duo):
     app = dash.Dash(__name__)
 
-    # These are only defined here to allow test access
-
-    btn = None
-    container = None
-
     # Dash layout() decorated with Context.Provider. layout() will be called
     # every time the ButtonContext changes
 
     @ButtonContext.Provider(id='test_btn')
-    def layout():
-        nonlocal btn, container
+    def widget_layout():
+
+        # The context Provider calls the wrapped function, in this
+        # case 'widget_layout()' whenever the context is updated
+
+        class _Wrapper(html.Div):
+            def __init__(self, button, container):
+                self.container = container
+                self.btn = button
+                super().__init__([button, container])
 
         state = ButtonContext.getState()
 
         btn = Button()
         container = html.Div(f"Button pressed {state.clicks} times!", id='container')
 
-        return html.Div([btn, container])
+        return _Wrapper(btn, container)
 
     # Create Dash UI and start the test server
 
-    app.layout = layout()
+    app.layout = widget = widget_layout()
     dash_duo.start_server(app)
 
     # Test code
 
     def wait_text(text):
-        return dash_duo.wait_for_text_to_equal(container.css_id, text, timeout=4)
+        return dash_duo.wait_for_text_to_equal(widget.container.css_id, text, timeout=4)
 
-    _btn = dash_duo.find_element(btn.css_id)
+    _btn = dash_duo.find_element(widget.btn.css_id)
     assert wait_text("Button pressed 1000 times!")
 
     _btn.click()
