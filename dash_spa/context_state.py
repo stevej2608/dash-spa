@@ -114,9 +114,6 @@ class ContextState:
     ```
     """
 
-    # TODO: Convert this to a method to avoid potential conflict a user attribute called cid
-
-    @property
     def cid(self):
         """Unique context ID"""
         return id(self)

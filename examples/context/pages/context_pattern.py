@@ -37,7 +37,7 @@ def layout():
     tb1 = state.toolbar[0]
     tb2 = state.toolbar[1]
 
-    log.info('layout_page() state.cid=%s', state.cid)
+    log.info('layout_page() state.cid=%s', state.cid())
 
     # Changes in the ButtonContext state will force
     # layout_page() to update the UI

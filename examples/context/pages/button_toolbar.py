@@ -23,7 +23,7 @@ class TBState(ContextState):
 def button_toolbar(ctx, state: TBState, id):
     pid = prefix(id)
 
-    log.info("button_toolbar state.cid=%s", state.cid)
+    log.info("button_toolbar state.cid=%s", state.cid())
 
     button_match = spa.match({'type': pid('btn'), 'idx': ALL})
 
@@ -38,7 +38,7 @@ def button_toolbar(ctx, state: TBState, id):
 
     @ctx.On(button_match.input.n_clicks, prevent_initial_call=True)
     def btn_update(clicks):
-        log.info("btn_update state.cid=%s", state.cid)
+        log.info("btn_update state.cid=%s", state.cid())
         index = spa.trigger_index()
         state.buttons[index].clicks += 1
 

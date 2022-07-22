@@ -82,7 +82,7 @@ class Context:
                     self._context_state.set_shadow_store(state)
 
                     log.info('******** On Event ***********')
-                    log.info('state cid=%s %s', self._context_state.cid, state)
+                    log.info('state cid=%s %s', self._context_state.cid(), state)
 
                     self.contexts.set_context(self)
                     user_func(*args)
