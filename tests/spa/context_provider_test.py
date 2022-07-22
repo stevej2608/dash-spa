@@ -24,34 +24,49 @@ def Button():
 
     return btn
 
-def test_button(dash_duo):
+def button_widget_layout():
+    """
+    Simple test fixture consisting of a button and a div that
+    communicate via the active ButtonContext. When the button is clicked the
+    div displays a message reporting the number of clicks.
+    """
+
+    # Hack to allow tests to easily reference the button & container
+
+    class _TestWrapper(html.Div):
+        def __init__(self, button, container):
+            self.container = container
+            self.btn = button
+            super().__init__([button, container])
+
+    state = ButtonContext.getState()
+
+    btn = Button()
+    container = html.Div(f"Button pressed {state.clicks} times!", state.pid('container'))
+
+    return _TestWrapper(btn, container)
+
+
+def test_no_context():
+
+    # Try and use context outside of provider - exception expected
+
+    with pytest.raises(Exception) as error:
+        Button()
+
+    assert "Context can only be used within the scope of a provider" in str(error)
+
+
+def test_single_button(dash_duo):
     app = dash.Dash(__name__)
-
-    # Dash layout() decorated with Context.Provider. layout() will be called
-    # every time the ButtonContext changes
-
-    def widget_layout():
-
-        # The context Provider calls the wrapped function, in this
-        # case 'widget_layout()' whenever the context is updated
-
-        class _Wrapper(html.Div):
-            def __init__(self, button, container):
-                self.container = container
-                self.btn = button
-                super().__init__([button, container])
-
-        state = ButtonContext.getState()
-
-        btn = Button()
-        container = html.Div(f"Button pressed {state.clicks} times!", state.pid('container'))
-
-        return _Wrapper(btn, container)
-
 
     # Create Dash UI and start the test server
 
-    widget = ButtonContext.Provider(id='test_btn')(widget_layout)()
+    @ButtonContext.Provider(id='single_button')
+    def layout():
+        return button_widget_layout()
+
+    widget = layout()
     app.layout = widget
     dash_duo.start_server(app)
 
@@ -76,9 +91,38 @@ def test_button(dash_duo):
     assert wait_text("Button pressed 1004 times!")
 
 
-def test_no_context():
+def test_multiple_buttons(dash_duo):
+    app = dash.Dash(__name__)
 
-    # Try and use context outside of provider - exception expected
+    # Create multi-button dash UI and start the test server
 
-    with pytest.raises(Exception):
-        Button()
+    widgets = [ButtonContext.wrap(button_widget_layout, id=id) for id in ['bnt1', 'btn2', 'btn3']]
+    app.layout = html.Div(widgets)
+    dash_duo.start_server(app)
+
+    # Test code
+
+    def _wait_text(widget, text):
+        return dash_duo.wait_for_text_to_equal(widget.container.css_id, text, timeout=4)
+
+    for widget in widgets:
+
+        wait_text = lambda text: _wait_text(widget, text)
+
+        _btn = dash_duo.find_element(widget.btn.css_id)
+        assert wait_text("Button pressed 1000 times!")
+
+        _btn.click()
+        assert wait_text("Button pressed 1001 times!")
+
+        _btn.click()
+        assert wait_text("Button pressed 1002 times!")
+
+        _btn.click()
+        assert wait_text("Button pressed 1003 times!")
+
+        _btn.click()
+        assert wait_text("Button pressed 1004 times!")
+
+
+

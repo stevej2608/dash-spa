@@ -38,6 +38,10 @@ class Context:
         self._context_state = state
         self.allow_initial_state = True
 
+    def pid(self, id=None):
+        pfx = prefix(self.id)
+        return pfx(id)
+
     def callback(self, *_args, **_kwargs):
 
         def wrapper(user_func):
@@ -100,28 +104,25 @@ class Context:
 
         return wrapper
 
-    def Provider(self, state:ContextState=None, id=id):
+    def Provider(self, state:ContextState=None):
 
         assert id, "The context.Provider must have an id"
 
-        self.id = id
-        _pid = prefix(id)
-
         # log.info('Provider id=%s', self.id)
 
-        container_id = _pid('ctx_container')
+        container_id = self.pid('ctx_container')
 
         # state can be provide when the context is created or passed in here
 
         self._context_state = copy(state) if state is not None else self._context_state
-        self._redux_store = ReduxStore(id=_pid(), data=state.get_shadow_store(), storage_type='session')
+        self._redux_store = ReduxStore(id=self.pid(), data=state.get_shadow_store(), storage_type='session')
 
         # The ID passed in is unique, use it to inject a prefix method into the
         # context state. This can then be used create ID's for dash element that are
         # declared in the scope of the active context
 
         def pid(id):
-            return _pid(id)
+            return self.pid(id)
 
         self._context_state.pid = pid
 
@@ -327,6 +328,7 @@ class ContextWrapper:
         return self.ctx.On(*_args, **_kwargs)
 
     def Provider(self, id=id, state:ContextState=None):
+        """Dash Layout function decorator"""
         state = state if state else self.dataclass()
 
         if not id in self.ctx_lookup:
@@ -334,7 +336,11 @@ class ContextWrapper:
 
         self.ctx = self.ctx_lookup[id]
 
-        return self.ctx.Provider(state, id)
+        return self.ctx.Provider(state)
+
+    def wrap(self, layout, id):
+        """Wrap the given dash layout in this context"""
+        return self.Provider(id=id)(layout)()
 
     def useState(self, ref:str=None, initial_state: ContextState = None) -> Tuple[ContextState, Callable[[Any], None]]:
         """Return the current context state
