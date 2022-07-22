@@ -43,10 +43,17 @@ class TiniConfig:
             def __getattr__(self, key):
                 if key in self.__dict__:
                     return self.__dict__[key]
-                raise ConfigurationError(f"Configuration error: attribute {section}.{key} has not been defined.")
+                raise ConfigurationError(f"Configuration error: Attribute {section}.{key} has not been defined.")
 
         try:
-            dt = self.config.sections[section] if section  and section in  self.config.sections else self.config.sections
+            if section:
+                if section in self.config.sections:
+                    dt = self.config.sections[section]
+                else:
+                    raise ConfigurationError(f"Configuration error: Section {section} has not been defined.")
+            else:
+                dt = self.config.sections
+
             obj = ConfigWrapper(dt)
             return obj
         except ConfigurationError as ex:

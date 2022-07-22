@@ -1,6 +1,6 @@
 import os
 import pytest
-from dash_spa.spa_config import read_config
+from dash_spa.spa_config import read_config, ConfigurationError
 
 def get_config(file):
     """Load module relative config file"""
@@ -9,19 +9,43 @@ def get_config(file):
     return read_config(file)
 
 def test_config_simple():
+    """
+    Test that environmental variable reference in the
+    configuration file './test.ini' is handled correctly.
+    """
 
-    # This should fail as env SPA_PASSWORD is not defined
+    # This should fail as environmental variable SPA_ADMIN_PASSWORD is not defined
 
-    with pytest.raises(Exception):
+    with pytest.raises(ConfigurationError) as error:
         get_config('test.ini')
 
-    # Try again ...
+    assert 'ENV variable "SPA_ADMIN_PASSWORD" is not assigned' in str(error)
 
-    os.environ["SPA_PASSWORD"] = "secret"
+    # Define SPA_ADMIN_PASSWORD and try again ...
+
+    os.environ["SPA_ADMIN_PASSWORD"] = "secret"
 
     config = get_config('test.ini')
-    options = config.get('options')
+    assert config
 
-    assert options.email == 'bigjoe@gmail.com'
-    assert options.password == 'secret'
+    # read 'admin' config
+
+    admin = config.get('admin')
+
+    assert admin
+    assert admin.email == 'bigjoe@gmail.com'
+    assert admin.password == 'secret'
+
+    # Try to access a nonexistent section
+
+    with pytest.raises(ConfigurationError) as error:
+        admin = config.get('users')
+
+    assert 'Section users has not been defined' in str(error)
+
+    # Try to access a nonexistent attribute
+
+    with pytest.raises(ConfigurationError) as error:
+        assert admin.undefined == 'secret'
+    assert 'Attribute admin.undefined has not been defined' in str(error)
 
