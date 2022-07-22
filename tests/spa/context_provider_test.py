@@ -6,12 +6,12 @@ from dash_spa.spa_context import createContext, ContextState, dataclass
 
 @dataclass
 class ButtonState(ContextState):
-    clicks: int = 0
+    clicks: int = 1000
 
 ButtonContext = createContext(ButtonState);
 
 # Define button with associated context callback. Button context is incremented
-# on each click
+# on each click. The context maintains the number of button clicks
 
 def Button():
     state = ButtonContext.getState()
@@ -26,6 +26,8 @@ def Button():
 def test_button(dash_duo):
     app = dash.Dash(__name__)
 
+    # These are only defined here to allow test access
+
     btn = None
     container = None
 
@@ -35,9 +37,12 @@ def test_button(dash_duo):
     @ButtonContext.Provider(id='test_btn')
     def layout():
         nonlocal btn, container
+
         state = ButtonContext.getState()
+
         btn = Button()
         container = html.Div(f"Button pressed {state.clicks} times!", id='container')
+
         return html.Div([btn, container])
 
     # Create Dash UI and start the test server
@@ -51,19 +56,19 @@ def test_button(dash_duo):
         return dash_duo.wait_for_text_to_equal(container.css_id, text, timeout=4)
 
     _btn = dash_duo.find_element(btn.css_id)
-    assert wait_text("Button pressed 0 times!")
+    assert wait_text("Button pressed 1000 times!")
 
     _btn.click()
-    assert wait_text("Button pressed 1 times!")
+    assert wait_text("Button pressed 1001 times!")
 
     _btn.click()
-    assert wait_text("Button pressed 2 times!")
+    assert wait_text("Button pressed 1002 times!")
 
     _btn.click()
-    assert wait_text("Button pressed 3 times!")
+    assert wait_text("Button pressed 1003 times!")
 
     _btn.click()
-    assert wait_text("Button pressed 4 times!")
+    assert wait_text("Button pressed 1004 times!")
 
 
 def test_no_context():

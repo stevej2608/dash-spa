@@ -1,7 +1,7 @@
 dash-bootstrap-components>=1.1.0
 dash-holoniq-components>=0.0.19
 dash-prefix>=0.0.4
-dash-redux>=0.0.3
+dash-redux>=0.0.4
 dash-svg>=0.0.8
 dash>=2.1.0
 iniconfig>=1.1.1
