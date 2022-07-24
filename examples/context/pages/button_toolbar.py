@@ -1,8 +1,8 @@
 from typing import List, Dict
 from dash import html, ALL
-from dash_spa import prefix, NOUPDATE, add_style
+from dash_spa import prefix
 from dash_spa.logging import log
-from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_LIST, EMPTY_DICT
+from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_LIST
 import dash_spa as spa
 
 
@@ -19,14 +19,12 @@ class TBState(ContextState):
     def __post_init__(self):
         self.buttons = [TButton(name, 0) for name in self.buttons]
 
-
 ToolbarContext: Dict[str, TBState] = createContext()
 
-
-def button_toolbar(id, state):
+def button_toolbar(id, initial_state:TBState):
     pid = prefix(f'button_toolbar_{id}')
 
-    state, _ = ToolbarContext.useState(id, initial_state=state)
+    state, _ = ToolbarContext.useState(id, initial_state=initial_state)
 
     log.info("button_toolbar state.id=%s", pid())
 
@@ -41,7 +39,7 @@ def button_toolbar(id, state):
     msg = [f"{btn.name} pressed {btn.clicks} times" for btn in state.buttons]
     container = html.H5(", ".join(msg))
 
-    @ToolbarContext.On(button_match.input.n_clicks, prevent_initial_call=True)
+    @ToolbarContext.On(button_match.input.n_clicks)
     def btn_update(clicks):
         log.info("btn_update state.cid=%s", state.cid())
         index = spa.trigger_index()

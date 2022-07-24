@@ -1,8 +1,6 @@
-from typing import List
 from dash import html
-from dash_spa import prefix, register_page, NOUPDATE
+from dash_spa import register_page
 from dash_spa.logging import log
-from dash_spa.spa_context import  ContextState, createContext, dataclass, EMPTY_LIST
 
 from .button_toolbar import ToolbarContext, button_toolbar, TBState
 
@@ -40,9 +38,7 @@ def layout():
     report = html.Div([tb_report(tb) for tb in state.items()], style={'background-color': '#e6e6e6'})
     report.children.insert(0, html.H3('Toolbar Report'))
 
-    title = html.H3('React.js Context Example')
+    title = html.H3('Toolbar Component Example')
 
     return html.Div([title, main_toolbar, page_toolbar, report])
-
-
 
