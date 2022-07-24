@@ -1,8 +1,8 @@
-from typing import List
+from typing import List, Dict
 from dash import html, ALL
 from dash_spa import prefix, NOUPDATE, add_style
 from dash_spa.logging import log
-from dash_spa.spa_context import  ContextState, dataclass, EMPTY_LIST
+from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_LIST, EMPTY_DICT
 import dash_spa as spa
 
 
@@ -20,10 +20,15 @@ class TBState(ContextState):
         self.buttons = [TButton(name, 0) for name in self.buttons]
 
 
-def button_toolbar(ctx, state: TBState, id):
-    pid = prefix(id)
+ToolbarContext: Dict[str, TBState] = createContext()
 
-    log.info("button_toolbar state.cid=%s", state.cid())
+
+def button_toolbar(id, state):
+    pid = prefix(f'button_toolbar_{id}')
+
+    state, _ = ToolbarContext.useState(id, initial_state=state)
+
+    log.info("button_toolbar state.id=%s", pid())
 
     button_match = spa.match({'type': pid('btn'), 'idx': ALL})
 
@@ -36,11 +41,12 @@ def button_toolbar(ctx, state: TBState, id):
     msg = [f"{btn.name} pressed {btn.clicks} times" for btn in state.buttons]
     container = html.H5(", ".join(msg))
 
-    @ctx.On(button_match.input.n_clicks, prevent_initial_call=True)
+    @ToolbarContext.On(button_match.input.n_clicks, prevent_initial_call=True)
     def btn_update(clicks):
         log.info("btn_update state.cid=%s", state.cid())
         index = spa.trigger_index()
         state.buttons[index].clicks += 1
 
+    title = html.H4(f"Toolbar {state.title}")
 
-    return html.Div([btns, container], style={'background-color': '#e6e6e6'})
+    return html.Div([title, btns, container], style={'background-color': '#e6e6e6'})

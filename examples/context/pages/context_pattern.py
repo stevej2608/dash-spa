@@ -4,7 +4,7 @@ from dash_spa import prefix, register_page, NOUPDATE
 from dash_spa.logging import log
 from dash_spa.spa_context import  ContextState, createContext, dataclass, EMPTY_LIST
 
-from .button_toolbar import button_toolbar, TBState
+from .button_toolbar import ToolbarContext, button_toolbar, TBState
 
 register_page(__name__, path='/', title="React Pattern", short_name='React')
 
@@ -18,46 +18,31 @@ register_page(__name__, path='/', title="React Pattern", short_name='React')
 # is decorated with ButtonContext.Provider it  will be
 # called to refresh the UI whenever the context changes.
 
-@dataclass
-class ToolbarList(ContextState):
-    toolbar: List[TBState] = EMPTY_LIST
 
-TestContext = createContext(ToolbarList)
+def tb_report(tb: TBState):
+    """reports single toolbar state"""
 
-@TestContext.Provider(id='test')
+    msg = [f'{btn.name}={btn.clicks}' for btn in tb.buttons]
+    return html.H4(f'{tb.title} : {", ".join(msg)}')
+
+@ToolbarContext.Provider(id='test')
 def layout():
 
-    # Define some random toolbars
+    log.info('layout_page()')
 
-    state, _ = TestContext.useState(initial_state=ToolbarList([
-                    TBState("main", ['close', "exit", 'refresh']),
-                    TBState("page", ['next', "prev", 'top', 'bottom'])
-                    ]))
+    # Create some toolbars
 
-    tb1 = state.toolbar[0]
-    tb2 = state.toolbar[1]
+    main_toolbar = button_toolbar("main", TBState("main", ['close', "exit", 'refresh']))
+    page_toolbar = button_toolbar("page", TBState("page", ['next', "prev", 'top', 'bottom']))
 
-    log.info('layout_page() state.cid=%s', state.cid())
+    state = ToolbarContext.getState()
 
-    # Changes in the ButtonContext state will force
-    # layout_page() to update the UI
-
-    def report(tb: TBState):
-        msg = [f'{btn.name}={btn.clicks}' for btn in tb.buttons]
-        return html.H4(f'{tb.title} : {", ".join(msg)}')
-
-    pid = prefix('test')
-
-    toolbar_1 = button_toolbar(TestContext, tb1, id=pid('main'))
-    toolbar_2 = button_toolbar(TestContext, tb2, id=pid('page'))
-
-    button_report = html.Div([
-        report(tb) for tb in state.toolbar
-        ], style={'background-color': '#b6b6b6'})
+    report = html.Div([tb_report(tb) for tb in state.items()], style={'background-color': '#e6e6e6'})
+    report.children.insert(0, html.H3('Toolbar Report'))
 
     title = html.H3('React.js Context Example')
 
-    return html.Div([title, toolbar_1, toolbar_2, button_report])
+    return html.Div([title, main_toolbar, page_toolbar, report])
 
 
 

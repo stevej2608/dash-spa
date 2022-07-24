@@ -1,6 +1,8 @@
 from logging import exception
 from typing import TypeVar, Union
 import copy
+
+from attr import has
 from dash_spa.logging import log
 from dataclasses import dataclass, field, _is_dataclass_instance, fields
 
@@ -19,7 +21,6 @@ SelfContextState = TypeVar("SelfContextState", bound="ContextState")
 
 EMPTY_LIST = field(default_factory=lambda: [])
 EMPTY_DICT = field(default_factory=lambda: {})
-
 
 # Modified version of /python3.8/dataclasses.py the dataclasses
 # version in unable to handle missing fields
@@ -93,7 +94,7 @@ def _asdict_inner(obj, dict_factory):
     else:
         return copy.deepcopy(obj)
 
-# @dataclass
+@dataclass(init=False)
 class ContextState:
     """ ContextState is a simple wrapper to enable dot
     autocompletion to the underlying dictionary
@@ -114,18 +115,19 @@ class ContextState:
     ```
     """
 
+    def __post_init__(self):
+        __shadow_store__ = {}
+        __strict__ = True
+
     def cid(self):
         """Unique context ID"""
         return id(self)
 
-    def __init__(self):
-        self.__shadow_store__ = {}
-
 
     def __setattr__(self, name, value):
 
-        if hasattr(self, '__shadow_store__') and name != '__shadow_store__':
-            if name in self.__dataclass_fields__:
+        if hasattr(self, '__shadow_store__') and not name.startswith('__'):
+            if name in self.__dataclass_fields__ or not self.__strict__:
                 self.__shadow_store__[name] = value
                 if hasattr(self, '__shadow_update_listener__'):
                     self.__shadow_update_listener__()
@@ -207,6 +209,20 @@ class ContextState:
                 assert isinstance(value, ContextState), f"{ref} must be an instance of ContextState"
                 value.update(state=state)
                 return
+
+            if not self.__strict__:
+                if not hasattr(self, ref):
+                    setattr(self, ref, state)
+
+                    # if not hasattr(self, '__dataclass_fields__'):
+                    #     setattr(self, '__dataclass_fields__', {})
+
+                    self.__dataclass_fields__[ref] = field()
+                    return
+
+
+                # assert isinstance(value, ContextState), f"{ref} must be an instance of ContextState"
+                # value.update(state=state)
 
             raise AttributeError(f"Unknown attribute {ref}")
 

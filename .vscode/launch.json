@@ -22,10 +22,9 @@
     },
 
     {
-      "name": "1b. Python: examples.context.app",
+      "name": "2a. Python: examples.context.app",
       "type": "python",
       "request": "launch",
-      //"module": "tmp.context_skeleton",
       "module": "examples.context.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
@@ -38,7 +37,7 @@
     },
 
     {
-      "name": "1c. Python: examples.flightdeck.app",
+      "name": "2b. Python: examples.flightdeck.app",
       "type": "python",
       "request": "launch",
       "module": "examples.flightdeck.app",
@@ -53,7 +52,7 @@
     },
 
     {
-      "name": "1d. Python: examples.notifications.app",
+      "name": "2c. Python: examples.notifications.app",
       "type": "python",
       "request": "launch",
       "module": "examples.notifications.app",

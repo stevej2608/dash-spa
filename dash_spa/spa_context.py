@@ -11,6 +11,19 @@ from dash_redux import ReduxStore
 from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
 from dash_spa.logging import log
 
+@dataclass
+class DefaultContext(ContextState):
+    __strict__: bool = True
+
+    def items(self):
+        fields = []
+        for attr in self.__dataclass_fields__:
+            if attr.startswith("__"): continue
+            field = getattr(self,attr)
+            fields.append(field)
+        return fields
+
+
 # A ReduxStore wrapper that provides a React.Js style context pattern
 # that allows a components state change to trigger UI updates.
 #
@@ -329,7 +342,10 @@ class ContextWrapper:
 
     def Provider(self, id=id, state:ContextState=None):
         """Dash Layout function decorator"""
-        state = state if state else self.dataclass()
+
+        if state == None:
+            state = self.dataclass()
+            state.__strict__ = False
 
         if not id in self.ctx_lookup:
             self.ctx_lookup[id] = Context(self, id, state)
@@ -384,8 +400,6 @@ class ContextWrapper:
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.getStateDict(ref)
 
-def createContext(state: ContextState = None) -> ContextWrapper:
-    return ContextWrapper(state)
 
-# def useContext(ctx: _ContextWrapper):
-#     return ctx
+def createContext(state: ContextState = DefaultContext) -> ContextWrapper:
+    return ContextWrapper(state)

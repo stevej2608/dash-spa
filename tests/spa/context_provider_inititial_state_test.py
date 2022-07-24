@@ -32,8 +32,8 @@ def test_simple_state():
     # Init btn1 with defaults
 
     btn1 = TButton()
-    assert btn1.name is ""
-    assert btn1.clicks is 0
+    assert btn1.name == ""
+    assert btn1.clicks == 0
 
     # Confirm shadow store is updated
 
@@ -50,8 +50,8 @@ def test_simple_state():
     # Init btn2 with attribute values
 
     btn2 = TButton('test', 29)
-    assert btn2.name is "test"
-    assert btn2.clicks is 29
+    assert btn2.name == "test"
+    assert btn2.clicks == 29
 
     # Confirm shadow store is updated
 
