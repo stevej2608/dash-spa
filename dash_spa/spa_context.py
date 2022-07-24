@@ -17,10 +17,11 @@ class DefaultContext(ContextState):
 
     def items(self):
         fields = []
-        for attr in self.__dataclass_fields__:
-            if attr.startswith("__"): continue
-            field = getattr(self,attr)
-            fields.append(field)
+        for attr in self.__dict__.keys():
+            if not attr.startswith("__"):
+                field = getattr(self,attr)
+                if not callable(field):
+                    fields.append(field)
         return fields
 
 

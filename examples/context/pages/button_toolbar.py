@@ -26,7 +26,7 @@ def button_toolbar(id, initial_state:TBState):
 
     state, _ = ToolbarContext.useState(id, initial_state=initial_state)
 
-    log.info("button_toolbar state.id=%s", pid())
+    log.info("button_toolbar state.id=%s (%s)", pid(), state.cid())
 
     button_match = spa.match({'type': pid('btn'), 'idx': ALL})
 
