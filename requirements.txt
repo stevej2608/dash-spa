@@ -7,6 +7,17 @@ dash>=2.1.0
 iniconfig>=1.1.1
 diskcache>=5.4.0
 
+##########################################################################
+# Temporary workround. Werkzeug==2.2.0 was released three daya ago. Now I
+# get following from Flask_Login:
+#
+#     importError: cannot import name 'parse_rule' from 'werkzeug.routing'
+#
+# I think it's because the Flask_Login needs updating. Force Werkzeug to
+# older 2.1.2 for now:
+Werkzeug==2.1.2
+##########################################################################
+
 # For ticker demo
 
 colorlover>=0.3.0
