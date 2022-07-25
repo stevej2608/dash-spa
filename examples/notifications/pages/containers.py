@@ -6,7 +6,7 @@ from dash_spa.logging import log
 from dash_spa_admin import AdminNavbarComponent
 from dash_spa.exceptions import InvalidAccess
 
-def default_container(layout,  **kwargs):
+def default_container(page, layout,  **kwargs):
 
     content = layout(**kwargs) if callable(layout) else layout
 
