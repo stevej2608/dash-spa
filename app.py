@@ -2,13 +2,12 @@ import flask
 from dash import Dash
 import dash_bootstrap_components as dbc
 import dash_spa as spa
+from themes import VOLT_BOOTSTRAP
 # from dash_spa import spa_pages
-# from dash_spa import themes
 
 external_stylesheets = [
     "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css",
-    spa.themes.VOLT_BOOTSTRAP,
-    spa.themes.VOLT_BOOTSTRAP,
+    VOLT_BOOTSTRAP,
     # "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css",
     "https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.4/chartist.min.css",
     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.2.0/css/all.min.css"

@@ -2,12 +2,12 @@
 
 ![](docs/img/signin.png)
 
-**Dash/SPA** is a minimal template and component suite that allows you to build complex
-**[Dash]** based multi-page applications with ease. The demo application includes
+**Dash/SPA** is a component and suite that allows you to build complex
+[Plotly/Dash] based multi-page applications with ease. The demo application includes
 several well known Dash demos that have been pasted into the SPA framework
-to show how easy it is to transition to SPA. **Dash/SPA** can be installed from [pypi]
+to show how easy it is to transition to SPA.
 
-    pip install dash-spa
+To appreciate what you can do with **Dash/SPA** take a look at [dash-flightdeck].
 
 ### Demo
 
@@ -53,14 +53,14 @@ Remove image:
 The following Dash/SPA features are implemented to allow [Dash] to be
 more easily used at scale.
 
-**Dash/SPA** Uses the Dash Pages [plugin]:
+**Dash/SPA** Uses an enhanced version of the Dash Pages [plugin]:
 
 */pages/example.py*
 ```
 from dash import html
 from dash_spa import register_page
 
-register_page(path='/page1', title="Page-1")
+page = register_page(path='/page1', title="Page-1")
 
 def big_center(text, id=None):
     return html.H2(text, className='display-3 text-center')
@@ -188,7 +188,7 @@ def _form_submit(values):
     return spa.NOUPDATE
 ```
 
-**Dash/SPA** Support for page containers
+**Dash/SPA** Supports page containers.
 
 Depending on the application you may want the markup for page(s) to be
 rendered in a container. Think of a blog app as an example. The markup provided
@@ -310,24 +310,10 @@ ctx.clicks += 1
 
 Any number of session data objects can be defined.
 
-
 ### Dash/SPA Examples
 
 Several example are available. The most comprehensive is *Flightdeck*. Other examples are minimalistic and
 focus on Dash/SPA specifics.
-
-**1. Flightdeck** is a 100% python clone of the [Volt Bootstrap 5 Dashboard] from [themesberg](https://themesberg.com/). The
-example demonstrates how a rich UI experience can be easily created using Dash/SPA components and patterns.
-
-    python -m examples.flightdeck.app
-
-![](./docs/img/flightdeck-1.png)
-
-The example shows how easy it is to create great looking tables with optional search and pagination. Table cells
-can contain text and active components. Table, search and pagination layout is completely flexible.
-
-![](./docs/img/tables-1.png)
-
 
 **2. Minimal MultiPage** An example of a multi-page app with navbar and footer in less than sixty lines of code.
 
@@ -452,7 +438,7 @@ To run the tests:
     twine upload dist/*
 
 [pypi]: https://pypi.org/project/dash-spa/
-[Dash]: https://dash.plot.ly/introduction
+[Plotly/Dash]: https://dash.plot.ly/introduction
 [plugin]: https://community.plotly.com/t/introducing-dash-pages-a-dash-2-x-feature-preview/57775
 [Volt Bootstrap 5 Dashboard]:https://demo.themesberg.com/volt/pages/dashboard/dashboard.html
 [diskcache]: https://grantjenks.com/docs/diskcache/
