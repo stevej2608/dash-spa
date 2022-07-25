@@ -9,7 +9,7 @@ from dash_spa.spa_context import createContext, ContextState, dataclass
 class ButtonState(ContextState):
     clicks: int = 1000
 
-ButtonContext = createContext(ButtonState);
+ButtonContext = createContext(ButtonState)
 
 # Define button with associated context callback. Button context is incremented
 # on each click. The context maintains the number of button clicks

@@ -9,7 +9,7 @@ def test_context_simple():
     class ButtonState(ContextState):
         clicks: int = 10
 
-    ButtonContext = createContext(ButtonState);
+    ButtonContext = createContext(ButtonState)
 
     # Try and use context outside of provider - exception expected
 
@@ -49,7 +49,7 @@ def test_context_list():
         size: int = 10
         sizes: list = field(default_factory=lambda: [10, 20, 30])
 
-    SizesContext = createContext(SizesState);
+    SizesContext = createContext(SizesState)
 
     @SizesContext.Provider(id='test_context_list')
     def layout_test1(expected):
@@ -73,7 +73,7 @@ def test_context_dict():
         selected: str = 'red'
         colours: list = field(default_factory=lambda: ['red', 'green', 'blue'])
 
-    ColourContext = createContext(ColourState);
+    ColourContext = createContext(ColourState)
 
     @ColourContext.Provider(id='test_context_dict')
     def layout_test1(index):
