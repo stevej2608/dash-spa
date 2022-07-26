@@ -4,8 +4,7 @@ from dash_spa.logging import log
 
 from .utils.dataclass import asdict
 
-# ContextState is a simple wrapper enabling dot notation
-# the underlying dictionary.
+# ContextState is a base class
 #
 # Used by:
 #
@@ -109,6 +108,8 @@ class ContextState:
 
             else:
                 try:
+
+                    # Convert dict strings to numeric types
 
                     if type(current_value) != type(new_value):
                         if isinstance(current_value, int):

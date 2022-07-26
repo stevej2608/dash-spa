@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import _process_class, dataclass
+from dataclasses import _process_class
 from diskcache import Cache
 import json
 from flask import request
