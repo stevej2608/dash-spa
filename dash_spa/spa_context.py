@@ -11,6 +11,46 @@ from dash_redux import ReduxStore
 from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
 from dash_spa.logging import log
 
+"""Context state management
+
+ContextState is state/event pattern where a state Context is wrapped by
+a @Context.Provider. Dash callback events update the contexts' state which
+triggers the method decorated by the @Context.Provider. The decorated
+method can then update the Dash UI based on the new context state.
+
+A context can have any number of @Context.Providers. This pattern makes it
+possible to create generic Dash components that communicate with host
+application via ContextState.
+
+ContextState can, if required, have session persistence.
+
+Example usage:
+
+        @dataclass
+        class ButtonState(ContextState):
+            clicks: int = 1000
+
+        ButtonContext = createContext(ButtonState)
+
+        def Button(id):
+            state = ButtonContext.getState()
+            btn = html.Button("Button", id=id)
+
+            @ButtonContext.On(btn.input.n_clicks, prevent_initial_call=True)
+            def btn_click(clicks):
+                state.clicks += 1
+
+            return btn
+
+
+        @ButtonContext.Provider(id='test')
+        def layout():
+            state = ButtonContext.getState()
+            btn =  Button(id='test_btn)
+            return html.Div(f"button pressed {state.clicks} times!")
+
+"""
+
 @dataclass
 class DefaultContext(ContextState):
     __strict__: bool = True
@@ -119,6 +159,8 @@ class Context:
         return wrapper
 
     def Provider(self, state:ContextState=None):
+
+        # TODO: Added session persistence flag.
 
         assert id, "The context.Provider must have an id"
 

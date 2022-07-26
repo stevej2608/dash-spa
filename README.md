@@ -295,6 +295,43 @@ def layout():
   return "Big ADMIN SECRET for {current_user.name}"
 ```
 
+**Dash/SPA** Defines a state/event pattern where a state Context is wrapped by
+a @Context.Provider. Dash callback events update the contexts' state which
+triggers the method decorated by the @Context.Provider. The decorated
+method can then update the Dash UI based on the new context state.
+
+A context can have any number of @Context.Providers. This pattern makes it
+possible to create generic Dash components that communicate with host
+application via ContextState.
+
+ContextState can, if required, have session persistence.
+
+Example usage:
+```
+@dataclass
+class ButtonState(ContextState):
+    clicks: int = 0
+
+ButtonContext = createContext(ButtonState)
+
+def Button(id):
+    state = ButtonContext.getState()
+    btn = html.Button("Button", id=id)
+
+    @ButtonContext.On(btn.input.n_clicks, prevent_initial_call=True)
+    def btn_click(clicks):
+        state.clicks += 1
+
+    return btn
+
+
+@ButtonContext.Provider(id='test', session=True)
+def layout():
+    state = ButtonContext.getState()
+    btn =  Button(id='test_btn)
+    return html.Div(f"button pressed {state.clicks} times!")
+```
+
 **Dash/SPA** Has a simple server-side session data cache based on [diskcache]. The shape of session data
 is defined using [dataclasses]. An observer pattern is used to automatically update the cache
 on change.

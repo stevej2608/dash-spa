@@ -115,6 +115,8 @@ class ContextState:
     ```
     """
 
+    # TODO: Is is necessary to track the shadow dict or would a copy to/from suffice?
+
     def __post_init__(self):
         __shadow_store__ = {}
         __strict__ = True
