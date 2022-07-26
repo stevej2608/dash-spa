@@ -16,8 +16,6 @@ from .spa_current_user import current_user
 from .decorators import login_required
 from .callback import callback
 
-from .session import spa_session
-from .session.spa_session import session_context, session_data, ServerSessionCache, SessionContext
 from .plugins import dash_logging
 
 from .spa_location import SPA_LOCATION

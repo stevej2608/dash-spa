@@ -1,8 +1,8 @@
 import pytest
 import dash
 from dash import html
-from dash_spa import prefix, callback, NOUPDATE, session_context, session_data, SessionContext, spa_session, dash_logging
-from dash_spa.session import setup_sessions
+from dash_spa import prefix, callback, NOUPDATE
+from dash_spa.session import setup_sessions, session_data, SessionContext, session_context
 from dash_spa.logging import log
 
 # Simple Dash App, single button when clicked increments session

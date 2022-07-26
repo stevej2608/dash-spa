@@ -43,7 +43,8 @@ class TiniConfig:
             def __getattr__(self, key):
                 if key in self.__dict__:
                     return self.__dict__[key]
-                raise ConfigurationError(f"Configuration error: Attribute {section}.{key} has not been defined.")
+                #raise ConfigurationError(f"Configuration error: Attribute {section}.{key} has not been defined.")
+                return None
 
         try:
             if section:

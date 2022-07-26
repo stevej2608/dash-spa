@@ -1,4 +1,3 @@
-from dataclasses import _process_class
 from itsdangerous import Signer, BadSignature
 import appdirs
 import base64

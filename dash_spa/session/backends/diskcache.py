@@ -1,17 +1,17 @@
 import appdirs
 import json
-import flask
 from diskcache import Cache
-from flask import request
 from dash_spa.logging import log
 from dash_spa.spa_config import config
 from dash_spa.utils.json_coder import json_decode, json_encode
 
-options = config.get('session_storage')
+from .session_backend import SessionBackend
+
+options = config.get('session_storage.diskcache')
 
 _cache_dir = appdirs.user_cache_dir("dash_spa-sessions")
 
-class ServerSessionCache:
+class SessionDiskCache(SessionBackend):
     """Wrapper for an individual session
 
     A single json string, indexed on session_id, is held in
@@ -33,11 +33,11 @@ class ServerSessionCache:
 
     expiry = options.get('expire_days', 30) * 24 * 60 * 60
 
-    def __init__(self):
-        self.session_id = flask.g.session_id
+    def __init__(self, session_id):
+        self.session_id = session_id
 
-        if self.session_id in ServerSessionCache._disk_cache:
-            json_str = ServerSessionCache._disk_cache[self.session_id]
+        if self.session_id in SessionDiskCache._disk_cache:
+            json_str = SessionDiskCache._disk_cache[self.session_id]
             self.session_store = json.loads(json_str, object_hook=json_decode)
         else:
             log.info("Create new session store id=%s", self.session_id)
@@ -46,7 +46,7 @@ class ServerSessionCache:
     def update(self):
         # log.info('write cache[%s]=%s', self.session_id, self.session_store)
         json_str = json.dumps(self.session_store, default=json_encode)
-        ServerSessionCache._disk_cache.set(self.session_id, json_str, self.expiry)
+        SessionDiskCache._disk_cache.set(self.session_id, json_str, self.expiry)
 
 
     def get(self, obj_key) -> dict:
@@ -55,7 +55,7 @@ class ServerSessionCache:
         return self.session_store[obj_key]
 
 
-    def put(self, obj_key, value: dict):
+    def set(self, obj_key, value: dict):
         self.session_store[obj_key] = value
         self.update()
 
@@ -67,5 +67,5 @@ class ServerSessionCache:
         Removing items is an iterative process. In each iteration, a subset of
         items is removed. Concurrent writes may occur between iterations.
         """
-        ServerSessionCache._disk_cache.clear()
+        SessionDiskCache._disk_cache.clear()
 

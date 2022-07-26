@@ -1,9 +1,7 @@
 from dataclasses import _process_class
 
 from dash_spa.context_state import ContextState
-from dash_spa.spa_config import config, ConfigurationError
-
-from .backends.diskcache  import ServerSessionCache
+from .backends.backend_factory import SessionBackendFactory
 
 
 """Minimalistic Server side session storage plugin
@@ -36,18 +34,6 @@ def layout(tickers = None):
 ```
 """
 
-options = config.get('session_storage')
-
-class SessionCache:
-
-    @staticmethod
-    def get_cache():
-        cache_type = options.get('backend', 'diskcache')
-        if cache_type == 'diskcache': return ServerSessionCache()
-
-        raise ConfigurationError(f"Unsupported backend {cache_type}")
-
-
 class SessionContext(ContextState):
     pass
 
@@ -61,7 +47,7 @@ def session_context(ctx: SessionContext, id=None):
         SessionContext: The current context state
     """
 
-    cache = SessionCache.get_cache()
+    cache = SessionBackendFactory.get_cache()
 
     # Get the ctx context store for this session, create it if needed
 
@@ -75,7 +61,7 @@ def session_context(ctx: SessionContext, id=None):
     # if the server cache whenever a state value is updated
 
     def update(new_state):
-        cache.put(id, new_state)
+        cache.set(id, new_state)
 
     state = ctx()
     state.update(state=store, update_listener=update)

@@ -11,6 +11,7 @@ iniconfig>=1.1.1
 appdirs>=1.4.4
 itsdangerous>=2.0.1
 diskcache>=5.4.0
+redis>=4.3.4
 
 ##########################################################################
 # Temporary workround. Werkzeug==2.2.0 was released three daya ago. Now I

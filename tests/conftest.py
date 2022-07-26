@@ -1,7 +1,6 @@
 import logging
 import pytest
 from selenium.webdriver.chrome.options import Options
-from dash_spa import ServerSessionCache
 
 # Turn off werkzeug logging as it's very noisy
 
@@ -22,11 +21,6 @@ def pytest_setup_options():
     # See https://github.com/plotly/dash/issues/1420
 
     options.add_argument('--no-sandbox')
-
-    # Empty the server-side session cache
-
-    # session_cache = ServerSessionCache()
-    # session_cache.clear()
 
     return options
 
