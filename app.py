@@ -2,6 +2,7 @@ import flask
 from dash import Dash
 import dash_bootstrap_components as dbc
 import dash_spa as spa
+from dash_spa.session import setup_sessions
 from themes import VOLT_BOOTSTRAP
 # from dash_spa import spa_pages
 
@@ -43,6 +44,8 @@ def create_dash() -> Dash:
             external_stylesheets=external_stylesheets,
             external_scripts=external_scripts, server=server
             )
+
+    setup_sessions(app)
 
     # app.add_stylesheets('css/volt.css')
 

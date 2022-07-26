@@ -1,12 +1,10 @@
-import uuid
-from flask import request, current_app as app
 from dataclasses import _process_class
+
 from dash_spa.context_state import ContextState
-from dash_spa.logging import log
+from dash_spa.spa_config import config, ConfigurationError
 
 from .backends.diskcache  import ServerSessionCache
 
-SPA_SESSION_ID = "spa_session"
 
 """Minimalistic Server side session storage plugin
 
@@ -23,7 +21,7 @@ app = Dash(__name__,
 
 Usage:
 ```
-from dash_spa import session_context, , session_data
+from dash_spa import session_context, session_data
 
 
 @session_data(id='ticker_state')
@@ -37,6 +35,17 @@ def layout(tickers = None):
     ...
 ```
 """
+
+options = config.get('session_storage')
+
+class SessionCache:
+
+    @staticmethod
+    def get_cache():
+        cache_type = options.get('backend', 'diskcache')
+        if cache_type == 'diskcache': return ServerSessionCache()
+
+        raise ConfigurationError(f"Unsupported backend {cache_type}")
 
 
 class SessionContext(ContextState):
@@ -52,16 +61,7 @@ def session_context(ctx: SessionContext, id=None):
         SessionContext: The current context state
     """
 
-    @app.after_request
-    def res_session_id(response):
-        req = request
-        if hasattr(req,'sid') and req.sid is not None:
-            log.info('Save session cookie id=%s', req.sid)
-            response.set_cookie(SPA_SESSION_ID, req.sid)
-            req.sid = None
-        return response
-
-    cache = ServerSessionCache()
+    cache = SessionCache.get_cache()
 
     # Get the ctx context store for this session, create it if needed
 

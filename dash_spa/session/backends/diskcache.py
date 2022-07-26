@@ -1,28 +1,15 @@
-import uuid
+import appdirs
 import json
-from dataclasses import _process_class
+import flask
 from diskcache import Cache
 from flask import request
 from dash_spa.logging import log
 from dash_spa.spa_config import config
 from dash_spa.utils.json_coder import json_decode, json_encode
 
-
 options = config.get('session_storage')
 
-SPA_SESSION_ID = "spa_session"
-
-def plug(app):
-
-    @app.server.after_request
-    def res_session_id(response):
-        req = request
-        if hasattr(req,'sid') and req.sid is not None:
-            log.info('Save session cookie id=%s', req.sid)
-            response.set_cookie(SPA_SESSION_ID, req.sid)
-            req.sid = None
-        return response
-
+_cache_dir = appdirs.user_cache_dir("dash_spa-sessions")
 
 class ServerSessionCache:
     """Wrapper for an individual session
@@ -42,34 +29,12 @@ class ServerSessionCache:
 
     # TODO: Figure out how to test if this is thread & process safe
 
-    _disk_cache =  Cache(directory = f"{options.folder}/spa_session")
+    _disk_cache =  Cache(directory = f"{options.folder or _cache_dir}")
 
-    expiry = options.get('days', 30) * 24 * 60 * 60
+    expiry = options.get('expire_days', 30) * 24 * 60 * 60
 
     def __init__(self):
-
-        try:
-            req = request
-
-            # Get the session id from the client cookies. If this
-            # is the first request the cookie will not have been set
-            # yet.
-
-            if SPA_SESSION_ID in req.cookies:
-                self.session_id = req.cookies[SPA_SESSION_ID]
-            else:
-
-                # Create an unattached session.This will be turned into
-                # an attached session when the cookie is set. See:
-                # @app.server.after_request
-
-                self.session_id = str(uuid.uuid4())
-                req.sid = self.session_id
-
-        except Exception:
-            log.info('No request object - using a dummy session store')
-            self.session_id = "aaaaaaaa-bbbb-cccc-dddd-000000000000"
-
+        self.session_id = flask.g.session_id
 
         if self.session_id in ServerSessionCache._disk_cache:
             json_str = ServerSessionCache._disk_cache[self.session_id]

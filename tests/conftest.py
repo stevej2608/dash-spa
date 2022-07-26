@@ -25,8 +25,8 @@ def pytest_setup_options():
 
     # Empty the server-side session cache
 
-    session_cache = ServerSessionCache()
-    session_cache.clear()
+    # session_cache = ServerSessionCache()
+    # session_cache.clear()
 
     return options
 

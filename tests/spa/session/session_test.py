@@ -2,6 +2,7 @@ import pytest
 import dash
 from dash import html
 from dash_spa import prefix, callback, NOUPDATE, session_context, session_data, SessionContext, spa_session, dash_logging
+from dash_spa.session import setup_sessions
 from dash_spa.logging import log
 
 # Simple Dash App, single button when clicked increments session
@@ -16,6 +17,8 @@ def app():
     # dash_duo.driver.delete_all_cookies()
 
     app = dash.Dash(__name__)
+
+    setup_sessions(app)
 
     @session_data(id='button_state')
     class ButtonState(SessionContext):
