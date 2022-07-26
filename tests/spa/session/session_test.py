@@ -15,7 +15,7 @@ def app():
 
     # dash_duo.driver.delete_all_cookies()
 
-    app = dash.Dash(__name__, plugins=[spa_session])
+    app = dash.Dash(__name__)
 
     @session_data(id='button_state')
     class ButtonState(SessionContext):

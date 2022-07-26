@@ -29,7 +29,6 @@ def create_dash() -> Dash:
     server.config['SECRET_KEY'] = flask_options.SECRET_KEY
 
     plugins=[
-        spa.spa_session,
         spa.spa_pages
         ]
 
