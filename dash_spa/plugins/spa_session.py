@@ -109,7 +109,6 @@ class ServerSessionCache:
             log.info("Create new session store id=%s", self.session_id)
             self.session_store = {}
 
-
     def update(self):
         # log.info('write cache[%s]=%s', self.session_id, self.session_store)
         json_str = json.dumps(self.session_store, default=json_encode)
@@ -163,8 +162,11 @@ def session_context(ctx: SessionContext, id=None):
     # the context.update_listener() capability to force an update
     # if the server cache whenever a state value is updated
 
+    def update(new_state):
+        cache.put(id, new_state)
+
     state = ctx()
-    state.set_shadow_store(store=store, update_listener=cache.update)
+    state.update(state=store, update_listener=update)
 
     return state
 

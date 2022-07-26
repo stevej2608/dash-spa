@@ -104,7 +104,6 @@
       "args": [
         "--headless",
         "-sv",
-        // "tests/spa"
         "${file}"
       ],
       "cwd": "${workspaceRoot}",
@@ -114,5 +113,27 @@
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false
     },
+
+    {
+      "name": "4a. PyTest (context_provider_test.py)",
+      "type": "python",
+      "request": "launch",
+      "stopOnEntry": false,
+      "module": "pytest",
+      "args": [
+        "--headless",
+        "-sv",
+        "tests/spa/context/context_provider_test.py"
+      ],
+      "cwd": "${workspaceRoot}",
+      "env": {},
+      "envFile": "${workspaceRoot}/.env",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false
+    },
+
+
+
   ]
 }

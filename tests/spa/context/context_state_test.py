@@ -19,13 +19,7 @@ def test_context_simple():
     state = TableState()
     fields = list(state.__dataclass_fields__.keys())
     assert fields == ['current_page', 'page_size', 'last_page', 'table_rows', 'search_term']
-
-    # Back the TableState with a store and confirm store values shadow the TableState
-
-    store = {}
-    state.set_shadow_store(store)
-
-    assert store == {'current_page': 1, 'page_size': 10, 'last_page': 1, 'table_rows': 0, 'search_term': None}
+    assert state.asdict() == {'current_page': 1, 'page_size': 10, 'last_page': 1, 'table_rows': 0, 'search_term': None}
 
     # Confirm we can only write specific values
 
@@ -38,18 +32,17 @@ def test_context_simple():
 
     state.page_size = 25
     assert state.page_size == 25
-    assert store == {'current_page': 1, 'page_size': 25, 'last_page': 1, 'table_rows': 0, 'search_term': None}
+    assert state.asdict() == {'current_page': 1, 'page_size': 25, 'last_page': 1, 'table_rows': 0, 'search_term': None}
 
     # Update TableState
 
     state.update(state=TableState(2, 30, 100, 1000))
     assert state.current_page == 2
-    assert store == {'current_page': 2, 'page_size': 30, 'last_page': 100, 'table_rows': 1000, 'search_term': None}
+    assert state.asdict() == {'current_page': 2, 'page_size': 30, 'last_page': 100, 'table_rows': 1000, 'search_term': None}
 
     # Map new store
 
-    store = {'current_page': 99, 'page_size': 130, 'last_page': 130, 'table_rows': 2000, 'search_term': 'AAA'}
-    state.set_shadow_store(store)
+    state.update(state={'current_page': 99, 'page_size': 130, 'last_page': 130, 'table_rows': 2000, 'search_term': 'AAA'})
 
     assert state.current_page == 99
     assert state.search_term == 'AAA'
@@ -80,11 +73,7 @@ def test_context_nesting():
     assert root.left.value == 2
     assert root.right.value == 3
 
-    # Confirm a newly mapped store is updated correctly
-
-    store = {}
-    root.set_shadow_store(store)
-    assert store == {'value': 1,
+    assert root.asdict() == {'value': 1,
                      'left': {'value': 2},
                      'right': {'value': 3}
                     }
@@ -93,15 +82,14 @@ def test_context_nesting():
 
     root.left.value = 88
     root.right.value = 99
-    assert store == {'value': 1,
+    assert root.asdict() == {'value': 1,
                      'left': {'value': 88},
                      'right': {'value': 99}
                     }
 
     # Confirm mapping a new store updates the attributes correctly
 
-    store = {'value': 22, 'left': {'value': 33}, 'right': {'value': 44}}
-    root.set_shadow_store(store)
+    root.update(state={'value': 22, 'left': {'value': 33}, 'right': {'value': 44}})
 
     assert root.value == 22
     assert root.left.value == 33
@@ -149,8 +137,8 @@ def test_complex_state():
     # Confirm incoming dict get updated
 
     state_asdict = {}
-    state.set_shadow_store(state_asdict)
-    assert state_asdict == {'toolbars': [
+    state.update(state=state_asdict)
+    assert state.asdict() == {'toolbars': [
                                 {'title': 'main', 'buttons': [
                                     {'name': 'close', 'clicks': 0},
                                     {'name': 'exit', 'clicks': 0},
@@ -167,7 +155,7 @@ def test_complex_state():
 
     state.toolbars[1].buttons[1].clicks += 1
 
-    assert state_asdict == {'toolbars': [
+    assert state.asdict() == {'toolbars': [
                                 {'title': 'main', 'buttons': [
                                     {'name': 'close', 'clicks': 0},
                                     {'name': 'exit', 'clicks': 0},

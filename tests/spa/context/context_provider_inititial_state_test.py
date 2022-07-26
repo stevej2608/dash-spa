@@ -1,8 +1,7 @@
 from typing import List
 import pytest
 from dash import html
-from dash_spa.logging import log
-from dash_spa.spa_context import  createContext, ContextState, asdict, dataclass, EMPTY_LIST
+from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_LIST
 
 # https://github.com/konradhalas/dacite
 
@@ -34,46 +33,25 @@ def test_simple_state():
     btn1 = TButton()
     assert btn1.name == ""
     assert btn1.clicks == 0
+    assert btn1.asdict() == {'name': '', 'clicks': 0}
 
-    # Confirm shadow store is updated
-
-    btn1_store = {}
-    btn1.set_shadow_store(btn1_store)
-    assert btn1_store == {'name': '', 'clicks': 0}
-
-    # Confirm dot notation works and shadow store is updated
+    # Confirm dot notation works and dict is updated
 
     btn1.clicks = 1234
     assert btn1.clicks == 1234
-    assert btn1_store['clicks'] == 1234
+    assert btn1.asdict()['clicks'] == 1234
 
     # Init btn2 with attribute values
 
     btn2 = TButton('test', 29)
     assert btn2.name == "test"
     assert btn2.clicks == 29
+    assert btn2.asdict() == {'name': 'test', 'clicks': 29}
 
-    # Confirm shadow store is updated
+    # Confirm state is updated when new dict is assigned
 
-    btn2_store = {}
-    btn2.set_shadow_store(btn2_store)
-    assert btn2_store == {'name': 'test', 'clicks': 29}
-
-    # Confirm state is updated when new shadow store is assigned
-
-    btn2_new = {'name': 'test', 'clicks': 999}
-    btn2.set_shadow_store(btn2_new)
+    btn2.update(state={'name': 'test', 'clicks': 999})
     assert btn2.clicks == 999
-
-    # Confirm the new shadow store tracks state changes
-
-    btn2.clicks = 1000
-    assert btn2.clicks == 1000
-    assert btn2_new['clicks'] == 1000
-
-    btn2.clicks += 1
-    assert btn2.clicks == 1001
-    assert btn2_new['clicks'] == 1001
 
 
 def test_complex_state():
@@ -91,7 +69,7 @@ def test_complex_state():
 
     # Confirm builtin asdict works
 
-    state_asdict = asdict(state)
+    state_asdict = state.asdict()
     assert state_asdict == {'toolbars': [
                                 {'title': 'main', 'buttons': [
                                     {'name': 'close', 'clicks': 0},
@@ -107,31 +85,12 @@ def test_complex_state():
                                 ]
                             }
 
-    # Confirm shadow store gets updated as soon as it's assigned
-
-    state_asdict = {}
-    state.set_shadow_store(state_asdict)
-    assert state_asdict == {'toolbars': [
-                                {'title': 'main', 'buttons': [
-                                    {'name': 'close', 'clicks': 0},
-                                    {'name': 'exit', 'clicks': 0},
-                                    {'name': 'refresh', 'clicks': 0}
-                                    ]},
-                                {'title': 'page', 'buttons': [
-                                    {'name': 'next', 'clicks': 0},
-                                    {'name': 'prev', 'clicks': 0},
-                                    {'name': 'top', 'clicks': 0},
-                                    {'name': 'bottom', 'clicks': 0}
-                                    ]}
-                                ]
-                            }
-
-    # Change an element in the ContextState and confirm the shadow store
+    # Change an element in the ContextState and confirm the dict
     # is updated in sympathy
 
     state.toolbars[0].buttons[0].clicks += 1
 
-    assert state_asdict == {'toolbars': [
+    assert state.asdict() == {'toolbars': [
                                 {'title': 'main', 'buttons': [
                                     {'name': 'close', 'clicks': 1},
                                     {'name': 'exit', 'clicks': 0},
@@ -144,7 +103,7 @@ def test_complex_state():
                                     {'name': 'bottom', 'clicks': 0}
                                     ]}
                                 ]
-                            }
+                             }
 
 
 def test_useState():
@@ -183,7 +142,7 @@ def test_useState():
 
     # Confirm state has been initialised correctly
 
-    state_asdict = asdict(state)
+    state_asdict = state.asdict()
     assert state_asdict == {'toolbars': [
                                 {'title': 'main', 'buttons': [
                                     {'name': 'close', 'clicks': 0},
@@ -198,5 +157,3 @@ def test_useState():
                                     ]}
                                 ]
                             }
-
-

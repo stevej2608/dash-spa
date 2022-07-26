@@ -133,13 +133,15 @@ class Context:
 
                     state = args.pop()
                     ref_state = json.dumps(state, sort_keys = True)
-                    self._context_state.set_shadow_store(state)
+                    self._context_state.update(state=state)
 
                     log.info('******** On Event ***********')
                     log.info('state cid=%s %s', self._context_state.cid(), state)
 
                     self.contexts.set_context(self)
                     user_func(*args)
+
+                    state = self._context_state.asdict()
 
                     log.info('state %s', state)
 
@@ -148,7 +150,7 @@ class Context:
                 finally:
                     self.contexts.set_context(None)
 
-                # state = self._context_state.get_shadow_store()
+                # state = self._context_state.asdict()
 
                 if json.dumps(state, sort_keys = True) == ref_state:
                     state = NOUPDATE
@@ -171,7 +173,7 @@ class Context:
         # state can be provide when the context is created or passed in here
 
         self._context_state = copy(state) if state is not None else self._context_state
-        self._redux_store = ReduxStore(id=self.pid(), data=state.get_shadow_store(), storage_type='session')
+        self._redux_store = ReduxStore(id=self.pid(), data=state.asdict(), storage_type='session')
 
         # The ID passed in is unique, use it to inject a prefix method into the
         # context state. This can then be used create ID's for dash element that are
@@ -204,7 +206,7 @@ class Context:
                     # The context may have changed during the update. We
                     # need to copy the state across to the Redux store data
 
-                    self._redux_store.data.update(self._context_state.get_shadow_store())
+                    self._redux_store.data.update(self._context_state.asdict())
                     result.children.append(self._redux_store)
                 except Exception as ex:
                     log.exception('Dash/SPA layout error %s', ex)
@@ -241,7 +243,7 @@ class Context:
 
                 # log.info('Restore state from session store[%s] %s', self.id, state)
 
-                self._context_state.set_shadow_store(state)
+                self._context_state.update(state=state)
 
                 return func_wrapper(*_args, **_kwargs)
 
@@ -255,7 +257,7 @@ class Context:
             log.info('******** Container render ***********')
             log.info('state %s', state)
 
-            self._context_state.set_shadow_store(state)
+            self._context_state.update(state=state)
             self.contexts.set_context(self)
 
             container = self.render()
@@ -347,7 +349,7 @@ class Context:
 
     def getStateDict(self, ref:str=None) -> dict:
         state = self._context_state[ref] if ref else self._context_state
-        return state.get_shadow_store().copy()
+        return state.asdict().copy()
 
 _NO_CONTEXT_ERROR = "Context can only be used within the scope of a provider"
 
