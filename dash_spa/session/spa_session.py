@@ -2,11 +2,10 @@ from dataclasses import _process_class
 
 from dash_spa.context_state import ContextState
 from .backends.backend_factory import SessionBackendFactory
+from .setup import setup_sessions
 
 
 """Minimalistic Server side session storage plugin
-
-This plugin must be added to the Dash initialisation before use
 
 *app.py*
 ```
@@ -93,3 +92,16 @@ def session_data(cls=None, init=True, repr=True, eq=True,
         return wrap
 
     return wrap(cls)
+
+
+def plug(app):
+    """Install Session plugin
+
+    Usage:
+    ```
+    from dash_spa.session import spa_session
+
+        app = dash.Dash(__name__, plugins=[spa_session])
+    ```
+    """
+    setup_sessions(app)

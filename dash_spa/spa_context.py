@@ -5,7 +5,8 @@ from flask import current_app as app
 from dash import Output
 from dash_prefix import prefix
 from dash_spa.logging import log
-from dash_spa import callback, NOUPDATE, ServerSessionCache
+from dash_spa import callback, NOUPDATE
+from dash_spa.session import SessionBackendFactory
 from dash_redux import ReduxStore
 
 from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
@@ -238,7 +239,7 @@ class Context:
 
             def session_restore(*_args, **_kwargs):
 
-                cache = ServerSessionCache()
+                cache = SessionBackendFactory.get_cache()
                 state = cache.get(self.id)
 
                 # log.info('Restore state from session store[%s] %s', self.id, state)
@@ -281,7 +282,7 @@ class Context:
 
             log.info('Save state to session store[%s] %s', self.id, state)
 
-            cache = ServerSessionCache()
+            cache = SessionBackendFactory.get_cache()
             cache.put(self.id, state)
 
             return container.children
