@@ -1,8 +1,10 @@
 from dataclasses import _process_class
-
+import uuid
+from flask import request
 from dash_spa.context_state import ContextState
+from dash_spa.logging import log
 from .backends.backend_factory import SessionBackendFactory
-from .setup import setup_sessions
+from .session_cookie import session_manager
 
 
 """Minimalistic Server side session storage plugin
@@ -104,4 +106,7 @@ def plug(app):
         app = dash.Dash(__name__, plugins=[spa_session])
     ```
     """
-    setup_sessions(app)
+    @app.server.after_request
+    def res_session_id(response):
+        session_manager.set_session(response)
+        return response

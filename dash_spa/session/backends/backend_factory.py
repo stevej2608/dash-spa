@@ -3,7 +3,10 @@ from dash_spa.spa_config import config, ConfigurationError
 from .diskcache import SessionDiskCache
 from .redis import RedisSessionBackend
 
+from ..session_cookie import session_manager
+
 options = config.get('session_storage')
+
 
 class SessionBackendFactory:
 
@@ -12,7 +15,7 @@ class SessionBackendFactory:
     @staticmethod
     def get_cache():
 
-        session_id = flask.g.session_id
+        session_id = session_manager.get_session_id()
 
         def create_session(session_id):
             cache_type = options.get('backend', 'diskcache')

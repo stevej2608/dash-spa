@@ -45,7 +45,4 @@ def test_config_simple():
 
     # Try to access a nonexistent attribute
 
-    with pytest.raises(ConfigurationError) as error:
-        assert admin.undefined == 'secret'
-    assert 'Attribute admin.undefined has not been defined' in str(error)
-
+    assert admin.undefined == None
