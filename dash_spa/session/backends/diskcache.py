@@ -8,7 +8,7 @@ from .session_backend import SessionBackend
 
 options = config.get('session_storage')
 
-_cache_dir = appdirs.user_cache_dir("dash_spa-sessions")
+_cache_dir = options.diskcache_folder or appdirs.user_cache_dir("dash_spa-sessions")
 
 class SessionDiskCache(SessionBackend):
     """Wrapper for an individual session
@@ -68,6 +68,9 @@ class SessionDiskCache(SessionBackend):
         self.session_store[obj_key] = value
         self.update()
 
+    def remove(self, obj_key):
+        self.session_store.pop(obj_key, None)
+        self.update()
 
     @staticmethod
     def clear():

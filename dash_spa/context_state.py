@@ -62,11 +62,20 @@ class ContextState:
 
 
     def asdict(self):
-        dict =  asdict(self)
+
+        def _asdict(field):
+            dict = asdict(field)
+            for attr in field.__dict__.keys():
+                if attr.startswith('__') and not callable(attr):
+                    dict.pop(attr, None)
+            return dict
+
+        dict =  _asdict(self)
         if not self.__strict__:
             for name, field in self.__dict__.items():
                 if isinstance(field, ContextState):
-                    dict[name] = asdict(field)
+                    dict[name] = _asdict(field)
+
         return dict
 
     def update(self, ref: str = None, state: Union[SelfContextState, dict] = None, update_listener=None) -> None:
