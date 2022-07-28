@@ -2,14 +2,8 @@ from functools import wraps
 import threading
 from cachetools import TTLCache
 import time
+from  dash_spa.utils import synchronized
 
-
-def synchronized(lock):
-    @wraps
-    def _wrapper(wrapped, args, kwargs):
-        with lock:
-            return wrapped(*args, **kwargs)
-    return _wrapper
 
 class SynchronisedTTLCache:
     """Synchronised TTL cache

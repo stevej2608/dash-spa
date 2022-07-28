@@ -2,15 +2,21 @@ from flask import request
 from itsdangerous import Signer, BadSignature
 import appdirs
 import base64
-import flask
+import threading
 import json
 import os
 import secrets
 import time
 
+from dash_spa.spa_config import config
 from dash_spa.logging import log
+from  dash_spa.utils import synchronized
 
-SPA_SESSION_COOKIE="_dash_spa_sessionid"
+options = config.get('session_storage')
+
+SPA_SESSION_COOKIE = options.get("session_cookie", "_dash_spa_sessionid")
+
+SESSION_LOCK = threading.Lock()
 
 def _session_keys(directory):
 
@@ -40,7 +46,6 @@ def _session_keys(directory):
 
     return key, salt
 
-
 class SessionCookieManager:
 
     def __init__(self, max_age=84600 * 31,refresh_after=84600 * 7):
@@ -56,6 +61,8 @@ class SessionCookieManager:
         self.session_id = None
         self.unattached_session_id = False
 
+
+    @synchronized(SESSION_LOCK)
     def attach_session(self, response):
         """ Save unattached session id to cookie
 
@@ -78,11 +85,12 @@ class SessionCookieManager:
             self.session_id = None
             self.unattached_session_id = False
 
-    def _new_session(self):
+    def create_unattached_session(self):
         sid = secrets.token_hex(32)
         self.unattached_session_id = True
         return sid
 
+    @synchronized(SESSION_LOCK)
     def get_session_id(self) -> str:
         """Return the session_id for the current session"""
 
@@ -112,17 +120,17 @@ class SessionCookieManager:
                         self.attach_session(self.session_id)
 
                 except BadSignature:
-                    self.session_id = self._new_session()
+                    self.session_id = self.create_unattached_session()
             else:
 
                 # Create an unattached session.This will be turned into
                 # an attached session when the cookie is set. See:
                 # @app.server.after_request
 
-                self.session_id = self._new_session()
+                self.session_id = self.create_unattached_session()
 
         except Exception:
-            self.session_id = self._new_session()
+            self.session_id = self.create_unattached_session()
 
         log.info('get_session_id=%s', self.session_id)
 
