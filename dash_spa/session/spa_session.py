@@ -9,15 +9,6 @@ from .session_cookie import session_manager
 
 """Minimalistic Server side session storage plugin
 
-*app.py*
-```
-import dash_spa as spa
-
-app = Dash(__name__,
-        plugins=[spa.spa_session],
-        ...
-```
-
 Usage:
 ```
 from dash_spa import session_context, session_data
@@ -94,19 +85,3 @@ def session_data(cls=None, init=True, repr=True, eq=True,
         return wrap
 
     return wrap(cls)
-
-
-def plug(app):
-    """Install Session plugin
-
-    Usage:
-    ```
-    from dash_spa.session import spa_session
-
-        app = dash.Dash(__name__, plugins=[spa_session])
-    ```
-    """
-    @app.server.after_request
-    def res_session_id(response):
-        session_manager.attach_session(response)
-        return response

@@ -1,5 +1,6 @@
 from typing import List
 import pytest
+import dash
 from dash import html
 from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_LIST
 
@@ -27,6 +28,7 @@ class ToolbarList(ContextState):
     toolbars: List[TBState] = EMPTY_LIST
 
 def test_simple_state():
+    app = dash.Dash(__name__)
 
     # Init btn1 with defaults
 
@@ -55,6 +57,7 @@ def test_simple_state():
 
 
 def test_complex_state():
+    app = dash.Dash(__name__)
 
     # Create a complex ContextState
 
@@ -107,6 +110,7 @@ def test_complex_state():
 
 
 def test_useState():
+    app = dash.Dash(__name__)
 
     ToolbarContext = createContext(ToolbarList)
 
@@ -129,7 +133,8 @@ def test_useState():
         tb1 = TBState("main", ['close', "exit", 'refresh'])
         tb2 = TBState("page", ['next', "prev", 'top', 'bottom'])
 
-        state, _ = ToolbarContext.useState(initial_state=ToolbarList([tb1, tb2]))
+        initial_state=ToolbarList(toolbars=[tb1, tb2])
+        state, _ = ToolbarContext.useState(initial_state=initial_state)
 
         return html.Div()
 

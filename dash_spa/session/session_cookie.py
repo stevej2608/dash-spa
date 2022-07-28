@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, current_app as app
 from itsdangerous import Signer, BadSignature
 import appdirs
 import base64
@@ -8,6 +8,7 @@ import os
 import secrets
 import time
 
+# from dash import get_app
 from dash_spa.spa_config import config
 from dash_spa.logging import log
 from  dash_spa.utils import synchronized
@@ -94,6 +95,14 @@ class SessionCookieManager:
     @synchronized(SESSION_LOCK)
     def get_session_id(self) -> str:
         """Return the session_id for the current session"""
+
+        try:
+            @app.after_request
+            def res_session_id(response):
+                self.attach_session(response)
+                return response
+        except Exception:
+            pass
 
         if self.session_id:
             return self.session_id

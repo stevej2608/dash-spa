@@ -72,6 +72,12 @@ class ContextState:
     def update(self, ref: str = None, state: Union[SelfContextState, dict] = None, update_listener=None) -> None:
         """ Copy the incoming state values to the context attributes """
 
+        def updatable(item):
+            if isinstance(item, ContextState): return True
+            if isinstance(item, list): return True
+            if isinstance(item, dict): return True
+            return False
+
         if update_listener:
             setattr(self, '__shadow_update_listener__', update_listener)
 
@@ -96,27 +102,47 @@ class ContextState:
 
         # Iterate over incoming fields...
 
-        if isinstance(state, ContextState):
-            state = asdict(state)
+        # if isinstance(state, ContextState):
+        #     state = asdict(state)
 
         for attr in self.__dataclass_fields__:
 
-            if attr.startswith('__') or not attr in state:
+            if attr.startswith('__'):
                 continue
-
-            new_value = state[attr]
+            elif isinstance(state, dict):
+                if attr in state:
+                    new_value = state[attr]
+                else:
+                    continue
+            elif isinstance(state, ContextState):
+                if hasattr(state, attr):
+                    new_value = getattr(state, attr)
+                else:
+                    continue
+            else:
+                new_value = state[attr]
 
             # If the attr is a ContextState do some checks and
             # call ourselves recursively
 
             current_value = getattr(self, attr)
 
-            if isinstance(current_value, ContextState):
+            if isinstance(current_value, ContextState) or isinstance(new_value, ContextState):
                 current_value.update(state=new_value)
             elif isinstance(current_value, list):
-                for idx, entry in enumerate(current_value):
-                    if isinstance(entry, ContextState):
-                        entry.update(state=new_value[idx])
+                item_count = max(len(current_value), len(new_value))
+
+                for idx in range(item_count):
+                    if idx < len(current_value) and idx < len(new_value):
+                        entry = current_value[idx]
+                        if updatable(entry):
+                            entry.update(state=new_value[idx])
+                        else:
+                            current_value[idx] = new_value[idx]
+                    else:
+                        new_entry = new_value[idx]
+                        current_value.append(new_entry)
+
             elif isinstance(current_value, dict):
                 for key, entry in current_value.items():
                     if isinstance(entry, ContextState):

@@ -2,7 +2,6 @@ import flask
 from dash import Dash
 import dash_bootstrap_components as dbc
 import dash_spa as spa
-from dash_spa.session import spa_session
 from themes import VOLT_BOOTSTRAP
 # from dash_spa import spa_pages
 
@@ -30,8 +29,7 @@ def create_dash() -> Dash:
     server.config['SECRET_KEY'] = flask_options.SECRET_KEY
 
     plugins=[
-        spa.spa_pages,
-        spa_session
+        spa.spa_pages
         ]
 
     if logging_opt.get('DASH_LOGGING', default_value=False):
