@@ -1,7 +1,9 @@
 import flask
 from dash_spa.spa_config import config, ConfigurationError
+
 from .diskcache import SessionDiskCache
 from .redis import RedisSessionBackend
+from .postgres import PostgresSessionBackend
 
 from ..session_cookie import session_manager
 
@@ -22,6 +24,7 @@ class SessionBackendFactory:
 
             if cache_type == 'diskcache': return SessionDiskCache(session_id)
             if cache_type == 'redis': return RedisSessionBackend(session_id)
+            if cache_type == 'postgres': return PostgresSessionBackend(session_id)
 
             raise ConfigurationError(f"Unsupported backend {cache_type}")
 

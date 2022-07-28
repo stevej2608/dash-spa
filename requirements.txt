@@ -10,6 +10,9 @@ iniconfig>=1.1.1
 
 appdirs>=1.4.4
 itsdangerous>=2.0.1
+
+# TODO: Make these optional
+
 diskcache>=5.4.0
 redis>=4.3.4
 

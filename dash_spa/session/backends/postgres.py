@@ -2,10 +2,13 @@ import functools
 import json
 from typing import Any
 
+from .session_backend import SessionBackend
 from _plotly_utils.utils import PlotlyJSONEncoder
 
-from dash_labs.session import SessionBackend
+# TODO: Test this works!
 
+# https://github.com/T4rk1n
+# https://github.com/plotly/dash-labs/blob/sessions/dash_labs/session/__init__.py
 
 def interpolate_str(template, start_bracket="{%", end_bracket="%}", **data):
     s = template

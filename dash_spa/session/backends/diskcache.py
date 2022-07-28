@@ -1,6 +1,5 @@
 import appdirs
 import json
-from diskcache import Cache
 from dash_spa.logging import log
 from dash_spa.spa_config import config
 from dash_spa.utils.json_coder import json_decode, json_encode
@@ -28,6 +27,16 @@ class SessionDiskCache(SessionBackend):
     """
 
     # TODO: Figure out how to test if this is thread & process safe
+
+
+    try:
+        from diskcache import Cache
+    except ImportError as err:
+        raise ImportError(
+            "Diskcache is not installed, install it with "
+            "`pip install diskcache`"
+        ) from err
+
 
     _disk_cache =  Cache(directory = f"{options.folder or _cache_dir}")
 
