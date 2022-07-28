@@ -9,7 +9,6 @@ from ..session_cookie import session_manager
 
 options = config.get('session_storage')
 
-
 class SessionBackendFactory:
 
     user_sessions = {}

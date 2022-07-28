@@ -108,5 +108,5 @@ def plug(app):
     """
     @app.server.after_request
     def res_session_id(response):
-        session_manager.set_session(response)
+        session_manager.attach_session(response)
         return response

@@ -56,10 +56,10 @@ class SessionCookieManager:
         self.session_id = None
         self.unattached_session_id = False
 
-    def set_session(self, response):
-        """ Save current session cookie
+    def attach_session(self, response):
+        """ Save unattached session id to cookie
 
-        Called by @app.server.after_request
+        Must be called by @app.server.after_request
         """
 
         if self.unattached_session_id:
@@ -78,15 +78,20 @@ class SessionCookieManager:
             self.session_id = None
             self.unattached_session_id = False
 
-    def new_session(self):
+    def _new_session(self):
         sid = secrets.token_hex(32)
         self.unattached_session_id = True
         return sid
 
-    def get_session_id(self):
+    def get_session_id(self) -> str:
+        """Return the session_id for the current session"""
 
         if self.session_id:
             return self.session_id
+
+        # Extract the session from the current request cookies. If
+        # this fails we create a new session_id and flag it as being
+        # unattached_. The unattached session_id is
 
         try:
             req = request
@@ -104,20 +109,20 @@ class SessionCookieManager:
 
                     delta = time.time() - int(base64.b64decode(created))
                     if delta > self.refresh_after:
-                        self.set_session(self.session_id)
+                        self.attach_session(self.session_id)
 
                 except BadSignature:
-                    self.session_id = self.new_session()
+                    self.session_id = self._new_session()
             else:
 
                 # Create an unattached session.This will be turned into
                 # an attached session when the cookie is set. See:
                 # @app.server.after_request
 
-                self.session_id = self.new_session()
+                self.session_id = self._new_session()
 
         except Exception:
-            self.session_id = self.new_session()
+            self.session_id = self._new_session()
 
         log.info('get_session_id=%s', self.session_id)
 
