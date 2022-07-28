@@ -1,5 +1,5 @@
 from typing import TypeVar, Union
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, _FIELD
 from dash_spa.logging import log
 
 from .utils.dataclass import asdict
@@ -62,7 +62,12 @@ class ContextState:
 
 
     def asdict(self):
-        return asdict(self)
+        dict =  asdict(self)
+        if not self.__strict__:
+            for name, field in self.__dict__.items():
+                if isinstance(field, ContextState):
+                    dict[name] = asdict(field)
+        return dict
 
     def update(self, ref: str = None, state: Union[SelfContextState, dict] = None, update_listener=None) -> None:
         """ Copy the incoming state values to the context attributes """
@@ -81,6 +86,9 @@ class ContextState:
             if not self.__strict__:
                 if not hasattr(self, ref):
                     setattr(self, ref, state)
+                    # fld = field()
+                    # fld._field_type = _FIELD
+                    # fld.name = ref
                     self.__dataclass_fields__[ref] = field()
                     return
 
@@ -93,7 +101,7 @@ class ContextState:
 
         for attr in self.__dataclass_fields__:
 
-            if not attr in state:
+            if attr.startswith('__') or not attr in state:
                 continue
 
             new_value = state[attr]
@@ -105,7 +113,14 @@ class ContextState:
 
             if isinstance(current_value, ContextState):
                 current_value.update(state=new_value)
-
+            elif isinstance(current_value, list):
+                for idx, entry in enumerate(current_value):
+                    if isinstance(entry, ContextState):
+                        entry.update(state=new_value[idx])
+            elif isinstance(current_value, dict):
+                for key, entry in current_value.items():
+                    if isinstance(entry, ContextState):
+                        entry.update(state=new_value[key])
             else:
                 try:
 

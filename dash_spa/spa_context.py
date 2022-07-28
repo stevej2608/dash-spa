@@ -161,9 +161,7 @@ class Context:
 
         return wrapper
 
-    def Provider(self, state:ContextState=None):
-
-        # TODO: Added session persistence flag.
+    def Provider(self, state:ContextState=None, storage_type='session'):
 
         assert id, "The context.Provider must have an id"
 
@@ -173,7 +171,11 @@ class Context:
 
         # state can be provide when the context is created or passed in here
 
-        self._context_state = copy(state) if state is not None else self._context_state
+        if state == None:
+            state = self._context_state
+
+        self._context_state = copy(state)
+
         self._redux_store = ReduxStore(id=self.pid(), data=state.asdict(), storage_type='session')
 
         # The ID passed in is unique, use it to inject a prefix method into the
@@ -386,7 +388,7 @@ class ContextWrapper:
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.On(*_args, **_kwargs)
 
-    def Provider(self, id=id, state:ContextState=None):
+    def Provider(self, id=id, state:ContextState=None, storage_type='session'):
         """Dash Layout function decorator"""
 
         if state == None:
@@ -398,7 +400,7 @@ class ContextWrapper:
 
         self.ctx = self.ctx_lookup[id]
 
-        return self.ctx.Provider(state)
+        return self.ctx.Provider(state, storage_type)
 
     def wrap(self, layout, id):
         """Wrap the given dash layout in this context"""

@@ -86,8 +86,9 @@ class SessionCookieManager:
             self.unattached_session_id = False
 
     def create_unattached_session(self):
-        sid = secrets.token_hex(32)
         self.unattached_session_id = True
+        sid = secrets.token_hex(32)
+        log.info('create_unattached_session=%s', sid)
         return sid
 
     @synchronized(SESSION_LOCK)
@@ -103,7 +104,6 @@ class SessionCookieManager:
 
         try:
             req = request
-            self.unattached_session_id = False
 
             # Get the session id from the client cookies. If this
             # is the first request the cookie will not have been set
@@ -119,6 +119,10 @@ class SessionCookieManager:
                     if delta > self.refresh_after:
                         self.attach_session(self.session_id)
 
+                    self.unattached_session_id = False
+
+                    log.info('cookie session_id=%s', self.session_id)
+
                 except BadSignature:
                     self.session_id = self.create_unattached_session()
             else:
@@ -132,7 +136,7 @@ class SessionCookieManager:
         except Exception:
             self.session_id = self.create_unattached_session()
 
-        log.info('get_session_id=%s', self.session_id)
+        log.info('using session id=%s', self.session_id)
 
         return self.session_id
 
