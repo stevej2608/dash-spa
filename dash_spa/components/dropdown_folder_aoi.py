@@ -1,6 +1,7 @@
 from flask import request
 from dash import html, dcc
-from dash_spa import prefix, callback, session_context, SessionContext, session_data, component_id
+from dash_spa import prefix, callback
+from dash_spa.session import session_context, SessionContext, session_data
 from dash_spa.logging import log
 
 from .icons import ARROW

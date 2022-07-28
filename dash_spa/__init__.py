@@ -17,6 +17,7 @@ from .decorators import login_required
 from .callback import callback
 
 from .plugins import dash_logging
+from .session import spa_session
 
 from .spa_location import SPA_LOCATION
 

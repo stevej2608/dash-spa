@@ -5,7 +5,7 @@ from .spa_config import config
 options = config.get('logging')
 
 def getOptionsLevel(default='WARN'):
-    return options.get('level', default=default)
+    return options.get('level', default_value=default)
 
 logging.basicConfig(
     level = getOptionsLevel(),

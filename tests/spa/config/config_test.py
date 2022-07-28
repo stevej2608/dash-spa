@@ -1,6 +1,6 @@
 import os
 import pytest
-from dash_spa.spa_config import read_config, ConfigurationError
+from dash_spa.spa_config import read_config, ConfigurationError, UNDEFINED_SECTION
 
 def get_config(file):
     """Load module relative config file"""
@@ -38,10 +38,8 @@ def test_config_simple():
 
     # Try to access a nonexistent section
 
-    with pytest.raises(ConfigurationError) as error:
-        admin = config.get('users')
-
-    assert 'Section users has not been defined' in str(error)
+    admin = config.get('users')
+    assert admin == UNDEFINED_SECTION
 
     # Try to access a nonexistent attribute
 

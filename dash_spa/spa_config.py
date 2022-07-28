@@ -1,8 +1,7 @@
 from typing import List, Union
-from collections import namedtuple
 import os
 import re
-import iniconfig
+from iniconfig import IniConfig
 
 class ConfigurationError(Exception):
     def __init__(self, message):
@@ -10,60 +9,67 @@ class ConfigurationError(Exception):
         super().__init__(self.message)
 
 
-class TiniConfig:
+class TSectionConfig:
+
+    def __init__(self, config: dict):
+        self.__dict__ = config
+
+    def get(self, attr, default_value):
+        if attr in self.__dict__:
+            return self.__dict__[attr]
+        else:
+            return default_value
+
+    def __getattr__(self, key):
+        if key in self.__dict__:
+            return self.__dict__[key]
+        return None
+
+UNDEFINED_SECTION = TSectionConfig({})
+"""Returned when section is not present in configuration"""
+
+class TConfig:
 
     def __init__(self, config):
         self.config = config
 
-    def get(self, section: str = None):
-        """Return a section of the application configuration
+    def get(self, section: str = None, default_value: dict = None) -> TSectionConfig:
+        """Return a section of the application configuration or the entire config.
+
+        If the requested section does not exist the constant object
+        UNDEFINED_SECTION is returned
 
         Args:
             section (str, optional): The required section. Defaults to None.
-            config (dict, optional): The configuration dict. Defaults to CONFIG.
+            default_value (dict, optional): Value returned if section not present
 
         Raises:
             ConfigurationError: Reports failure
 
         Returns:
-            Object: Object containing the configuration
+            TSectionConfig: Object the section configuration or the entire config if section is None
         """
-
-        class ConfigWrapper:
-
-            def __init__(self, config):
-                self.__dict__ = config
-
-            def get(self, attr, default):
-                if attr in self.__dict__:
-                    return self.__dict__[attr]
-                else:
-                    return default
-
-            def __getattr__(self, key):
-                if key in self.__dict__:
-                    return self.__dict__[key]
-                #raise ConfigurationError(f"Configuration error: Attribute {section}.{key} has not been defined.")
-                return None
 
         try:
             if section:
                 if section in self.config.sections:
                     dt = self.config.sections[section]
-                else:
-                    raise ConfigurationError(f"Configuration error: Section {section} has not been defined.")
-            else:
-                dt = self.config.sections
+                    return TSectionConfig(dt)
 
-            obj = ConfigWrapper(dt)
-            return obj
+                if default_value == None:
+                    return UNDEFINED_SECTION
+
+                return TSectionConfig(default_value)
+
+            return TSectionConfig(self.config.sections)
+
         except ConfigurationError as ex:
             raise ConfigurationError(ex.message) from ex
 
 
-def read_config(files: Union[str, List[str]] ='.env', env: str = None) -> TiniConfig:
+def read_config(files: Union[str, List[str]] ='.env', env: str = None) -> TConfig:
     """Read configuration from file. If a list is supplied the configuration
-    is taken from the fist file found If the .ini file contains sections then
+    is taken from the fist file found. If the .ini file contains sections then
     the section name is used as a primary key in the returned dictionary.
 
     Args:
@@ -74,15 +80,24 @@ def read_config(files: Union[str, List[str]] ='.env', env: str = None) -> TiniCo
         ConfigurationError: Error is no file found
 
     Returns:
-        TiniConfig: Dictionary created from ini file content
+        TConfig: Dictionary created from ini file content
     """
 
-    def aux_filename(filename, env=None):
+    def _aux_filename(filename:str, env_postfix:str=None) -> str:
+        """Return file name with postix extension defined in env applied or None.
 
-        if not env:
+        Args:
+            filename (str): Bse filename
+            env_postfix (str, optional): ENV variable that holds postfix. Defaults to None.
+
+        Returns:
+            str: File name with postfix (if any) or None
+        """
+
+        if not env_postfix:
             return None
 
-        postfix = os.environ.get(env, None)
+        postfix = os.environ.get(env_postfix, None)
 
         if not postfix:
             return None
@@ -94,10 +109,25 @@ def read_config(files: Union[str, List[str]] ='.env', env: str = None) -> TiniCo
             parts.append(postfix)
         return '.'.join(parts)
 
-    def get_config(file):
+
+    def _read_ini_file(path:str) -> dict:
+        """Read content of given file
+
+        Args:
+            path (str): File to be read
+
+        Returns:
+            dict: configuration
+        """
+
 
         def apply_env(config: dict):
+            """Resolve dict entries of the form:
 
+            config['password'] = '${SPA_ADMIN_PASSWORD}'
+
+            SPA_ADMIN_PASSWORD is expected to be and ENV variable
+            """
             result = {}
             for key, value in config.items():
                 m = re.match("\${([A-Z]\w+)}", str(value))
@@ -105,10 +135,10 @@ def read_config(files: Union[str, List[str]] ='.env', env: str = None) -> TiniCo
                     var = m.group(1)
                     value = os.environ.get(var, None)
                     if value is None:
-                        raise ConfigurationError(f'ENV variable "{var}" is not assigned in file "{file}"')
+                        raise ConfigurationError(f'ENV variable "{var}" is not assigned in file "{path}"')
                 config[key] = value
 
-        conf = iniconfig.IniConfig(file)
+        conf = IniConfig(path)
 
         # Apply any ENV variables and convert types
 
@@ -137,21 +167,21 @@ def read_config(files: Union[str, List[str]] ='.env', env: str = None) -> TiniCo
     files = [files] if isinstance(files, str) else files
     for file in files:
         try:
-            conf = get_config(file)
-            file = aux_filename(file, env)
+            main_conf = _read_ini_file(file)
+            file = _aux_filename(file, env)
             if file:
-                aux_conf = get_config(file)
+                aux_conf = _read_ini_file(file)
                 for section in aux_conf.sections.keys():
-                    if section not in conf:
-                        conf.config[section] = {}
+                    if section not in main_conf:
+                        main_conf.config[section] = {}
 
-                    conf_section = conf.sections[section]
+                    conf_section = main_conf.sections[section]
                     aux_section = aux_conf[section]
 
                     for key, value in aux_section.items():
                         conf_section[key] = aux_section[key]
 
-            return TiniConfig(conf)
+            return TConfig(main_conf)
         except FileNotFoundError:
             pass
         except ConfigurationError as ex:

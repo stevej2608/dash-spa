@@ -7,7 +7,7 @@ from dash_spa.utils.json_coder import json_decode, json_encode
 
 from .session_backend import SessionBackend
 
-options = config.get('session_storage.diskcache')
+options = config.get('session_storage')
 
 _cache_dir = appdirs.user_cache_dir("dash_spa-sessions")
 

@@ -33,7 +33,7 @@ def create_dash() -> Dash:
         spa.spa_pages
         ]
 
-    if logging_opt.get('DASH_LOGGING', default=False):
+    if logging_opt.get('DASH_LOGGING', default_value=False):
         plugins.append(spa.dash_logging)
 
 
