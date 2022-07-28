@@ -1,4 +1,4 @@
-from typing import Dict, Union, Tuple, Callable, Any
+from typing import Dict, Union, Tuple, Callable, Any, Literal
 import json
 from copy import copy
 from flask import current_app as app
@@ -91,6 +91,7 @@ class Context:
         self.contexts = contexts
         self.id = id
         self._context_state = state
+        self._initial_context_state = None
         self.allow_initial_state = True
 
     def pid(self, id=None):
@@ -161,7 +162,7 @@ class Context:
 
         return wrapper
 
-    def Provider(self, state:ContextState=None, storage_type='session'):
+    def Provider(self, state:ContextState=None, persistent: bool = False):
 
         assert id, "The context.Provider must have an id"
 
@@ -176,7 +177,12 @@ class Context:
 
         self._context_state = copy(state)
 
-        self._redux_store = ReduxStore(id=self.pid(), data=state.asdict(), storage_type='session')
+        # if not persistent:
+        #     storage_type = 'memory'
+        # else:
+        #     storage_type = 'session'
+
+        self._redux_store = ReduxStore(id=self.pid(), data=state.asdict(), storage_type='memory')
 
         # The ID passed in is unique, use it to inject a prefix method into the
         # context state. This can then be used create ID's for dash element that are
@@ -240,15 +246,40 @@ class Context:
             # the layout.
 
             def session_restore(*_args, **_kwargs):
+                nonlocal persistent
 
                 cache = SessionBackendFactory.get_cache()
+
+                log.info('Using cache id=%s', cache.session_id)
+
+                if not persistent and self._initial_context_state is not None:
+
+                    # The state is not persistent, reset the state to it's initial value
+
+                    log.info('Restore from initial state id=%s %s', self.id, self._initial_context_state)
+
+                    cache.set(self.id, self._initial_context_state)
+
                 state = cache.get(self.id)
 
-                # log.info('Restore state from session store[%s] %s', self.id, state)
+                log.info('state for id=%s %s', self.id, state)
+                log.info('Restore state from session store[%s] %s', self.id, state)
 
                 self._context_state.update(state=state)
 
-                return func_wrapper(*_args, **_kwargs)
+                result = func_wrapper(*_args, **_kwargs)
+
+                # We've just returned from the Dash layout
+
+                if self._initial_context_state == None:
+
+                    # This must be the first time the Dash layout() function
+                    # has been called save a copy of the context state
+
+                    log.info('Save initial state id=%s %s', self.id, self._context_state.asdict())
+                    self._initial_context_state = self._context_state.asdict()
+
+                return result
 
             return session_restore
 
@@ -388,8 +419,14 @@ class ContextWrapper:
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.On(*_args, **_kwargs)
 
-    def Provider(self, id=id, state:ContextState=None, storage_type='session'):
-        """Dash Layout function decorator"""
+    def Provider(self, id:str, state:ContextState=None, persistent: bool = False):
+        """Dash Layout function decorator
+
+        Args:
+            id (str): The context id.
+            state (ContextState, optional): The state to be associated with the context. Defaults to None.
+            persistent (bool, optional): Persist the state across sessions. Defaults to False
+        """
 
         if state == None:
             state = self.dataclass()
@@ -400,7 +437,7 @@ class ContextWrapper:
 
         self.ctx = self.ctx_lookup[id]
 
-        return self.ctx.Provider(state, storage_type)
+        return self.ctx.Provider(state, persistent)
 
     def wrap(self, layout, id):
         """Wrap the given dash layout in this context"""

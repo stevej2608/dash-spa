@@ -21,9 +21,9 @@ def tb_report(tb: TBState):
     """reports single toolbar state"""
 
     msg = [f'{btn.name}={btn.clicks}' for btn in tb.buttons]
-    return html.H4(f'{tb.title} : {", ".join(msg)}')
+    return html.H4(f'{tb.title}: {", ".join(msg)}')
 
-@ToolbarContext.Provider(id='top')
+@ToolbarContext.Provider(id='top', persistent=True)
 def top_panel_layout():
 
     log.info('top_panel_layout()')
@@ -35,7 +35,7 @@ def top_panel_layout():
 
     state = ToolbarContext.getState()
 
-    title = html.H3('Toolbar Component Example')
+    title = html.H3('Toolbar Component Example (with persistent state)')
 
     report = html.Div([tb_report(tb) for tb in state.items()], style={'background-color': '#e6e6e6'})
     report.children.insert(0, html.H3('Toolbar Report'))
@@ -55,7 +55,7 @@ def bottom_panel_layout():
 
     state = ToolbarContext.getState()
 
-    title = html.H3('Toolbar Component Example')
+    title = html.H3('Toolbar Component Example (without persistent state)')
 
     report = html.Div([tb_report(tb) for tb in state.items()], style={'background-color': '#e6e6e6'})
     report.children.insert(0, html.H3('Toolbar Report'))
@@ -64,6 +64,7 @@ def bottom_panel_layout():
     return html.Div([title, main_toolbar, page_toolbar, report])
 
 def layout():
+    log.info('layout()')
     top = top_panel_layout()
     bottom = bottom_panel_layout()
     return html.Div([top, bottom])
