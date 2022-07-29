@@ -18,7 +18,7 @@ def app():
 
     app = dash.Dash(__name__)
 
-    @session_data(id='button_state')
+    @session_data()
     class ButtonState(SessionContext):
         clicks: int = 0
 
