@@ -1,3 +1,4 @@
+import os
 from flask import Flask, session
 import logging
 
@@ -15,13 +16,13 @@ logging.basicConfig(
 log = logging.getLogger("dash_spa")
 
 
-@app.before_request
-def req_session_id():
-    if 'Username' in session:
-        log.info('before_request %s is already active', session['Username'])
-    else:
-        session['Username'] = 'Admin  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-        log.info('before_request set %s', session['Username'])
+# @app.before_request
+# def req_session_id():
+#     if 'Username' in session:
+#         log.info('before_request %s is already active', session['Username'])
+#     else:
+#         session['Username'] = 'Admin  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+#         log.info('before_request set %s', session['Username'])
 
 
 
@@ -47,6 +48,8 @@ def popsession():
     session.pop('Username',None)
     return "Session Deleted"
 
-print(' * Visit http://default:5026/getsession')
-
-app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    hostname = os.environ.get("HOSTNAME", "localhost")
+    hostport = os.environ.get("HOSTPORT", "5000")
+    print(f' * Visit http://{hostname}:{hostport}/getsession')
+    app.run(host='0.0.0.0', port=5000)

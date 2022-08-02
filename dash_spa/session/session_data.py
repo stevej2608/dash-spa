@@ -89,6 +89,9 @@ def session_context(session_ctx: SessionContext, id=None):
     # Listen for changes in the data and update
     # the store on change
 
+    # TODO: Is update needed? maybe just writing session at end of request would
+    #  work just as well. Investigate!
+
     state: SessionContext = session_ctx()
     state.update(state=data, update_listener=update)
 

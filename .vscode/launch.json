@@ -22,6 +22,22 @@
     },
 
     {
+      "name": "1b. session_example.py",
+      "type": "python",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "program": "session_example.py",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
+    {
       "name": "2a. Python: examples.context.app",
       "type": "python",
       "request": "launch",

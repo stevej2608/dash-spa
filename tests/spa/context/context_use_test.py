@@ -19,14 +19,14 @@ def test_context_simple():
     # Use two context providers with same
     # ButtonContext. Confirm they don't interfere with each other
 
-    @ButtonContext.Provider(id='test1')
+    @ButtonContext.Provider(id='test1', persistent=True)
     def layout_test1(expected):
         state = ButtonContext.getState()
         assert state.clicks == expected
         state.clicks = expected + 10
         return html.Div()
 
-    @ButtonContext.Provider(id='test2')
+    @ButtonContext.Provider(id='test2', persistent=True)
     def layout_test2(expected):
         state = ButtonContext.getState()
         assert state.clicks == expected
@@ -51,7 +51,7 @@ def test_context_list():
 
     SizesContext = createContext(SizesState)
 
-    @SizesContext.Provider(id='test_context_list')
+    @SizesContext.Provider(id='test_context_list', persistent=True)
     def layout_test1(expected):
         state = SizesContext.getState()
         assert state.sizes[0] == expected
@@ -75,7 +75,7 @@ def test_context_dict():
 
     ColourContext = createContext(ColourState)
 
-    @ColourContext.Provider(id='test_context_dict')
+    @ColourContext.Provider(id='test_context_dict', persistent=True)
     def layout_test1(index):
         state = ColourContext.getState()
         assert state.selected == state.colours[index]
