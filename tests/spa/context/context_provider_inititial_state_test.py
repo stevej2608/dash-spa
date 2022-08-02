@@ -2,7 +2,7 @@ from typing import List
 import pytest
 import dash
 from dash import html
-from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_LIST
+from dash_spa.spa_context import  createContext, ContextState, dataclass
 
 # https://github.com/konradhalas/dacite
 
@@ -25,7 +25,7 @@ class TBState(ContextState):
 @dataclass
 class ToolbarList(ContextState):
     """State of several toolbars"""
-    toolbars: List[TBState] = EMPTY_LIST
+    toolbars: List[TBState] = None
 
 def test_simple_state():
     app = dash.Dash(__name__)

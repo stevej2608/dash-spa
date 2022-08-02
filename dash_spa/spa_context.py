@@ -408,6 +408,12 @@ class ContextWrapper:
     def store(self):
         return self.ctx
 
+    def get_context(self, id):
+        return self.ctx_lookup[id]
+
+    def get_context_state(self, id):
+        return self.ctx_lookup[id]._context_state
+
     def set_context(self, ctx):
         self.ctx = ctx
 

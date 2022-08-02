@@ -14,7 +14,7 @@ class TButton(ContextState):
 @dataclass
 class TBState(ContextState):
     title: str = ""
-    buttons: List[TButton] = EMPTY_LIST
+    buttons: List[TButton] = None
 
     def __post_init__(self):
         self.buttons = [TButton(name, 0) for name in self.buttons]
