@@ -9,7 +9,7 @@ from dash_spa import callback, NOUPDATE
 from dash_spa.session import SessionBackendFactory
 from dash_redux import ReduxStore
 
-from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
+from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT
 from dash_spa.logging import log
 
 """Context state management

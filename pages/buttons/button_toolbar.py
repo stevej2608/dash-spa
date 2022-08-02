@@ -2,7 +2,7 @@ from typing import List, Dict
 from dash import html, ALL
 from dash_spa import prefix
 from dash_spa.logging import log
-from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_LIST
+from dash_spa.spa_context import  createContext, ContextState, dataclass
 import dash_spa as spa
 
 
