@@ -25,9 +25,9 @@ def pytest_setup_options():
     return options
 
 
-@pytest.fixture(scope='package')
-def app(spa):
-    return spa.dash.server
+# @pytest.fixture(scope='package')
+# def app(spa):
+#     return spa.dash.server
 
 @pytest.fixture(scope='package')
 def client(app):
@@ -36,9 +36,9 @@ def client(app):
     yield _client
 
 @pytest.fixture(scope='function')
-def duo(dash_duo, spa):
+def duo(dash_duo, test_app):
     """A client for the dash_duo/Flask tests."""
     dash_duo.driver.set_window_size(1500, 1200)
     dash_duo.driver.maximize_window()
-    dash_duo.start_server(spa)
+    dash_duo.start_server(test_app)
     return dash_duo

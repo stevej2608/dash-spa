@@ -1,8 +1,8 @@
 from tests.admin import USER_NAME, USER_EMAIL, USER_PASSWORD, delete_user, css_id
 
-def test_login(duo, spa):
+def test_login(duo, test_app):
 
-    login_manager = spa.server.login_manager
+    login_manager = test_app.server.login_manager
 
     # Delete the test user as preparation for test
 
@@ -32,7 +32,7 @@ def test_login(duo, spa):
     result = duo.wait_for_text_to_equal("#user-name", "Big Joe", timeout=20)
     assert result
 
-def test_admin_login_fail(duo, spa):
+def test_admin_login_fail(duo, test_app):
 
     # Login known user with a bad password - confirm rejection
     #

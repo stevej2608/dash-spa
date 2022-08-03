@@ -5,12 +5,12 @@ from dash_spa import page_container
 
 mail_args = {}
 
-def test_register(mocker, spa, duo):
+def test_register(mocker, test_app, duo):
 
     # Test the registration UI and confirm that a verification
     # email is sent to the user
 
-    login_manager = spa.server.login_manager
+    login_manager = test_app.server.login_manager
 
     if not login_manager.is_test():
         pytest.exit("You must be in test mode to run this test")

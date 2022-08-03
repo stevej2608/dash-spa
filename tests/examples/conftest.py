@@ -6,6 +6,6 @@ from examples.multipage.app import create_dash, create_app
 
 
 @pytest.fixture(scope='package')
-def spa():
+def test_app():
     spa = create_app(create_dash)
     return spa

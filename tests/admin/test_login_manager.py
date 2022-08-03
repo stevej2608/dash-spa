@@ -6,8 +6,8 @@ def test_cache_send():
     cache['test'] = {'test': 1234}
     assert 'test' in cache
 
-def test_register_verification_cache(duo, spa):
-    login_manager = spa.server.login_manager
+def test_register_verification_cache(duo, test_app):
+    login_manager = test_app.server.login_manager
 
     vrec1 = login_manager.create_verification_record("Steve", "steve@gmail.com", "1234")
     vrec2 = login_manager.get_verification_record("steve@gmail.com")

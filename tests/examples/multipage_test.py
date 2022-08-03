@@ -1,6 +1,6 @@
 
 
-def test_page_nav(duo, spa):
+def test_page_nav(duo, test_app):
 
     duo.server_url = duo.server_url + "/page1"
 
