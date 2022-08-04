@@ -59,7 +59,7 @@ class SessionCookieManager:
         key, salt = _session_keys(appdirs.user_config_dir("dash_spa"))
         self.signer = Signer(key, salt=salt)
 
-        self.unattached_session_id = False
+        self.unattached_session_id = None
 
 
     @synchronized(SESSION_LOCK)
