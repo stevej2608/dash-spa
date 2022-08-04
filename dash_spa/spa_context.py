@@ -313,7 +313,7 @@ class Context:
             log.info('Save state to session store[%s] %s', self.id, state)
 
             cache = SessionBackendFactory.get_cache()
-            cache.set(self.id, state)
+            cache.set(self.id, self._context_state.asdict())
 
             return container.children
 

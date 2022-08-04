@@ -65,8 +65,15 @@ class SessionDiskCache(SessionBackend):
 
 
     def set(self, obj_key, value: dict):
+        prev_state = json.dumps(self.get(obj_key), sort_keys = True)
+
         self.session_store[obj_key] = value
-        self.update()
+
+        new_state = json.dumps(self.get(obj_key), sort_keys = True)
+
+        if new_state != prev_state:
+            self.update()
+
 
     def remove(self, obj_key):
         self.session_store.pop(obj_key, None)
