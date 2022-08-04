@@ -1,4 +1,31 @@
+from itsdangerous import base64_decode
+import zlib
 from tests.admin import USER_NAME, USER_EMAIL, USER_PASSWORD, delete_user, css_id
+
+
+# https://github.com/noraj/flask-session-cookie-manager/blob/master/flask_session_cookie_manager3.py
+# https://www.kirsle.net/wizards/flask-session.cgi#source
+
+def decode(cookie):
+    """Decode a Flask cookie."""
+    try:
+        compressed = False
+        payload = cookie
+
+        if payload.startswith('.'):
+            compressed = True
+            payload = payload[1:]
+
+        data = payload.split(".")[0]
+
+        data = base64_decode(data)
+        if compressed:
+            data = zlib.decompress(data)
+
+        return data.decode("utf-8")
+    except Exception as e:
+        return "[Decoding error: are you sure this was a Flask session cookie? {}]".format(e)
+
 
 def test_login(duo, test_app):
 
@@ -10,6 +37,8 @@ def test_login(duo, test_app):
 
     result = login_manager.add_user(name=USER_NAME, password=USER_PASSWORD, email=USER_EMAIL)
     assert result
+
+    duo.driver.delete_all_cookies()
 
     # Login known user - confirm success
 
@@ -31,6 +60,16 @@ def test_login(duo, test_app):
 
     result = duo.wait_for_text_to_equal("#user-name", "Big Joe", timeout=20)
     assert result
+
+    # Confirm flask_login.login_user() has been called and the session cookies
+    # have been created.
+
+    cookies = duo.driver.get_cookie('session')
+    assert cookies
+
+    session = decode(cookies['value'])
+    assert '_id' in session
+
 
 def test_admin_login_fail(duo, test_app):
 

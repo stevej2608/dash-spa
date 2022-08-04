@@ -1,4 +1,4 @@
-from flask import request, current_app as app
+from flask import session, current_app as app
 from itsdangerous import Signer, BadSignature
 import appdirs
 import base64
@@ -59,7 +59,6 @@ class SessionCookieManager:
         key, salt = _session_keys(appdirs.user_config_dir("dash_spa"))
         self.signer = Signer(key, salt=salt)
 
-        self.session_id = None
         self.unattached_session_id = False
 
 
@@ -70,24 +69,12 @@ class SessionCookieManager:
         Must be called by @app.server.after_request
         """
 
-        if self.unattached_session_id:
-            log.info('Response, attach session id=%s', self.session_id)
+        if self.self.unattached_session_id:
+            log.info('Response, attach session id=%s', self.self.unattached_session_id)
+            session[SPA_SESSION_COOKIE] = self.unattached_session_id
+            self.unattached_session_id = None
 
-            ts = base64.b64encode(str(int(time.time())).encode()).decode()
-
-            response.set_cookie(
-                SPA_SESSION_COOKIE,
-                self.signer.sign(f"{self.session_id}#{ts}").decode(),
-                httponly=True,
-                max_age=self.max_age,
-                samesite="Strict"
-            )
-
-            self.session_id = None
-            self.unattached_session_id = False
-
-    def create_unattached_session(self):
-        self.unattached_session_id = True
+    def create_session_id(self):
         sid = secrets.token_hex(32)
         log.info('create_unattached_session=%s', sid)
         return sid
@@ -96,57 +83,34 @@ class SessionCookieManager:
     def get_session_id(self) -> str:
         """Return the session_id for the current session"""
 
-        try:
-            @app.after_request
-            def res_session_id(response):
-                self.attach_session(response)
-                return response
-        except Exception:
-            pass
-
-        if self.session_id:
-            return self.session_id
+        if self.unattached_session_id:
+            return self.unattached_session_id
 
         # Extract the session from the current request cookies. If
         # this fails we create a new session_id and flag it as being
         # unattached_. The unattached session_id is
 
         try:
-            req = request
 
-            # Get the session id from the client cookies. If this
-            # is the first request the cookie will not have been set
-            # yet.
+            if not SPA_SESSION_COOKIE in session:
+                session[SPA_SESSION_COOKIE] = self.create_session_id()
 
-            if SPA_SESSION_COOKIE in req.cookies:
-                token = req.cookies.get(SPA_SESSION_COOKIE)
-                try:
-                    unsigned = self.signer.unsign(token).decode()
-                    self.session_id, created = unsigned.split("#")
-
-                    delta = time.time() - int(base64.b64decode(created))
-                    if delta > self.refresh_after:
-                        self.attach_session(self.session_id)
-
-                    self.unattached_session_id = False
-
-                    log.info('cookie session_id=%s', self.session_id)
-
-                except BadSignature:
-                    self.session_id = self.create_unattached_session()
-            else:
-
-                # Create an unattached session.This will be turned into
-                # an attached session when the cookie is set. See:
-                # @app.server.after_request
-
-                self.session_id = self.create_unattached_session()
+            log.info('Using attached session id=%s', session[SPA_SESSION_COOKIE])
+            return session[SPA_SESSION_COOKIE]
 
         except Exception:
-            self.session_id = self.create_unattached_session()
+            self.unattached_session_id = self.create_session_id()
+            log.info('Using unattached session id=%s', self.unattached_session_id)
 
-        log.info('using session id=%s', self.session_id)
+            try:
+                @app.after_request
+                def res_session_id(response):
+                    self.attach_session(response)
+                    return response
+            except Exception:
+                pass
 
-        return self.session_id
+            return self.unattached_session_id
+
 
 session_manager = SessionCookieManager()
