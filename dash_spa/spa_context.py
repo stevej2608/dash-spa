@@ -91,7 +91,7 @@ class Context:
         self.contexts = contexts
         self.id = id
         self._context_state = state
-        self._initial_context_state = None
+        self._initial_context_state = {}
         self.allow_initial_state = True
 
     def pid(self, id=None):
@@ -252,32 +252,29 @@ class Context:
 
                 log.info('Using cache id=%s', cache.session_id)
 
-                if not persistent and self._initial_context_state is not None:
-
-                    # The state is not persistent, reset the state to it's initial value
-
-                    log.info('Restore from initial state id=%s %s', self.id, self._initial_context_state)
-
-                    cache.set(self.id, self._initial_context_state)
-
                 state = cache.get(self.id)
+                ref_state = json.dumps(state, sort_keys = True)
 
-                log.info('state for id=%s %s', self.id, state)
-                log.info('Restore state from session store[%s] %s', self.id, state)
+                if state == {}:
+                    log.info('Restore state %s from _initial_context_state', self.id)
+                    state = self._initial_context_state
+
 
                 self._context_state.update(state=state)
 
                 result = func_wrapper(*_args, **_kwargs)
 
+                cache.set(self.id, self._context_state.asdict())
+
                 # We've just returned from the Dash layout
 
-                if self._initial_context_state == None:
+                if self._initial_context_state == {}:
 
                     # This must be the first time the Dash layout() function
                     # has been called save a copy of the context state
 
-                    log.info('Save initial state id=%s %s', self.id, self._context_state.asdict())
                     self._initial_context_state = self._context_state.asdict()
+                    log.info('Save initial state id=%s %s', self.id, self._initial_context_state)
 
                 return result
 
