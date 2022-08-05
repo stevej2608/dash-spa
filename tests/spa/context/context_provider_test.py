@@ -62,7 +62,7 @@ def test_single_button(dash_duo):
 
     # Create Dash UI and start the test server
 
-    @ButtonContext.Provider(id='single_button')
+    @ButtonContext.Provider()
     def layout():
         return button_widget_layout()
 

@@ -7,6 +7,7 @@ from dash_prefix import prefix
 from dash_spa.logging import log
 from dash_spa import callback, NOUPDATE
 from dash_spa.session import SessionBackendFactory
+from dash_spa.utils.caller import caller_hash
 from dash_redux import ReduxStore
 
 from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT
@@ -421,11 +422,11 @@ class ContextWrapper:
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.On(*_args, **_kwargs)
 
-    def Provider(self, id:str, state:ContextState=None, persistent: bool = True):
+    def Provider(self, id:str=None, state:ContextState=None, persistent: bool = True):
         """Dash Layout function decorator
 
         Args:
-            id (str): The context id.
+            id (str, optional): id of session data. Defaults to hash derived from module.line_number.
             state (ContextState, optional): The state to be associated with the context. Defaults to None.
             persistent (bool, optional): Persist the state across sessions. Defaults to True
         """
@@ -433,6 +434,9 @@ class ContextWrapper:
         if state == None:
             state = self.dataclass()
             state.__strict__ = False
+
+        if not id:
+            id = caller_hash(prefix='S')
 
         if not id in self.ctx_lookup:
             self.ctx_lookup[id] = Context(self, id, state)

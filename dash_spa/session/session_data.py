@@ -36,7 +36,7 @@ def session_data(cls=None, init=True, repr=True, eq=True,
     TODO: Define cache expiry argument
 
     Args:
-        id (str, optional): id of session data. Defaults to hash derived from module.line.
+        id (str, optional): id of session data. Defaults to hash derived from module.line_number.
     """
 
     if id == None:
