@@ -22,7 +22,7 @@ class DropdownAIO(html.Div):
     Button = dhc.Button
 
 
-    def __init__(self, button:dhc.Button, container:Component, id):
+    def __init__(self, button:dhc.Button, container:Component, id, classname_modifier='show'):
 
         pid = prefix(id)
 
@@ -44,9 +44,9 @@ class DropdownAIO(html.Div):
 
             classNames = className.split()
 
-            if 'show' in classNames:
+            if classname_modifier in classNames:
                 if button_focus is False:
-                    classNames.remove('show')
+                    classNames.remove(classname_modifier)
 
                     # Delay hiding the container. If we don't do this click
                     # event from elements in the container are lost
@@ -54,7 +54,7 @@ class DropdownAIO(html.Div):
 
                     time.sleep(300/1000)
             else:
-                classNames.append('show')
+                classNames.append(classname_modifier)
 
             className = ' '.join(classNames)
 

@@ -1,7 +1,17 @@
-from dash import html, dcc
+from dash import html
+from dash_spa.components.dropdown_aio import DropdownAIO
+from dash_spa.spa_context import  createContext, ContextState, dataclass
 
 BAG_IMG = 'https://res.cloudinary.com/sivadass/image/upload/v1493548928/icons/bag.png'
 EMPTY_CART = 'https://res.cloudinary.com/sivadass/image/upload/v1495427934/icons/empty-cart.png'
+
+@dataclass
+class TCartState(ContextState):
+    isCartOpen: bool = False
+    items: list = None
+
+CartContext = createContext(TCartState)
+
 
 STYLE = {
     'position' : 'relative',
@@ -37,6 +47,9 @@ def cart_info(items, total):
 
 
 def cart_preview():
+    state = CartContext.getState()
+    # className = 'cart-preview active' if state.isCartOpen else 'cart-preview'
+
     return html.Div([
             html.Div([
                 html.Div([
@@ -49,11 +62,24 @@ def cart_preview():
                 html.Div(html.Div(style=STYLE), style={'position': 'absolute', 'width': '6px', 'right': '2px', 'bottom': '2px', 'top': '2px', 'border-radius': '3px'})
             ], style={'position': 'relative', 'overflow': 'hidden', 'width': '360px', 'height': '320px'}),
             html.Div(html.Button("PROCEED TO CHECKOUT", type='button', className='disabled'), className='action-block')
-        ], className='cart-preview active')
+        ], className='cart-preview')
 
+@CartContext.Provider()
 def cart():
+
+    style = {'background': 'none', 'border': 'none'}
+
+    bag_icon = DropdownAIO.Button(html.Img(className='', src=BAG_IMG, alt='Cart'), className='btn btn-link cart-icon', style=style)
+
+    # @CartContext.On(cart_icon.input.n_clicks)
+    # def btn_update(clicks):
+    #     state = CartContext.getState()
+    #     state.isCartOpen = not state.isCartOpen
+
+    cart_dropdown = DropdownAIO(bag_icon, cart_preview(), id='cart_icon', classname_modifier='active')
+
     return  html.Div([
         cart_info(0, 0),
-        html.A(html.Img(className='', src=BAG_IMG, alt='Cart'), className='cart-icon', href='#'),
+        cart_dropdown,
         cart_preview()
     ], className='cart')
