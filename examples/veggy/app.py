@@ -25,4 +25,4 @@ app = dash.Dash( __name__,
 
 if __name__ == "__main__":
     app.layout=page_container
-    serve_app(app, debug=True)
+    serve_app(app, debug=False)

@@ -4,8 +4,9 @@ from dash_spa import prefix, callback, isTriggered, copy_factory
 class StepperInput(html.Div):
     def __init__(self, id):
         pid = prefix(id)
-        add_btn = html.A("+", href='#', className='increment', id=pid('add'))
-        remove_btn = html.A("–", href='#', className='decrement', id=pid('remove'))
+
+        add_btn = html.A("+", className='increment', id=pid('add'))
+        remove_btn = html.A("–", className='decrement', id=pid('remove'))
         input_number = dcc.Input(type='number', className='quantity', value='1', id=pid('input'))
 
         @callback(input_number.output.value,
