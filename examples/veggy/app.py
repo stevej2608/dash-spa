@@ -1,3 +1,4 @@
+from distutils.log import debug
 import flask
 import dash
 from dash_spa import page_container, spa_pages
@@ -17,11 +18,11 @@ server.config['SECRET_KEY'] = "Veggy Store Secret Key"
 app = dash.Dash( __name__,
         server = server,
         plugins=[spa_pages],
-        external_stylesheets=external_stylesheets,
+        external_stylesheets=external_stylesheets
         )
 
 # python -m examples.veggy.app
 
 if __name__ == "__main__":
     app.layout=page_container
-    serve_app(app, debug=False)
+    serve_app(app, debug=True)

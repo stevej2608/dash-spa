@@ -13,8 +13,8 @@ STYLE = {
     'display' : 'block',
     'height' : '100%',
     'cursor' : 'pointer',
-    'border-radius' : 'inherit',
-    'background-color' : 'rgba(0, 0, 0, 0.2)',
+    'borderRadius' : 'inherit',
+    'backgroundColor' : 'rgba(0, 0, 0, 0.2)',
     'width' : '0px',
 }
 
@@ -86,15 +86,17 @@ def cart_preview():
     state = CartContext.getState()
     if not state.items:
         cart = empty_cart()
+        btn_className = 'disabled'
     else:
         cart = html.Ul([cart_item(idx,item) for idx, item in enumerate(state.items)])
+        btn_className = ''
     return html.Div([
             html.Div([
-                html.Div(cart, style={'position': 'absolute', 'inset': '0px', 'overflow': 'scroll', 'margin-right': '-17px', 'margin-bottom': '-17px'}),
-                html.Div(html.Div(style=STYLE), style={'position': 'absolute', 'height': '6px', 'right': '2px', 'bottom': '2px', 'left': '2px', 'border-radius': '3px'}),
-                html.Div(html.Div(style=STYLE), style={'position': 'absolute', 'width': '6px', 'right': '2px', 'bottom': '2px', 'top': '2px', 'border-radius': '3px'})
+                html.Div(cart, style={'position': 'absolute', 'inset': '0px', 'overflow': 'scroll', 'marginRight': '-17px', 'marginBottom': '-17px'}),
+                html.Div(html.Div(style=STYLE), style={'position': 'absolute', 'height': '6px', 'right': '2px', 'bottom': '2px', 'left': '2px', 'borderRadius': '3px'}),
+                html.Div(html.Div(style=STYLE), style={'position': 'absolute', 'width': '6px', 'right': '2px', 'bottom': '2px', 'top': '2px', 'borderRadius': '3px'})
             ], style={'position': 'relative', 'overflow': 'hidden', 'width': '360px', 'height': '320px'}),
-            html.Div(html.Button("PROCEED TO CHECKOUT", type='button', className='disabled'), className='action-block')
+            html.Div(html.Button("PROCEED TO CHECKOUT", type='button', className=btn_className), className='action-block')
         ], className='cart-preview')
 
 def cart():
@@ -105,8 +107,10 @@ def cart():
     # defined on stat up.
 
     if not state.items:
-        for i in range(30):
-            cart_item(i, None)
+        dummy_cart_items = [cart_item(i, None) for i in range(30)]
+    else:
+        dummy_cart_items = []
+
 
     style = {'background': 'none', 'border': 'none'}
     bag_icon = DropdownAIO.Button(html.Img(className='', src=BAG_IMG, alt='Cart'), className='btn btn-link cart-icon', style=style)
@@ -116,5 +120,6 @@ def cart():
     return  html.Div([
         cart_info(),
         cart_dropdown,
-        cart_preview()
+        cart_preview(),
+        html.Div(dummy_cart_items, hidden=True)
     ], className='cart')

@@ -24,7 +24,7 @@ def serve_app(app: Dash, path="/", debug=False):
 
     # When running in a Docker container the internal port
     # is mapped onto a host port. Use the env variables passed
-    # in to the container to determin the host URL.
+    # in to the container to determine the host URL.
 
     port = int(os.environ.get("PORT", 5000))
     hostname = os.environ.get("HOSTNAME", "localhost")
