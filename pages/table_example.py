@@ -82,6 +82,7 @@ def layout_example_table():
     return html.Div([
         html.Div(table, className='card card-body border-0 shadow table-wrapper table-responsive'),
         paginator_row
-        ])
+    ])
+
 
 layout = layout_example_table

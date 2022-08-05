@@ -73,8 +73,8 @@ def default_container(page, layout,  **kwargs):
                 html.Div([
 
                     html.Div([
-                        html.Div(content, className="col-md-10"),
-                        html.Div([], className="col-md-2")
+                        html.Div(content, className="col-md-12"),
+                        # html.Div([], className="col-md-2")
                     ], className='row')
 
                 ], className='container d-flex flex-column flex-grow-1'),

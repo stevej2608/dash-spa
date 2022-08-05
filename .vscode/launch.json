@@ -22,7 +22,7 @@
     },
 
     {
-      "name": "1b. session_example.py",
+      "name": "2a. session_example.py",
       "type": "python",
       "request": "launch",
       "cwd": "${workspaceRoot}",
@@ -38,7 +38,7 @@
     },
 
     {
-      "name": "2a. Python: examples.context.app",
+      "name": "2b. Python: examples.context.app",
       "type": "python",
       "request": "launch",
       "module": "examples.context.app",
@@ -53,10 +53,10 @@
     },
 
     {
-      "name": "2b. Python: examples.flightdeck.app",
+      "name": "2c. Python: examples.veggy.app",
       "type": "python",
       "request": "launch",
-      "module": "examples.flightdeck.app",
+      "module": "examples.veggy.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
@@ -68,7 +68,7 @@
     },
 
     {
-      "name": "2c. Python: examples.notifications.app",
+      "name": "2d. Python: examples.notifications.app",
       "type": "python",
       "request": "launch",
       "module": "examples.notifications.app",
