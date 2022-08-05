@@ -1,7 +1,7 @@
 from unicodedata import category
 import pandas as pd
 from dash import html, dcc
-from dash_spa import prefix
+from dash_spa import prefix, callback, isTriggered, copy_factory
 
 from .cart import CartContext, TCartItem
 
@@ -12,45 +12,61 @@ except Exception:
     exit(0)
 
 
+class StepperInput(html.Div):
+
+    def __init__(self, id):
+        pid = prefix(id)
+        add_btn = html.A("+", href='#', className='increment', id=pid('add'))
+        remove_btn = html.A("–", href='#', className='decrement', id=pid('remove'))
+        input_number = dcc.Input(type='number', className='quantity', value='1', id=pid('input'))
+
+        @callback(input_number.output.value,
+                  add_btn.input.n_clicks,
+                  remove_btn.input.n_clicks,
+                  input_number.state.value,
+                  prevent_initial_call=True)
+        def add_cb(add_clicks, remove_clicks, value):
+            try:
+                count = int(value)
+                if isTriggered(add_btn.input.n_clicks):
+                    count += 1
+                elif isTriggered(remove_btn.input.n_clicks):
+                    if count > 1: count -= 1
+                return str(count)
+            except Exception:
+                return value
+
+        super().__init__([remove_btn, input_number, add_btn], className='stepper-input')
+        copy_factory(input_number, self)
+
+
 def ProductCard(index, data: list):
 
     pid = prefix(f'product_card_{index}')
 
     id, name, price, image, category = data.values()
 
-    add_btn = html.A("+", href='#', className='increment', id=pid('add'))
-    remove_btn = html.A("–", href='#', className='decrement', id=pid('remove'))
-    input_number = dcc.Input(type='number', className='quantity', value='1', id=pid('input'))
-
     state = CartContext.getState()
 
-    def update_item(count):
+    stepper = StepperInput(id=pid('stepper'))
+    add_btn = html.Button("ADD TO CART", className='', type='button', id=pid('add_btn'))
+
+    @CartContext.On(add_btn.input.n_clicks, stepper.state.value)
+    def update_cb(clicks, value):
         nonlocal state, id
+        try:
+            if state.items is None:
+                state.items = []
 
-        if state.items is None:
-            state.items = []
+            for item in state.items:
+                if item.id == id:
+                    item.count += value
+                    return
 
-        for item in state.items:
-            if item.id == id:
-                item.count += count
-                return
-
-        new_item = TCartItem(id, count)
-        state.items.append(new_item)
-
-
-    @CartContext.On(add_btn.input.n_clicks)
-    def add_cb(clicks):
-        update_item(1)
-
-    @CartContext.On(remove_btn.input.n_clicks)
-    def add_cb(clicks):
-        update_item(-1)
-
-    @CartContext.On(input_number.input.value)
-    def add_cb(value):
-        update_item(value)
-
+            new_item = TCartItem(id, value, price)
+            state.items.append(new_item)
+        except Exception:
+            pass
 
     return html.Div([
         html.Div([
@@ -58,14 +74,8 @@ def ProductCard(index, data: list):
         ], className='product-image'),
         html.H4(name, className='product-name'),
         html.P(price, className='product-price'),
-        html.Div([
-            add_btn,
-            input_number,
-            remove_btn
-        ], className='stepper-input'),
-        html.Div([
-            html.Button("ADD TO CART", className='', type='button')
-        ], className='product-action')
+        stepper,
+        html.Div(add_btn, className='product-action')
     ], className='product')
 
 

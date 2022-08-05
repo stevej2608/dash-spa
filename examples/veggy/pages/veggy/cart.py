@@ -10,12 +10,17 @@ EMPTY_CART = 'https://res.cloudinary.com/sivadass/image/upload/v1495427934/icons
 class TCartItem(ContextState):
     id: str = None
     count: int = 0
+    price: float = 0.0
 
 
 @dataclass
 class TCartState(ContextState):
     isCartOpen: bool = False
     items: list = None
+
+    def __post_init__(self):
+        self.items = []
+        super().__post_init__()
 
 CartContext = createContext(TCartState)
 
@@ -32,6 +37,11 @@ STYLE = {
 
 def cart_info():
     state = CartContext.getState()
+
+    total = 0
+    for item in state.items:
+        total += item.price
+
     return  html.Div([
         html.Table([
             html.Tbody([
