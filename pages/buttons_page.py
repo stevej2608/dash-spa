@@ -45,7 +45,7 @@ def top_panel_layout():
     return html.Div([title, main_toolbar, page_toolbar, report])
 
 
-@ToolbarContext.Provider('bottom', persistent=False)
+@ToolbarContext.Provider(persistent=False)
 def bottom_panel_layout():
 
     log.info('bottom_panel_layout()')
