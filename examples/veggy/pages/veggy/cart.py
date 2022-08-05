@@ -1,4 +1,5 @@
 from dash import html
+from dash_spa import prefix
 from dash_spa.components.dropdown_aio import DropdownAIO
 from dash_spa.spa_context import  createContext, ContextState, dataclass
 
@@ -37,23 +38,32 @@ STYLE = {
     'width' : '0px',
 }
 
-def cart_item(item: TCartItem):
+def cart_item(idx: int, item: TCartItem = None):
+    pid = prefix(f'cart_item_{idx}')
 
-    remove_btn = html.A("×", className='product-remove', href='#')
+    state = CartContext.getState()
 
+    remove_btn = html.A("×", className='product-remove', id=pid('remove_btn'), href='#')
 
-    return html.Li([
-        html.Img(className='product-image', src=item.image),
-        html.Div([
-            html.P(item.name, className='product-name'),
-            html.P(item.price, className='product-price')
-        ], className='product-info'),
-        html.Div([
-            html.P(f"{item.count} Nos.", className='quantity'),
-            html.P(f"{item.count * item.price}", className='amount')
-        ], className='product-total'),
-        remove_btn
-    ], className='cart-item')
+    @CartContext.On(remove_btn.input.n_clicks)
+    def remove_cb(clicks):
+        state.items.pop(idx)
+
+    if item:
+        return html.Li([
+            html.Img(className='product-image', src=item.image),
+            html.Div([
+                html.P(item.name, className='product-name'),
+                html.P(item.price, className='product-price')
+            ], className='product-info'),
+            html.Div([
+                html.P(f"{item.count} Nos.", className='quantity'),
+                html.P(f"{item.count * item.price}", className='amount')
+            ], className='product-total'),
+            remove_btn
+        ], className='cart-item')
+    else:
+        return html.Li(remove_btn, hidden=True)
 
 
 def cart_info():
@@ -97,7 +107,7 @@ def cart_preview():
     if not state.items:
         cart = empty_cart()
     else:
-        cart = html.Ul([cart_item(item) for item in state.items])
+        cart = html.Ul([cart_item(idx,item) for idx, item in enumerate(state.items)])
     return html.Div([
             html.Div([
                 html.Div(cart, style={'position': 'absolute', 'inset': '0px', 'overflow': 'scroll', 'margin-right': '-17px', 'margin-bottom': '-17px'}),
@@ -108,6 +118,15 @@ def cart_preview():
         ], className='cart-preview')
 
 def cart():
+    state = CartContext.getState()
+
+    # We need to prime the cart with a number of hidden/dummy
+    # list items. This is needed because all callbacks must be
+    # defined on stat up.
+
+    if not state.items:
+        for i in range(30):
+            cart_item(i, None)
 
     style = {'background': 'none', 'border': 'none'}
     bag_icon = DropdownAIO.Button(html.Img(className='', src=BAG_IMG, alt='Cart'), className='btn btn-link cart-icon', style=style)
