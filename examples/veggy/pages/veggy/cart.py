@@ -11,6 +11,8 @@ class TCartItem(ContextState):
     id: str = None
     count: int = 0
     price: float = 0.0
+    name: str = ''
+    image: str = ''
 
 
 @dataclass
@@ -34,6 +36,25 @@ STYLE = {
     'background-color' : 'rgba(0, 0, 0, 0.2)',
     'width' : '0px',
 }
+
+def cart_item(item: TCartItem):
+
+    remove_btn = html.A("×", className='product-remove', href='#')
+
+
+    return html.Li([
+        html.Img(className='product-image', src=item.image),
+        html.Div([
+            html.P(item.name, className='product-name'),
+            html.P(item.price, className='product-price')
+        ], className='product-info'),
+        html.Div([
+            html.P(f"{item.count} Nos.", className='quantity'),
+            html.P(f"{item.count * item.price}", className='amount')
+        ], className='product-total'),
+        remove_btn
+    ], className='cart-item')
+
 
 def cart_info():
     state = CartContext.getState()
@@ -65,15 +86,21 @@ def cart_info():
 
 
 def cart_preview():
+
+    def empty_cart():
+        return  html.Div([
+                html.Img(src=EMPTY_CART, alt='empty-cart'),
+                html.H2("You cart is empty!")
+            ], className='empty-cart')
+
     state = CartContext.getState()
+    if not state.items:
+        cart = empty_cart()
+    else:
+        cart = html.Ul([cart_item(item) for item in state.items])
     return html.Div([
             html.Div([
-                html.Div([
-                    html.Div([
-                        html.Img(src=EMPTY_CART, alt='empty-cart'),
-                        html.H2("You cart is empty!")
-                    ], className='empty-cart')
-                ], style={'position': 'absolute', 'inset': '0px', 'overflow': 'scroll', 'margin-right': '-17px', 'margin-bottom': '-17px'}),
+                html.Div(cart, style={'position': 'absolute', 'inset': '0px', 'overflow': 'scroll', 'margin-right': '-17px', 'margin-bottom': '-17px'}),
                 html.Div(html.Div(style=STYLE), style={'position': 'absolute', 'height': '6px', 'right': '2px', 'bottom': '2px', 'left': '2px', 'border-radius': '3px'}),
                 html.Div(html.Div(style=STYLE), style={'position': 'absolute', 'width': '6px', 'right': '2px', 'bottom': '2px', 'top': '2px', 'border-radius': '3px'})
             ], style={'position': 'relative', 'overflow': 'hidden', 'width': '360px', 'height': '320px'}),

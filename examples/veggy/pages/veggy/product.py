@@ -1,43 +1,15 @@
-from unicodedata import category
 import pandas as pd
-from dash import html, dcc
+from dash import html
 from dash_spa import prefix, callback, isTriggered, copy_factory
 
 from .cart import CartContext, TCartItem
+from .stepper_input import StepperInput
 
 try:
     df = pd.read_json('https://res.cloudinary.com/sivadass/raw/upload/v1535817394/json/products.json')
 except Exception:
     print("Unable to read 'product.json' from cloudinary, no internet connection?")
     exit(0)
-
-
-class StepperInput(html.Div):
-
-    def __init__(self, id):
-        pid = prefix(id)
-        add_btn = html.A("+", href='#', className='increment', id=pid('add'))
-        remove_btn = html.A("–", href='#', className='decrement', id=pid('remove'))
-        input_number = dcc.Input(type='number', className='quantity', value='1', id=pid('input'))
-
-        @callback(input_number.output.value,
-                  add_btn.input.n_clicks,
-                  remove_btn.input.n_clicks,
-                  input_number.state.value,
-                  prevent_initial_call=True)
-        def add_cb(add_clicks, remove_clicks, value):
-            try:
-                count = int(value)
-                if isTriggered(add_btn.input.n_clicks):
-                    count += 1
-                elif isTriggered(remove_btn.input.n_clicks):
-                    if count > 1: count -= 1
-                return str(count)
-            except Exception:
-                return value
-
-        super().__init__([remove_btn, input_number, add_btn], className='stepper-input')
-        copy_factory(input_number, self)
 
 
 def ProductCard(index, data: list):
@@ -55,6 +27,7 @@ def ProductCard(index, data: list):
     def update_cb(clicks, value):
         nonlocal state, id
         try:
+            value = int(value)
             if state.items is None:
                 state.items = []
 
@@ -63,7 +36,7 @@ def ProductCard(index, data: list):
                     item.count += value
                     return
 
-            new_item = TCartItem(id, value, price)
+            new_item = TCartItem(id, value, price, name, image)
             state.items.append(new_item)
         except Exception:
             pass
