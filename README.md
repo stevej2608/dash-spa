@@ -325,7 +325,7 @@ def Button(id):
     return btn
 
 
-@ButtonContext.Provider(id='test', session=True)
+@ButtonContext.Provider()
 def layout():
     state = ButtonContext.getState()
     btn =  Button(id='test_btn)

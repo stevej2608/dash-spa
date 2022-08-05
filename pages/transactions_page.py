@@ -16,7 +16,7 @@ def newPlanButton():
     return html.A([ICON.PLUS, "New Plan"], href='#', className='btn btn-sm btn-gray-800 d-inline-flex align-items-center')
 
 
-@TableContext.Provider(id='transactions_table')
+@TableContext.Provider()
 def layout_transactions_table(query_string: dict = None):
 
     pid = prefix('transactions_table')

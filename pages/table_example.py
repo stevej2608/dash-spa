@@ -62,7 +62,7 @@ class CustomTable(TableAIO):
         ])
 
 
-@TableContext.Provider(id='example_table')
+@TableContext.Provider()
 def layout_example_table():
     log.info('layout - example_table')
     table = CustomTable(

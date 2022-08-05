@@ -45,7 +45,7 @@ Example usage:
             return btn
 
 
-        @ButtonContext.Provider(id='test')
+        @ButtonContext.Provider()
         def layout():
             state = ButtonContext.getState()
             btn =  Button(id='test_btn)
@@ -447,6 +447,7 @@ class ContextWrapper:
 
     def wrap(self, layout, id):
         """Wrap the given dash layout in this context"""
+        # TODO: Add default hash for ID
         return self.Provider(id=id)(layout)()
 
     def useState(self, ref:str=None, initial_state: ContextState = None) -> Tuple[ContextState, Callable[[Any], None]]:
