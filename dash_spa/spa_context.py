@@ -38,7 +38,7 @@ Example usage:
             state = ButtonContext.getState()
             btn = html.Button("Button", id=id)
 
-            @ButtonContext.On(btn.input.n_clicks, prevent_initial_call=True)
+            @ButtonContext.On(btn.input.n_clicks)
             def btn_click(clicks):
                 state.clicks += 1
 

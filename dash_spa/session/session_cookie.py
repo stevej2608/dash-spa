@@ -69,8 +69,8 @@ class SessionCookieManager:
         Must be called by @app.server.after_request
         """
 
-        if self.self.unattached_session_id:
-            log.info('Response, attach session id=%s', self.self.unattached_session_id)
+        if self.unattached_session_id:
+            log.info('Response, attach session id=%s', self.unattached_session_id)
             session[SPA_SESSION_COOKIE] = self.unattached_session_id
             self.unattached_session_id = None
 

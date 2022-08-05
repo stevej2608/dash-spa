@@ -1,11 +1,13 @@
-from dash import html, dcc
-from dash_spa import register_page, callback, NOUPDATE
+from dash import html
+from dash_spa import register_page
 
-from .veggy import productList, header, footer, modal
+from .veggy import productList, header, footer, modal, CartContext
 
 register_page(__name__, path='/', title="Veggy", short_name='Veggy')
 
-layout = html.Main([
+@CartContext.Provider()
+def layout():
+    return html.Main([
     html.Div([
         header(),
         productList(),
