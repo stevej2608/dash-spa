@@ -25,7 +25,7 @@ def tb_report(tb: TBState):
     msg = [f'{btn.name}={btn.clicks}' for btn in tb.buttons]
     return html.H4(f'{tb.title}: {", ".join(msg)}')
 
-@ToolbarContext.Provider(id='top', persistent=True)
+@ToolbarContext.Provider(id='top')
 def top_panel_layout():
 
     log.info('top_panel_layout()')

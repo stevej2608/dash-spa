@@ -253,9 +253,8 @@ class Context:
                 log.info('Using cache id=%s', cache.session_id)
 
                 state = cache.get(self.id)
-                ref_state = json.dumps(state, sort_keys = True)
 
-                if state == {}:
+                if state == {} or not persistent :
                     log.info('Restore state %s from _initial_context_state', self.id)
                     state = self._initial_context_state
 
@@ -422,13 +421,13 @@ class ContextWrapper:
         assert self.ctx, _NO_CONTEXT_ERROR
         return self.ctx.On(*_args, **_kwargs)
 
-    def Provider(self, id:str, state:ContextState=None, persistent: bool = False):
+    def Provider(self, id:str, state:ContextState=None, persistent: bool = True):
         """Dash Layout function decorator
 
         Args:
             id (str): The context id.
             state (ContextState, optional): The state to be associated with the context. Defaults to None.
-            persistent (bool, optional): Persist the state across sessions. Defaults to False
+            persistent (bool, optional): Persist the state across sessions. Defaults to True
         """
 
         if state == None:
