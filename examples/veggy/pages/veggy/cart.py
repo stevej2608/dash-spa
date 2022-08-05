@@ -1,31 +1,11 @@
 from dash import html
 from dash_spa import prefix
 from dash_spa.components.dropdown_aio import DropdownAIO
-from dash_spa.spa_context import  createContext, ContextState, dataclass
+
+from .context import TCartItem, TCartState, CartContext
 
 BAG_IMG = 'https://res.cloudinary.com/sivadass/image/upload/v1493548928/icons/bag.png'
 EMPTY_CART = 'https://res.cloudinary.com/sivadass/image/upload/v1495427934/icons/empty-cart.png'
-
-
-@dataclass
-class TCartItem(ContextState):
-    id: str = None
-    count: int = 0
-    price: float = 0.0
-    name: str = ''
-    image: str = ''
-
-
-@dataclass
-class TCartState(ContextState):
-    isCartOpen: bool = False
-    items: list = None
-
-    def __post_init__(self):
-        self.items = []
-        super().__post_init__()
-
-CartContext = createContext(TCartState)
 
 
 STYLE = {
@@ -71,7 +51,7 @@ def cart_info():
 
     total = 0
     for item in state.items:
-        total += item.price
+        total += item.price * item.count
 
     return  html.Div([
         html.Table([

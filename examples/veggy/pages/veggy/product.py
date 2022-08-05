@@ -1,6 +1,7 @@
 import pandas as pd
 from dash import html
-from dash_spa import prefix, callback, isTriggered, copy_factory
+from dash_spa import prefix
+from dash_spa.components.table import filter_str
 
 from .cart import CartContext, TCartItem
 from .stepper_input import StepperInput
@@ -52,8 +53,13 @@ def ProductCard(index, data: list):
     ], className='product')
 
 
+
 def productList():
-    product_data = df.to_dict('records')
+    state = CartContext.getState()
+
+    df1 = filter_str(df, state.search_term)
+
+    product_data = df1.to_dict('records')
     products = [ProductCard(index, data) for index, data in enumerate(product_data)]
     return html.Div([
             html.Div(products, className='products')
