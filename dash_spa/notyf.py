@@ -1,19 +1,41 @@
 from flask import current_app as app
 from dash_redux import ReduxStore
-from dash import dcc, html, clientside_callback
-from dash_spa import prefix, copy_factory, page_container_append
+from dash import clientside_callback
+from dash_spa import page_container_append
 
-# Note: requires notyf library. Make sure the following is included
-# in the dash app instantiation:
-#
-# external_scripts = [
-#     "https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
-#     ]
-#
-# app = dash.Dash( __name__,
-#     external_scripts=external_scripts
-#     )
-#
+"""Support for Notifications
+
+Usage:
+    @SPA_NOTIFY.update(btn3.input.n_clicks)
+    def btn_cb(clicks, store):
+        if clicks:
+            notyf = Notyf(message='This might be dangerous.', type='warning')
+            return notyf.report()
+        else:
+            return NOUPDATE
+
+
+Note: requires notyf library. Make sure the following is included
+in the dash app instantiation:
+
+    from dash_spa.notyf import NOTIFY_CSS, NOTIFY_JS
+
+    external_stylesheets = [
+        NOTIFY_CSS,
+        ]
+
+    external_scripts = [
+        NOTIFY_JS
+        ]
+
+    app = dash.Dash( __name__,
+        external_scripts=external_scripts,
+        external_stylesheets=external_stylesheets
+        )
+"""
+
+NOTIFY_CSS = "https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
+NOTIFY_JS = "https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"
 
 class Notyf:
 
@@ -152,4 +174,18 @@ class NotyfViewer(ReduxStore):
 
 
 SPA_NOTIFY = NotyfViewer(id='spa_notify')
+"""Spa Notify callback wrapper
+
+Usage:
+    @SPA_NOTIFY.update(btn3.input.n_clicks)
+    def btn_cb(clicks, store):
+        if clicks:
+            notyf = Notyf(message='This might be dangerous.', type='warning')
+            return notyf.report()
+        else:
+            return NOUPDATE
+"""
+
+
+
 page_container_append(SPA_NOTIFY)

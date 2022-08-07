@@ -30,9 +30,10 @@ app = dash.Dash( __name__,
 from flask import current_app as app
 from dataclasses import dataclass
 from dash_redux import ReduxStore
-from dash import dcc, html, clientside_callback
+from dash import clientside_callback
 from dash_spa import page_container_append
 
+ALERT_JS = "https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.all.min.js"
 
 @dataclass
 class Alert:
@@ -85,4 +86,15 @@ class SweetAlert(ReduxStore):
 
 
 SPA_ALERT = SweetAlert(id='spa_alert')
+"""Spa Alert callback wrapper
+Usage:
+    @SPA_ALERT.update(btn5.input.n_clicks)
+    def btn_cb(clicks, store):
+        if clicks:
+            alert = Alert('The Internet?', 'That thing is still around?', icon='question')
+            return alert.report()
+        else:
+            return NOUPDATE
+"""
+
 page_container_append(SPA_ALERT)
