@@ -6,7 +6,7 @@ from .veggy import productList, header, footer, modal, CartContext
 register_page(__name__, path='/', title="Veggy", short_name='Veggy')
 
 @CartContext.Provider()
-def layout():
+def app_layout():
     return html.Main([
     html.Div([
         header(),
@@ -15,3 +15,5 @@ def layout():
         modal()
     ], className='container')
 ])
+
+layout = app_layout()

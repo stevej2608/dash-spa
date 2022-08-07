@@ -6,6 +6,7 @@ from dash import Output
 from dash_prefix import prefix
 from dash_spa.logging import log
 from dash_spa import callback, NOUPDATE
+from dash_spa.spa_pages import Component
 from dash_spa.session import SessionBackendFactory
 from dash_spa.utils.caller import caller_hash
 from dash_redux import ReduxStore
@@ -203,6 +204,8 @@ class Context:
                 try:
                     self.contexts.set_context(self)
                     result = func(*_args, **_kwargs)
+
+                    assert isinstance(result, Component), "Methods wrapped with @Context.Provider must return a single dash.Component"
 
                     result.id = container_id
 
