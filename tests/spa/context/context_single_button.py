@@ -33,6 +33,69 @@ def componentDecode(comp):
 
     return json.loads(json_str)
 
+
+def expected_layout(count):
+    return {
+        "props": {
+            "children": [
+            {
+                "props": {
+                "children": "Button",
+                "id": "btn"
+                },
+                "type": "Button",
+                "namespace": "dash_html_components"
+            },
+            {
+                "props": {
+                "children": f"Button pressed {count} times!",
+                "id": "div"
+                },
+                "type": "Div",
+                "namespace": "dash_html_components"
+            },
+            {
+                "props": {
+                "children": [
+                    {
+                    "props": {
+                        "id": "test_provider",
+                        "data": {
+                        "clicks": count
+                        },
+                        "storage_type": "memory"
+                    },
+                    "type": "Store",
+                    "namespace": "dash_core_components"
+                    },
+                    {
+                    "props": {
+                        "id": {
+                        "type": "test_provider_ip",
+                        "idx": "PYTEST_REPLACEMENT_ID_0"
+                        },
+                        "data": {
+                        "clicks": count
+                        },
+                        "storage_type": "memory"
+                    },
+                    "type": "Store",
+                    "namespace": "dash_core_components"
+                    }
+                ],
+                "id": "test_provider#container"
+                },
+                "type": "Div",
+                "namespace": "dash_html_components"
+            }
+            ],
+            "id": "test_provider_ctx_container"
+        },
+        "type": "Div",
+        "namespace": "dash_html_components"
+        }
+
+
 def test_single_button(dash_duo):
     app = dash.Dash(__name__)
 
@@ -58,78 +121,26 @@ def test_single_button(dash_duo):
     app.layout = layout()
     dash_duo.start_server(app)
 
-    # Test code
-
-    def wait_text(text):
-        return dash_duo.wait_for_text_to_equal(div.css_id, text, timeout=4)
-
-    browser_btn = dash_duo.find_element(btn.css_id)
-
-    assert wait_text("Button pressed 1000 times!")
-
-    browser_btn.click()
-    assert wait_text("Button pressed 1001 times!")
-
-    expected = {
-        "props": {
-            "children": [
-            {
-                "props": {
-                "children": "Button",
-                "id": "btn"
-                },
-                "type": "Button",
-                "namespace": "dash_html_components"
-            },
-            {
-                "props": {
-                "children": "Button pressed 1000 times!",
-                "id": "div"
-                },
-                "type": "Div",
-                "namespace": "dash_html_components"
-            },
-            {
-                "props": {
-                "children": [
-                    {
-                    "props": {
-                        "id": "test_provider",
-                        "data": {
-                        "clicks": 1001
-                        },
-                        "storage_type": "memory"
-                    },
-                    "type": "Store",
-                    "namespace": "dash_core_components"
-                    },
-                    {
-                    "props": {
-                        "id": {
-                        "type": "test_provider_ip",
-                        "idx": "PYTEST_REPLACEMENT_ID_0"
-                        },
-                        "data": {
-                        "clicks": 1001
-                        },
-                        "storage_type": "memory"
-                    },
-                    "type": "Store",
-                    "namespace": "dash_core_components"
-                    }
-                ],
-                "id": "test_provider#container"
-                },
-                "type": "Div",
-                "namespace": "dash_html_components"
-            }
-            ],
-            "id": "test_provider_ctx_container"
-        },
-        "type": "Div",
-        "namespace": "dash_html_components"
-        }
-
+    # Confirm the initial component tree layout
 
     res = componentDecode(app.layout)
-    assert res == expected
+    assert res == expected_layout(count=1000)
+
+    # Confirm the initial browser UI
+
+    def browser_wait_text(text):
+        return dash_duo.wait_for_text_to_equal(div.css_id, text, timeout=4)
+
+    assert browser_wait_text("Button pressed 1000 times!")
+
+    # Click a button and confirm the browser UI is updated
+
+    browser_btn = dash_duo.find_element(btn.css_id)
+    browser_btn.click()
+    assert browser_wait_text("Button pressed 1001 times!")
+
+    # Confirm the new component tree layout
+
+    _layout = layout()
+    res = componentDecode(_layout)
+    assert res == expected_layout(count=1001)
