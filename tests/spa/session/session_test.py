@@ -17,6 +17,7 @@ def app():
     # dash_duo.driver.delete_all_cookies()
 
     app = dash.Dash(__name__)
+    app.server.config['SECRET_KEY'] = "A secret key"
 
     @session_data()
     class ButtonState(SessionContext):
