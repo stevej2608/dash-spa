@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable, Union, List
 import re
 from urllib import parse
 from collections import OrderedDict
@@ -233,6 +233,7 @@ def page_for(module:str) -> str:
         return DashPage(page)
     raise Exception(f"No page for module \"{module}\" defined")
 
+
 def url_for(module:str, args: dict=None, attr=None) -> str:
 
     if module in dash.page_registry:
@@ -254,4 +255,28 @@ def register_container(module, name='default'):
     """Register a container wih the given name"""
     dash.register_container(module, name)
 
-dash.internal_stylesheets = []
+def add_external_scripts(url: Union[str, List[str]]) -> None:
+    """Add given script(s) to the external_scripts list
+
+    Args:
+        url (Union[str, List[str]]): Script url or list of script urls
+
+    Example:
+    ```
+            add_external_scripts("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js")
+    ```
+    """
+    dash.add_external_scripts(url)
+
+def add_external_stylesheets(url:Union[str, List[str]]) -> None:
+    """Add given stylesheet(s) to the external_stylesheets list
+
+    Args:
+        url (Union[str, List[str]]): Stylesheet url or list of stylesheet urls
+
+    Example:
+    ```
+            add_external_stylesheets("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css")
+    ```
+    """
+    dash.add_external_stylesheets(url)

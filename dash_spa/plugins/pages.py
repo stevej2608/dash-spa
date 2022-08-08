@@ -1,3 +1,4 @@
+from typing import Union, List
 from dash import callback, Output, Input, html, dcc
 import dash
 import os
@@ -38,6 +39,7 @@ page_container = html.Div(
         html.Div(id=_ID_DUMMY),
     ]
 )
+
 
 def add_style(style: str):
     """Add given style to the html header
@@ -84,6 +86,41 @@ def register_container(container, name='default'):
 
 dash.register_container = register_container
 
+def add_external_scripts(url: Union[str, List[str]]) -> None:
+    """Add given script(s) to the external_scripts list
+
+    Args:
+        url (Union[str, List[str]]): Script url or list of script urls
+
+    Example:
+    ```
+            add_external_scripts("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js")
+    ```
+    """
+    urls = url if isinstance(url, list) else [url]
+    for url in urls:
+        if not url in dash.external_scripts:
+            dash.external_scripts.append(url)
+
+dash.add_external_scripts = add_external_scripts
+
+def add_external_stylesheets(url):
+    """Add given stylesheet(s) to the external_stylesheets list
+
+    Args:
+        url (Union[str, List[str]]): Stylesheet url or list of stylesheet urls
+
+    Example:
+    ```
+            add_external_stylesheets("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css")
+    ```
+    """
+    urls = url if isinstance(url, list) else [url]
+    for url in urls:
+        if not url in dash.external_stylesheets:
+            dash.external_stylesheets.append(url)
+
+dash.add_external_stylesheets = add_external_stylesheets
 
 def register_page(
     module,
@@ -369,10 +406,14 @@ def _path_to_page(app, path_id):
     return {}, None
 
 
-def plug(app):
+def plug(app: dash.Dash):
     dash.page_registry = OrderedDict()
     dash.container_registry = {}
     dash.style_registry = []
+
+    dash.external_scripts = []
+    dash.external_stylesheets = []
+
 
     pages_folder = os.path.join(flask.helpers.get_root_path(app.config.name), "pages")
     if os.path.exists(pages_folder):
@@ -509,6 +550,12 @@ def plug(app):
 
             for path in app.internal_stylesheets:
                 kwargs['css'] += f'\n<link rel="stylesheet" href="/internal{path}">'
+
+            for path in dash.external_stylesheets:
+                kwargs['css'] += f'\n<link rel="stylesheet" href="{path}">'
+
+            for path in dash.external_scripts:
+                kwargs['scripts'] += f'\n<script src="{path}"></script>'
 
             return dedent(
                 """

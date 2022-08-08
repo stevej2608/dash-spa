@@ -31,9 +31,8 @@ from flask import current_app as app
 from dataclasses import dataclass
 from dash_redux import ReduxStore
 from dash import clientside_callback
-from dash_spa import page_container_append
+from dash_spa import page_container_append, add_external_scripts
 
-ALERT_JS = "https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.all.min.js"
 
 @dataclass
 class Alert:
@@ -47,6 +46,8 @@ class Alert:
     def report(self):
         args = {k:v for k,v in vars(self).items() if v is not None}
         return args
+
+add_external_scripts("https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.all.min.js")
 
 class SweetAlert(ReduxStore):
 
@@ -98,3 +99,4 @@ Usage:
 """
 
 page_container_append(SPA_ALERT)
+

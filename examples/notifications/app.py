@@ -4,9 +4,6 @@ import dash_bootstrap_components as dbc
 
 from dash_spa import page_container, spa_pages
 
-from dash_spa.notyf import NOTIFY_CSS, NOTIFY_JS
-from dash_spa.alert import ALERT_JS
-
 from themes import VOLT
 from server import serve_app
 
@@ -15,14 +12,11 @@ external_stylesheets = [
     "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css",
     "https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.4/chartist.min.css",
     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.2.0/css/all.min.css",
-    NOTIFY_CSS,
     VOLT,
     ]
 
 external_scripts = [
     "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js",
-    ALERT_JS,
-    NOTIFY_JS
     ]
 
 def create_dash():

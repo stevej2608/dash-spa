@@ -44,8 +44,6 @@ def create_dash() -> Dash:
             external_scripts=external_scripts, server=server
             )
 
-    # app.add_stylesheets('css/volt.css')
-
     app.logger.setLevel(options.level)
 
     return app

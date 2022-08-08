@@ -1,7 +1,7 @@
 from flask import current_app as app
 from dash_redux import ReduxStore
 from dash import clientside_callback
-from dash_spa import page_container_append
+from dash_spa import page_container_append, add_external_scripts, add_external_stylesheets
 
 """Support for Notifications
 
@@ -34,8 +34,8 @@ in the dash app instantiation:
         )
 """
 
-NOTIFY_CSS = "https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
-NOTIFY_JS = "https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"
+add_external_scripts("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js")
+add_external_stylesheets("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css")
 
 class Notyf:
 
@@ -185,7 +185,5 @@ Usage:
         else:
             return NOUPDATE
 """
-
-
 
 page_container_append(SPA_NOTIFY)
