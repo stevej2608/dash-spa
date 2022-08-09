@@ -5,6 +5,7 @@ from dash_spa import page_container_append, add_external_scripts, add_external_s
 
 """Support for Notifications
 
+
 Usage:
     @SPA_NOTIFY.update(btn3.input.n_clicks)
     def btn_cb(clicks, store):
@@ -14,24 +15,7 @@ Usage:
         else:
             return NOUPDATE
 
-
-Note: requires notyf library. Make sure the following is included
-in the dash app instantiation:
-
-    from dash_spa.notyf import NOTIFY_CSS, NOTIFY_JS
-
-    external_stylesheets = [
-        NOTIFY_CSS,
-        ]
-
-    external_scripts = [
-        NOTIFY_JS
-        ]
-
-    app = dash.Dash( __name__,
-        external_scripts=external_scripts,
-        external_stylesheets=external_stylesheets
-        )
+See: https://github.com/caroso1222/notyf#readme
 """
 
 add_external_scripts("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js")

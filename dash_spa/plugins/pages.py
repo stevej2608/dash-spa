@@ -13,6 +13,8 @@ from urllib.parse import parse_qs
 from keyword import iskeyword
 import warnings
 
+dash.external_scripts = []
+dash.external_stylesheets = []
 
 # TODO: Merge this with my Dash Labs fork on github
 #
@@ -78,7 +80,6 @@ def add_stylesheets(self, files):
             self.internal_stylesheets.append(css_file)
 
 dash.Dash.add_stylesheets = add_stylesheets
-
 
 def register_container(container, name='default'):
     """Register a container wih the given name"""
@@ -410,9 +411,6 @@ def plug(app: dash.Dash):
     dash.page_registry = OrderedDict()
     dash.container_registry = {}
     dash.style_registry = []
-
-    dash.external_scripts = []
-    dash.external_stylesheets = []
 
 
     pages_folder = os.path.join(flask.helpers.get_root_path(app.config.name), "pages")
