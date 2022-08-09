@@ -1,38 +1,13 @@
 import dash
-import re
-import plotly
-import json
 from dash import html
 from dash_spa.spa_context import createContext, ContextState, dataclass
+from dash_spa.utils.dumps_layout import dumps_layout
 
 @dataclass
 class ButtonState(ContextState):
     clicks: int = 1000
 
 ButtonContext = createContext(ButtonState)
-
-def componentDecode(comp):
-
-    # ReduxStore elements use a hash() to generate a component
-    # id. This is a problem when testing because the hash() seed changes
-    # on each test run. Here we pick out the hash based ids' and replace
-    # them with an index.
-
-    id_list = []
-
-    def replace_id(match):
-        val = match.group(0).split(': ')[1]
-        if val not in id_list:
-            id_list.append(val)
-        return f"\"idx\": \"PYTEST_REPLACEMENT_ID_{id_list.index(val)}\""
-
-    # "idx": "2438d368d91cd816"
-
-    json_str = json.dumps(comp, cls=plotly.utils.PlotlyJSONEncoder)
-    json_str = re.sub(r'\"idx\": \"[0-9a-f]+\"', replace_id, json_str)
-
-    return json.loads(json_str)
-
 
 def expected_layout(count):
     return {
@@ -123,7 +98,7 @@ def test_single_button(dash_duo):
 
     # Confirm the initial component tree layout
 
-    res = componentDecode(app.layout)
+    res = dumps_layout(app.layout)
     assert res == expected_layout(count=1000)
 
     # Confirm the initial browser UI

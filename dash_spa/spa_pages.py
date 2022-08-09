@@ -31,7 +31,7 @@ def page_container_append(component: Component):
         return "NO ID"
 
     id = get_id(component)
-    # log.info('page_container_append id=%s', id)
+    log.info('page_container_append id=%s', id)
     page_container.children.append(component)
 
 
