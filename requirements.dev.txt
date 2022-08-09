@@ -1,3 +1,5 @@
+-r requirements.txt
+
 # Additional packages for development & testing
 
 dash[testing]>=2.1.0

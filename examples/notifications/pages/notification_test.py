@@ -1,7 +1,7 @@
 from dash import html
 from dash_spa import register_page, NOUPDATE
-from dash_spa.alert import Alert, SPA_ALERT
-from dash_spa.notyf import Notyf, SPA_NOTIFY
+from dash_spa.components.alert import Alert, SPA_ALERT
+from dash_spa.components.notyf import Notyf, SPA_NOTIFY
 
 register_page(__name__, path='/', title="Alert Test", short_name='Alerts')
 
