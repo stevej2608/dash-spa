@@ -32,6 +32,11 @@ def page_container_append(component: Component):
 
     id = get_id(component)
     log.info('page_container_append id=%s', id)
+
+    for child in page_container.children:
+        if child.id == id:
+            page_container.children.remove(child)
+
     page_container.children.append(component)
 
 

@@ -28,10 +28,13 @@ app = dash.Dash( __name__,
 """
 
 from flask import current_app as app
+from werkzeug.local import LocalProxy
 from dataclasses import dataclass
 from dash_redux import ReduxStore
 from dash import clientside_callback
 from dash_spa import page_container_append, add_external_scripts
+from dash_spa.logging import log
+from dash._callback import GLOBAL_CALLBACK_MAP
 
 
 @dataclass
@@ -86,7 +89,23 @@ class SweetAlert(ReduxStore):
         return super().update(*_args, **_kwargs)
 
 
-SPA_ALERT = SweetAlert(id='spa_alert')
+# The GLOBAL_CALLBACK_MAP is cleared when Dash sends the initial
+# app layout to the browser. A problem occurs when testing. The
+# initial test setup will send the SPA_NOTIFY component and associated
+# client callback and the test will pass. Any subsequent will fail
+# because the GLOBAL_CALLBACK_MAP is empty.
+#
+# The following LocalProxy fixes the problem
+
+def _sweetAlert():
+    if 'spa_alert.data' not in GLOBAL_CALLBACK_MAP:
+        # log.info('Create Alert instance')
+        _sweetAlert.viewer = SweetAlert(id='spa_alert')
+        page_container_append(_sweetAlert.viewer)
+    return _sweetAlert.viewer
+
+
+SPA_ALERT = LocalProxy(_sweetAlert)
 """Spa Alert callback wrapper
 Usage:
     @SPA_ALERT.update(btn5.input.n_clicks)
@@ -97,6 +116,3 @@ Usage:
         else:
             return NOUPDATE
 """
-
-page_container_append(SPA_ALERT)
-

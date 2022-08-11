@@ -4,7 +4,7 @@ from dash_spa.logging import log
 from dash_spa import spa_pages, NOUPDATE, page_container, register_page
 
 
-from dash_spa.components.alert import Alert, SPA_ALERT
+from dash_spa.components import Alert, SPA_ALERT
 
 
 def single_page_app(page_layout):

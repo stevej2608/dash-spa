@@ -1,7 +1,10 @@
 from flask import current_app as app
+from werkzeug.local import LocalProxy
 from dash_redux import ReduxStore
 from dash import clientside_callback
+from dash._callback import GLOBAL_CALLBACK_MAP
 from dash_spa import page_container_append, add_external_scripts, add_external_stylesheets
+from dash_spa.logging import log
 
 """Support for Notifications
 
@@ -156,8 +159,23 @@ class NotyfViewer(ReduxStore):
 
         return super().update(*_args, **_kwargs)
 
+# The GLOBAL_CALLBACK_MAP is cleared when Dash sends the initial
+# app layout to the browser. A problem occurs when testing. The
+# initial test setup will send the SPA_NOTIFY component and associated
+# client callback and the test will pass. Any subsequent will fail
+# because the GLOBAL_CALLBACK_MAP is empty.
 
-SPA_NOTIFY = NotyfViewer(id='spa_notify')
+# The following LocalProxy fixes the problem.
+
+def _notyfViewer():
+    if 'spa_notify.data' not in GLOBAL_CALLBACK_MAP:
+        # log.info('Create NotyfViewer instance')
+        _notyfViewer.viewer = NotyfViewer(id='spa_notify')
+        page_container_append(_notyfViewer.viewer)
+    return _notyfViewer.viewer
+
+
+SPA_NOTIFY = LocalProxy(_notyfViewer)
 """Spa Notify callback wrapper
 
 Usage:
@@ -169,5 +187,3 @@ Usage:
         else:
             return NOUPDATE
 """
-
-page_container_append(SPA_NOTIFY)
