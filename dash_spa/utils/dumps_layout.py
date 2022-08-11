@@ -2,6 +2,7 @@ import re
 import plotly
 import json
 
+
 def dumps_layout(layout):
     """Dump the given component layout"""
 
@@ -27,4 +28,4 @@ def dumps_layout(layout):
     # json_str = re.sub(r': false', ': False', json_str)
     json_str = re.sub(r': null', ': []', json_str)
 
-    return json.loads(json_str)
+    return json_str

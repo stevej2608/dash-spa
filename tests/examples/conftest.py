@@ -2,10 +2,7 @@ import pytest
 
 from examples.multipage.app import create_dash, create_app
 
-# https://pypi.org/project/pytest-pyppeteer/
-
-
 @pytest.fixture(scope='package')
-def test_app():
+def test_app(dash_fresh):
     spa = create_app(create_dash)
     return spa

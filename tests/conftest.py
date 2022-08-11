@@ -2,11 +2,22 @@ import logging
 import pytest
 from selenium.webdriver.chrome.options import Options
 
+from dash._callback import GLOBAL_CALLBACK_MAP, GLOBAL_CALLBACK_LIST
+from dash_spa import page_container
+
 # Turn off werkzeug logging as it's very noisy
 
 aps_log = logging.getLogger('werkzeug')
 aps_log.setLevel(logging.ERROR)
 
+@pytest.fixture(scope='package')
+def dash_fresh():
+    """Reset Dash/SPA globals between tests"""
+    GLOBAL_CALLBACK_MAP = {}
+    GLOBAL_CALLBACK_LIST = []
+
+    while len(page_container.children) > 4:
+        page_container.children.pop()
 
 # https://dash.plotly.com/testing
 
@@ -36,7 +47,6 @@ def test_client(test_app):
 @pytest.fixture(scope='function')
 def duo(dash_duo, test_app):
     """A client for the dash_duo/Flask tests."""
-
     dash_duo.driver.set_window_size(1500, 1200)
     dash_duo.driver.maximize_window()
     dash_duo.start_server(test_app)

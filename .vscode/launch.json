@@ -168,7 +168,24 @@
       "justMyCode": false
     },
 
-
+    {
+      "name": "4c. PyTest (examples)",
+      "type": "python",
+      "request": "launch",
+      "stopOnEntry": false,
+      "module": "pytest",
+      "args": [
+        "--headless",
+        "-sv",
+        "tests/examples"
+      ],
+      "cwd": "${workspaceRoot}",
+      "env": {},
+      "envFile": "${workspaceRoot}/.env",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false
+    },
 
 
   ]
