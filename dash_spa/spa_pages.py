@@ -20,8 +20,6 @@ external_scripts = []
 external_stylesheets = []
 internal_stylesheets = []
 
-# Replace the Dash version
-
 from dash import _pages, _validate
 
 class Dash(dash.Dash):
@@ -56,6 +54,8 @@ class Dash(dash.Dash):
             renderer=renderer,
             app_entry=app_entry,
         )
+
+# Replace the Dash version
 
 def _import_layouts_from_pages(self):
     walk_dir = self.config.pages_folder
