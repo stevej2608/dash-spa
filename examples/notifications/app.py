@@ -2,7 +2,7 @@ import dash
 from dash import Dash, html
 import dash_bootstrap_components as dbc
 
-from dash_spa import page_container, spa_pages
+from dash_spa import page_container, Dash
 
 from themes import VOLT
 from server import serve_app
@@ -20,8 +20,8 @@ external_scripts = [
     ]
 
 def create_dash():
-    app = dash.Dash( __name__,
-        plugins=[spa_pages],
+    app = Dash( __name__,
+        use_pages = True,
         prevent_initial_callbacks=True,
         suppress_callback_exceptions=True,
         external_scripts=external_scripts,

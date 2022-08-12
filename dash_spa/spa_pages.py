@@ -5,23 +5,57 @@ import re
 from urllib import parse
 from collections import OrderedDict
 import dash
+from dash._utils import interpolate_str
 from dash.development.base_component import Component
 from dash_prefix import prefix
 from .logging import log
-
-import dash._pages as pages
 
 page_container = dash.page_container
 location = page_container.children[0]
 
 container_registry = {}
 style_registry = []
+
 external_scripts = []
 external_stylesheets = []
+internal_stylesheets = []
 
 # Replace the Dash version
 
 from dash import _pages, _validate
+
+class Dash(dash.Dash):
+
+    def interpolate_index(self,
+            metas="",
+            title="",
+            css="",
+            config="",
+            scripts="",
+            app_entry="",
+            favicon="",
+            renderer=""):
+
+        for path in internal_stylesheets:
+            css += f'\n<link rel="stylesheet" href="/internal{path}">'
+
+        for path in external_stylesheets:
+            css += f'\n<link rel="stylesheet" href="{path}">'
+
+        for path in external_scripts:
+            scripts += f'\n<script src="{path}"></script>'
+
+        return interpolate_str(
+            self.index_string,
+            metas=metas,
+            title=title,
+            css=css,
+            config=config,
+            scripts=scripts,
+            favicon=favicon,
+            renderer=renderer,
+            app_entry=app_entry,
+        )
 
 def _import_layouts_from_pages(self):
     walk_dir = self.config.pages_folder
@@ -39,23 +73,6 @@ def _import_layouts_from_pages(self):
                 content = f.read()
                 if "register_page" not in content:
                     continue
-
-            # page_filename = os.path.join(root, file).replace("\\", "/")
-            # _, _, page_filename = page_filename.partition(
-            #     walk_dir.replace("\\", "/") + "/"
-            # )
-            # page_filename = page_filename.replace(".py", "").replace("/", ".")
-
-            # pages_folder = (
-            #     self.pages_folder.replace("\\", "/").lstrip("/").replace("/", ".")
-            # )
-
-            # pages_folder = (
-            #     root.replace("\\", "/").lstrip("/").replace("/", ".")
-            # )
-
-            # module_name = ".".join([pages_folder, page_filename])
-
 
             file_name = file.replace(".py", "")
             module_name = f"{pages_package}.{file_name}"
