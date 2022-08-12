@@ -3,7 +3,7 @@ import dash
 from dash import html
 import dash_bootstrap_components as dbc
 
-from dash_spa import page_container, spa_pages
+from dash_spa import page_container
 from server import serve_app
 
 from .pages.common import store
@@ -13,9 +13,9 @@ external_stylesheets = [
     "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     ]
 
-app = dash.Dash( __name__, plugins=[spa_pages],
+app = dash.Dash( __name__,
                 external_stylesheets=external_stylesheets,
-                #suppress_callback_exceptions=True
+                use_pages = True
                 )
 
 def layout():
@@ -36,7 +36,6 @@ def layout():
     ])
 
 # python -m examples.forms.app
-
 
 if __name__ == "__main__":
     log.info('__main__')
