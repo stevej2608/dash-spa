@@ -97,6 +97,21 @@
       }
     },
 
+    {
+      "name": "2f. Python: examples.cra.app",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.cra.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
 
     {
       "name": "3. Python: Current Module",

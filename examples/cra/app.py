@@ -1,8 +1,8 @@
 import dash
-from dash_spa import page_container, spa_pages
+from dash_spa import page_container
 from server import serve_app
 
-app = dash.Dash( __name__, plugins=[spa_pages])
+app = dash.Dash( __name__, use_pages = True)
 
 # python -m examples.cra.app
 
