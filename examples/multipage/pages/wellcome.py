@@ -1,10 +1,10 @@
 from dash import html
 from dash_spa import register_page
 
-wellcome_page = register_page(__name__, path='/', title='Wellcome')
+welcome_page = register_page(__name__, path='/', title='Welcome')
 
 header_text = """
-Dash/SPA is a minimal framework and component suite that allows you to build complex
+Dash/SPA is a minimal framework XXXX and component suite that allows you to build complex
 Dash based single-page applications with ease. The demo application includes
 several well known Dash examples that have been pasted into the SPA framework
 to show how easy it is to transition to SPA.

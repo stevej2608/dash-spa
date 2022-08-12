@@ -3,38 +3,14 @@ from dash import Dash, html
 import dash_bootstrap_components as dbc
 from dash_spa import logging
 
-from dash_spa import register_page, NavBar, NavbarBrand, NavbarLink, Footer, page_container, spa_pages
+from dash_spa import NavBar, NavbarBrand, NavbarLink, Footer, page_container
 from server import serve_app
 
-
-def create_dash():
-    app = dash.Dash( __name__, plugins=[spa_pages], external_stylesheets=[dbc.themes.BOOTSTRAP])
-    return app
-
-def big_center(text, id=None):
-    className='display-3 text-center'
-    return html.H2(text, id=id, className=className) if id else html.H2(text, className=className)
-
-def page1_layout():
-    return html.Div([
-        big_center('Multi-page Example'),
-        big_center('+'),
-        big_center('Page 1', id="page"),
-    ])
-
-def page2_layout():
-    return html.Div([
-        big_center('Multi-page Example'),
-        big_center('+'),
-        big_center('Page 2', id="page"),
-    ])
+from .dash_app import app
+from .pages import page1, page2
 
 
-def create_app(dash_factory) -> Dash:
-    app = dash_factory()
-
-    page1 = register_page(path='/page1', title="Page-1", layout=page1_layout)
-    page2 = register_page(path='/page2', title="Page-2", layout=page2_layout)
+def create_app(app) -> Dash:
 
     NAV_BAR_ITEMS = {
         'brand' : NavbarBrand(' Dash/SPA','/'),
@@ -48,19 +24,20 @@ def create_app(dash_factory) -> Dash:
     footer = Footer('SPA/Examples')
 
     def layout():
-        return html.Div([
-            navbar.layout(),
-            html.Br(),
-            html.Div([
-                html.Div([
-                    html.Div([], className="col-md-1"),
-                    html.Div(page_container, id='page-content', className="col-md-10"),
-                    html.Div([], className="col-md-1")
-                ], className='row')
-            ], className="container-fluid"),
-            html.Div(id='null'),
-            html.Div(footer.layout())
-        ])
+            return html.Div([
+                html.Header([
+                    navbar.layout(),
+                    html.Br()
+                    ]),
+                html.Main([
+                    html.Div([
+                        html.Div([
+                            html.Div(page_container, className="col-md-12"),
+                        ], className='row')
+                    ], className='container d-flex flex-column flex-grow-1'),
+                ], role='main', className='d-flex'),
+                html.Footer(footer.layout(), className='footer mt-auto')
+            ], className='body')
 
     app.layout = layout
     return app
@@ -69,5 +46,5 @@ def create_app(dash_factory) -> Dash:
 
 if __name__ == "__main__":
     logging.setLevel("INFO")
-    app = create_app(create_dash)
+    app = create_app(app)
     serve_app(app, debug=False)

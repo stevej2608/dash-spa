@@ -82,6 +82,21 @@
       }
     },
 
+    {
+      "name": "2e. Python: examples.multipage.app",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.multipage.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
 
     {
       "name": "3. Python: Current Module",

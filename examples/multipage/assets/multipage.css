@@ -1,3 +1,22 @@
 .card-footer {
   background-color: maroon;
 }
+
+.body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-height: 100vh;
+}
+
+header, footer {
+  flex-grow: 0;
+}
+
+footer {
+  background-color: #dedede;
+}
+
+main {
+  flex-grow: 1;
+}

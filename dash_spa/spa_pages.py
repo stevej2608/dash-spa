@@ -1,4 +1,6 @@
 from typing import Callable, Union, List
+import os
+import importlib
 import re
 from urllib import parse
 from collections import OrderedDict
@@ -7,14 +9,74 @@ from dash.development.base_component import Component
 from dash_prefix import prefix
 from .logging import log
 
-from .plugins import pages
+import dash._pages as pages
 
-
-spa_plugin = __name__
-page_container = pages.page_container
-
-# location = dcc.Location(id='spa#location')
+page_container = dash.page_container
 location = page_container.children[0]
+
+container_registry = {}
+style_registry = []
+external_scripts = []
+external_stylesheets = []
+
+# Replace the Dash version
+
+from dash import _pages, _validate
+
+def _import_layouts_from_pages(self):
+    walk_dir = self.config.pages_folder
+
+    for (root, _, files) in os.walk(walk_dir):
+        pages_package = os.path.relpath(root).replace(os.path.sep, '.')
+        for file in files:
+            if (
+                file.startswith("_")
+                or file.startswith(".")
+                or not file.endswith(".py")
+            ):
+                continue
+            with open(os.path.join(root, file), encoding="utf-8") as f:
+                content = f.read()
+                if "register_page" not in content:
+                    continue
+
+            # page_filename = os.path.join(root, file).replace("\\", "/")
+            # _, _, page_filename = page_filename.partition(
+            #     walk_dir.replace("\\", "/") + "/"
+            # )
+            # page_filename = page_filename.replace(".py", "").replace("/", ".")
+
+            # pages_folder = (
+            #     self.pages_folder.replace("\\", "/").lstrip("/").replace("/", ".")
+            # )
+
+            # pages_folder = (
+            #     root.replace("\\", "/").lstrip("/").replace("/", ".")
+            # )
+
+            # module_name = ".".join([pages_folder, page_filename])
+
+
+            file_name = file.replace(".py", "")
+            module_name = f"{pages_package}.{file_name}"
+
+            spec = importlib.util.spec_from_file_location(
+                module_name, os.path.join(root, file)
+            )
+            page_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(page_module)
+
+            if (
+                module_name in _pages.PAGE_REGISTRY
+                and not _pages.PAGE_REGISTRY[module_name]["supplied_layout"]
+            ):
+                _validate.validate_pages_layout(module_name, page_module)
+                _pages.PAGE_REGISTRY[module_name]["layout"] = getattr(
+                    page_module, "layout"
+                )
+
+dash.Dash._import_layouts_from_pages = _import_layouts_from_pages
+
 
 def page_container_append(component: Component):
     """Append given component to the page container"""
@@ -59,7 +121,47 @@ def add_style(style: str):
         ''')
     ```
     """
-    pages.add_style(style)
+    tag = f"<style>{style}</style>"
+    if not tag in dash.style_registry:
+        style_registry.append(tag)
+
+def register_container(container, name='default'):
+    """Register a container wih the given name"""
+    dash.container_registry[name] = container
+
+
+def add_external_scripts(url: Union[str, List[str]]) -> None:
+    """Add given script(s) to the external_scripts list
+
+    Args:
+        url (Union[str, List[str]]): Script url or list of script urls
+
+    Example:
+    ```
+            add_external_scripts("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js")
+    ```
+    """
+    urls = url if isinstance(url, list) else [url]
+    for url in urls:
+        if not url in external_scripts:
+            external_scripts.append(url)
+
+def add_external_stylesheets(url):
+    """Add given stylesheet(s) to the external_stylesheets list
+
+    Args:
+        url (Union[str, List[str]]): Stylesheet url or list of stylesheet urls
+
+    Example:
+    ```
+            add_external_stylesheets("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css")
+    ```
+    """
+    urls = url if isinstance(url, list) else [url]
+    for url in urls:
+        if not url in external_stylesheets:
+            external_stylesheets.append(url)
+
 
 class DashPage:
 
@@ -214,16 +316,15 @@ def register_page(
 
     """
 
-    if module is None:
-        pfx = prefix('spa')
-        module = pfx(path[1:])
+    if not module in dash.page_registry:
+        if module is None:
+            pfx = prefix('spa')
+            module = pfx(path[1:])
+        dash.register_page(module, path, path_template, name, order, title, description, image, redirect_from, layout, **kwargs)
 
-    dash.register_page(module, path, path_template, name, order, title, description, image, redirect_from, layout, **kwargs)
     page_def = dash.page_registry[module]
     return DashPage(page_def)
 
-def plug(dash: dash.Dash):
-    pages.plug(dash)
 
 def get_page(path:str) -> DashPage:
     for page in dash.page_registry.values():
@@ -255,33 +356,3 @@ def url_for(module:str, args: dict=None, attr=None) -> str:
 def page_id(page:dict):
     id = re.sub('^.*?pages\.', '', page['module'])
     return prefix(id.replace('.','_'))
-
-def register_container(module, name='default'):
-    """Register a container wih the given name"""
-    dash.register_container(module, name)
-
-def add_external_scripts(url: Union[str, List[str]]) -> None:
-    """Add given script(s) to the external_scripts list
-
-    Args:
-        url (Union[str, List[str]]): Script url or list of script urls
-
-    Example:
-    ```
-            add_external_scripts("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js")
-    ```
-    """
-    dash.add_external_scripts(url)
-
-def add_external_stylesheets(url:Union[str, List[str]]) -> None:
-    """Add given stylesheet(s) to the external_stylesheets list
-
-    Args:
-        url (Union[str, List[str]]): Stylesheet url or list of stylesheet urls
-
-    Example:
-    ```
-            add_external_stylesheets("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css")
-    ```
-    """
-    dash.add_external_stylesheets(url)

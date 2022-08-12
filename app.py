@@ -28,15 +28,14 @@ def create_dash() -> Dash:
     server = flask.Flask(__name__)
     server.config['SECRET_KEY'] = flask_options.SECRET_KEY
 
-    plugins=[
-        spa.spa_pages
-        ]
+    plugins=[]
 
     if logging_opt.get('DASH_LOGGING', default_value=False):
         plugins.append(spa.dash_logging)
 
 
     app = Dash(__name__,
+            use_pages = True,
             plugins=plugins,
             prevent_initial_callbacks=True,
             suppress_callback_exceptions=True,
