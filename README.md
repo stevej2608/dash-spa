@@ -349,8 +349,14 @@ Any number of session data objects can be defined.
 
 ### Dash/SPA Examples
 
-Several example are available. The most comprehensive is *Flightdeck*. Other examples are minimalistic and
-focus on Dash/SPA specifics.
+Several example are available. The most comprehensive is *Veggy*. Other examples are minimalistic and
+focus on Dash/SPA specifics. See also the separate Dash/SPA [dash-flightdeck](https://github.com/stevej2608/dash-flightdeck) dashboard project
+
+**1. Veggy** This is a fully working clone of the React shopping cart, [Veggy](https://github.com/bodevone/veggy).
+
+Written in less than 250 lines of Python, it's far smaller than the React version. Eat your (artichoke) heart out React.
+
+![](./docs/img/veggy.png)
 
 **2. Minimal MultiPage** An example of a multi-page app with navbar and footer in less than sixty lines of code.
 

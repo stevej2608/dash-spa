@@ -17,7 +17,7 @@ server.config['SECRET_KEY'] = "Veggy Store Secret Key"
 
 app = dash.Dash( __name__,
         server = server,
-        plugins=[spa_pages],
+        use_pages = True,
         external_stylesheets=external_stylesheets
         )
 
