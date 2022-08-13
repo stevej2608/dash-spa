@@ -31,15 +31,16 @@ def toolbar_panel_layout():
     # Create some toolbars
 
     main_toolbar = button_toolbar(page.id("top_main"), TBState("main", ['close', "exit", 'refresh']))
+    page_toolbar = button_toolbar(page.id("top_page"), TBState("page", ['next', "prev", 'top', 'bottom']))
 
     state = ToolbarContext.getState()
 
-    title = html.H3('Toolbar Component Example (with persistent state)')
+    title = html.H3('Toolbar Component Example')
 
     report = html.Div([tb_report(tb) for tb in state.items()], style={'background-color': '#e6e6e6'})
     report.children.insert(0, html.H3('Toolbar Report'))
 
-    return html.Div([title, main_toolbar, report])
+    return html.Div([title, main_toolbar, page_toolbar, report])
 
 
 def layout():

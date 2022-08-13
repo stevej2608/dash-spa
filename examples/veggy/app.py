@@ -1,6 +1,6 @@
 import flask
 
-from dash_spa import page_container, Dash
+from dash_spa import page_container, DashSPA
 from server import serve_app
 
 external_stylesheets = [
@@ -11,9 +11,8 @@ external_stylesheets = [
 server = flask.Flask(__name__)
 server.config['SECRET_KEY'] = "Veggy Store Secret Key"
 
-app = Dash( __name__,
+app = DashSPA( __name__,
         server = server,
-        use_pages = True,
         external_stylesheets=external_stylesheets
         )
 

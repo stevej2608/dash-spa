@@ -3,7 +3,7 @@ import dash
 from dash import html
 import dash_bootstrap_components as dbc
 
-from dash_spa import page_container
+from dash_spa import page_container, DashSPA
 from server import serve_app
 
 from .pages.common import store
@@ -13,10 +13,7 @@ external_stylesheets = [
     "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     ]
 
-app = dash.Dash( __name__,
-                external_stylesheets=external_stylesheets,
-                use_pages = True
-                )
+app = DashSPA(__name__, external_stylesheets=external_stylesheets)
 
 def layout():
     """Top level layout, all pages are rendered in the container

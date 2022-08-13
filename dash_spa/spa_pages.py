@@ -22,7 +22,11 @@ internal_stylesheets = []
 
 from dash import _pages, _validate
 
-class Dash(dash.Dash):
+class DashSPA(dash.Dash):
+
+    def __init__(self, name=None, **kwargs):
+        use_pages = kwargs.pop('use_pages', True)
+        super().__init__(name=name, use_pages=use_pages, **kwargs)
 
     def interpolate_index(self,
             metas="",
@@ -54,6 +58,43 @@ class Dash(dash.Dash):
             renderer=renderer,
             app_entry=app_entry,
         )
+
+    def validate_pages(self):
+
+        def page_layout(page, layout=None, path_variables={}, query_parameters={}):
+
+            layout = page["layout"] if layout is None else  layout
+
+            # Test to see if a content container id define for the page
+            # if so call the container
+
+            if 'container' in page:
+                container_name = page['container']
+                if container_name in dash.container_registry:
+                    container = dash.container_registry[container_name]
+                    return (
+                            container(page, layout, **path_variables, **query_parameters)
+                            if path_variables
+                            else container(page, layout, **query_parameters)
+                        )
+
+            # No container handle the page layout directly
+
+            if callable(layout):
+                layout = (
+                    layout(**path_variables, **query_parameters)
+                    if path_variables
+                    else layout(**query_parameters)
+                )
+
+            return layout
+
+        for page in dash.page_registry.values():
+            page_layout(page)
+
+    def init_app(self, app=None, **kwargs):
+        self.server.before_first_request(self.validate_pages)
+        super().init_app(app, **kwargs)
 
 # Replace the Dash version
 

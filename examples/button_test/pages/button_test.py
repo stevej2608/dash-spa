@@ -60,7 +60,7 @@ def button_toolbar(toolbar_title: str):
 
     return html.Div([title, btn1, btn2, container, html.Br()])
 
-def page_layout():
+def layout():
 
     tb1 = button_toolbar('Toolbar1')
     tb2 = button_toolbar('Toolbar2')
@@ -80,5 +80,3 @@ def page_layout():
     # Return page layout
 
     return html.Div([store, tb1, tb2, tb3, report])
-
-layout = page_layout()

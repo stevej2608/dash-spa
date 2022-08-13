@@ -31,8 +31,6 @@ def callback_hash(*_args):
     return hex(_hash)[2:]
 
 
-
-
 def callback(*_args, **_kwargs):
     """Wrapper for standard Dash callback decorator. Dismisses
     the callback and handler if the server is active. This does not mean the

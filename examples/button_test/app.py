@@ -1,21 +1,20 @@
-import dash
 from dash import Dash, html
 import dash_bootstrap_components as dbc
 
-from dash_spa import page_container, spa_pages
+from dash_spa import page_container, DashSPA, dash_logging
+
 from server import serve_app
 
-
 def create_dash():
-    app = dash.Dash( __name__,
-        plugins=[spa_pages],
+    app = DashSPA( __name__,
+        plugins=[dash_logging],
         prevent_initial_callbacks=True,
         suppress_callback_exceptions=True,
         external_stylesheets=[dbc.themes.BOOTSTRAP])
     return app
 
 
-def create_app(dash_factory) -> Dash:
+def create_app(dash_factory) -> DashSPA:
     app = dash_factory()
     def layout():
         return html.Div([
@@ -28,7 +27,7 @@ def create_app(dash_factory) -> Dash:
             ], className="container-fluid"),
         ])
 
-    app.layout = layout
+    app.layout = page_container
     return app
 
 # python -m examples.button_test.app

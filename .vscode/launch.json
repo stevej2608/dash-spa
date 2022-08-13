@@ -112,6 +112,37 @@
       }
     },
 
+    {
+      "name": "2g. Python: examples.button_test.app",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.button_test.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "env": {"PYTHONHASHSEED": "1234"},
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
+    {
+      "name": "2h. Python: examples.single_button_test.app",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.single_button_test.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
 
     {
       "name": "3. Python: Current Module",

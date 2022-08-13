@@ -2,7 +2,7 @@ import dash
 from dash import Dash, html
 import dash_bootstrap_components as dbc
 
-from dash_spa import page_container, Dash
+from dash_spa import page_container, DashSPA
 
 from themes import VOLT
 from server import serve_app
@@ -20,8 +20,7 @@ external_scripts = [
     ]
 
 def create_dash():
-    app = Dash( __name__,
-        use_pages = True,
+    app = DashSPA( __name__,
         prevent_initial_callbacks=True,
         suppress_callback_exceptions=True,
         external_scripts=external_scripts,
@@ -29,7 +28,7 @@ def create_dash():
     return app
 
 
-def create_app(dash_factory) -> Dash:
+def create_app(dash_factory) -> DashSPA:
     app = dash_factory()
     def layout():
         return html.Div([

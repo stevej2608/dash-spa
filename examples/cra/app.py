@@ -1,8 +1,8 @@
 import dash
-from dash_spa import page_container
+from dash_spa import page_container, DashSPA
 from server import serve_app
 
-app = dash.Dash( __name__, use_pages = True)
+app = DashSPA( __name__)
 
 # python -m examples.cra.app
 
