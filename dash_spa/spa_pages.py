@@ -96,44 +96,40 @@ class DashSPA(dash.Dash):
         self.server.before_first_request(self.validate_pages)
         super().init_app(app, **kwargs)
 
-# Replace the Dash version
+    def _import_layouts_from_pages(self):
+        walk_dir = self.config.pages_folder
 
-def _import_layouts_from_pages(self):
-    walk_dir = self.config.pages_folder
-
-    for (root, _, files) in os.walk(walk_dir):
-        pages_package = os.path.relpath(root).replace(os.path.sep, '.')
-        for file in files:
-            if (
-                file.startswith("_")
-                or file.startswith(".")
-                or not file.endswith(".py")
-            ):
-                continue
-            with open(os.path.join(root, file), encoding="utf-8") as f:
-                content = f.read()
-                if "register_page" not in content:
+        for (root, _, files) in os.walk(walk_dir):
+            pages_package = os.path.relpath(root).replace(os.path.sep, '.')
+            for file in files:
+                if (
+                    file.startswith("_")
+                    or file.startswith(".")
+                    or not file.endswith(".py")
+                ):
                     continue
+                with open(os.path.join(root, file), encoding="utf-8") as f:
+                    content = f.read()
+                    if "register_page" not in content:
+                        continue
 
-            file_name = file.replace(".py", "")
-            module_name = f"{pages_package}.{file_name}"
+                file_name = file.replace(".py", "")
+                module_name = f"{pages_package}.{file_name}"
 
-            spec = importlib.util.spec_from_file_location(
-                module_name, os.path.join(root, file)
-            )
-            page_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(page_module)
-
-            if (
-                module_name in _pages.PAGE_REGISTRY
-                and not _pages.PAGE_REGISTRY[module_name]["supplied_layout"]
-            ):
-                _validate.validate_pages_layout(module_name, page_module)
-                _pages.PAGE_REGISTRY[module_name]["layout"] = getattr(
-                    page_module, "layout"
+                spec = importlib.util.spec_from_file_location(
+                    module_name, os.path.join(root, file)
                 )
+                page_module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(page_module)
 
-dash.Dash._import_layouts_from_pages = _import_layouts_from_pages
+                if (
+                    module_name in _pages.PAGE_REGISTRY
+                    and not _pages.PAGE_REGISTRY[module_name]["supplied_layout"]
+                ):
+                    _validate.validate_pages_layout(module_name, page_module)
+                    _pages.PAGE_REGISTRY[module_name]["layout"] = getattr(
+                        page_module, "layout"
+                    )
 
 
 def page_container_append(component: Component):
