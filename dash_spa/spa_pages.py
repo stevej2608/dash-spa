@@ -23,11 +23,37 @@ external_scripts = []
 external_stylesheets = []
 internal_stylesheets = []
 
+_default_index = """<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+        {%styles%}
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>"""
+
 class DashSPA(dash.Dash):
 
     def __init__(self, name=None, **kwargs):
+
         use_pages = kwargs.pop('use_pages', True)
-        super().__init__(name=name, use_pages=use_pages, **kwargs)
+        index_string = kwargs.pop('index_string', _default_index)
+
+        super().__init__(name=name,
+            use_pages=use_pages,
+            index_string=index_string,
+            **kwargs
+            )
 
     def interpolate_index(self,
             metas="",
@@ -56,6 +82,7 @@ class DashSPA(dash.Dash):
             metas=metas,
             title=title,
             css=css,
+            styles = '\n'.join(style_registry),
             config=config,
             scripts=scripts,
             favicon=favicon,
@@ -76,7 +103,7 @@ class DashSPA(dash.Dash):
         # by Dash. The delegate then calls page_layout() which, in turn, calls
         # the page container to layout the page.
 
-        def page_layout(page, path_variables={}, query_parameters={}):
+        def page_layout(page, **kwargs):
 
             if 'layout' in page and page['layout']:
                 layout = page['layout']
@@ -92,20 +119,12 @@ class DashSPA(dash.Dash):
                 container_name = page['container']
                 if container_name in container_registry:
                     container = container_registry[container_name]
-                    return (
-                            container(page, layout, **path_variables, **query_parameters)
-                            if path_variables
-                            else container(page, layout, **query_parameters)
-                        )
+                    return container(page, layout, **kwargs)
 
             # No container handle the page layout directly
 
             if callable(layout):
-                layout = (
-                    layout(**path_variables, **query_parameters)
-                    if path_variables
-                    else layout(**query_parameters)
-                )
+                layout = layout(**kwargs)
 
             return layout
 
@@ -115,9 +134,7 @@ class DashSPA(dash.Dash):
                 self.page = page.copy()
 
             def layout(self, **kwargs):
-                return page_layout(self.page)
-                pass
-
+                return page_layout(self.page, **kwargs)
 
         for page in PAGE_REGISTRY.values():
             page_layout(page)
