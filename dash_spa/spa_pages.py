@@ -7,8 +7,11 @@ from collections import OrderedDict
 import dash
 from dash._utils import interpolate_str
 from dash.development.base_component import Component
+from dash import _pages, _validate
 from dash_prefix import prefix
 from .logging import log
+
+PAGE_REGISTRY = _pages.PAGE_REGISTRY
 
 page_container = dash.page_container
 location = page_container.children[0]
@@ -20,9 +23,21 @@ external_scripts = []
 external_stylesheets = []
 internal_stylesheets = []
 
-from dash import _pages, _validate
 
 class DashSPA(dash.Dash):
+
+    # @staticmethod
+    # def _path_to_page(path_id):
+    #     path_variables = None
+    #     for page in _pages.PAGE_REGISTRY.values():
+    #         if page["path_template"]:
+    #             template_id = page["path_template"].strip("/")
+    #             path_variables = _pages._parse_path_variables(path_id, template_id)
+    #             if path_variables:
+    #                 return page, path_variables
+    #         if path_id == page["path"].strip("/"):
+    #             return page, path_variables
+    #     return {}, None
 
     def __init__(self, name=None, **kwargs):
         use_pages = kwargs.pop('use_pages', True)
@@ -70,8 +85,8 @@ class DashSPA(dash.Dash):
 
             if 'container' in page:
                 container_name = page['container']
-                if container_name in dash.container_registry:
-                    container = dash.container_registry[container_name]
+                if container_name in container_registry:
+                    container = container_registry[container_name]
                     return (
                             container(page, layout, **path_variables, **query_parameters)
                             if path_variables
@@ -89,8 +104,8 @@ class DashSPA(dash.Dash):
 
             return layout
 
-        for page in dash.page_registry.values():
-            page_layout(page)
+        for page in PAGE_REGISTRY.values():
+            page['layout'] = page_layout(page)
 
     def init_app(self, app=None, **kwargs):
         self.server.before_first_request(self.validate_pages)
@@ -110,7 +125,7 @@ class DashSPA(dash.Dash):
                     continue
                 with open(os.path.join(root, file), encoding="utf-8") as f:
                     content = f.read()
-                    if "register_page" not in content:
+                    if "register_page" not in content and "register_container" not in content:
                         continue
 
                 file_name = file.replace(".py", "")
@@ -123,11 +138,11 @@ class DashSPA(dash.Dash):
                 spec.loader.exec_module(page_module)
 
                 if (
-                    module_name in _pages.PAGE_REGISTRY
-                    and not _pages.PAGE_REGISTRY[module_name]["supplied_layout"]
+                    module_name in PAGE_REGISTRY
+                    and not PAGE_REGISTRY[module_name]["supplied_layout"]
                 ):
                     _validate.validate_pages_layout(module_name, page_module)
-                    _pages.PAGE_REGISTRY[module_name]["layout"] = getattr(
+                    PAGE_REGISTRY[module_name]["layout"] = getattr(
                         page_module, "layout"
                     )
 
@@ -176,12 +191,12 @@ def add_style(style: str):
     ```
     """
     tag = f"<style>{style}</style>"
-    if not tag in dash.style_registry:
+    if not tag in style_registry:
         style_registry.append(tag)
 
 def register_container(container, name='default'):
     """Register a container wih the given name"""
-    dash.container_registry[name] = container
+    container_registry[name] = container
 
 
 def add_external_scripts(url: Union[str, List[str]]) -> None:
@@ -266,15 +281,15 @@ def register_page(
     **kwargs,
 ) -> DashPage:
     """
-    Assigns the variables to `dash.page_registry` as an `OrderedDict`
+    Assigns the variables to `_pages.PAGE_REGISTRY` as an `OrderedDict`
     (ordered by `order`).
 
-    `dash.page_registry` is used by `pages_plugin` to set up the layouts as
+    `_pages.PAGE_REGISTRY` is used by `pages_plugin` to set up the layouts as
     a multi-page Dash app. This includes the URL routing callbacks
     (using `dcc.Location`) and the HTML templates to include title,
     meta description, and the meta description image.
 
-    `dash.page_registry` can also be used by Dash developers to create the
+    `_pages.PAGE_REGISTRY` can also be used by Dash developers to create the
     page navigation links or by template authors.
 
     - `module`:
@@ -370,34 +385,39 @@ def register_page(
 
     """
 
-    if not module in dash.page_registry:
+    if not module in PAGE_REGISTRY:
+
         if module is None:
             pfx = prefix('spa')
             module = pfx(path[1:])
+
+        if 'container' not in kwargs:
+            kwargs['container'] = 'default'
+
         dash.register_page(module, path, path_template, name, order, title, description, image, redirect_from, layout, **kwargs)
 
-    page_def = dash.page_registry[module]
+    page_def = PAGE_REGISTRY[module]
     return DashPage(page_def)
 
 
 def get_page(path:str) -> DashPage:
-    for page in dash.page_registry.values():
+    for page in PAGE_REGISTRY.values():
         if page['path'] == path:
             return DashPage(page)
     raise Exception(f"No page for path '{path}' defined")
 
 
 def page_for(module:str) -> str:
-    if module in dash.page_registry:
-        page = dash.page_registry[module]
+    if module in PAGE_REGISTRY:
+        page = PAGE_REGISTRY[module]
         return DashPage(page)
     raise Exception(f"No page for module \"{module}\" defined")
 
 
 def url_for(module:str, args: dict=None, attr=None) -> str:
 
-    if module in dash.page_registry:
-        page = dash.page_registry[module]
+    if module in PAGE_REGISTRY:
+        page = PAGE_REGISTRY[module]
         path = page['path']
         if args:
             if attr:

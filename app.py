@@ -1,6 +1,5 @@
 import flask
 from dash import Dash
-import dash_bootstrap_components as dbc
 import dash_spa as spa
 from themes import VOLT_BOOTSTRAP
 # from dash_spa import spa_pages
@@ -34,8 +33,7 @@ def create_dash() -> Dash:
         plugins.append(spa.dash_logging)
 
 
-    app = Dash(__name__,
-            use_pages = True,
+    app = spa.DashSPA(__name__,
             plugins=plugins,
             prevent_initial_callbacks=True,
             suppress_callback_exceptions=True,
