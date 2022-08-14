@@ -6,7 +6,7 @@ import pandas as pd
 
 from pages import LIFE_EXPECTANCY_SLUG
 
-page = register_page(__name__, path=LIFE_EXPECTANCY_SLUG, title="Dash - Life Expectancy", short_name='Life Expectany')
+page = register_page(__name__, path=LIFE_EXPECTANCY_SLUG, title="Dash - Life Expectancy", short_name='Life Expectancy')
 
 # Share Data Between Callbacks
 # https://dash.plotly.com/dash-core-components/store
