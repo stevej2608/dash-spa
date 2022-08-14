@@ -1,4 +1,6 @@
-from dash import html, dcc, register_page
+from dash import html
+
+from dash_spa import register_page
 
 register_page(__name__, path="/pages/404", title="Dash - 404", container=None)
 

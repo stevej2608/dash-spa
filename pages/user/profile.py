@@ -1,7 +1,6 @@
 from dash import html
 from flask_login import current_user
 
-from dash import html
 from dash_spa import register_page, current_user, login_required
 from pages import USER_SLUG
 

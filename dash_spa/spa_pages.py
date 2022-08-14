@@ -23,21 +23,7 @@ external_scripts = []
 external_stylesheets = []
 internal_stylesheets = []
 
-
 class DashSPA(dash.Dash):
-
-    # @staticmethod
-    # def _path_to_page(path_id):
-    #     path_variables = None
-    #     for page in _pages.PAGE_REGISTRY.values():
-    #         if page["path_template"]:
-    #             template_id = page["path_template"].strip("/")
-    #             path_variables = _pages._parse_path_variables(path_id, template_id)
-    #             if path_variables:
-    #                 return page, path_variables
-    #         if path_id == page["path"].strip("/"):
-    #             return page, path_variables
-    #     return {}, None
 
     def __init__(self, name=None, **kwargs):
         use_pages = kwargs.pop('use_pages', True)
@@ -52,6 +38,9 @@ class DashSPA(dash.Dash):
             app_entry="",
             favicon="",
             renderer=""):
+
+        # Intercede in the final markup generation to add style sheets
+        # and scripts that have been requested programmatically.
 
         for path in internal_stylesheets:
             css += f'\n<link rel="stylesheet" href="/internal{path}">'
@@ -75,6 +64,17 @@ class DashSPA(dash.Dash):
         )
 
     def validate_pages(self):
+
+        # In dash all callbacks and associated components must be registered
+        # before the server starts. Because of this limitation we must call
+        # the layout() function in each Dash/SPA page prior to the server
+        # starting. This method runs immediately before the server is
+        # started calling each of the page layout() functions in turn.
+
+        # Additionally, in order to handle Dash/SPA page layout containers we
+        # create a PageContainerDelegate for each page. The layout delegate is called
+        # by Dash. The delegate then calls page_layout() which, in turn, calls
+        # the page container to layout the page.
 
         def page_layout(page, layout=None, path_variables={}, query_parameters={}):
 
@@ -104,8 +104,19 @@ class DashSPA(dash.Dash):
 
             return layout
 
+        class PageContainerDelegate:
+
+            def __init__(self, page):
+                self.page = page.copy()
+
+            def layout(self, **kwargs):
+                return page_layout(self.page)
+                pass
+
+
         for page in PAGE_REGISTRY.values():
-            page['layout'] = page_layout(page)
+            page_layout(page)
+            page['layout'] = PageContainerDelegate(page).layout
 
     def init_app(self, app=None, **kwargs):
         self.server.before_first_request(self.validate_pages)
@@ -278,6 +289,7 @@ def register_page(
     image: str = None,
     redirect_from: str = None,
     layout: Union[Component , LayoutFunc] = None,
+    container = 'default',
     **kwargs,
 ) -> DashPage:
     """
@@ -391,8 +403,7 @@ def register_page(
             pfx = prefix('spa')
             module = pfx(path[1:])
 
-        if 'container' not in kwargs:
-            kwargs['container'] = 'default'
+        kwargs['container'] = 'default'
 
         dash.register_page(module, path, path_template, name, order, title, description, image, redirect_from, layout, **kwargs)
 

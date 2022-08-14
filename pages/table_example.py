@@ -1,6 +1,5 @@
 from dash import html
 import pandas as pd
-from collections import OrderedDict
 
 from dash_spa import register_page, prefix
 from dash_spa.logging import log

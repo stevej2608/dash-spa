@@ -1,7 +1,8 @@
-from dash import html, dcc, register_page
-import dash_bootstrap_components as dbc
-from dash import html, get_asset_url
 import pandas as pd
+from dash import html, dcc
+import dash_bootstrap_components as dbc
+
+from dash_spa import register_page
 
 from pages import GLOBAL_WARMING_SLUG, SOLAR_SLUG
 

@@ -1,6 +1,7 @@
-from dash import html, dcc, register_page
+from dash import html, dcc
 import dash_bootstrap_components as dbc
 
+from dash_spa import register_page
 from pages import SOLAR_SLUG, GLOBAL_WARMING_SLUG
 
 register_page(__name__, path=SOLAR_SLUG, title="Dash Solar", short_name='Solar')
