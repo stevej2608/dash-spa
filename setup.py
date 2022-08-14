@@ -61,7 +61,7 @@ def _get_extra_dependencies(extra):
 
 setup(
     name="dash-spa",
-    version="0.1.0",
+    version="1.1.0",
     url="https://github.com/stevej2608/dash-spa",
     license='MIT',
 
