@@ -1,7 +1,6 @@
 import pytest
-import dash
 from dash import html
-from dash_spa import prefix, callback, NOUPDATE
+from dash_spa import DashSPA, prefix, callback, NOUPDATE
 from dash_spa.session import session_data, SessionContext, session_context
 from dash_spa.logging import log
 
@@ -16,7 +15,7 @@ def app():
 
     # dash_duo.driver.delete_all_cookies()
 
-    app = dash.Dash(__name__)
+    app = DashSPA(__name__, use_pages=False)
     app.server.config['SECRET_KEY'] = "A secret key"
 
     @session_data()

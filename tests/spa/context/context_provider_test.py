@@ -1,6 +1,6 @@
-import dash
 import pytest
 from dash import html
+from dash_spa import DashSPA
 from dash_spa.spa_context import createContext, ContextState, dataclass
 
 
@@ -57,7 +57,7 @@ def test_no_context():
 
 
 def test_single_button(dash_duo):
-    app = dash.Dash(__name__)
+    app = DashSPA(__name__, use_pages=False)
 
 
     # Create Dash UI and start the test server
@@ -92,7 +92,7 @@ def test_single_button(dash_duo):
 
 
 def test_multiple_buttons(dash_duo):
-    app = dash.Dash(__name__)
+    app = DashSPA(__name__, use_pages=False)
 
     # Create multi-button dash UI and start the test server
 
