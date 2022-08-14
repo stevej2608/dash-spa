@@ -76,9 +76,14 @@ class DashSPA(dash.Dash):
         # by Dash. The delegate then calls page_layout() which, in turn, calls
         # the page container to layout the page.
 
-        def page_layout(page, layout=None, path_variables={}, query_parameters={}):
+        def page_layout(page, path_variables={}, query_parameters={}):
 
-            layout = page["layout"] if layout is None else  layout
+            if 'layout' in page and page['layout']:
+                layout = page['layout']
+            elif 'supplied_layout' in page and page['supplied_layout']:
+                layout = page['supplied_layout']
+            else:
+                raise KeyError(f"Unable to resolve layout for page {page['module']}")
 
             # Test to see if a content container id define for the page
             # if so call the container
@@ -287,6 +292,7 @@ def register_page(
     title: str = None,
     description: str =None,
     image: str = None,
+    image_url: str =None,
     redirect_from: str = None,
     layout: Union[Component , LayoutFunc] = None,
     container = 'default',
@@ -405,7 +411,18 @@ def register_page(
 
         kwargs['container'] = 'default'
 
-        dash.register_page(module, path, path_template, name, order, title, description, image, redirect_from, layout, **kwargs)
+        dash.register_page(
+            module,
+            path,
+            path_template,
+            name,
+            order,
+            title,
+            description,
+            image,
+            image_url,
+            redirect_from,
+            layout, **kwargs)
 
     page_def = PAGE_REGISTRY[module]
     return DashPage(page_def)
