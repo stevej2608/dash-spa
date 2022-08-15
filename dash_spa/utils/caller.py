@@ -3,6 +3,11 @@ from inspect import getframeinfo, stack
 
 # https://stackoverflow.com/a/24439444/489239
 
+def caller_location(depth:int=1):
+    caller = getframeinfo(stack()[depth+1][0])
+    str = f"{caller.filename}/{caller.lineno}"
+    return str
+
 def caller_hash(depth:int=1, prefix:str='#') -> str:
     """Return hash derived from the the call stack filename and location
 
