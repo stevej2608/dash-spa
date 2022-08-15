@@ -1,6 +1,7 @@
 import traceback
 from dash import html
 import dash_spa as spa
+from dash_spa.components import NavBar, NavbarBrand, NavbarLink, Footer
 from pages import NAVBAR_PAGES
 from dash_spa.logging import log
 from dash_spa_admin import AdminNavbarComponent
@@ -44,13 +45,13 @@ def default_container(page, layout,  **kwargs):
     try:
 
         NAV_BAR_ITEMS = {
-            'brand' : spa.NavbarBrand(' Dash/SPA','/'),
-            'left' : [spa.NavbarLink(path=path) for path in NAVBAR_PAGES],
+            'brand' : NavbarBrand(' Dash/SPA','/'),
+            'left' : [NavbarLink(path=path) for path in NAVBAR_PAGES],
             'right' : AdminNavbarComponent()
         }
 
-        navbar = spa.NavBar(NAV_BAR_ITEMS)
-        footer = spa.Footer(f'Dash/SPA {spa.__version__}')
+        navbar = NavBar(NAV_BAR_ITEMS)
+        footer = Footer(f'Dash/SPA {spa.__version__}')
 
         try:
             content = layout(**kwargs) if callable(layout) else layout

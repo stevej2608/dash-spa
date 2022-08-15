@@ -2,16 +2,14 @@ from dash import html
 import pandas as pd
 
 from dash_spa import register_page, prefix
+from dash_spa.components import DropdownAIO, TableContext, TableAIO, TableAIOPaginator, TableAIOPaginatorView
 from dash_spa.logging import log
 
 from pages import TABLE_EXAMPLE_SLUG
 
-from dash_spa.components.dropdown_aio import DropdownAIO
-from dash_spa.components.table import TableAIO, TableAIOPaginator, TableAIOPaginatorView
-
 register_page(__name__, path=TABLE_EXAMPLE_SLUG, title="Table Example", short_name='Table')
 
-from dash_spa.components.table.context import TableContext
+
 
 # Example Of creating a custom table with paginator
 

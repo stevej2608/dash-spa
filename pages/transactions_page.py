@@ -1,8 +1,10 @@
-from dash_spa.logging import log
 from dash import html
-from dash_spa import register_page, prefix, SPA_LOCATION, url_for, NOUPDATE
+
+from dash_spa import register_page, prefix, url_for, NOUPDATE
+from dash_spa.components import SPA_LOCATION, TableAIOPaginator, TableAIOPaginatorView, TableContext
+from dash_spa.logging import log
+
 from pages import TRANSACTIONS_SLUG
-from dash_spa.components.table import TableAIOPaginator, TableAIOPaginatorView, TableContext
 from .transactions import create_table, create_header
 from .transactions.icons import ICON
 

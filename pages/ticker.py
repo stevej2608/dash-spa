@@ -1,5 +1,6 @@
 from dash import html, dcc
-from dash_spa import register_page, url_for, SPA_LOCATION,  NOUPDATE, callback
+from dash_spa import register_page, url_for, NOUPDATE, callback
+from dash_spa.components import SPA_LOCATION
 from dash_spa.logging import log
 import colorlover as cl
 import pandas as pd
