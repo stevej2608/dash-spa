@@ -1,5 +1,7 @@
 from flask import current_app as app
+from werkzeug.local import LocalProxy
 from urllib.parse import urlparse
+from dash._callback import GLOBAL_CALLBACK_MAP
 from dash_spa import page_container_append, callback, NOUPDATE
 from dash_spa.logging import log
 from dash_redux import ReduxStore
@@ -17,7 +19,6 @@ import dash_holoniq_components as dhc
 #
 # See pages/ticker.py for working example
 
-
 class LocationStore(ReduxStore):
 
     def update(self, *_args, **_kwargs):
@@ -31,24 +32,28 @@ class LocationStore(ReduxStore):
         return super().update(*_args, **_kwargs)
 
 
+def _create_location():
+    if 'spa_location_store.data' not in GLOBAL_CALLBACK_MAP:
+        _create_location.singleton = LocationStore(id='spa_location_store', data=None, storage_type='session')
 
-SPA_LOCATION = LocationStore(id='spa_location_store', data=None, storage_type='session')
+        _location = dhc.Location(id='spa_location', refresh=False)
 
-page_container_append(SPA_LOCATION)
+        @callback(_location.output.href, _location.state.href, _create_location.singleton.input.data, prevent_initial_call=True)
+        def _location_update(url, data):
+            if data and 'href' in data:
+                url = urlparse(url)
+                href = data['href']
+                new_url = urlparse(href)
+                if url.path != new_url.path or url.query != new_url.query:
+                    # log.info('location update, href=%s', href)
+                    return href
 
-_location = dhc.Location(id='spa_location', refresh=False)
-page_container_append(_location)
+            return NOUPDATE
 
-# Accept SPA_LOCATION changes and output the requested href to the browser address bar
+        page_container_append(_location)
+        page_container_append(_create_location.singleton)
 
-@callback(_location.output.href, _location.state.href, SPA_LOCATION.input.data, prevent_initial_call=True)
-def _location_update(url, data):
-    if data and 'href' in data:
-        url = urlparse(url)
-        href = data['href']
-        new_url = urlparse(href)
-        if url.path != new_url.path or url.query != new_url.query:
-            # log.info('location update, href=%s', href)
-            return href
+    return _create_location.singleton
 
-    return NOUPDATE
+
+SPA_LOCATION = LocalProxy(_create_location)
