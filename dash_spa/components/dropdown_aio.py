@@ -1,7 +1,9 @@
 import time
-from dash import html, callback, MATCH
+from dash import html, MATCH
 from dash.development.base_component import Component
 import dash_holoniq_components as dhc
+
+from dash_spa import callback
 from dash_spa.logging import log
 
 from dash_prefix import prefix

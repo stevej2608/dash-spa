@@ -60,7 +60,7 @@ class CustomTable(TableAIO):
 
 
 @TableContext.Provider()
-def layout_example_table():
+def layout():
     log.info('layout - example_table')
     table = CustomTable(
         data=df.to_dict('records'),
@@ -81,5 +81,3 @@ def layout_example_table():
         paginator_row
     ])
 
-
-layout = layout_example_table

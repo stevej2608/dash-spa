@@ -1,8 +1,9 @@
-from dash import html, dcc, dash_table, callback
-from dash.exceptions import PreventUpdate
-from dash_spa import register_page
 import collections
 import pandas as pd
+from dash import html, dcc, dash_table
+from dash.exceptions import PreventUpdate
+
+from dash_spa import register_page, callback
 
 from pages import LIFE_EXPECTANCY_SLUG
 

@@ -1,8 +1,9 @@
-from dash_spa.logging import log
 from flask import current_app as app
-from dash import html, dcc, callback, no_update as NOUPDATE
+from dash import html, dcc
 
-from dash_spa import isTriggered, SpaForm, url_for
+from dash_spa import isTriggered, callback, url_for, NOUPDATE
+from dash_spa.logging import log
+
 from .common import form_layout, email_valid, form_values, USER, LOGIN_ENDPOINT, REGISTER_VERIFY_ENDPOINT
 
 def registerForm(ctx):

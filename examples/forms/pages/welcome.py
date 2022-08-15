@@ -1,5 +1,5 @@
-from dash import html, callback
-from dash_spa import register_page, isTriggered
+from dash import html
+from dash_spa import register_page, callback
 
 from .common import store
 

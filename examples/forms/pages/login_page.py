@@ -1,5 +1,6 @@
-from dash import html, callback
-from dash_spa import register_page, SpaForm, isTriggered
+from dash import html
+
+from dash_spa import register_page, SpaForm, isTriggered, callback
 
 from .common import form_container, store
 

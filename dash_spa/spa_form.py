@@ -1,12 +1,13 @@
 from urllib import parse
 from argparse import ArgumentError
 import dash
-from dash import dcc, html, callback
+from dash import dcc, html
 from dash.development.base_component import Component
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
 
-from dash_spa.logging import log
+from .callback import callback
+from .logging import log
 
 from dash_prefix import prefix, copy_factory, isTriggered
 

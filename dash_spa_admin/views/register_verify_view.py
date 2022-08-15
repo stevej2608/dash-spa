@@ -1,9 +1,10 @@
-from dash_spa.logging import log
 from flask import current_app as app
-from dash import html, dcc, callback
-from dash_spa import isTriggered, SpaForm, url_for, location
+from dash import html, dcc
 
-from .common import form_layout, email_valid, REGISTER_ENDPOINT, LOGIN_ENDPOINT
+from dash_spa import isTriggered, callback, location
+from dash_spa.logging import log
+
+from .common import form_layout, REGISTER_ENDPOINT, LOGIN_ENDPOINT
 
 """
 The user has been sent an email containing the registration verification
@@ -33,7 +34,7 @@ def registerVerifyForm(ctx):
         registerLink()
     ], id='verify')
 
-    @callback([redirect.output.href, flash.output.children], [form.input.form_data], [location.state.href])
+    @callback(redirect.output.href, flash.output.children, form.input.form_data, location.state.href)
     def _button_click(values, href):
         redirect = frm.NOUPDATE
         error = frm.NOUPDATE

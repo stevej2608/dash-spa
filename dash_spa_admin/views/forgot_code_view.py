@@ -1,7 +1,8 @@
-from dash_spa.logging import log
 from flask import current_app as app
-from dash import html, dcc, callback
-from dash_spa import isTriggered, SpaForm, url_for, location
+from dash import html
+
+from dash_spa import isTriggered, location, callback
+from dash_spa.logging import log
 
 from .common import form_layout, email_valid, FORGOT_PASSWORD_ENDPOINT
 

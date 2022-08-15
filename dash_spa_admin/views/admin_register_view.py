@@ -1,8 +1,9 @@
 from flask import current_app as app
+from dash import html
+
+from dash_spa import isTriggered, location, callback
 from dash_spa.logging import log
-from dash import html, dcc, callback
-from dash.exceptions import PreventUpdate
-from dash_spa import isTriggered, location, SpaForm, url_for
+
 from .common import form_layout, email_valid, REGISTER_ADMIN_ENDPOINT, LOGIN_ENDPOINT
 
 def adminRegistrationForm(ctx):

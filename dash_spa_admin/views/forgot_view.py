@@ -1,7 +1,8 @@
-from dash_spa.logging import log
 from flask import current_app as app
-from dash import html, dcc, callback
-from dash_spa import isTriggered, SpaForm, url_for
+from dash import html
+
+from dash_spa import isTriggered, callback
+from dash_spa.logging import log
 
 from .common import form_layout, email_valid, FORGOT_CODE_ENDPOINT
 
@@ -23,7 +24,7 @@ def forgotForm(ctx):
         flash, email, frm.Button('Reset Request', id='btn', type='submit')
     ], id='forgot')
 
-    @callback([redirect.output.href, flash.output.children], [form.input.form_data])
+    @callback(redirect.output.href, flash.output.children, form.input.form_data)
     def _form_submit(values):
         redirect = frm.NOUPDATE
         error = frm.NOUPDATE

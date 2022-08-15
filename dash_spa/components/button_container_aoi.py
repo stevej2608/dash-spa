@@ -2,9 +2,9 @@ from abc import abstractmethod
 from typing import List
 from dash_redux import ReduxStore
 from dash_spa.logging import log
-from dash import html, callback, ALL
+from dash import html, ALL
 from dash.development.base_component import Component
-from dash_spa import match, prefix, trigger_index, NOUPDATE
+from dash_spa import callback, match, prefix, trigger_index, NOUPDATE
 
 
 class Dict2Obj:

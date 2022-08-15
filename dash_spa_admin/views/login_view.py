@@ -1,8 +1,10 @@
 from flask import current_app as app
-from dash_spa.logging import log
-from dash import html, dcc, callback
+from dash import html, dcc
 from dash.exceptions import PreventUpdate
-from dash_spa import isTriggered, location, url_for
+
+from dash_spa import isTriggered, callback, location, url_for
+from dash_spa.logging import log
+
 from .common import form_layout, LOGIN_ENDPOINT, FORGOT_ENDPOINT, REGISTER_ENDPOINT
 
 def loginForm(ctx):

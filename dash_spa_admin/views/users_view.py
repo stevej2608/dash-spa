@@ -1,13 +1,14 @@
-from dash_spa.logging import log
 from flask import current_app as app
 import pandas as pd
-from dash import html, no_update as NOUPDATE, callback
 
+from dash import html
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
 import dash_datatables as ddt
 
-from dash_spa import prefix, isTriggered
+from dash_spa import prefix, isTriggered, callback, NOUPDATE
+from dash_spa.logging import log
+
 from ..decorators import role_required
 
 
@@ -90,8 +91,8 @@ def usersForm(table, database_uri):
     # Process table action, set up and show the modal form
 
     @callback(
-        [modal_form.output.is_open, modal_form.output.children],
-        [table.input.table_event, cancel_btn.input.n_clicks, user_form.input.form_data])
+        modal_form.output.is_open, modal_form.output.children,
+        table.input.table_event, cancel_btn.input.n_clicks, user_form.input.form_data)
     def toggle_modal(table_evt, close_btn, value):
         is_open = False
         form = NOUPDATE

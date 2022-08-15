@@ -1,9 +1,8 @@
-from dash_spa.logging import log
 from flask import current_app as app
-from dash import callback, no_update as NOUPDATE
 import dash_holoniq_components as dhc
 
-from dash_spa import url_for
+from dash_spa import callback, NOUPDATE
+from dash_spa.logging import log
 
 from .common import LOGOUT_ENDPOINT
 

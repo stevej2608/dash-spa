@@ -1,9 +1,10 @@
-from dash_spa.logging import log
 from flask import current_app as app
-from dash import html, dcc, callback
-from dash_spa import register_page, isTriggered, SpaForm, url_for, location
+from dash import html
 
-from .common import form_layout, email_valid, LOGIN_ENDPOINT
+from dash_spa import isTriggered, callback, location
+from dash_spa.logging import log
+
+from .common import form_layout, LOGIN_ENDPOINT
 
 """
 The user has confirmed his email, allow user to change the account
@@ -23,7 +24,7 @@ def forgotPasswordForm(ctx):
         flash, password, confirm_password, frm.Button('Update Password', id='btn', type='submit')
     ], id='forgot')
 
-    @callback([redirect.output.href, flash.output.children], [form.input.form_data], [location.state.href])
+    @callback(redirect.output.href, flash.output.children, form.input.form_data, location.state.href)
     def _form_submit(values, href):
         redirect = frm.NOUPDATE
         error = frm.NOUPDATE

@@ -1,7 +1,5 @@
+from dash_spa import callback , NOUPDATE, prefix, SpaForm, register_page
 from dash_spa.logging import log
-from flask import current_app as app
-from dash import html, callback , no_update as NOUPDATE
-import dash_spa as spa
 
 from .views import loginForm, forgotForm, forgotCodeForm, forgotPasswordForm
 from .views import registerForm, logoutView, usersView, adminRegistrationForm
@@ -19,7 +17,7 @@ from .exceptions import InvalidPath
 class AdminPage:
 
     def __init__(self, login_manager):
-        pfx = spa.prefix('spa_admin')
+        pfx = prefix('spa_admin')
 
         database_uri = login_manager.database_uri()
 
@@ -30,7 +28,7 @@ class AdminPage:
 
             def SpaForm(self, id):
                 id = id.split('.')[-1]
-                return spa.SpaForm(pfx(id))
+                return SpaForm(pfx(id))
 
         ctx = ViewContext()
 
@@ -64,5 +62,5 @@ class AdminPage:
                 return views[view_id]
             raise InvalidPath
 
-        spa.register_page('dash_spa_admin.page', path_template=f'{login_manager.slug}/<view_id>', layout=layout)
+        register_page('dash_spa_admin.page', path_template=f'{login_manager.slug}/<view_id>', layout=layout)
 

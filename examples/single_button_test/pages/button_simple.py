@@ -1,5 +1,5 @@
-from dash import html, callback
-from dash_spa import register_page
+from dash import html
+from dash_spa import register_page, callback
 
 page = register_page(__name__, path='/', title="Button Test", short_name='Buttons')
 
