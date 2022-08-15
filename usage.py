@@ -1,15 +1,12 @@
-from dash import Dash
-from dash import html
 from app import create_dash
-from dash_spa import page_container
-from dash_spa import logging, config
+from dash_spa import logging, config, DashSPA, page_container
 from server import serve_app
 
 from dash_spa_admin import AdminLoginManager
 
 options = config.get('logging')
 
-def create_app(dash_factory) -> Dash:
+def create_app(dash_factory) -> DashSPA:
     """Create Dash application
 
     Args:

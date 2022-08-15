@@ -62,7 +62,7 @@ def adminRegistrationForm(ctx):
 
         return redirect, error
 
-    # Make name & email fields perestant.
+    # Make name & email fields persistent.
 
     store = frm.Store(form, fields=['name', 'email'], storage_type='local')
 

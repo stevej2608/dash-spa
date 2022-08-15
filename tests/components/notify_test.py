@@ -1,14 +1,14 @@
 import dash
 from dash import html
 from dash_spa.logging import log
-from dash_spa import spa_pages, NOUPDATE, page_container, register_page
+from dash_spa import DashSPA, NOUPDATE, page_container, register_page
 
 from dash_spa.components import Notyf, SPA_NOTIFY
 from dash_spa.utils.dumps_layout import dumps_layout
 
 def single_page_app(page_layout):
     log.info('********************* create notify app ************************')
-    app = dash.Dash(__name__,  plugins=[spa_pages])
+    app = DashSPA(__name__, pages_folder='')
     register_page(path='/', title="test", layout=page_layout())
     app.layout = page_container
     return app

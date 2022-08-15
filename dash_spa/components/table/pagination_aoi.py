@@ -9,6 +9,8 @@ from .context import TableContext
 # Smart pagination algorithm, converted from PHP
 # see: https://stackoverflow.com/a/163825/489239
 
+# FIXME: Paginator should gray following search that reduces the rows
+
 class TableAIOPaginator(html.Ul):
     """Ellipses pagination component
 

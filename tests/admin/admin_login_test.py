@@ -78,7 +78,12 @@ def test_admin_login_fail(duo, test_app):
     # Rejection results in a red flash up field being displayed inviting the user
     # to re-enter the user details.
 
+    duo.driver.delete_all_cookies()
+
     duo.server_url = duo.server_url + "/admin/login"
+
+    result = duo.wait_for_text_to_equal(form.btn, "Sign In", timeout=20)
+    assert result
 
     form = css_id('login')
 

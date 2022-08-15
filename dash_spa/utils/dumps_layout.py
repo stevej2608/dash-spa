@@ -29,3 +29,8 @@ def dumps_layout(layout):
     json_str = re.sub(r': null', ': []', json_str)
 
     return json_str
+
+
+def dumps_layout(layout):
+    json_str = dumps_layout(layout)
+    return json.loads(json_str)

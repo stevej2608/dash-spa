@@ -57,9 +57,8 @@ def test_register(mocker, test_app, duo):
     confirm_password=duo.find_element(register_form.confirm_password)
     confirm_password.send_keys(USER_PASSWORD)
 
-    if 'pages.terms_and_conditions' in page_container:
-        terms=duo.find_element(register_form.terms)
-        terms.click()
+    terms=duo.find_element(register_form.terms)
+    terms.click()
 
     # Submit the registration form and wait for the verify form to appear
 

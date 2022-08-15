@@ -1,5 +1,4 @@
 import flask
-from dash import Dash
 import dash_spa as spa
 from themes import VOLT_BOOTSTRAP
 # from dash_spa import spa_pages
@@ -19,7 +18,7 @@ external_scripts = [
 
 logging_opt = spa.config.get('logging')
 
-def create_dash() -> Dash:
+def create_dash() -> spa.DashSPA:
 
     flask_options = spa.config.get('flask')
     options = spa.config.get('logging')

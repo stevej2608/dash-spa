@@ -11,7 +11,7 @@
       "cwd": "${workspaceRoot}",
       "program": "usage.py",
       "console": "internalConsole",
-      //"env": {"DASH_SPA_ENV" : "test"},
+      "env": {"DASH_SPA_ENV" : "test"},
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {

@@ -42,6 +42,20 @@ _default_index = """<!DOCTYPE html>
     </body>
 </html>"""
 
+def clear_globals():
+    """Reset global variables"""
+    global container_registry, style_registry, external_scripts, external_stylesheets, internal_stylesheets
+
+    container_registry = {}
+    style_registry = []
+
+    external_scripts = []
+    external_stylesheets = []
+    internal_stylesheets = []
+
+    while len(page_container.children) > 4:
+        page_container.children.pop()
+
 class DashSPA(dash.Dash):
 
     def __init__(self, name=None, **kwargs):
@@ -49,7 +63,8 @@ class DashSPA(dash.Dash):
         use_pages = kwargs.pop('use_pages', True)
         index_string = kwargs.pop('index_string', _default_index)
 
-        super().__init__(name=name,
+        super().__init__(
+            name=name,
             use_pages=use_pages,
             index_string=index_string,
             **kwargs
@@ -140,6 +155,7 @@ class DashSPA(dash.Dash):
             page_layout(page)
             page['layout'] = PageContainerDelegate(page).layout
 
+
     def init_app(self, app=None, **kwargs):
         self.server.before_first_request(self.validate_pages)
         super().init_app(app, **kwargs)
@@ -195,7 +211,7 @@ def page_container_append(component: Component):
         return "NO ID"
 
     id = get_id(component)
-    log.info('page_container_append id=%s', id)
+    # log.info('page_container_append id=%s', id)
 
     for child in page_container.children:
         if child.id == id:
