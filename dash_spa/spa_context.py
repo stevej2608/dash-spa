@@ -12,6 +12,7 @@ from dash_spa.utils.caller import caller_hash
 from dash_redux import ReduxStore
 
 from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT
+from .utils.caller import caller_hash
 from dash_spa.logging import log
 
 """Context state management
@@ -96,9 +97,9 @@ class Context:
         self._initial_context_state = {}
         self.allow_initial_state = True
 
-    def pid(self, id=None):
-        pfx = prefix(self.id)
-        return pfx(id)
+    # def pid(self, id=None):
+    #     pfx = prefix(self.id)
+    #     return pfx(id)
 
     def callback(self, *_args, **_kwargs):
 
@@ -166,11 +167,11 @@ class Context:
 
     def Provider(self, state:ContextState=None, persistent: bool = False):
 
-        assert id, "The context.Provider must have an id"
+        pid = prefix(caller_hash(2, "pfx_"))
 
         # log.info('Provider id=%s', self.id)
 
-        container_id = self.pid('ctx_container')
+        container_id = pid('ctx_container')
 
         # state can be provide when the context is created or passed in here
 
@@ -184,14 +185,14 @@ class Context:
         # else:
         #     storage_type = 'session'
 
-        self._redux_store = ReduxStore(id=self.pid(), data=state.asdict(), storage_type='memory')
+        self._redux_store = ReduxStore(id=pid(), data=state.asdict(), storage_type='memory')
 
         # The ID passed in is unique, use it to inject a prefix method into the
         # context state. This can then be used create ID's for dash element that are
         # declared in the scope of the active context
 
-        def pid(id):
-            return self.pid(id)
+        # def pid(id):
+        #     return self.pid(id)
 
         self._context_state.pid = pid
 

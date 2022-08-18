@@ -7,11 +7,14 @@ from collections import OrderedDict
 import dash
 from dash._utils import interpolate_str
 from dash.development.base_component import Component
-from dash import _pages, _validate
+from dash import _pages, _validate, _callback
 from dash_prefix import prefix
 from .logging import log
 
 PAGE_REGISTRY = _pages.PAGE_REGISTRY
+
+GLOBAL_CALLBACK_LIST = _callback.GLOBAL_CALLBACK_LIST
+GLOBAL_CALLBACK_MAP = _callback.GLOBAL_CALLBACK_MAP
 
 page_container = dash.page_container
 location = page_container.children[0]
@@ -46,19 +49,65 @@ def clear_globals():
     """Reset global variables"""
     global container_registry, style_registry, external_scripts, external_stylesheets, internal_stylesheets
 
-    container_registry = {}
-    style_registry = []
+    # container_registry = {}
+    # style_registry = []
 
-    external_scripts = []
-    external_stylesheets = []
-    internal_stylesheets = []
+    # external_scripts = []
+    # external_stylesheets = []
+    # internal_stylesheets = []
 
-    while len(page_container.children) > 4:
-        page_container.children.pop()
+    # while len(page_container.children) > 4:
+    #     page_container.children.pop()
+
+    GLOBAL_CALLBACK_LIST = []
+    GLOBAL_CALLBACK_MAP = {}
+
+def page_layout(page, **kwargs):
+
+    if 'layout' in page and page['layout']:
+        layout = page['layout']
+    elif 'supplied_layout' in page and page['supplied_layout']:
+        layout = page['supplied_layout']
+    else:
+        raise KeyError(f"Unable to resolve layout for page {page['module']}")
+
+    # Test to see if a content container id define for the page
+    # if so call the container
+
+    if 'container' in page:
+        container_name = page['container']
+        if container_name in container_registry:
+            container = container_registry[container_name]
+            return container(page, layout, **kwargs)
+
+    # No container handle the page layout directly
+
+    if callable(layout):
+        layout = layout(**kwargs)
+
+    return layout
+
+
+def layout_delegate(page):
+    page = page.copy()
+    def wrapper(**kwargs):
+        return page_layout(page, **kwargs)
+    return wrapper
+
 
 class DashSPA(dash.Dash):
 
+    @property
+    def is_live(self):
+        return self._is_live
+
     def __init__(self, name=None, **kwargs):
+
+        self._is_live = False
+
+        # _cb_initialised = {}
+        # GLOBAL_CALLBACK_LIST = []
+        # GLOBAL_CALLBACK_MAP = {}
 
         use_pages = kwargs.pop('use_pages', True)
         index_string = kwargs.pop('index_string', _default_index)
@@ -69,6 +118,27 @@ class DashSPA(dash.Dash):
             index_string=index_string,
             **kwargs
             )
+
+    def init_app(self, app=None, **kwargs):
+        #self.server.before_first_request(self.validate_pages)
+        super().init_app(app, **kwargs)
+
+        # All the pages have now been registered. We now need to
+        # iterate over all te registered page layouts to force the
+        # registration of any embedded callbacks.
+
+        log.info('************** Validate pages %s **************', len(PAGE_REGISTRY))
+
+        for page in PAGE_REGISTRY.values():
+            layout = page['layout']
+            if callable(layout):
+                layout()
+
+
+    def run(self, *args, **kwargs):
+        log.info('************** Starting server **************')
+        self._is_live = True
+        super().run(*args, **kwargs)
 
     def interpolate_index(self,
             metas="",
@@ -105,60 +175,18 @@ class DashSPA(dash.Dash):
             app_entry=app_entry,
         )
 
-    def validate_pages(self):
+    # def validate_pages(self):
 
-        # In dash all callbacks and associated components must be registered
-        # before the server starts. Because of this limitation we must call
-        # the layout() function in each Dash/SPA page prior to the server
-        # starting. This method runs immediately before the server is
-        # started calling each of the page layout() functions in turn.
+    #     log.info('************** Validate pages %s **************', len(PAGE_REGISTRY))
 
-        # Additionally, in order to handle Dash/SPA page layout containers we
-        # create a PageContainerDelegate for each page. The layout delegate is called
-        # by Dash. The delegate then calls page_layout() which, in turn, calls
-        # the page container to layout the page.
+    #     for page in PAGE_REGISTRY.values():
+    #         layout = page['layout']
+    #         if callable(layout):
+    #             layout()
 
-        def page_layout(page, **kwargs):
+    #     self._setup_completed = True
 
-            if 'layout' in page and page['layout']:
-                layout = page['layout']
-            elif 'supplied_layout' in page and page['supplied_layout']:
-                layout = page['supplied_layout']
-            else:
-                raise KeyError(f"Unable to resolve layout for page {page['module']}")
-
-            # Test to see if a content container id define for the page
-            # if so call the container
-
-            if 'container' in page:
-                container_name = page['container']
-                if container_name in container_registry:
-                    container = container_registry[container_name]
-                    return container(page, layout, **kwargs)
-
-            # No container handle the page layout directly
-
-            if callable(layout):
-                layout = layout(**kwargs)
-
-            return layout
-
-        class PageContainerDelegate:
-
-            def __init__(self, page):
-                self.page = page.copy()
-
-            def layout(self, **kwargs):
-                return page_layout(self.page, **kwargs)
-
-        for page in PAGE_REGISTRY.values():
-            page_layout(page)
-            page['layout'] = PageContainerDelegate(page).layout
-
-
-    def init_app(self, app=None, **kwargs):
-        self.server.before_first_request(self.validate_pages)
-        super().init_app(app, **kwargs)
+    #     log.info('************** Starting Server **************')
 
     def _import_layouts_from_pages(self):
         walk_dir = self.config.pages_folder
@@ -191,9 +219,9 @@ class DashSPA(dash.Dash):
                     and not PAGE_REGISTRY[module_name]["supplied_layout"]
                 ):
                     _validate.validate_pages_layout(module_name, page_module)
-                    PAGE_REGISTRY[module_name]["layout"] = getattr(
-                        page_module, "layout"
-                    )
+                    page = PAGE_REGISTRY[module_name]
+                    page["layout"] = getattr(page_module, "layout")
+                    page['layout'] = layout_delegate(page)
 
 
 def page_container_append(component: Component):
@@ -435,14 +463,15 @@ def register_page(
     ```
 
     """
-
     if not module in PAGE_REGISTRY:
+
+        log.info('register page %s', module)
 
         if module is None:
             pfx = prefix('spa')
             module = pfx(path[1:])
 
-        kwargs['container'] = 'default'
+        kwargs['container'] = container
 
         dash.register_page(
             module,
@@ -455,10 +484,11 @@ def register_page(
             image,
             image_url,
             redirect_from,
-            layout, **kwargs)
+            layout,
+            **kwargs)
 
-    page_def = PAGE_REGISTRY[module]
-    return DashPage(page_def)
+    page = PAGE_REGISTRY[module]
+    return DashPage(page)
 
 
 def get_page(path:str) -> DashPage:
