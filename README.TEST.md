@@ -1,8 +1,7 @@
 [Dash constructor](dash.py#2023)
     [init_app()](dash_spa.py#114)
-      - before_first_request()
+      before_first_request(self.validate_pages)
       [init_app()](dash.py#505)
-        before_first_request(self.validate_pages)
         before_first_request(self._setup_server)
         *** get_app works from here on ***
         [dash.enable_pages()](dash.py#2023)
@@ -15,6 +14,9 @@
           def router()
 
 [app.run_server()](server.py#35)
+    [run()](dash_spa.py#138)
+
+
   flask.try_trigger_before_first_request_functions:
     [validate_pages()](dash_pages.py#161)
     [_setup_server()](dash.py#1271)

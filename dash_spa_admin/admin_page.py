@@ -56,11 +56,18 @@ class AdminPage:
         #         return views[pathname]
         #     return NOUPDATE
 
-        def layout(view_id=LOGIN_ENDPOINT, **kwargs):
-            log.info('layout "%s"', view_id)
-            if view_id in views:
-                return views[view_id]
-            raise InvalidPath
+        # def layout(view_id=LOGIN_ENDPOINT, **kwargs):
+        #     log.info('layout "%s"', view_id)
+        #     if view_id in views:
+        #         return views[view_id]
+        #     raise InvalidPath
 
-        register_page('dash_spa_admin.page', path_template=f'{login_manager.slug}/<view_id>', layout=layout)
+        # register_page('dash_spa_admin.page', path_template=f'{login_manager.slug}/<view_id>', layout=layout)
+
+        for id, layout in views.items():
+            register_page(
+                f'dash_spa_admin.{id}',
+                path=f'{login_manager.slug}/{id}',
+                layout=layout
+            )
 

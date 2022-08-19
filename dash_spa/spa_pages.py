@@ -10,21 +10,11 @@ from dash.development.base_component import Component
 from dash import _pages, _validate, _callback
 from dash_prefix import prefix
 from .logging import log
+from .spa_globals import Globals
 
-PAGE_REGISTRY = _pages.PAGE_REGISTRY
 
-GLOBAL_CALLBACK_LIST = _callback.GLOBAL_CALLBACK_LIST
-GLOBAL_CALLBACK_MAP = _callback.GLOBAL_CALLBACK_MAP
-
-page_container = dash.page_container
-location = page_container.children[0]
-
-container_registry = {}
-style_registry = []
-
-external_scripts = []
-external_stylesheets = []
-internal_stylesheets = []
+page_container = Globals.page_container
+location = Globals.location
 
 _default_index = """<!DOCTYPE html>
 <html>
@@ -56,8 +46,8 @@ def clear_globals():
     # external_stylesheets = []
     # internal_stylesheets = []
 
-    # while len(page_container.children) > 4:
-    #     page_container.children.pop()
+    # while len(Globals.page_container.children) > 4:
+    #     Globals.page_container.children.pop()
 
     GLOBAL_CALLBACK_LIST = []
     GLOBAL_CALLBACK_MAP = {}
@@ -76,8 +66,8 @@ def page_layout(page, **kwargs):
 
     if 'container' in page:
         container_name = page['container']
-        if container_name in container_registry:
-            container = container_registry[container_name]
+        if container_name in Globals.container_registry:
+            container = Globals.container_registry[container_name]
             return container(page, layout, **kwargs)
 
     # No container handle the page layout directly
@@ -102,6 +92,7 @@ class DashSPA(dash.Dash):
         return self._is_live
 
     def __init__(self, name=None, **kwargs):
+        Globals.clear()
 
         self._is_live = False
 
@@ -127,9 +118,9 @@ class DashSPA(dash.Dash):
         # iterate over all te registered page layouts to force the
         # registration of any embedded callbacks.
 
-        log.info('************** Validate pages %s **************', len(PAGE_REGISTRY))
+        log.info('************** Validate pages %s **************', len(Globals.PAGE_REGISTRY))
 
-        for page in PAGE_REGISTRY.values():
+        for page in Globals.PAGE_REGISTRY.values():
             layout = page['layout']
             if callable(layout):
                 layout()
@@ -137,6 +128,7 @@ class DashSPA(dash.Dash):
 
     def run(self, *args, **kwargs):
         log.info('************** Starting server **************')
+        Globals.save_or_restore()
         self._is_live = True
         super().run(*args, **kwargs)
 
@@ -153,13 +145,13 @@ class DashSPA(dash.Dash):
         # Intercede in the final markup generation to add style sheets
         # and scripts that have been requested programmatically.
 
-        for path in internal_stylesheets:
+        for path in Globals.internal_stylesheets:
             css += f'\n<link rel="stylesheet" href="/internal{path}">'
 
-        for path in external_stylesheets:
+        for path in Globals.external_stylesheets:
             css += f'\n<link rel="stylesheet" href="{path}">'
 
-        for path in external_scripts:
+        for path in Globals.external_scripts:
             scripts += f'\n<script src="{path}"></script>'
 
         return interpolate_str(
@@ -167,7 +159,7 @@ class DashSPA(dash.Dash):
             metas=metas,
             title=title,
             css=css,
-            styles = '\n'.join(style_registry),
+            styles = '\n'.join(Globals.style_registry),
             config=config,
             scripts=scripts,
             favicon=favicon,
@@ -177,9 +169,9 @@ class DashSPA(dash.Dash):
 
     # def validate_pages(self):
 
-    #     log.info('************** Validate pages %s **************', len(PAGE_REGISTRY))
+    #     log.info('************** Validate pages %s **************', len(Globals.PAGE_REGISTRY))
 
-    #     for page in PAGE_REGISTRY.values():
+    #     for page in Globals.PAGE_REGISTRY.values():
     #         layout = page['layout']
     #         if callable(layout):
     #             layout()
@@ -214,12 +206,28 @@ class DashSPA(dash.Dash):
                 page_module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(page_module)
 
+                # if module_name in Globals.PAGE_REGISTRY:
+                #     page = Globals.PAGE_REGISTRY[module_name]
+                #     if page["supplied_layout"]:
+                #         layout = page["supplied_layout"]
+                #     else:
+                #         _validate.validate_pages_layout(module_name, page_module)
+                #         layout = getattr(page_module, "layout")
+
+                #     page["layout"] = layout
+
+                #     if layout not layout_delegate:
+
+
+                #     page['layout'] = layout_delegate(page)
+
+
                 if (
-                    module_name in PAGE_REGISTRY
-                    and not PAGE_REGISTRY[module_name]["supplied_layout"]
+                    module_name in Globals.PAGE_REGISTRY
+                    and not Globals.PAGE_REGISTRY[module_name]["supplied_layout"]
                 ):
                     _validate.validate_pages_layout(module_name, page_module)
-                    page = PAGE_REGISTRY[module_name]
+                    page = Globals.PAGE_REGISTRY[module_name]
                     page["layout"] = getattr(page_module, "layout")
                     page['layout'] = layout_delegate(page)
 
@@ -239,13 +247,13 @@ def page_container_append(component: Component):
         return "NO ID"
 
     id = get_id(component)
-    # log.info('page_container_append id=%s', id)
+    # log.info('Globals.page_container_append id=%s', id)
 
-    for child in page_container.children:
+    for child in Globals.page_container.children:
         if child.id == id:
-            page_container.children.remove(child)
+            Globals.page_container.children.remove(child)
 
-    page_container.children.append(component)
+    Globals.page_container.children.append(component)
 
 
 def add_style(style: str):
@@ -268,12 +276,12 @@ def add_style(style: str):
     ```
     """
     tag = f"<style>{style}</style>"
-    if not tag in style_registry:
-        style_registry.append(tag)
+    if not tag in Globals.style_registry:
+        Globals.style_registry.append(tag)
 
 def register_container(container, name='default'):
     """Register a container wih the given name"""
-    container_registry[name] = container
+    Globals.container_registry[name] = container
 
 
 def add_external_scripts(url: Union[str, List[str]]) -> None:
@@ -289,8 +297,8 @@ def add_external_scripts(url: Union[str, List[str]]) -> None:
     """
     urls = url if isinstance(url, list) else [url]
     for url in urls:
-        if not url in external_scripts:
-            external_scripts.append(url)
+        if not url in Globals.external_scripts:
+            Globals.external_scripts.append(url)
 
 def add_external_stylesheets(url):
     """Add given stylesheet(s) to the external_stylesheets list
@@ -305,8 +313,8 @@ def add_external_stylesheets(url):
     """
     urls = url if isinstance(url, list) else [url]
     for url in urls:
-        if not url in external_stylesheets:
-            external_stylesheets.append(url)
+        if not url in Globals.external_stylesheets:
+            Globals.external_stylesheets.append(url)
 
 
 class DashPage:
@@ -360,15 +368,15 @@ def register_page(
     **kwargs,
 ) -> DashPage:
     """
-    Assigns the variables to `_pages.PAGE_REGISTRY` as an `OrderedDict`
+    Assigns the variables to `_pages.Globals.PAGE_REGISTRY` as an `OrderedDict`
     (ordered by `order`).
 
-    `_pages.PAGE_REGISTRY` is used by `pages_plugin` to set up the layouts as
+    `_pages.Globals.PAGE_REGISTRY` is used by `pages_plugin` to set up the layouts as
     a multi-page Dash app. This includes the URL routing callbacks
     (using `dcc.Location`) and the HTML templates to include title,
     meta description, and the meta description image.
 
-    `_pages.PAGE_REGISTRY` can also be used by Dash developers to create the
+    `_pages.Globals.PAGE_REGISTRY` can also be used by Dash developers to create the
     page navigation links or by template authors.
 
     - `module`:
@@ -463,7 +471,7 @@ def register_page(
     ```
 
     """
-    if not module in PAGE_REGISTRY:
+    if not module in Globals.PAGE_REGISTRY:
 
         log.info('register page %s', module)
 
@@ -487,28 +495,37 @@ def register_page(
             layout,
             **kwargs)
 
-    page = PAGE_REGISTRY[module]
+        page = Globals.PAGE_REGISTRY[module]
+
+        if layout:
+            page['layout'] = layout_delegate(page)
+
+    else:
+
+        page = Globals.PAGE_REGISTRY[module]
+
+
     return DashPage(page)
 
 
 def get_page(path:str) -> DashPage:
-    for page in PAGE_REGISTRY.values():
+    for page in Globals.PAGE_REGISTRY.values():
         if page['path'] == path:
             return DashPage(page)
     raise Exception(f"No page for path '{path}' defined")
 
 
 def page_for(module:str) -> str:
-    if module in PAGE_REGISTRY:
-        page = PAGE_REGISTRY[module]
+    if module in Globals.PAGE_REGISTRY:
+        page = Globals.PAGE_REGISTRY[module]
         return DashPage(page)
     raise Exception(f"No page for module \"{module}\" defined")
 
 
 def url_for(module:str, args: dict=None, attr=None) -> str:
 
-    if module in PAGE_REGISTRY:
-        page = PAGE_REGISTRY[module]
+    if module in Globals.PAGE_REGISTRY:
+        page = Globals.PAGE_REGISTRY[module]
         path = page['path']
         if args:
             if attr:
