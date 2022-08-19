@@ -73,6 +73,8 @@ def test_login(duo, test_app):
 
 def test_admin_login_fail(duo, test_app):
 
+    login_manager = test_app.server.login_manager
+
     # Login known user with a bad password - confirm rejection
     #
     # Rejection results in a red flash up field being displayed inviting the user
@@ -81,11 +83,10 @@ def test_admin_login_fail(duo, test_app):
     duo.driver.delete_all_cookies()
 
     duo.server_url = duo.server_url + "/admin/login"
+    form = css_id('login')
 
     result = duo.wait_for_text_to_equal(form.btn, "Sign In", timeout=20)
     assert result
-
-    form = css_id('login')
 
     btn = duo.find_element(form.btn)
     assert btn.text == "Sign In"
