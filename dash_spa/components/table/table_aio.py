@@ -53,13 +53,19 @@ class TableAIO(html.Table):
         row =  html.Tr([html.Th(col['name'], className='border-gray-200') for col in columns])
         return html.Thead(row)
 
-    def tableRows(self, data, page=1, page_size = None):
+    def tableRows(self, row_data, page=1, page_size = None):
         if page_size:
             low = (page -1) * page_size
             high = (page) * page_size
-            high = high if high < len(data) else len(data)
-            data = data[low:high]
-        return[self.tableRow(index, args) for index, args in enumerate(data)]
+            high = high if high < len(row_data) else len(row_data)
+            row_data = row_data[low:high]
+
+        rows = []
+        for index, args in enumerate(row_data):
+            row = self.tableRow(index, args)
+            rows.append(row)
+
+        return rows
 
     @abstractmethod
     def tableRow(self, row_index, args):

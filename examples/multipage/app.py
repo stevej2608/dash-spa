@@ -2,7 +2,7 @@ from dash import Dash, html
 from dash_spa import logging
 
 from dash_spa import page_container
-from dash_spa.components import NavBar, NavbarBrand, NavbarLink, Footer,
+from dash_spa.components import NavBar, NavbarBrand, NavbarLink, Footer
 from server import serve_app
 
 from .dash_app import app

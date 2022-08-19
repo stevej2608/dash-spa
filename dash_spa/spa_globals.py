@@ -68,8 +68,8 @@ class GlobalContext:
             list_merge(self.GLOBAL_CALLBACK_LIST, self._GLOBAL_CALLBACK_LIST)
             self.GLOBAL_CALLBACK_MAP.update(self._GLOBAL_CALLBACK_MAP)
 
-            self._page_container = self.page_container.copy()
-            self._location = self.location.copy()
+            # self._page_container = self.page_container.copy()
+            # self._location = self.location.copy()
 
             list_merge(self.container_registry, self._container_registry)
             list_merge(self.style_registry, self._style_registry)
