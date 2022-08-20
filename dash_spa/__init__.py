@@ -11,6 +11,7 @@ from .spa_pages import register_page, page_container, page_container_append, loc
 from .spa_pages import add_style, page_id, add_external_scripts, add_external_stylesheets, DashSPA
 from .spa_form import SpaForm
 from .spa_current_user import current_user
+from .spa_current_app import current_app
 from .decorators import login_required
 from .callback import callback
 

@@ -3,7 +3,7 @@ from werkzeug.local import LocalProxy
 from dash_redux import ReduxStore
 from dash import clientside_callback
 from dash._callback import GLOBAL_CALLBACK_MAP
-from dash_spa import page_container_append, add_external_scripts, add_external_stylesheets
+from dash_spa import page_container_append, add_external_scripts, add_external_stylesheets, current_app
 from dash_spa.logging import log
 
 """Support for Notifications
@@ -20,9 +20,6 @@ Usage:
 
 See: https://github.com/caroso1222/notyf#readme
 """
-
-add_external_scripts("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js")
-add_external_stylesheets("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css")
 
 class Notyf:
 
@@ -127,6 +124,10 @@ class Notyf:
 class NotyfViewer(ReduxStore):
 
     def __init__(self, id):
+
+        add_external_scripts("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js")
+        add_external_stylesheets("https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css")
+
         super().__init__(id=id, storage_type='memory', data={})
 
         clientside_callback(
@@ -168,10 +169,15 @@ class NotyfViewer(ReduxStore):
 # The following LocalProxy fixes the problem.
 
 def _notyfViewer():
+
+    if not current_app:
+        return None
+
     if 'spa_notify.data' not in GLOBAL_CALLBACK_MAP:
         # log.info('Create NotyfViewer instance')
         _notyfViewer.viewer = NotyfViewer(id='spa_notify')
         page_container_append(_notyfViewer.viewer)
+
     return _notyfViewer.viewer
 
 

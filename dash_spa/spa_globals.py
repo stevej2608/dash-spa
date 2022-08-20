@@ -5,12 +5,12 @@ from .logging import log
 
 class GlobalContext:
 
-
     def __init__(self):
         log.info('Create GlobalContext')
 
-        self.save=True
-        self.restore=False
+        self.index = 0
+
+        self._saved=False
 
         self.PAGE_REGISTRY = _pages.PAGE_REGISTRY
 
@@ -28,16 +28,9 @@ class GlobalContext:
         self.internal_stylesheets = []
 
 
-    def save_or_restore(self):
+    def save(self):
 
-        def list_merge(first_list, second_list):
-
-            for entry in second_list:
-                if not entry in first_list:
-                    first_list.append(entry)
-
-
-        if self.save:
+        if not self._saved:
             log.info('GlobalContext: - save')
             self._PAGE_REGISTRY = self.PAGE_REGISTRY.copy()
 
@@ -54,16 +47,22 @@ class GlobalContext:
             self._external_stylesheets = self.external_stylesheets.copy()
             self._internal_stylesheets = self.internal_stylesheets.copy()
 
-            self.save = False
-            self.restore = True
+            self._saved = True
 
-            return
 
-        if self.restore:
+    def restore(self):
+
+        def list_merge(first_list, second_list):
+
+            for entry in second_list:
+                if not entry in first_list:
+                    first_list.append(entry)
+
+        if self._saved:
 
             log.info('GlobalContext: - restore')
 
-            self.PAGE_REGISTRY.update(self._PAGE_REGISTRY)
+            # self.PAGE_REGISTRY.update(self._PAGE_REGISTRY)
 
             list_merge(self.GLOBAL_CALLBACK_LIST, self._GLOBAL_CALLBACK_LIST)
             self.GLOBAL_CALLBACK_MAP.update(self._GLOBAL_CALLBACK_MAP)
@@ -71,18 +70,15 @@ class GlobalContext:
             # self._page_container = self.page_container.copy()
             # self._location = self.location.copy()
 
-            list_merge(self.container_registry, self._container_registry)
+            self.container_registry.update(self._container_registry)
             list_merge(self.style_registry, self._style_registry)
 
             list_merge(self.external_scripts, self._external_scripts)
             list_merge(self.external_stylesheets, self._external_stylesheets)
             list_merge(self.internal_stylesheets, self._internal_stylesheets)
 
-            self.restore = False
-
-
-
     def clear(self):
+        self.index = 0
         self.PAGE_REGISTRY.clear()
 
         self.GLOBAL_CALLBACK_LIST.clear()
@@ -99,9 +95,12 @@ class GlobalContext:
         self.internal_stylesheets.clear()
 
 
-
-
-
-
+    def dump(self):
+        index = 0
+        for id in self.GLOBAL_CALLBACK_MAP.keys():
+            if index >= self.index:
+                log.info('%d %s', index, id)
+            index +=1
+        self.index = index
 
 Globals = GlobalContext()

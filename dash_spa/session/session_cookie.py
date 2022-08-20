@@ -1,14 +1,15 @@
 from flask import session, current_app as app
-from itsdangerous import Signer, BadSignature
+from ..spa_current_app import current_app
+from werkzeug.local import LocalProxy
+from itsdangerous import Signer
 import appdirs
-import base64
+
 import threading
 import json
 import os
 import secrets
-import time
 
-# from dash import get_app
+
 from dash_spa.spa_config import config
 from dash_spa.logging import log
 from  dash_spa.utils import synchronized
@@ -50,6 +51,8 @@ def _session_keys(directory):
 class SessionCookieManager:
 
     def __init__(self, max_age=84600 * 31,refresh_after=84600 * 7):
+        log.info('Create SessionCookieManager()')
+
         self.refresh_after = refresh_after
         self.max_age = max_age
 
@@ -112,5 +115,18 @@ class SessionCookieManager:
 
             return self.unattached_session_id
 
+def _sessionCookieManager():
 
-session_manager = SessionCookieManager()
+    if not hasattr(_sessionCookieManager,'time'):
+        _sessionCookieManager.time = 0
+
+    if current_app.start_time != _sessionCookieManager.time:
+        _sessionCookieManager.time = current_app.start_time
+        _sessionCookieManager.sessionCookieManager = SessionCookieManager()
+
+    return _sessionCookieManager.sessionCookieManager
+
+
+# session_manager = SessionCookieManager()
+
+session_manager = LocalProxy(_sessionCookieManager)

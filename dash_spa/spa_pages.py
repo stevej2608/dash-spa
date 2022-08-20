@@ -1,17 +1,19 @@
 from typing import Callable, Union, List
 import os
+import sys
+import time
 import importlib
 import re
 from urllib import parse
 from collections import OrderedDict
+from flask import current_app
 import dash
 from dash._utils import interpolate_str
 from dash.development.base_component import Component
-from dash import _pages, _validate, _callback
+from dash import _validate
 from dash_prefix import prefix
 from .logging import log
 from .spa_globals import Globals
-
 
 page_container = Globals.page_container
 location = Globals.location
@@ -91,10 +93,23 @@ class DashSPA(dash.Dash):
     def is_live(self):
         return self._is_live
 
+    @property
+    def start_time(self):
+        return self._start_time
+
+    @property
+    def got_first_request(self):
+        try:
+            return current_app.got_first_request
+        except:
+            return False
+
     def __init__(self, name=None, **kwargs):
+        log.info('Create SessionCookieManager()')
         Globals.clear()
 
         self._is_live = False
+        self._start_time = time.time()
 
         # _cb_initialised = {}
         # GLOBAL_CALLBACK_LIST = []
@@ -118,7 +133,7 @@ class DashSPA(dash.Dash):
         # iterate over all te registered page layouts to force the
         # registration of any embedded callbacks.
 
-        log.info('************** Validate pages %s **************', len(Globals.PAGE_REGISTRY))
+        log.info('************** init_app(): pages %s **************', len(Globals.PAGE_REGISTRY))
 
         for page in Globals.PAGE_REGISTRY.values():
             layout = page['layout']
@@ -127,10 +142,12 @@ class DashSPA(dash.Dash):
 
 
     def run(self, *args, **kwargs):
-        log.info('************** Starting server **************')
-        Globals.save_or_restore()
+        log.info('************** run(): starting server **************')
+        # Globals.save_or_restore()
+        #Globals.dump()
         self._is_live = True
         super().run(*args, **kwargs)
+
 
     def interpolate_index(self,
             metas="",
@@ -181,8 +198,12 @@ class DashSPA(dash.Dash):
     #     log.info('************** Starting Server **************')
 
     def _import_layouts_from_pages(self):
-        walk_dir = self.config.pages_folder
 
+        log.info('_import_layouts_from_pages()')
+
+        Globals.dump()
+
+        walk_dir = self.config.pages_folder
         for (root, _, files) in os.walk(walk_dir):
             pages_package = os.path.relpath(root).replace(os.path.sep, '.')
             for file in files:
@@ -199,6 +220,9 @@ class DashSPA(dash.Dash):
 
                 file_name = file.replace(".py", "")
                 module_name = f"{pages_package}.{file_name}"
+
+                if module_name in sys.modules:
+                    log.info('module %s is already loaded', module_name)
 
                 spec = importlib.util.spec_from_file_location(
                     module_name, os.path.join(root, file)
@@ -230,6 +254,8 @@ class DashSPA(dash.Dash):
                     page = Globals.PAGE_REGISTRY[module_name]
                     page["layout"] = getattr(page_module, "layout")
                     page['layout'] = layout_delegate(page)
+
+                    Globals.dump()
 
 
 def page_container_append(component: Component):
@@ -471,6 +497,7 @@ def register_page(
     ```
 
     """
+
     if not module in Globals.PAGE_REGISTRY:
 
         log.info('register page %s', module)

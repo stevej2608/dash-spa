@@ -1,8 +1,6 @@
-# from flask import current_app as app
-from dash import callback as dash_callback, get_app
-from dash._callback import GLOBAL_CALLBACK_MAP
+from dash import callback as dash_callback
+from .spa_current_app import current_app
 from .logging import log
-from .utils.caller import caller_location
 
 
 def callback(*_args, **_kwargs):
@@ -14,13 +12,7 @@ def callback(*_args, **_kwargs):
     def callback_stub(*_args, **_kwargs):
         pass
 
-    dash = get_app()
-
-    # if app and app.got_first_request:
-    #     log.info('Dismiss @callback decorator %s server has started', caller_location())
-    #     return callback_stub
-
-    if dash.is_live:
+    if current_app and current_app.is_live:
         # log.info('Dismiss @callback decorator %s server has started', caller_location())
         return callback_stub
 

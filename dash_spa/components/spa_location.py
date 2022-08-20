@@ -2,7 +2,7 @@ from flask import current_app as app
 from werkzeug.local import LocalProxy
 from urllib.parse import urlparse
 from dash._callback import GLOBAL_CALLBACK_MAP
-from dash_spa import page_container_append, callback, NOUPDATE
+from dash_spa import page_container_append, callback, NOUPDATE, current_app
 from dash_spa.logging import log
 from dash_redux import ReduxStore
 import dash_holoniq_components as dhc
@@ -33,6 +33,10 @@ class LocationStore(ReduxStore):
 
 
 def _create_location():
+
+    if not current_app:
+        return None
+
     if 'spa_location_store.data' not in GLOBAL_CALLBACK_MAP:
         _create_location.singleton = LocationStore(id='spa_location_store', data=None, storage_type='session')
 

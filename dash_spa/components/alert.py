@@ -32,7 +32,7 @@ from werkzeug.local import LocalProxy
 from dataclasses import dataclass
 from dash_redux import ReduxStore
 from dash import clientside_callback
-from dash_spa import page_container_append, add_external_scripts
+from dash_spa import page_container_append, add_external_scripts, current_app
 from dash_spa.logging import log
 from dash._callback import GLOBAL_CALLBACK_MAP
 
@@ -50,12 +50,12 @@ class Alert:
         args = {k:v for k,v in vars(self).items() if v is not None}
         return args
 
-add_external_scripts("https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.all.min.js")
-
 class SweetAlert(ReduxStore):
 
     def __init__(self, id):
         super().__init__(id=id, storage_type='memory', data={})
+
+        add_external_scripts("https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.all.min.js")
 
         clientside_callback(
             """
@@ -98,11 +98,16 @@ class SweetAlert(ReduxStore):
 # The following LocalProxy fixes the problem
 
 def _sweetAlert():
+
+    if not current_app:
+        return None
+
     if 'spa_alert.data' not in GLOBAL_CALLBACK_MAP:
         # log.info('Create Alert instance')
         _sweetAlert.viewer = SweetAlert(id='spa_alert')
         page_container_append(_sweetAlert.viewer)
     return _sweetAlert.viewer
+
 
 
 SPA_ALERT = LocalProxy(_sweetAlert)

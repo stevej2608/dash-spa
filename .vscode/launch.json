@@ -11,7 +11,7 @@
       "cwd": "${workspaceRoot}",
       "program": "usage.py",
       "console": "internalConsole",
-      "env": {"DASH_SPA_ENV" : "test"},
+      "env": {"PYTHONHASHSEED": "1234"},
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
@@ -184,8 +184,7 @@
         "${file}"
       ],
       "cwd": "${workspaceRoot}",
-      "env": {},
-      "envFile": "${workspaceRoot}/.env",
+      "env": {"DASH_SPA_ENV" : "test", "PYTHONHASHSEED": "1234"},
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false
@@ -203,8 +202,7 @@
         "tests/spa/context/context_provider_test.py"
       ],
       "cwd": "${workspaceRoot}",
-      "env": {},
-      "envFile": "${workspaceRoot}/.env",
+      "env": {"DASH_SPA_ENV" : "test", "PYTHONHASHSEED": "1234"},
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false
