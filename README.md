@@ -59,21 +59,27 @@ more easily used at scale.
 
 **Dash/SPA** Uses an enhanced version of the [Dash Pages](https://dash.plotly.com/urls):
 
-*/pages/example.py*
+*simple.py*
 ```
 from dash import html
-from dash_spa import register_page
+import dash_bootstrap_components as dbc
+from dash_spa import DashSPA, page_container, register_page
+from server import serve_app
 
-page = register_page(__name__, path='/page1', title="Page-1")
+app = DashSPA(__name__,external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-def big_center(text, id=None):
-    return html.H2(text, className='display-3 text-center')
+def big_center(text):
+    className='display-3 text-center'
+    return html.H2(text, className=className)
 
-layout = html.Div([
-        big_center('Multi-page Example'),
-        big_center('+'),
-        big_center('Page 1'),
-    ])
+def page_layout():
+    return big_center('Simple Page Example')
+
+page = register_page("test.page1", path='/page1', title='Page1', layout=page_layout)
+
+if __name__ == "__main__":
+    app.layout = page_container
+    serve_app(app, debug=False, path=page.path)
 ```
 
 **Dash/SPA** manages component IDs using page namespaces. This greatly
@@ -115,6 +121,42 @@ navbar = spa.NavBar(NAV_BAR_ITEMS)
 layout = navbar.layout()
 
 ```
+**Dash/SPA** Defines a state/event pattern where a state Context is wrapped by
+a @Context.Provider. Dash callback events update the contexts' state which
+triggers the method decorated by the @Context.Provider. The decorated
+method can then update the Dash UI based on the new context state.
+
+A context can have any number of @Context.Providers. This pattern makes it
+possible to create generic Dash components that communicate with host
+application via ContextState.
+
+ContextState can, if required, have session persistence.
+
+Example usage:
+```
+@dataclass
+class ButtonState(ContextState):
+    clicks: int = 0
+
+ButtonContext = createContext(ButtonState)
+
+def Button(id):
+    state = ButtonContext.getState()
+    btn = html.Button("Button", id=id)
+
+    @ButtonContext.On(btn.input.n_clicks)
+    def btn_click(clicks):
+        state.clicks += 1
+
+    return btn
+
+@ButtonContext.Provider()
+def layout():
+    state = ButtonContext.getState()
+    btn =  Button(id='test_btn)
+    return html.Div(f"button pressed {state.clicks} times!")
+```
+
 **Dash/SPA** Tables
 
 It's easy it create great looking tables with optional search and pagination. Table cells
@@ -165,8 +207,6 @@ def tableRow(self, index, args):
 
 **Dash/SPA** Allows easy creation of interactive forms
 
-TODO: Revisit forms - add session storage for field values, pytest forms
-
 ```
 from dash_spa import SpaForm, isTriggered
 
@@ -194,22 +234,14 @@ def _form_submit(values):
 
 **Dash/SPA** Supports page containers.
 
-Depending on the application you may want the markup for page(s) to be
-rendered in a container. Think of a blog app as an example. The markup provided
-by a Dash/Page may be one or several posts. But that page
-will be rendered as content in a *posts container*. The *posts container*
-renders the appropriate navbar, headers, footers, etc, together with
-the content. Another page in the same application, the 404 page or admin
-panel for example, may require a different container or none at
-all. The idea is containers contain pages.
-
-In Dash/SPA all pages are rendered in a *default* container but only if one
-has been defined. If a default container is not defined the page is rendered as
-normal.
+Page containers define markup wrappers for page content. This allows
+layout themes to be created. In Dash/SPA all pages are rendered in
+a *default* container but only if one has been defined. If a default
+container is not defined the page is rendered raw.
 
 To define a default container, in any module in the ./pages folder:
 
-*/pages/any_module.py*
+*/pages/<any_module>.py*
 ```
 from dash import html
 import dash_spa as spa
@@ -244,25 +276,8 @@ def my_container(page, layout,  **kwargs):
 spa.register_container(my_container)
 ```
 
-Additional containers can be defined:
-
-*/pages/any_module.py*
-```
-from dash import html
-import dash_spa as spa
-
-def admin_container(layout,  **kwargs):
-  ...
-
-def products_container(layout,  **kwargs):
-  ...
-
-spa.register_container(admin_container, name='admin')
-spa.register_container(products_container, name='products')
-
-```
-
-To use an alternative container simply register the page specifying the container to use:
+Any number of containers can be defined. To use an alternative container
+simply register the page specifying the container to use:
 
     register_page(__name__,..., container='admin')
 
@@ -299,44 +314,7 @@ def layout():
   return "Big ADMIN SECRET for {current_user.name}"
 ```
 
-**Dash/SPA** Defines a state/event pattern where a state Context is wrapped by
-a @Context.Provider. Dash callback events update the contexts' state which
-triggers the method decorated by the @Context.Provider. The decorated
-method can then update the Dash UI based on the new context state.
-
-A context can have any number of @Context.Providers. This pattern makes it
-possible to create generic Dash components that communicate with host
-application via ContextState.
-
-ContextState can, if required, have session persistence.
-
-Example usage:
-```
-@dataclass
-class ButtonState(ContextState):
-    clicks: int = 0
-
-ButtonContext = createContext(ButtonState)
-
-def Button(id):
-    state = ButtonContext.getState()
-    btn = html.Button("Button", id=id)
-
-    @ButtonContext.On(btn.input.n_clicks, prevent_initial_call=True)
-    def btn_click(clicks):
-        state.clicks += 1
-
-    return btn
-
-
-@ButtonContext.Provider()
-def layout():
-    state = ButtonContext.getState()
-    btn =  Button(id='test_btn)
-    return html.Div(f"button pressed {state.clicks} times!")
-```
-
-**Dash/SPA** Has a simple server-side session data cache based on [diskcache]. The shape of session data
+**Dash/SPA** Has a server-side session data cache based on [diskcache]. The shape of session data
 is defined using [dataclasses].
 
 ```
