@@ -7,7 +7,6 @@ from selenium.webdriver.chrome.options import Options
 aps_log = logging.getLogger('werkzeug')
 aps_log.setLevel(logging.ERROR)
 
-
 # https://dash.plotly.com/testing
 
 def pytest_setup_options():

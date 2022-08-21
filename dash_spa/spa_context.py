@@ -1,11 +1,10 @@
 from typing import Dict, Union, Tuple, Callable, Any, Literal
 import json
 from copy import copy
-from flask import current_app as app
 from dash import Output
 from dash_prefix import prefix
 from dash_spa.logging import log
-from dash_spa import callback, NOUPDATE
+from dash_spa import callback, NOUPDATE, current_app
 from dash_spa.spa_pages import Component
 from dash_spa.session import SessionBackendFactory
 from dash_spa.utils.caller import caller_hash
@@ -124,7 +123,7 @@ class Context:
             def callback_stub(self, *_args, **_kwargs):
                 pass
 
-            if app and app.got_first_request:
+            if current_app and current_app.is_live:
                 return callback_stub
 
             # log.info("register callback %s", self.id)

@@ -1,6 +1,6 @@
 ## Dash Single Page Application (SPA) Framework
 
-![](docs/img/signin.png)
+![](docs/img/dash-spa.png)
 
 **Dash/SPA** is a component and suite that allows you to build complex
 [Plotly/Dash] based multi-page applications with ease. The demo application includes
@@ -350,13 +350,15 @@ Any number of session data objects can be defined.
 ### Dash/SPA Examples
 
 Several example are available. The most comprehensive is *Veggy*. Other examples are minimalistic and
-focus on Dash/SPA specifics. See also the separate Dash/SPA [dash-flightdeck](https://github.com/stevej2608/dash-flightdeck) dashboard project
+focus on Dash/SPA specifics. See also the separate Dash/SPA [dash-flightdeck] dashboard project
 
 **1. Veggy** This is a fully working clone of the React shopping cart, [Veggy](https://github.com/bodevone/veggy).
 
 Written in less than 250 lines of Python, it's far smaller than the React version. Eat your (artichoke) heart out React.
 
 ![](./docs/img/veggy.png)
+
+    python -m examples.veggy.app
 
 **2. Minimal MultiPage** An example of a multi-page app with navbar and footer in less than sixty lines of code.
 
@@ -486,3 +488,4 @@ To run the tests:
 [Volt Bootstrap 5 Dashboard]:https://demo.themesberg.com/volt/pages/dashboard/dashboard.html
 [diskcache]: https://grantjenks.com/docs/diskcache/
 [dataclasses]: https://realpython.com/python-data-classes/
+[dash-flightdeck]: https://github.com/stevej2608/dash-flightdeck

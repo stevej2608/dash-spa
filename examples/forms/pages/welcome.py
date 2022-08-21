@@ -3,13 +3,11 @@ from dash_spa import register_page, callback
 
 from .common import store
 
-register_page(__name__, path='/wellcome', title='Welcome')
+register_page(__name__, path='/welcome', title='Welcome')
 
 def big_center(text):
-    if id:
-        return html.H2(text, className='display-3 text-center')
-    else:
-        return html.H2(text, className='display-3 text-center')
+    return html.H2(text, className='display-3 text-center')
+
 
 def page_content(name='Guest'):
 

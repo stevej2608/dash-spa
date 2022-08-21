@@ -43,7 +43,7 @@ def _form_submit(values):
         valid = _password == '1234'
         if valid:
             store = values.copy()
-            redirect = '/wellcome'
+            redirect = '/welcome'
         else:
             error = 'Please check your login details and try again (hint, try 1234)'
 
