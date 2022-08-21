@@ -317,11 +317,13 @@ def layout():
   return "Big ADMIN SECRET for {current_user.name}"
 ```
 
-**DashSPA** Has a server-side session data cache based on [diskcache]. The shape of session data
-is defined using [dataclasses].
+**DashSPA** Has a server-side session data cache. Back ends are available
+for [diskcache] and [REDIS].
+
+The shape of session data is defined using [dataclasses].
 
 ```
-@session_data(id='button_state')
+@session_data()
 class ButtonState(SessionContext):
     clicks: int = 0
 
@@ -336,9 +338,9 @@ Any number of session data objects can be defined.
 Several example are available. The most comprehensive is *Veggy*. Other examples are minimalistic and
 focus on DashSPA specifics. See also the separate DashSPA [dash-flightdeck] dashboard project
 
-**1. Veggy** This is a fully working clone of the React shopping cart, [Veggy](https://github.com/bodevone/veggy).
+**1. Veggy** This is a fully working clone of the React shopping cart demo, [Veggy](https://github.com/bodevone/veggy).
 
-Written in less than 250 lines of Python, it's far smaller than the React version. Eat your (artichoke) heart out React.
+Written in less than 250 lines of Python, it's far smaller than the React version. Eat your (artichoke) heart out React!.
 
 ![](./docs/img/veggy.png)
 
@@ -481,5 +483,6 @@ To run the tests:
 [plugin]: https://community.plotly.com/t/introducing-dash-pages-a-dash-2-x-feature-preview/57775
 [Volt Bootstrap 5 Dashboard]:https://demo.themesberg.com/volt/pages/dashboard/dashboard.html
 [diskcache]: https://grantjenks.com/docs/diskcache/
+[REDIS]: https://redis.io/
 [dataclasses]: https://realpython.com/python-data-classes/
 [dash-flightdeck]: https://github.com/stevej2608/dash-flightdeck
