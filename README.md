@@ -2,12 +2,12 @@
 
 ![](docs/img/dash-spa.png)
 
-**Dash/SPA** is a component and suite that allows you to build complex
+**DashSPA** is a component and suite that allows you to build complex
 [Plotly/Dash] based multi-page applications with ease. The demo application includes
 several well known Dash demos that have been pasted into the SPA framework
 to show how easy it is to transition to SPA.
 
-To appreciate what you can do with **Dash/SPA** take a look at [dash-flightdeck].
+To appreciate what you can do with **DashSPA** take a look at [dash-flightdeck].
 
 ### Usage
 
@@ -52,12 +52,13 @@ Remove image:
 
     docker rmi holoniq/dash-spa
 
-### Dash/SPA Features
+### DashSPA Features
 
-The following Dash/SPA features are implemented to allow [Dash] to be
+The following DashSPA features are implemented to allow [Plotly/Dash] to be
 more easily used at scale.
 
-**Dash/SPA** Uses an enhanced version of the [Dash Pages](https://dash.plotly.com/urls):
+**DashSPA** Uses an enhanced version of [Dash Pages](https://dash.plotly.com/urls) together
+with a state context/provider pattern similar to React.js.
 
 *simple.py*
 ```
@@ -82,14 +83,16 @@ if __name__ == "__main__":
     serve_app(app, debug=False, path=page.path)
 ```
 
-**Dash/SPA** manages component IDs using page namespaces. This greatly
-reduces Dash component ID conflicts. A component ID is only defined once when the component
-is created. It is then used by reference in associated Dash callbacks:
+**DashSPA** manages component IDs using page namespaces. This greatly
+reduces Dash component ID conflicts. A component ID is only ever defined once when the
+component is created. It is then used by reference in associated Dash callbacks:
 
 ```
 from dash import html
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
+
+from dash_spa import register_page, callback
 
 page = register_page(__name__, ...')
 
@@ -98,20 +101,20 @@ password = dhc.PasswordInput("Password", name='password', id=page.id('password')
 
 btn = html.Button('Enter', id=page.id('enter'), disabled=True)
 
-@app.callback(btn.output.disabled, user_name.input.value, password.input.value)
+@callback(btn.output.disabled, user_name.input.value, password.input.value)
 def _cb_enter(user_name, password):
     return not db_validate_user(user_name, password)
 
 ```
 
-**Dash/SPA** includes an optional NAVBAR, configured by a simple dictionary:
+**DashSPA** includes an optional NAVBAR, configured by a simple dictionary:
 ```
 import dash_spa as spa
 from pages import NAVBAR_PAGES
 from dash_spa_admin import AdminNavbarComponent
 
 NAV_BAR_ITEMS = {
-    'brand' : spa.NavbarBrand(' Dash/SPA','/'),
+    'brand' : spa.NavbarBrand(' DashSPA','/'),
     'left' : [spa.NavbarLink(path=path) for path in NAVBAR_PAGES],
     'right' : AdminNavbarComponent()
 }
@@ -121,10 +124,10 @@ navbar = spa.NavBar(NAV_BAR_ITEMS)
 layout = navbar.layout()
 
 ```
-**Dash/SPA** Defines a state/event pattern where a state Context is wrapped by
+**DashSPA** Defines a state/event pattern where a state Context is wrapped by
 a @Context.Provider. Dash callback events update the contexts' state which
-triggers the method decorated by the @Context.Provider. The decorated
-method can then update the Dash UI based on the new context state.
+triggers the method decorated by the active @Context.Provider. The decorated
+method then updates the UI based on the new context state.
 
 A context can have any number of @Context.Providers. This pattern makes it
 possible to create generic Dash components that communicate with host
@@ -157,7 +160,7 @@ def layout():
     return html.Div(f"button pressed {state.clicks} times!")
 ```
 
-**Dash/SPA** Tables
+**DashSPA** Tables
 
 It's easy it create great looking tables with optional search and pagination. Table cells
 can contain text and active components. Table, search and pagination layout is completely flexible.
@@ -205,7 +208,7 @@ def tableRow(self, index, args):
 
 ![](./docs/img/tables-2.png)
 
-**Dash/SPA** Allows easy creation of interactive forms
+**DashSPA** Allows easy creation of interactive forms
 
 ```
 from dash_spa import SpaForm, isTriggered
@@ -232,10 +235,10 @@ def _form_submit(values):
     return spa.NOUPDATE
 ```
 
-**Dash/SPA** Supports page containers.
+**DashSPA** Supports page containers.
 
 Page containers define markup wrappers for page content. This allows
-layout themes to be created. In Dash/SPA all pages are rendered in
+layout themes to be created. In DashSPA all pages are rendered in
 a *default* container but only if one has been defined. If a default
 container is not defined the page is rendered raw.
 
@@ -246,7 +249,7 @@ To define a default container, in any module in the ./pages folder:
 from dash import html
 import dash_spa as spa
 
-# Example Dash/SPA container
+# Example DashSPA container
 
 def my_container(page, layout,  **kwargs):
     try:
@@ -281,7 +284,7 @@ simply register the page specifying the container to use:
 
     register_page(__name__,..., container='admin')
 
-**Dash/SPA** Has protected pages
+**DashSPA** Has protected pages
 
 A number of layout() decorators are defined.
 
@@ -314,7 +317,7 @@ def layout():
   return "Big ADMIN SECRET for {current_user.name}"
 ```
 
-**Dash/SPA** Has a server-side session data cache based on [diskcache]. The shape of session data
+**DashSPA** Has a server-side session data cache based on [diskcache]. The shape of session data
 is defined using [dataclasses].
 
 ```
@@ -328,10 +331,10 @@ ctx.clicks += 1
 
 Any number of session data objects can be defined.
 
-### Dash/SPA Examples
+### DashSPA Examples
 
 Several example are available. The most comprehensive is *Veggy*. Other examples are minimalistic and
-focus on Dash/SPA specifics. See also the separate Dash/SPA [dash-flightdeck] dashboard project
+focus on DashSPA specifics. See also the separate DashSPA [dash-flightdeck] dashboard project
 
 **1. Veggy** This is a fully working clone of the React shopping cart, [Veggy](https://github.com/bodevone/veggy).
 
@@ -350,13 +353,13 @@ Written in less than 250 lines of Python, it's far smaller than the React versio
 
     python -m examples.cra.app
 
-**4. Dash/SPA forms example**
+**4. DashSPA forms example**
 
     python -m examples.forms.app
 
 ### Login Manager
 
-**Dash/SPA** Includes an optional **`LogninManager`** that supports user registration, email
+**DashSPA** Includes an optional **`LogninManager`** that supports user registration, email
 authentication and login. This is provided as a demonstrator, careful consideration
 to the security implications should be undertaken before using it in a public website.
 
@@ -394,7 +397,7 @@ unknown emails as a security risk. This can be overridden in the gmail account.
 
 ### Configuration
 
-Configuration details are in .ini files. The Dash/SPA will look for one of the
+Configuration details are in .ini files. The DashSPA will look for one of the
 following files: 'config/spa_config.ini', 'spa_config.ini', '.env'.
 
 An additional file, defined by the ENV var *DASH_SPA_ENV* can be defined to overwrite selected settings in the base file. If *DASH_SPA_ENV=test* then the file *spa_config.test.ini* will overwrite
@@ -442,7 +445,7 @@ secret for example define it in the following manner:
 
     password=${MAIL_PASSWORD}
 
-Dash/SPA will then read the password from the ENV variable MAIL_PASSWORD
+DashSPA will then read the password from the ENV variable MAIL_PASSWORD
 
 #### Build the project
 
