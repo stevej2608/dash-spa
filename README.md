@@ -9,9 +9,13 @@ to show how easy it is to transition to SPA.
 
 To appreciate what you can do with **Dash/SPA** take a look at [dash-flightdeck].
 
-### Demo
+### Usage
 
-To install the demo perform the following steps:
+    pip install dash-spa
+
+### Demo and Examples
+
+To try the demo perform the following steps:
 
     git clone https://github.com/stevej2608/dash-spa.git
     cd dash-spa
@@ -53,14 +57,14 @@ Remove image:
 The following Dash/SPA features are implemented to allow [Dash] to be
 more easily used at scale.
 
-**Dash/SPA** Uses an enhanced version of the Dash Pages [plugin]:
+**Dash/SPA** Uses an enhanced version of the [Dash Pages](https://dash.plotly.com/urls):
 
 */pages/example.py*
 ```
 from dash import html
 from dash_spa import register_page
 
-page = register_page(path='/page1', title="Page-1")
+page = register_page(__name__, path='/page1', title="Page-1")
 
 def big_center(text, id=None):
     return html.H2(text, className='display-3 text-center')
@@ -118,7 +122,7 @@ can contain text and active components. Table, search and pagination layout is c
 
 ![](./docs/img/tables-1.png)
 
-Table are defined in a few lines:
+Tables are defined in a few lines:
 
 ```
 def create_table(id):
@@ -212,7 +216,7 @@ import dash_spa as spa
 
 # Example Dash/SPA container
 
-def my_container(layout,  **kwargs):
+def my_container(page, layout,  **kwargs):
     try:
         # Page to be rendered
 
@@ -333,8 +337,7 @@ def layout():
 ```
 
 **Dash/SPA** Has a simple server-side session data cache based on [diskcache]. The shape of session data
-is defined using [dataclasses]. An observer pattern is used to automatically update the cache
-on change.
+is defined using [dataclasses].
 
 ```
 @session_data(id='button_state')
@@ -422,11 +425,21 @@ entries in *spa_config.ini*
 The following configuration options can be set:
 ```
 [logging]
-level=INFO
+level=WARN
+DASH_LOGGING=False
 
 [flask]
 SECRET_KEY=my secret flask password
 URL_PREFIX=api
+
+[session_storage]
+expire_days=30
+backend=diskcache
+diskcache_folder=tmp/cache/spa_sessions
+
+[session_storage.redis]
+host=redis_server
+;host=172.172.0.128
 
 [login_manager]
 ; Set True to enable login manager
