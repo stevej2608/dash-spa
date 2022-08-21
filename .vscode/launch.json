@@ -45,6 +45,7 @@
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
+      "env": {"PYTHONHASHSEED": "1234"},
       "serverReadyAction": {
         "pattern": ".*Visit http://(.*)",
         "uriFormat": "http://%s",

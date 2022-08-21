@@ -91,7 +91,7 @@ def test_single_button(dash_duo):
     assert wait_text("Button pressed 1004 times!")
 
 
-def xtest_multiple_buttons(dash_duo):
+def test_multiple_buttons(dash_duo):
     app = DashSPA(__name__, use_pages=False)
 
     # Create multi-button dash UI and start the test server
@@ -123,6 +123,3 @@ def xtest_multiple_buttons(dash_duo):
 
         _btn.click()
         assert wait_text("Button pressed 1004 times!")
-
-
-

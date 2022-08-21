@@ -3,7 +3,7 @@ import plotly
 import json
 
 
-def dumps_layout(layout):
+def json_layout(layout):
     """Dump the given component layout"""
 
     # ReduxStore elements use a hash() to generate a component
@@ -32,5 +32,5 @@ def dumps_layout(layout):
 
 
 def dumps_layout(layout):
-    json_str = dumps_layout(layout)
+    json_str = json_layout(layout)
     return json.loads(json_str)

@@ -167,7 +167,10 @@ class Context:
 
     def Provider(self, state:ContextState=None, persistent: bool = False):
 
-        pid = prefix(caller_hash(2, "ctx_"))
+        if self.id:
+            pid = prefix(self.id)
+        else:
+            pid = prefix(caller_hash(2, "ctx_"))
 
         # log.info('Provider id=%s', self.id)
 
