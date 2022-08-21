@@ -9,10 +9,11 @@ from dash_spa import callback, NOUPDATE
 from dash_spa.spa_pages import Component
 from dash_spa.session import SessionBackendFactory
 from dash_spa.utils.caller import caller_hash
+from .spa_exceptions import InvalidUsageException
 from dash_redux import ReduxStore
 
 from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT
-from .utils.caller import caller_hash
+from .utils.caller import caller_hash, caller_nested
 from dash_spa.logging import log
 
 """Context state management
@@ -437,6 +438,9 @@ class ContextWrapper:
             state (ContextState, optional): The state to be associated with the context. Defaults to None.
             persistent (bool, optional): Persist the state across sessions. Defaults to True
         """
+
+        # if caller_nested():
+        #     raise InvalidUsageException("Provider wrapper can not be used in nested functions")
 
         if state == None:
             state = self.dataclass()

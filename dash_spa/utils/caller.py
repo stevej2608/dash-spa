@@ -8,6 +8,11 @@ def caller_location(depth:int=1):
     str = f"{caller.filename}/{caller.lineno}"
     return str
 
+
+def caller_nested():
+    caller = getframeinfo(stack()[2][0])
+    return caller.code_context[0].startswith(' ')
+
 def caller_hash(depth:int=1, prefix:str='#') -> str:
     """Return hash derived from the the call stack filename and location
 
