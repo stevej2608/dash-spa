@@ -48,6 +48,6 @@ def create_app(dash_factory) -> Dash:
 # python -m examples.multipage.app
 
 if __name__ == "__main__":
-    logging.setLevel("INFO")
+    # logging.setLevel("INFO")
     app = create_app(create_dash)
     serve_app(app, debug=False)

@@ -7,7 +7,7 @@ from server import serve_app
 
 def create_dash():
     app = DashSPA( __name__,
-        plugins=[dash_logging],
+        # plugins=[dash_logging],
         prevent_initial_callbacks=True,
         suppress_callback_exceptions=True,
         external_stylesheets=[dbc.themes.BOOTSTRAP])
