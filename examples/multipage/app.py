@@ -1,15 +1,19 @@
 from dash import Dash, html
+import dash_bootstrap_components as dbc
 from dash_spa import logging
 
-from dash_spa import page_container
+from dash_spa import DashSPA, page_container
 from dash_spa.components import NavBar, NavbarBrand, NavbarLink, Footer
 from server import serve_app
 
-from .dash_app import app
 from .pages import page1, page2
 
+def create_dash():
+    app = DashSPA( __name__,external_stylesheets=[dbc.themes.BOOTSTRAP])
+    return app
 
-def create_app(app) -> Dash:
+def create_app(dash_factory) -> Dash:
+    app = dash_factory()
 
     NAV_BAR_ITEMS = {
         'brand' : NavbarBrand(' Dash/SPA','/'),
@@ -45,5 +49,5 @@ def create_app(app) -> Dash:
 
 if __name__ == "__main__":
     logging.setLevel("INFO")
-    app = create_app(app)
+    app = create_app(create_dash)
     serve_app(app, debug=False)

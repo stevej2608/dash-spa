@@ -1,5 +1,5 @@
 from flask import session, current_app as app
-from ..spa_current_app import current_app
+from ..spa_pages import DashSPA
 from werkzeug.local import LocalProxy
 from itsdangerous import Signer
 import appdirs
@@ -118,10 +118,10 @@ class SessionCookieManager:
 def _sessionCookieManager():
 
     if not hasattr(_sessionCookieManager,'time'):
-        _sessionCookieManager.time = 0
+        _sessionCookieManager.time = -1
 
-    if current_app.start_time != _sessionCookieManager.time:
-        _sessionCookieManager.time = current_app.start_time
+    if DashSPA.start_time != _sessionCookieManager.time:
+        _sessionCookieManager.time = DashSPA.start_time
         _sessionCookieManager.sessionCookieManager = SessionCookieManager()
 
     return _sessionCookieManager.sessionCookieManager

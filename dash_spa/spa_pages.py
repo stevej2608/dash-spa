@@ -1,4 +1,5 @@
 from typing import Callable, Union, List
+from werkzeug.local import LocalProxy
 import os
 import sys
 import time
@@ -89,13 +90,11 @@ def layout_delegate(page):
 
 class DashSPA(dash.Dash):
 
+    start_time = 0
+
     @property
     def is_live(self):
         return self._is_live
-
-    @property
-    def start_time(self):
-        return self._start_time
 
     @property
     def got_first_request(self):
@@ -105,11 +104,12 @@ class DashSPA(dash.Dash):
             return False
 
     def __init__(self, name=None, **kwargs):
-        log.info('Create SessionCookieManager()')
+        log.info('Create DashSPA(%s)', name)
+        Globals.dump()
         Globals.clear()
 
         self._is_live = False
-        self._start_time = time.time()
+        DashSPA.start_time = time.time()
 
         # _cb_initialised = {}
         # GLOBAL_CALLBACK_LIST = []
@@ -142,9 +142,8 @@ class DashSPA(dash.Dash):
 
 
     def run(self, *args, **kwargs):
-        log.info('************** run(): starting server **************')
+        Globals.dump()
         # Globals.save_or_restore()
-        #Globals.dump()
         self._is_live = True
         super().run(*args, **kwargs)
 
@@ -201,8 +200,6 @@ class DashSPA(dash.Dash):
 
         log.info('_import_layouts_from_pages()')
 
-        Globals.dump()
-
         walk_dir = self.config.pages_folder
         for (root, _, files) in os.walk(walk_dir):
             pages_package = os.path.relpath(root).replace(os.path.sep, '.')
@@ -255,7 +252,7 @@ class DashSPA(dash.Dash):
                     page["layout"] = getattr(page_module, "layout")
                     page['layout'] = layout_delegate(page)
 
-                    Globals.dump()
+                    # Globals.dump()
 
 
 def page_container_append(component: Component):
@@ -378,7 +375,7 @@ class DashPage:
 
 LayoutFunc = Callable[[], Component]
 
-def register_page(
+def _register_page(
     module: str = None,
     path: str = None,
     path_template: str = None,
@@ -498,41 +495,78 @@ def register_page(
 
     """
 
-    if not module in Globals.PAGE_REGISTRY:
+    log.info('register page %s', module)
 
-        log.info('register page %s', module)
+    if module is None:
+        pfx = prefix('spa')
+        module = pfx(path[1:])
 
-        if module is None:
-            pfx = prefix('spa')
-            module = pfx(path[1:])
+    kwargs['container'] = container
 
-        kwargs['container'] = container
+    dash.register_page(
+        module,
+        path,
+        path_template,
+        name,
+        order,
+        title,
+        description,
+        image,
+        image_url,
+        redirect_from,
+        layout,
+        **kwargs)
 
-        dash.register_page(
-            module,
-            path,
-            path_template,
-            name,
-            order,
-            title,
-            description,
-            image,
-            image_url,
-            redirect_from,
-            layout,
-            **kwargs)
+    page = Globals.PAGE_REGISTRY[module]
 
-        page = Globals.PAGE_REGISTRY[module]
+    if layout:
+        page['layout'] = layout_delegate(page)
 
-        if layout:
-            page['layout'] = layout_delegate(page)
-
-    else:
-
-        page = Globals.PAGE_REGISTRY[module]
+    Globals.PAGE_REGISTRY[module]['page'] = DashPage(page)
 
 
-    return DashPage(page)
+# def register_page(module, **_kwargs):
+
+#     def wrapper():
+#         if not module in Globals.PAGE_REGISTRY:
+#             try:
+#                 _register_page(module, **_kwargs)
+#             except:
+#                 return None
+
+#         return Globals.PAGE_REGISTRY[module]['page']
+
+#     page = LocalProxy(wrapper)
+
+#     # If the host page does not reference the returned
+#     # DashPage instance the page will never be
+#     # registered. So we need to force a registration here.
+
+#     try:
+#         assert page.module == module
+#     except:
+#         pass
+
+#     return page
+
+
+def register_page(module, **_kwargs):
+
+    def wrapper():
+        if not module in Globals.PAGE_REGISTRY:
+            try:
+                _register_page(module, **_kwargs)
+            except:
+                return None
+
+        return Globals.PAGE_REGISTRY[module]['page']
+
+    page = wrapper()
+
+    if page is None:
+        page = page = LocalProxy(wrapper)
+
+    return page
 
 
 def get_page(path:str) -> DashPage:

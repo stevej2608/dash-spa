@@ -165,10 +165,12 @@
       "stopOnEntry": false,
       "module": "pytest",
       "args": [
+        "--headless",
+        "-o log_cli=1",
         "-sv"
       ],
       "cwd": "${workspaceRoot}",
-      "env": {},
+      "env": {"DASH_SPA_ENV" : "test", "PYTHONHASHSEED": "1234"},
       "console": "internalConsole",
       "justMyCode": false
     },
@@ -181,6 +183,7 @@
       "args": [
         "--headless",
         "-sv",
+        "-o log_cli=1",
         "${file}"
       ],
       "cwd": "${workspaceRoot}",
@@ -191,7 +194,7 @@
     },
 
     {
-      "name": "4a. PyTest (context_provider_test.py)",
+      "name": "4a. PyTest (tests/spa/context/context_provider_test.py)",
       "type": "python",
       "request": "launch",
       "stopOnEntry": false,

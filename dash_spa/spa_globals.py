@@ -8,7 +8,7 @@ class GlobalContext:
     def __init__(self):
         log.info('Create GlobalContext')
 
-        self.index = 0
+        self.callback_index = 0
 
         self._saved=False
 
@@ -78,7 +78,7 @@ class GlobalContext:
             list_merge(self.internal_stylesheets, self._internal_stylesheets)
 
     def clear(self):
-        self.index = 0
+        self.callback_index = 0
         self.PAGE_REGISTRY.clear()
 
         self.GLOBAL_CALLBACK_LIST.clear()
@@ -94,13 +94,25 @@ class GlobalContext:
         self.external_stylesheets.clear()
         self.internal_stylesheets.clear()
 
+        while len(self.page_container.children) > 4:
+            self.page_container.children.pop()
+
 
     def dump(self):
+        log.info('**************** dump() ************************')
         index = 0
         for id in self.GLOBAL_CALLBACK_MAP.keys():
-            if index >= self.index:
+            if index >= self.callback_index:
                 log.info('%d %s', index, id)
             index +=1
-        self.index = index
+        self.callback_index = index
+
+        index = 0
+        for page in self.PAGE_REGISTRY.values():
+            log.info('%d %s', index, page['module'])
+            index +=1
+
+        log.info('************************************************')
+
 
 Globals = GlobalContext()
