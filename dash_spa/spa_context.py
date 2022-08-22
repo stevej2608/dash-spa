@@ -1,4 +1,5 @@
 from typing import Dict, Union, Tuple, Callable, Any, Literal
+import sys
 import json
 from copy import copy
 from dash import Output
@@ -11,7 +12,7 @@ from dash_spa.utils.caller import caller_hash
 from .spa_exceptions import InvalidUsageException
 from dash_redux import ReduxStore
 
-from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT
+from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
 from .utils.caller import caller_hash, caller_nested
 from dash_spa.logging import log
 
@@ -90,6 +91,32 @@ class Context:
     def state(self):
         return self._redux_store.state
 
+
+    def input_hash(*_args):
+
+        def unpack(id):
+
+            # Handle dict the keys used by MATCH
+
+            if isinstance(id, dict):
+                id = [ part for part in id.values() if isinstance(part, str)]
+                return '_'.join(id)
+            else:
+                return id
+
+        # Create a positive hex hash all the callback inputs
+
+        inputs = []
+        for input in _args:
+            id = f"{unpack(input.component_id)}.{input.component_property}"
+            # log.info('input %s', id)
+            inputs.append(id)
+        _hash = hash(tuple(inputs))
+        _hash += sys.maxsize + 1
+        return hex(_hash)[2:]
+
+
+
     def __init__(self, contexts, id, state: ContextState = None):
         self.contexts = contexts
         self.id = id
@@ -123,7 +150,16 @@ class Context:
             def callback_stub(self, *_args, **_kwargs):
                 pass
 
+            # if the callback is nested in a callable layout() function
+            # then the callback will be instantiated on each layout()
+            # execution. We need to guard against submitting the callback
+            # more than once.
+
             if current_app and current_app.is_live:
+                return callback_stub
+
+            hash = Context.input_hash(*_args)
+            if hash in self._redux_store._surrogate_stores:
                 return callback_stub
 
             # log.info("register callback %s", self.id)
