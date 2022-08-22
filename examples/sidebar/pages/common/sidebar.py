@@ -1,6 +1,6 @@
 from dash import html, dcc
 from dash_spa import prefix
-from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, SidebarNavItem, dropdownFolderEntry
+from dash_spa.components.dropdown_folder_aoi import DropdownFolderContext, DropdownFolderAIO, SidebarNavItem, dropdownFolderEntry
 
 from ..icons.hero import ICON
 
@@ -30,6 +30,7 @@ def _sidebarButtonLink(text, icon, href):
     ], active=SidebarNavItem.is_active(href))
 
 
+@DropdownFolderContext.Provider()
 def sideBar():
     pid = prefix('sidebar')
     return html.Nav([

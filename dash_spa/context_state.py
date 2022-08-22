@@ -16,6 +16,7 @@ from .utils.dataclass import asdict
 SelfContextState = TypeVar("SelfContextState", bound="ContextState")
 
 EMPTY_DICT = field(default_factory=lambda: {})
+EMPTY_LIST = field(default_factory=lambda: [])
 
 @dataclass(init=False)
 class ContextState:

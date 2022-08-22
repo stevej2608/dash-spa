@@ -152,6 +152,7 @@
       "module": "examples.sidebar.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
+      "env": {"PYTHONHASHSEED": "1234"},
       "justMyCode": false,
       "serverReadyAction": {
         "pattern": ".*Visit http://(.*)",

@@ -1,11 +1,17 @@
+from typing import Dict, List
 from flask import request
 from dash import html, dcc
 from dash_spa import prefix, callback
-from dash_spa.session import session_context, SessionContext, session_data
+from dash_spa.spa_context import  createContext, ContextState, dataclass, EMPTY_DICT
 from dash_spa.logging import log
 
 from .icons import ARROW
 
+@dataclass
+class DropdownFolderState(ContextState):
+    className: str = 'multi-level collapse'
+
+DropdownFolderContext: Dict[str, DropdownFolderState] = createContext()
 
 
 class SidebarNavItem(html.Li):
@@ -63,10 +69,6 @@ def dropdownFolderEntry(text:str, href:str) -> html.Li:
     ], SidebarNavItem.is_active(href))
 
 
-@session_data
-class DropdownFolderContext(SessionContext):
-    className: str = 'multi-level collapse'
-
 class DropdownFolderAIO(html.Div):
 
     def __init__(self, children, text, icon, id=None):
@@ -80,9 +82,9 @@ class DropdownFolderAIO(html.Div):
         """
 
         pid = prefix(id)
-        state = session_context(DropdownFolderContext, id=pid('state'))
+        state, _ = DropdownFolderContext.useState(pid('state'), initial_state=DropdownFolderState('multi-level collapse'))
 
-        # log.info('DropdownFolderAIO id=%s, state %s', id, state.className)
+        log.info('DropdownFolderAIO id=%s, state="%s"', id, state.className)
 
         button = html.Span([
             html.Span([
@@ -99,19 +101,20 @@ class DropdownFolderAIO(html.Div):
         ], id=pid('container'), className=state.className, role='list')
 
 
-        @callback(container.output.className, button.input.n_clicks, container.state.className)
-        def update_dropdown(n_clicks, className):
+        @DropdownFolderContext.On(button.input.n_clicks)
+        def update_dropdown(n_clicks):
 
-            if not n_clicks:
-                return className
 
-            if 'collapse' in className:
-                state.className = className.replace(' collapse', '')
+            # if not n_clicks:
+            #     return className
+
+            if 'collapse' in state.className:
+                state.className = state.className.replace(' collapse', '')
             else:
-                state.className = className + ' collapse'
+                state.className = state.className + ' collapse'
 
             # log.info('update_dropdown  id=%s, state %s', id, state.className)
 
-            return state.className
+            return state
 
         super().__init__(html.Li([button, container], className='nav-item'))

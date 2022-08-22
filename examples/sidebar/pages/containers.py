@@ -6,7 +6,7 @@ from dash_spa.logging import log
 
 from .common import sideBar, mobileNavBar
 
-sidebar_instance = sideBar()
+#sidebar_instance = sideBar()
 
 def default_container(page, layout,  **_kwargs):
     """Default page content container. All pages are wrapped by this content unless
@@ -37,7 +37,7 @@ def default_container(page, layout,  **_kwargs):
 
         return html.Div([
             #mobileNavBar(),
-            sidebar_instance,
+            sideBar(),
             content
         ])
 
