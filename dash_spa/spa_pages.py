@@ -201,8 +201,15 @@ class DashSPA(dash.Dash):
         log.info('_import_layouts_from_pages()')
 
         walk_dir = self.config.pages_folder
+
+        # FIXME: This is needed to resolve 404 page in dash.py update()
+        self.pages_folder = os.path.relpath(walk_dir).replace(os.path.sep, '.')
+
+
         for (root, _, files) in os.walk(walk_dir):
             pages_package = os.path.relpath(root).replace(os.path.sep, '.')
+
+
             for file in files:
                 if (
                     file.startswith("_")
