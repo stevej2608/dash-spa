@@ -34,8 +34,6 @@ admin, select **Users** from the **My Account** drop-down on the nav-bar.
 
 #### Docker Demo Website
 
-TODO: Check this works
-
 Perform the following steps to build and run the demo website in an [nginx](https://www.nginx.com/) docker container.
 
 Build demo website Docker image:

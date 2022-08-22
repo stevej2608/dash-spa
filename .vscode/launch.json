@@ -22,11 +22,11 @@
     },
 
     {
-      "name": "2a. junk.py",
+      "name": "2a. Python (Current file)",
       "type": "python",
       "request": "launch",
       "cwd": "${workspaceRoot}",
-      "program": "junk.py",
+      "program": "${file}",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,

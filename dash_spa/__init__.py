@@ -1,8 +1,9 @@
 """dash-pages-spa - Dash Pages SPA Framework"""
 
-__version__ = '1.1.0'
-__author__ = 'Steve Jones <jonesst2608@gmail.com>'
-__all__ = []
+from ._version import __version__
+
+from ensurepip import version
+
 
 from dash.exceptions import PreventUpdate
 from .spa_config import config

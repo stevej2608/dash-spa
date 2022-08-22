@@ -4,14 +4,23 @@ import re
 from setuptools import find_packages
 from setuptools import setup
 
-from dash_spa import __version__
-
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 def _get_long_description():
     with open(os.path.join(HERE, "README.md")) as f:
         return f.read()
+
+def _get_version():
+    """ Get version by parsing _version programmatically """
+    packages = ["dash_spa"]
+    version_ns = {}
+    with open(
+            os.path.join(HERE, packages[0], "_version.py")
+    ) as f:
+        exec(f.read(), {}, version_ns)
+    version = version_ns["__version__"]
+    return version
 
 def _get_dependencies():
     """Parse requirements.txt and return a list of dependencies"""
@@ -52,7 +61,7 @@ def _get_extra_dependencies(extra):
 
 setup(
     name="dash-spa",
-    version=__version__,
+    version=_get_version(),
     url="https://github.com/stevej2608/dash-spa",
     license='MIT',
 
@@ -65,6 +74,8 @@ setup(
 
     packages=find_packages(include=[
         'dash_spa','dash_spa.plugins','dash_spa.utils',
+        'dash_spa.components','dash_spa.components.table',
+        'dash_spa.session','dash_spa.session.backends',
         'dash_spa_admin', 'dash_spa_admin.views'
         ]),
 
