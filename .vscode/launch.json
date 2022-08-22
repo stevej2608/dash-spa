@@ -146,6 +146,22 @@
 
 
     {
+      "name": "2i. Python: examples.sidebar.app",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.sidebar.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
+
+    {
       "name": "3. Python: Current Module",
       "type": "python",
       "request": "launch",

@@ -19,4 +19,4 @@ app = DashSPA(__name__, external_stylesheets=external_stylesheets)
 if __name__ == "__main__":
     log.info('__main__')
     app.layout = page_container
-    serve_app(app, path='/welcome')
+    serve_app(app)

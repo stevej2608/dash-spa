@@ -2,7 +2,7 @@ from dash import html
 from dash_spa import register_page, callback
 
 
-register_page(__name__, path='/welcome', title='Welcome')
+register_page(__name__, path='/', title='Welcome')
 
 def big_center(text):
     return html.H2(text, className='display-3 text-center')
