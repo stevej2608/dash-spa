@@ -4,7 +4,7 @@ import dash_spa as spa
 from dash_spa.exceptions import InvalidAccess
 from dash_spa.logging import log
 
-from .sidebar import sideBar
+from .common import sideBar, mobileNavBar
 
 sidebar_instance = sideBar()
 
@@ -36,6 +36,7 @@ def default_container(page, layout,  **_kwargs):
             return page.layout()
 
         return html.Div([
+            #mobileNavBar(),
             sidebar_instance,
             content
         ])
@@ -47,3 +48,23 @@ def default_container(page, layout,  **_kwargs):
 
 
 spa.register_container(default_container)
+
+
+def full_page_container(page, layout,  **kwargs):
+    """Full page container"""
+
+    try:
+        content = layout(**kwargs) if callable(layout) else layout
+    except InvalidAccess:
+
+        # To force the user to the login page uncomment the following lines
+        #
+        # page = spa.page_for('dash_spa_admin.page')
+        # content = page.layout()
+
+        page = spa.page_for('pages.not_found_404')
+        content = page.layout()
+
+    return content
+
+spa.register_container(full_page_container, name='full_page')

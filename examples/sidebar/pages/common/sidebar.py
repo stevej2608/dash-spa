@@ -2,7 +2,7 @@ from dash import html, dcc
 from dash_spa import prefix
 from dash_spa.components.dropdown_folder_aoi import DropdownFolderAIO, SidebarNavItem, dropdownFolderEntry
 
-from .icons.hero import ICON
+from ..icons.hero import ICON
 
 def _sidebarLink(text, icon, href, hyperlink=False, target=""):
     Element = html.A if hyperlink else dcc.Link
@@ -38,7 +38,7 @@ def sideBar():
             # Sidebar List of entries
 
             html.Ul([
-                _sidebarLink("Volt Overview", ICON.LIGHTENING, 'https://demo.themesberg.com/volt/index.html', target="_blank"),
+                _sidebarLink("Dash/SPA", ICON.LIGHTENING, '/', target="_blank"),
                 _sidebarLink("Dashboard", ICON.CHART_PIE, '/pages/dashboard'),
                 _sidebarLink("Transactions", ICON.CREDIT_CARD, '/pages/transactions'),
                 _sidebarLink("Settings", ICON.VIEW_GRID, '/pages/settings'),
@@ -73,7 +73,7 @@ def sideBar():
 
                 # Bottom Item
 
-                _sidebarButtonLink("Upgrade to Pro", ICON.FIRE.ME2, '../pages/upgrade-to-pro')
+                _sidebarButtonLink("Exit", ICON.FIRE.ME2, '/')
 
             ], className='nav flex-column pt-3 pt-md-0')
         ], className='sidebar-inner px-4 pt-3')

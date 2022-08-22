@@ -1,6 +1,5 @@
 import dash
-from dash import Dash, html
-import dash_bootstrap_components as dbc
+from dash import html
 
 from dash_spa import page_container, DashSPA
 

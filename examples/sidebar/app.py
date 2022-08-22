@@ -1,6 +1,4 @@
-from dash_spa.logging import log
-import dash_bootstrap_components as dbc
-
+from dash_spa.logging import setLevel
 from dash_spa import page_container, DashSPA
 
 from .themes import VOLT
@@ -17,6 +15,6 @@ app = DashSPA(__name__, external_stylesheets=external_stylesheets)
 # python -m examples.sidebar.app
 
 if __name__ == "__main__":
-    log.info('__main__')
+    setLevel("INFO")
     app.layout = page_container
     serve_app(app)
