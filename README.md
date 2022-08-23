@@ -351,9 +351,15 @@ Written in less than 250 lines of Python, it's far smaller than the React versio
 
     python -m examples.cra.app
 
-**4. DashSPA forms example**
+**4. DashSPA Forms example**
 
     python -m examples.forms.app
+
+**5. DashSPA Sidebar example**
+
+![](./docs/img/sidebar.png)
+
+    python -m examples.sidebar.app
 
 ### Login Manager
 
