@@ -87,12 +87,11 @@ def Button(id):
     def btn_click(clicks):
         state.clicks += 1
 
-    return btn
 
 @ButtonContext.Provider()
 def layout():
     state = ButtonContext.getState()
-    btn =  Button(id='test_btn)
+    btn =  Button(id='test_btn')
     return html.Div(f"button pressed {state.clicks} times!")
 ```
 
