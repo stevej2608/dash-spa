@@ -357,9 +357,12 @@ Written in less than 250 lines of Python, it's far smaller than the React versio
 
 **5. DashSPA Sidebar example**
 
-![](./docs/img/sidebar.png)
+The example sidebar is less than eighty lines of code, see [sidebar.py](examples/sidebar/pages/common/sidebar.py)
 
     python -m examples.sidebar.app
+
+![](./docs/img/sidebar.png)
+
 
 ### Login Manager
 
