@@ -291,7 +291,7 @@ the 404 page is displayed.
 been assigned the required role. If not the 404 page is displayed.
 
 The decorators raise exceptions that are handled by the associated
-container. See [pages/containers.py](pages/containers.py)
+container. See [pages/containers.py](./pages/default_container.py)
 
 ```
 from dash_spa import register_page, current_user, login_required
@@ -464,7 +464,7 @@ To install the tarball in a dash project:
 
 Pytest and [Dash Duo](https://dash.plotly.com/testing) are used for testing. To run
 these tests both the Chrome browser and Chrome driver must be
-installed. See [.devcontainer/Dockerfile](.devcontainer/Dockerfile) for details.
+installed. See [Dockerfile.dev](./Docker.dev) for details.
 
 To run the tests:
 
