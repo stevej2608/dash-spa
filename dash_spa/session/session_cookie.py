@@ -87,6 +87,15 @@ class SessionCookieManager:
         """Return the session_id for the current session"""
 
         if self.unattached_session_id:
+
+            try:
+                @app.after_request
+                def res_session_id(response):
+                    self.attach_session(response)
+                    return response
+            except Exception:
+                pass
+
             return self.unattached_session_id
 
         # Extract the session from the current request cookies. If
@@ -104,15 +113,6 @@ class SessionCookieManager:
         except Exception:
             self.unattached_session_id = self.create_session_id()
             log.info('Using unattached session id=%s', self.unattached_session_id)
-
-            try:
-                @app.after_request
-                def res_session_id(response):
-                    self.attach_session(response)
-                    return response
-            except Exception:
-                pass
-
             return self.unattached_session_id
 
 def _sessionCookieManager():
