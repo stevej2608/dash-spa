@@ -1,4 +1,10 @@
-## [1.1.0] - August 28th, 2022
+## [1.1.2] - August 24th, 2022
+
+### Fixed
+
+- Fix problem of session manager not setting session cookie correctly.
+
+## [1.1.0] - August 23th, 2022
 
 ### Added
 
