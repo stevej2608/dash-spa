@@ -105,7 +105,7 @@ class DashSPA(dash.Dash):
 
     def __init__(self, name=None, **kwargs):
         log.info('Create DashSPA(%s)', name)
-        Globals.dump()
+        # Globals.dump()
         Globals.clear()
 
         self._is_live = False
@@ -142,7 +142,7 @@ class DashSPA(dash.Dash):
 
 
     def run(self, *args, **kwargs):
-        Globals.dump()
+        # Globals.dump()
         # Globals.save_or_restore()
         self._is_live = True
         super().run(*args, **kwargs)

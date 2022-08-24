@@ -114,10 +114,10 @@
     },
 
     {
-      "name": "2g. Python: examples.button_test.app",
+      "name": "2g. Python: examples.button_test_redux.app",
       "type": "python",
       "request": "launch",
-      "module": "examples.button_test.app",
+      "module": "examples.button_test_redux.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "env": {"PYTHONHASHSEED": "1234"},
@@ -130,10 +130,25 @@
     },
 
     {
-      "name": "2h. Python: examples.single_button_test.app",
+      "name": "2h. Python: examples.button_test_simple.app",
       "type": "python",
       "request": "launch",
-      "module": "examples.single_button_test.app",
+      "module": "examples.button_test_simple.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
+    {
+      "name": "2i. Python: examples.button_test_context_state.app",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.button_test_context_state.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
@@ -146,7 +161,7 @@
 
 
     {
-      "name": "2i. Python: examples.sidebar.app",
+      "name": "2j. Python: examples.sidebar.app",
       "type": "python",
       "request": "launch",
       "module": "examples.sidebar.app",

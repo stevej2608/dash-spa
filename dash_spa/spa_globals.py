@@ -6,7 +6,7 @@ from .logging import log
 class GlobalContext:
 
     def __init__(self):
-        log.info('Create GlobalContext')
+        # log.info('Create GlobalContext')
 
         self.callback_index = 0
 
