@@ -1,5 +1,8 @@
 from dash import html
 from dash_spa import register_page, callback
+from dash_spa.logging import log
+
+# Use sta
 
 page = register_page(__name__, path='/', title="Button Test", short_name='Buttons')
 
@@ -9,6 +12,7 @@ def page_layout():
 
     @callback(h2.output.children, btn.input.n_clicks, prevent_initial_call=True)
     def btn_cb(clicks):
+        log.info('clicks = %s', clicks)
         return f"Button clicked {clicks} times!"
     return html.Div([btn, h2])
 

@@ -2,6 +2,7 @@ from dash import Dash, html
 import dash_bootstrap_components as dbc
 
 from dash_spa import page_container, DashSPA
+from dash_spa.logging import setLevel
 
 from server import serve_app
 
@@ -18,8 +19,9 @@ def create_app(dash_factory) -> DashSPA:
     app.layout = page_container
     return app
 
-# python -m examples.single_button_test.app
+# python -m examples.button_test_simple.app
 
 if __name__ == "__main__":
+    setLevel("INFO")
     app = create_app(create_dash)
     serve_app(app, debug=False)

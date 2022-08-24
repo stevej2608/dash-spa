@@ -1,6 +1,6 @@
 from dash import html
 from dash_spa import prefix, register_page, callback, NOUPDATE
-
+from dash_spa.logging import log
 from dash_redux import ReduxStore
 
 register_page(__name__, path='/', title="Button Test", short_name='Buttons')
@@ -35,6 +35,7 @@ def button_toolbar(toolbar_title: str):
 
     @store.update(btn1.input.n_clicks)
     def btn1_update(clicks, store):
+        log.info('btn1_update - clicks = %s', clicks)
         tb_store = store_ref(toolbar_title, store)
         if clicks:
             tb_store['btn1'] += 1
@@ -44,6 +45,7 @@ def button_toolbar(toolbar_title: str):
 
     @store.update(btn2.input.n_clicks)
     def btn2_update(clicks, store):
+        log.info('btn2_update - clicks = %s', clicks)
         tb_store = store_ref(toolbar_title, store)
         if clicks:
             tb_store['btn2'] += 1
@@ -54,6 +56,7 @@ def button_toolbar(toolbar_title: str):
 
     @callback(container.output.children, store.input.data)
     def btn_message(store):
+        log.info('btn_message - store = %s', store)
         tb_store = store_ref(toolbar_title, store)
         msg = f"btn1 {tb_store['btn1']} clicks, btn2 {tb_store['btn2']} clicks"
         return msg
