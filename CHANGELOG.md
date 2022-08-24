@@ -1,3 +1,9 @@
+## [1.1.3] - August 24th, 2022
+
+### Added
+
+- Add dash request pathname to Flask request object
+
 ## [1.1.2] - August 24th, 2022
 
 ### Fixed
