@@ -7,7 +7,7 @@ import importlib
 import re
 from urllib import parse
 from collections import OrderedDict
-from flask import current_app
+from flask import current_app, request
 import dash
 from dash._utils import interpolate_str
 from dash.development.base_component import Component
@@ -84,6 +84,10 @@ def page_layout(page, **kwargs):
 def layout_delegate(page):
     page = page.copy()
     def wrapper(**kwargs):
+
+        if request:
+            request.dash_pathname = page['path']
+
         return page_layout(page, **kwargs)
     return wrapper
 

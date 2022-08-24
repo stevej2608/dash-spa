@@ -17,4 +17,5 @@ app = DashSPA(__name__, external_stylesheets=external_stylesheets)
 if __name__ == "__main__":
     setLevel("INFO")
     app.layout = page_container
+    app.server.config['SECRET_KEY'] = "A secret key"
     serve_app(app)
