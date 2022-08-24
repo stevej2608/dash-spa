@@ -1,7 +1,6 @@
 from typing import List
 import pytest
 from dash import html
-from dash_spa import DashSPA
 from dash_spa.spa_context import  createContext, ContextState, dataclass
 
 # https://github.com/konradhalas/dacite
@@ -27,8 +26,7 @@ class ToolbarList(ContextState):
     """State of several toolbars"""
     toolbars: List[TBState] = None
 
-def test_simple_state():
-    app = DashSPA(__name__, use_pages=False)
+def test_simple_state(app):
 
     # Init btn1 with defaults
 
@@ -56,8 +54,7 @@ def test_simple_state():
     assert btn2.clicks == 999
 
 
-def test_complex_state():
-    app = DashSPA(__name__, use_pages=False)
+def test_complex_state(app):
 
     # Create a complex ContextState
 
@@ -109,8 +106,7 @@ def test_complex_state():
                              }
 
 
-def test_useState():
-    app = DashSPA(__name__, use_pages=False)
+def test_useState(app):
 
     ToolbarContext = createContext(ToolbarList)
 

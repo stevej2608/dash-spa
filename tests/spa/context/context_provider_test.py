@@ -1,6 +1,5 @@
 import pytest
 from dash import html
-from dash_spa import DashSPA
 from dash_spa.spa_context import createContext, ContextState, dataclass
 
 
@@ -56,9 +55,7 @@ def test_no_context():
     assert "Context can only be used within the scope of a provider" in str(error)
 
 
-def test_single_button(dash_duo):
-    app = DashSPA(__name__, use_pages=False)
-
+def test_single_button(dash_duo, app):
 
     # Create Dash UI and start the test server
 
@@ -91,8 +88,7 @@ def test_single_button(dash_duo):
     assert wait_text("Button pressed 1004 times!")
 
 
-def test_multiple_buttons(dash_duo):
-    app = DashSPA(__name__, use_pages=False)
+def test_multiple_buttons(dash_duo, app):
 
     # Create multi-button dash UI and start the test server
 

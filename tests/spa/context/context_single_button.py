@@ -1,5 +1,4 @@
 from dash import html
-from dash_spa import DashSPA
 from dash_spa.spa_context import createContext, ContextState, dataclass
 from dash_spa.utils.dumps_layout import dumps_layout
 
@@ -71,8 +70,7 @@ def expected_layout(count):
         }
 
 
-def test_single_button(dash_duo):
-    app = DashSPA(__name__, use_pages=False)
+def test_single_button(dash_duo, app):
 
     # Create Dash UI and start the test server
 
