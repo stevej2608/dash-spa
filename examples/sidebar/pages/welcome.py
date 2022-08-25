@@ -4,5 +4,5 @@ from .common import jumbotron_content
 
 register_page(__name__, path='/', title='Welcome')
 
-layout = jumbotron_content("Dash/SPA Welcomes", 'Guest')
+layout = jumbotron_content("DashSPA Welcomes", 'Guest')
 

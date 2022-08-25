@@ -39,7 +39,7 @@ def sideBar():
             # Sidebar List of entries
 
             html.Ul([
-                _sidebarLink("Dash/SPA", ICON.LIGHTENING, '/', target="_blank"),
+                _sidebarLink("DashSPA", ICON.LIGHTENING, '/', target="_blank"),
                 _sidebarLink("Dashboard", ICON.CHART_PIE, '/pages/dashboard'),
                 _sidebarLink("Transactions", ICON.CREDIT_CARD, '/pages/transactions'),
                 _sidebarLink("Settings", ICON.VIEW_GRID, '/pages/settings'),

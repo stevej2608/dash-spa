@@ -3,13 +3,13 @@ from flask_login import current_user as flask_current_user
 
 
 class CurrentUser:
-    """Stub that allows Dash/SPA to think it's got a Flask_Login
+    """Stub that allows DashSPA to think it's got a Flask_Login
     login manager when it hasn't. Without a login manager the
     stub mocks the equivalent of an anonymous user. With a login
     manager installed requests are handled by the flask_login
     current_user instance as the would be normally.
 
-    To enable the Dash/SPA login manager add the following lines
+    To enable the DashSPA login manager add the following lines
     to your start-up code:
     ```
     import dash

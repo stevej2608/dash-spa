@@ -17,7 +17,7 @@ from .views.common import USER
 VERIFICATION_TEMPLATE = """
 Hi {{name}}
 
-You recently requested to create a Dash/SPA account. In order to complete
+You recently requested to create a DashSPA account. In order to complete
 the registration process please enter the following code:
 
         {{code}}
@@ -30,7 +30,7 @@ email or reply to let us know.
 
 FORGOT_TEMPLATE = """
 
-You recently requested to reset the password on your Dash/SPA account. In order
+You recently requested to reset the password on your DashSPA account. In order
 to complete the reset process please enter the following code:
 
         {{code}}

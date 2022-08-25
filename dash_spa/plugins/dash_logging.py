@@ -196,7 +196,7 @@ class DebugFormatter:
             element_list.append(f'{attr_values} -> {outputs[output_index]}')
             output_index += 1
 
-        # switch="admin#login" -> spa#router.switch, title="Dash/SPA:Admin login" -> spa#title.title
+        # switch="admin#login" -> spa#router.switch, title="DashSPA:Admin login" -> spa#title.title
 
         element_list = ', '.join(element_list)
 

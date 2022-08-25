@@ -16,7 +16,7 @@ def create_app(dash_factory) -> Dash:
     app = dash_factory()
 
     NAV_BAR_ITEMS = {
-        'brand' : NavbarBrand(' Dash/SPA','/'),
+        'brand' : NavbarBrand(' DashSPA','/'),
         'left' : [
             NavbarLink(page1, id='nav-page1'),
             NavbarLink(page2, id='nav-page2'),
