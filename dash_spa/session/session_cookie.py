@@ -37,7 +37,7 @@ def _session_keys(directory):
 
             return data["key"], data["salt"]
 
-        log.warn("Keys for session system are generated randomly and stored locally!")
+        log.warning("Keys for session system are generated randomly and stored locally!")
 
         key = secrets.token_hex(128)
         salt = secrets.token_hex(128)

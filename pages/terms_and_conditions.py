@@ -1,5 +1,4 @@
-from dash import html, dcc
-import dash_bootstrap_components as dbc
+from dash import html
 from dash_spa import register_page
 
 from pages import TERMS_AND_CONDITIONS_SLUG

@@ -1,12 +1,12 @@
-from dash import html, dcc
+import pandas as pd
 import dash_bootstrap_components as dbc
-
+from dash import dcc, html
 from dash_spa import register_page
-from pages import SOLAR_SLUG, GLOBAL_WARMING_SLUG
+
+from pages import GLOBAL_WARMING_SLUG, SOLAR_SLUG
 
 register_page(__name__, path=SOLAR_SLUG, title="Dash Solar", short_name='Solar')
 
-import pandas as pd
 
 global_md = """\
 ### Global Warming

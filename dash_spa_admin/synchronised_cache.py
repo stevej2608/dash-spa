@@ -1,4 +1,3 @@
-from functools import wraps
 import threading
 from cachetools import TTLCache
 import time
@@ -23,6 +22,7 @@ class SynchronisedTTLCache:
         self._cache = TTLCache(maxsize=maxsize, ttl=ttl, timer=timer, getsizeof=getsizeof)
         self._lock = threading.Lock()
 
+    # pylint: disable=invalid-length-returned
     def __len__(self):
         @synchronized(self._lock)
         def inner():
@@ -62,5 +62,6 @@ class SynchronisedTTLCache:
     def __reversed__(self):
         @synchronized(self._lock)
         def inner():
+            # pylint: disable=not-callable
             return self._cache.__reversed__()
         return inner()

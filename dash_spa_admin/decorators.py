@@ -1,6 +1,5 @@
 from functools import wraps
 from flask import current_app as app
-from flask_login import current_user
 from dash_spa.exceptions import InvalidAccess
 
 # TODO: Move this to dash_spa and test role via Flask current user

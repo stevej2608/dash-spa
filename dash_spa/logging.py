@@ -1,6 +1,8 @@
-from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET, FATAL, WARN
 import logging
 from .spa_config import config
+
+# pylint: disable=unused-import
+from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET, FATAL, WARN
 
 options = config.get('logging')
 

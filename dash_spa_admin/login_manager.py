@@ -1,21 +1,18 @@
-from urllib import parse
-from dash_spa.logging import log
-from dash_spa import config
 from random import randrange
+from urllib import parse
 
-from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from dash_spa import config
+from dash_spa.logging import log
+from dash_spa.spa_current_user import set_current_user
+from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
-
 from sqlalchemy_utils import database_exists
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from .admin_page import AdminPage
-from .template_mailer import TemplateMailer
 from .synchronised_cache import SynchronisedTTLCache
+from .template_mailer import TemplateMailer
 from .views.common import USER
-
-from dash_spa.spa_current_user import set_current_user
-
 
 VERIFICATION_TEMPLATE = """
 Hi {{name}}
@@ -46,6 +43,8 @@ email or reply to let us know.
 
 options = config.get('login_manager')
 
+
+# pylint: disable=too-many-public-methods
 class VerificationRecord:
 
     def __init__(self, name, email, password):
@@ -202,9 +201,9 @@ class AdminLoginManager(LoginManager):
             mailer = TemplateMailer(VERIFICATION_TEMPLATE, {'name' : name, 'code': vrec.code})
             mailer.send(email, 'Password verification', self.is_test())
             return USER.EMAIL_SENT
-        else:
-            self.validate(email, vrec.code)
-            return USER.VALIDATED
+
+        self.validate(email, vrec.code)
+        return USER.VALIDATED
 
 
     def validate(self, email, code):
@@ -311,4 +310,3 @@ class AdminLoginManager(LoginManager):
             role = db.Column(db.String(100))
 
         return _User
-

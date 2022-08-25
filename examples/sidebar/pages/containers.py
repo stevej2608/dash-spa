@@ -42,7 +42,7 @@ def default_container(page, layout,  **_kwargs):
         ])
 
     except Exception:
-        log.warn(traceback.format_exc())
+        log.warning(traceback.format_exc())
         page = spa.page_for('pages.not_found_404')
         return page.layout()
 

@@ -44,4 +44,3 @@ def layout():
             card('Admin', 'Admin blueprint that supports user registration, email authentication and login authorization')
         ], className='row text-center'),
     ], className='container')
-

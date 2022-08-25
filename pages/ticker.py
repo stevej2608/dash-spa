@@ -1,3 +1,4 @@
+import sys
 from dash import html, dcc
 from dash_spa import register_page, url_for, NOUPDATE, callback
 from dash_spa.components import SPA_LOCATION
@@ -25,7 +26,7 @@ try:
     df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/dash-stock-ticker-demo.csv')
 except Exception:
     print("Unable to read 'dash-stock-ticker-demo.csv' from github, no internet connection?")
-    exit(0)
+    sys.exit(0)
 
 
 def bbands(price, window_size=10, num_of_std=5):
@@ -67,7 +68,7 @@ def update_graph(tickers=[]):
                 'line': {'width': 1, 'color': colorscale[(i*2) % len(colorscale)]},
                 'hoverinfo': 'none',
                 'legendgroup': ticker,
-                'showlegend': True if i == 0 else False,
+                'showlegend': (i == 0),
                 'name': f'{ticker} - bollinger bands'
             } for i, y in enumerate(bb_bands)]
 

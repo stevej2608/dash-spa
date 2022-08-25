@@ -59,6 +59,4 @@ class AdminNavbarComponent:
     def layout(self, **kwargs):
         if current_user and not current_user.is_anonymous:
             return self.account_dropdown()
-        else:
-            return self.signin_link()
-
+        return self.signin_link()

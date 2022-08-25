@@ -1,6 +1,5 @@
 from dash import callback as dash_callback
 from .spa_current_app import current_app
-from .logging import log
 
 
 def callback(*_args, **_kwargs):

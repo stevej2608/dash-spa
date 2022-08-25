@@ -1,6 +1,5 @@
 from typing import TypeVar, Union
-from dataclasses import dataclass, field, _FIELD
-from dash_spa.logging import log
+from dataclasses import dataclass, field
 
 from .utils.dataclass import asdict
 
@@ -117,7 +116,8 @@ class ContextState:
 
             if attr.startswith('__'):
                 continue
-            elif isinstance(state, dict):
+
+            if isinstance(state, dict):
                 if attr in state:
                     new_value = state[attr]
                 else:

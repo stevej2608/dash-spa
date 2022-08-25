@@ -1,0 +1,55 @@
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=100
+
+
+[MESSAGES CONTROL]
+
+# Enable the message, report, category or checker with the given id(s). You can
+# either give multiple identifier separated by comma (,) or put this option
+# multiple time.
+#enable=
+
+# Disable the message, report, category or checker with the given id(s). You
+# can either give multiple identifier separated by comma (,) or put this option
+# multiple time (only on the command line, not in the configuration file where
+# it should appear only once).
+#disable=
+disable=broad-except,
+        dangerous-default-value,
+        global-statement,
+        multiple-statements,
+        protected-access,
+        redefined-outer-name,
+        unused-argument,
+        unused-variable,
+        using-constant-test,
+
+        attribute-defined-outside-init,
+        bad-inline-option,
+        bare-except,
+        blacklisted-name,
+        consider-using-enumerate,
+        deprecated-pragma,
+        duplicate-code,
+        file-ignored,
+        global-variable-not-assigned,
+        invalid-name,
+        len-as-condition,
+        line-too-long,
+        locally-disabled,
+        missing-docstring,
+        no-member,
+        raw-checker-failed,
+        redefined-builtin,
+        suppressed-message,
+        too-few-public-methods,
+        too-many-arguments,
+        too-many-branches,
+        too-many-function-args,
+        too-many-instance-attributes,
+        too-many-locals,
+        too-many-statements,
+        useless-suppression,
+        wrong-import-order

@@ -1,12 +1,13 @@
 import traceback
-from dash import html
+
 import dash_spa as spa
-from dash_spa.components import NavBar, NavbarBrand, NavbarLink, Footer
-from pages import NAVBAR_PAGES
+from dash import html
+from dash_spa.components import Footer, NavBar, NavbarBrand, NavbarLink
+from dash_spa.exceptions import InvalidAccess
 from dash_spa.logging import log
 from dash_spa_admin import AdminNavbarComponent
-from dash_spa.exceptions import InvalidAccess
 
+from pages import NAVBAR_PAGES
 
 CSS = """
     .body {
@@ -84,7 +85,7 @@ def default_container(page, layout,  **kwargs):
         ], className='body')
 
     except Exception:
-        log.warn(traceback.format_exc())
+        log.warning(traceback.format_exc())
         page = spa.page_for('pages.not_found_404')
         return page.layout()
 

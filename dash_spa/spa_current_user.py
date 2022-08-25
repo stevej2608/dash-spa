@@ -1,4 +1,4 @@
-from flask import session, current_app as app
+from flask import session
 from flask_login import current_user as flask_current_user
 
 
@@ -31,42 +31,46 @@ class CurrentUser:
             session.permanent = True
             return flask_current_user.is_authenticated
         except:
-            return
-        return False
+            return False
 
     @property
     def is_active(self):
         try:
             return flask_current_user.is_active
         except:
-            return False
+            pass
+        return False
 
     def get_id(self):
         try:
             return flask_current_user.get_id
         except:
-            return
+            pass
+        return
 
     @property
     def is_anonymous(self):
         try:
             return flask_current_user.is_anonymous
         except:
-            return True
+            pass
+        return True
 
     @property
     def role(self):
         try:
             return flask_current_user.role
         except:
-            return None
+            pass
+        return None
 
     @property
     def name(self):
         try:
             return flask_current_user.name
         except:
-            return "Guest"
+            pass
+        return "Guest"
 
 
 current_user = CurrentUser()

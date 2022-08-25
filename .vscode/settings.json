@@ -22,5 +22,6 @@
     "thead",
     "trows"
   ],
-  "todo-tree.tree.showBadges": true
+  "todo-tree.tree.showBadges": true,
+  "python.linting.enabled": true
 }

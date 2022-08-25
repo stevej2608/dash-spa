@@ -1,21 +1,3 @@
-from typing import Dict, Union, Tuple, Callable, Any, Literal
-import sys
-import json
-from copy import copy
-from dash import Output
-from dash_prefix import prefix
-from dash_spa.logging import log
-from dash_spa import callback, NOUPDATE, current_app
-from dash_spa.spa_pages import Component
-from dash_spa.session import SessionBackendFactory
-from dash_spa.utils.caller import caller_hash
-from .spa_exceptions import InvalidUsageException
-from dash_redux import ReduxStore
-
-from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
-from .utils.caller import caller_hash, caller_nested
-from dash_spa.logging import log
-
 """Context state management
 
 ContextState is state/event pattern where a state Context is wrapped by
@@ -56,6 +38,27 @@ Example usage:
 
 """
 
+import json
+import sys
+from copy import copy
+from typing import Any, Callable, Dict, Tuple, Union
+
+from dash import Output
+from dash_prefix import prefix
+from dash_redux import ReduxStore
+
+from dash_spa import NOUPDATE, callback, current_app
+from dash_spa.logging import log
+from dash_spa.session import SessionBackendFactory
+from dash_spa.spa_pages import Component
+from dash_spa.utils.caller import caller_hash
+
+
+from .utils.caller import caller_hash
+
+# pylint: disable=unused-import
+from .context_state import ContextState, dataclass, asdict, field, EMPTY_DICT, EMPTY_LIST
+
 @dataclass
 class DefaultContext(ContextState):
     __strict__: bool = True
@@ -91,8 +94,10 @@ class Context:
     def state(self):
         return self._redux_store.state
 
-
+    @staticmethod
     def input_hash(*_args):
+
+        # TODO: This method should be exposed in dash-redux not cloned here!
 
         def unpack(id):
 
@@ -101,8 +106,8 @@ class Context:
             if isinstance(id, dict):
                 id = [ part for part in id.values() if isinstance(part, str)]
                 return '_'.join(id)
-            else:
-                return id
+
+            return id
 
         # Create a positive hex hash all the callback inputs
 
@@ -187,7 +192,7 @@ class Context:
                     log.info('state %s', state)
 
                 except Exception as ex:
-                    log.warn('Dash/SPA context callback error %s', ex)
+                    log.warning('Dash/SPA context callback error %s', ex)
                 finally:
                     self.contexts.set_context(None)
 
@@ -214,7 +219,7 @@ class Context:
 
         # state can be provide when the context is created or passed in here
 
-        if state == None:
+        if state is None:
             state = self._context_state
 
         self._context_state = copy(state)
@@ -477,7 +482,8 @@ class ContextWrapper:
         # if caller_nested():
         #     raise InvalidUsageException("Provider wrapper can not be used in nested functions")
 
-        if state == None:
+        if state is None:
+            # pylint: disable=not-callable
             state = self.dataclass()
             state.__strict__ = False
 

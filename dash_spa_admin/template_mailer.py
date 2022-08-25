@@ -23,8 +23,8 @@ class TemplateMailer:
         options = self.options
         if options.secure:
             return smtplib.SMTP_SSL(options.host, options.port)
-        else:
-            return smtplib.SMTP(options.host, options.port)
+
+        return smtplib.SMTP(options.host, options.port)
 
     def send(self, receiver, subject, test_mode=True):
         options = self.options
@@ -56,3 +56,5 @@ class TemplateMailer:
 
         except Exception as ex:
             log.info('email send failed %s', ex)
+
+        return None

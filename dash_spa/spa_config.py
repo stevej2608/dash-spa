@@ -17,8 +17,7 @@ class TSectionConfig:
     def get(self, attr, default_value):
         if attr in self.__dict__:
             return self.__dict__[attr]
-        else:
-            return default_value
+        return default_value
 
     def __getattr__(self, key):
         if key in self.__dict__:
@@ -56,7 +55,7 @@ class TConfig:
                     dt = self.config.sections[section]
                     return TSectionConfig(dt)
 
-                if default_value == None:
+                if default_value is None:
                     return UNDEFINED_SECTION
 
                 return TSectionConfig(default_value)
@@ -130,7 +129,7 @@ def read_config(files: Union[str, List[str]] ='.env', env: str = None) -> TConfi
             """
             result = {}
             for key, value in config.items():
-                m = re.match("\${([A-Z]\w+)}", str(value))
+                m = re.match(r"\${([A-Z]\w+)}", str(value))
                 if m:
                     var = m.group(1)
                     value = os.environ.get(var, None)

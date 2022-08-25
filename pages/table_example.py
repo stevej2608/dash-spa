@@ -43,10 +43,10 @@ class CustomTable(TableAIO):
         return html.Div(DropdownAIO(button, container, id=pid(row)), className='btn-group')
 
 
-    def tableRow(self, index, args):
+    def tableRow(self, row_index, args):
 
         cid, bill, issue_date, due_date, total, status, action, = args.values()
-        action = self.tableAction(index)
+        action = self.tableAction(row_index)
 
         return html.Tr([
             html.Td(html.A(cid, href='#', className='fw-bold')),
@@ -80,4 +80,3 @@ def layout():
         html.Div(table, className='card card-body border-0 shadow table-wrapper table-responsive'),
         paginator_row
     ])
-

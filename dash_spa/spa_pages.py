@@ -270,14 +270,16 @@ def page_container_append(component: Component):
     """Append given component to the page container"""
 
     def get_id(component):
+
         if hasattr(component, 'id'):
             return component.id
-        elif hasattr(component, 'children'):
+
+        if hasattr(component, 'children'):
             children = component.children
             children = children if isinstance(children, list) else [children]
-            for component in children:
-                if hasattr(component, 'id'):
-                    return component.id
+            for child_component in children:
+                if hasattr(child_component, 'id'):
+                    return child_component.id
         return "NO ID"
 
     id = get_id(component)
@@ -330,9 +332,9 @@ def add_external_scripts(url: Union[str, List[str]]) -> None:
     ```
     """
     urls = url if isinstance(url, list) else [url]
-    for url in urls:
-        if not url in Globals.external_scripts:
-            Globals.external_scripts.append(url)
+    for _url in urls:
+        if not _url in Globals.external_scripts:
+            Globals.external_scripts.append(_url)
 
 def add_external_stylesheets(url):
     """Add given stylesheet(s) to the external_stylesheets list
@@ -346,9 +348,9 @@ def add_external_stylesheets(url):
     ```
     """
     urls = url if isinstance(url, list) else [url]
-    for url in urls:
-        if not url in Globals.external_stylesheets:
-            Globals.external_stylesheets.append(url)
+    for _url in urls:
+        if not _url in Globals.external_stylesheets:
+            Globals.external_stylesheets.append(_url)
 
 
 class DashPage:
@@ -365,8 +367,8 @@ class DashPage:
     def short_name(self):
         if 'short_name' in self._page:
             return self._page['short_name']
-        else:
-            return None
+
+        return None
 
     @property
     def module(self):
@@ -608,5 +610,5 @@ def url_for(module:str, args: dict=None, attr=None) -> str:
     raise Exception(f"No page for module \"{module}\" defined")
 
 def page_id(page:dict):
-    id = re.sub('^.*?pages\.', '', page['module'])
+    id = re.sub(r'^.*?pages\.', '', page['module'])
     return prefix(id.replace('.','_'))

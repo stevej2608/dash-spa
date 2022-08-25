@@ -1,15 +1,15 @@
 from urllib import parse
-from argparse import ArgumentError
+
 import dash
-from dash import dcc, html
-from dash.development.base_component import Component
 import dash_bootstrap_components as dbc
 import dash_holoniq_components as dhc
+from dash import dcc, html
+from dash.development.base_component import Component
+from dash_prefix import copy_factory, isTriggered, prefix
 
 from .callback import callback
 from .logging import log
 
-from dash_prefix import prefix, copy_factory, isTriggered
 
 class SpaForm:
 
@@ -76,11 +76,10 @@ class SpaForm:
                     for f in fields:
                         data[f] = values.pop(f, None)
                     return data
-                else:
-                    return values
 
-            else:
-                return SpaForm.NOUPDATE
+                return values
+
+            return SpaForm.NOUPDATE
 
         return store
 
@@ -125,8 +124,7 @@ class SpaForm:
         # See: Standalone checkboxes, toggle switches and radio buttons
         # https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/
 
-        if checked:
-            raise ArgumentError('Checkbox: None string lables combined with checked=True is not supported')
+        assert not checked, 'Checkbox: None string labels combined with checked=True is not supported'
 
         # input = dbc.Input(id=id, name=name, className='form-check-input', type='checkbox')
         # _layout = html.Div([
@@ -154,8 +152,8 @@ class SpaForm:
         def add_feedback():
             if feedback:
                 return [dbc.FormFeedback(feedback)]
-            else:
-                return []
+
+            return []
 
         ac = 'on' if autoComplete else None
 
@@ -204,8 +202,8 @@ class SpaForm:
         def add_feedback():
             if feedback:
                 return [dbc.FormFeedback(feedback)]
-            else:
-                return []
+
+            return []
 
         ac = 'on' if autoComplete else None
         input = dhc.PasswordWithShow(id=id, **kwargs)

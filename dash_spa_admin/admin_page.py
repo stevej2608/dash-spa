@@ -1,5 +1,4 @@
-from dash_spa import callback , NOUPDATE, prefix, SpaForm, register_page
-from dash_spa.logging import log
+from dash_spa import prefix, SpaForm, register_page
 
 from .views import loginForm, forgotForm, forgotCodeForm, forgotPasswordForm
 from .views import registerForm, logoutView, usersView, adminRegistrationForm
@@ -10,9 +9,6 @@ from .views.common import (LOGIN_ENDPOINT, LOGOUT_ENDPOINT,
                            REGISTER_VERIFY_ENDPOINT,
                            FORGOT_ENDPOINT, FORGOT_CODE_ENDPOINT, FORGOT_PASSWORD_ENDPOINT,
                            USERS_ENDPOINT)
-
-from .exceptions import InvalidPath
-
 
 class AdminPage:
 
@@ -70,4 +66,3 @@ class AdminPage:
                 path=f'{login_manager.slug}/{id}',
                 layout=layout
             )
-
