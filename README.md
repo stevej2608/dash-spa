@@ -28,7 +28,7 @@ or:
 
     python waitress_server.py
 
-When you sign in to the demo app for the first time you will be asked to create an
+When run the demo for the first time you will be asked to create an
 admin account. Enter any email address and password you fancy. To manage users, as
 admin, select **Users** from the **My Account** drop-down on the nav-bar.
 
@@ -153,7 +153,8 @@ def Button(id):
 def layout():
     state = ButtonContext.getState()
     btn =  Button(id='test_btn')
-    return html.Div(f"button pressed {state.clicks} times!")
+    div = html.Div(f"Button pressed {state.clicks} times!", id='div')
+    return html.Div([btn, div])
 ```
 
 **DashSPA** Tables
@@ -346,7 +347,6 @@ Written in less than 250 lines of Python, it's far smaller than the React versio
 **2. Minimal MultiPage** An example of a multi-page app with navbar and footer in less than sixty lines of code.
 
     python -m examples.multipage.app
-
 
 **3. React CRA clone**
 
