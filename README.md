@@ -166,6 +166,7 @@ can contain text and active components. Table, search and pagination layout is c
 Tables are defined in a few lines:
 
 ```
+@TableContext.Provider()
 def create_table(id):
 
     state = TableContext.getState()

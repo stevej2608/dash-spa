@@ -11,20 +11,20 @@ class ButtonState(ContextState):
 
 ButtonContext = createContext(ButtonState)
 
-@ButtonContext.Provider()
-def page_layout():
-    log.info('page_layout()')
-
+def myButton(id):
     state = ButtonContext.getState()
-    btn = html.Button("Button", id='btn')
+    btn = html.Button("Button", id=id)
 
     @ButtonContext.On(btn.input.n_clicks)
     def btn_click(clicks):
         log.info('btn_click()')
         state.clicks += 1
 
+    return btn
+
+@ButtonContext.Provider()
+def layout():
+    state = ButtonContext.getState()
+    btn = myButton('test1')
     div = html.Div(f"Button pressed {state.clicks} times!", id='div')
-
     return html.Div([btn, div])
-
-layout = page_layout
