@@ -4,7 +4,7 @@ from dash_spa import register_page
 welcome_page = register_page(__name__, path='/', title='Welcome')
 
 header_text = """
-Dash/SPA is a minimal framework XXXX and component suite that allows you to build complex
+DashSPA is a minimal framework XXXX and component suite that allows you to build complex
 Dash based single-page applications with ease. The demo application includes
 several well known Dash examples that have been pasted into the SPA framework
 to show how easy it is to transition to SPA.
@@ -36,7 +36,7 @@ def card(title, text):
 
 def layout():
     return html.Div([
-        jumbotron_header('Welcome to Dash/SPA', header_text),
+        jumbotron_header('Welcome to DashSPA', header_text),
         html.Div([
             card('Pages', 'Support for Dash Pages, '),
             card('Navbar', 'Includes an optional NAVBAR, configured by a simple dictionary'),

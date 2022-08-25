@@ -8,7 +8,7 @@ from .buttons.button_toolbar import ToolbarContext, button_toolbar, TBState
 
 page = register_page(__name__, path=BUTTONS_PAGE_SLUG, title="Button Toolbar Page", short_name='Buttons')
 
-# Example of using the Dash/SPA context pattern
+# Example of using the DashSPA context pattern
 # that allows a components state change to be easily passed
 # between components and trigger UI updates.
 #

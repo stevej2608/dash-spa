@@ -12,7 +12,7 @@ def big_center(text):
 def page_content(name='Guest'):
 
     return html.Header([
-        big_center("Dash/SPA Welcomes"),
+        big_center("DashSPA Welcomes"),
         big_center(name)
     ], className='jumbotron my-4')
 

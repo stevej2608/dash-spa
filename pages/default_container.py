@@ -28,6 +28,11 @@ CSS = """
     main {
         flex-grow: 1;
     }
+
+    .navbar-brand {
+        text-transform: none;
+    }
+
 """
 
 def default_container(page, layout,  **kwargs):
@@ -46,13 +51,13 @@ def default_container(page, layout,  **kwargs):
     try:
 
         NAV_BAR_ITEMS = {
-            'brand' : NavbarBrand(' Dash/SPA','/'),
+            'brand' : NavbarBrand(' DashSPA','/'),
             'left' : [NavbarLink(path=path) for path in NAVBAR_PAGES],
             'right' : AdminNavbarComponent()
         }
 
         navbar = NavBar(NAV_BAR_ITEMS)
-        footer = Footer(f'Dash/SPA {spa.__version__}')
+        footer = Footer(f'DashSPA {spa.__version__}')
 
         try:
             content = layout(**kwargs) if callable(layout) else layout

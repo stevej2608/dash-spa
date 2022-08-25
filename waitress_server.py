@@ -26,7 +26,7 @@ try:
 except Exception:
     port = int(os.environ.get("PORT", 5000))
 
-print(f'Dash/SPA V{__version__}')
+print(f'DashSPA V{__version__}')
 
 # serve(app_with_logger, host='0.0.0.0', port=port)
 

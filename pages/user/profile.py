@@ -25,7 +25,7 @@ def layout():
         name = current_user.name
 
         return html.Header([
-            big_center("Dash/SPA Welcomes"),
+            big_center("DashSPA Welcomes"),
             big_center(name, id='user-name')
         ], className='jumbotron my-4')
 

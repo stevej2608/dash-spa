@@ -11,7 +11,7 @@ class NavbarBase:
         if self.style:
             add_style(self.style)
 
-    def layout(self, spa):
+    def layout(self):
         return None
 
 class NavbarLink(NavbarBase):

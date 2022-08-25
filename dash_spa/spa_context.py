@@ -192,7 +192,7 @@ class Context:
                     log.info('state %s', state)
 
                 except Exception as ex:
-                    log.warning('Dash/SPA context callback error %s', ex)
+                    log.warning('DashSPA context callback error %s', ex)
                 finally:
                     self.contexts.set_context(None)
 
@@ -267,7 +267,7 @@ class Context:
                     self._redux_store.data.update(self._context_state.asdict())
                     result.children.append(self._redux_store)
                 except Exception as ex:
-                    log.exception('Dash/SPA layout error %s', ex)
+                    log.exception('DashSPA layout error %s', ex)
                     result = NOUPDATE
                 finally:
                     self.allow_initial_state = False
