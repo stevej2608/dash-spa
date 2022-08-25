@@ -2,7 +2,7 @@
 
 ![](docs/img/dash-spa.png)
 
-**DashSPA** is a component and suite that allows you to build complex
+**DashSPA** is a component suite that allows you to build complex
 [Plotly/Dash] based multi-page applications with ease. The demo application includes
 several well known Dash demos that have been pasted into the SPA framework
 to show how easy it is to transition to SPA.
