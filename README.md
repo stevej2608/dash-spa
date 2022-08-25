@@ -153,7 +153,7 @@ def Button(id):
 def layout():
     state = ButtonContext.getState()
     btn =  Button(id='test_btn')
-    div = html.Div(f"Button pressed {state.clicks} times!", id='div')
+    div = html.Div(f"Button pressed {state.clicks} times!")
     return html.Div([btn, div])
 ```
 
