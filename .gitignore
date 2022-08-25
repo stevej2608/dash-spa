@@ -36,3 +36,4 @@ nosetests.xml
 /tmp
 /db.sqlite
 /tests/admin/test_db.sqlite
+/.devcontainer
