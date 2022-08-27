@@ -1,3 +1,5 @@
+[![Build Status][build_status_badge]][build_status_link]
+
 ## Dash Single Page Application (SPA) Framework
 
 ![](docs/img/dash-spa.png)
@@ -492,3 +494,6 @@ To run the tests:
 [REDIS]: https://redis.io/
 [dataclasses]: https://realpython.com/python-data-classes/
 [dash-flightdeck]: https://github.com/stevej2608/dash-flightdeck
+
+[build_status_badge]: https://github.com/stevej2608/dash-spa/actions/workflows/test.yml/badge.svg
+[build_status_link]: https://github.com/stevej2608/dash-spa/actions/workflows/test.yml
