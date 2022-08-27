@@ -1,3 +1,9 @@
+## [1.1.4] - August 27th, 2022
+
+### Added
+
+- Added session backend storage test
+
 ## [1.1.3] - August 24th, 2022
 
 ### Added
