@@ -67,3 +67,16 @@ def test_session_button(dash_duo, app):
 
     btn.click()
     assert wait_text("Button pressed 4 times!")
+
+
+def test_session_no_data_leak(dash_duo, app):
+
+    dash_duo.start_server(app)
+
+    @session_data()
+    class ButtonState(SessionContext):
+        clicks: int = 0
+
+    ctx = session_context(ButtonState)
+
+    assert ctx.clicks == 0

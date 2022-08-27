@@ -43,4 +43,4 @@ def test_config_simple():
 
     # Try to access a nonexistent attribute
 
-    assert admin.undefined == None
+    assert admin.undefined is None

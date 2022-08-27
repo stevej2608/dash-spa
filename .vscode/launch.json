@@ -178,7 +178,7 @@
 
 
     {
-      "name": "3. Python: Current Module",
+      "name": "3a. Python: Current Module",
       "type": "python",
       "request": "launch",
       "module": "${command:extension.commandvariable.file.relativeDirDots}.${fileBasenameNoExtension}",
@@ -192,7 +192,7 @@
       }
     },
     {
-      "name": "3. PyTest (all)",
+      "name": "4a. PyTest (all)",
       "type": "python",
       "request": "launch",
       "stopOnEntry": false,
@@ -208,7 +208,7 @@
       "justMyCode": false
     },
     {
-      "name": "4. PyTest (Current file)",
+      "name": "4b. PyTest (Current file)",
       "type": "python",
       "request": "launch",
       "stopOnEntry": false,
@@ -227,7 +227,7 @@
     },
 
     {
-      "name": "4a. PyTest (tests/spa/context/context_provider_test.py)",
+      "name": "4c. PyTest (tests/spa/context/context_provider_test.py)",
       "type": "python",
       "request": "launch",
       "stopOnEntry": false,
@@ -245,7 +245,7 @@
     },
 
     {
-      "name": "4b. PyTest (alert & notify)",
+      "name": "4d. PyTest (alert & notify)",
       "type": "python",
       "request": "launch",
       "stopOnEntry": false,
@@ -264,7 +264,7 @@
     },
 
     {
-      "name": "4c. PyTest (examples)",
+      "name": "4e. PyTest (examples)",
       "type": "python",
       "request": "launch",
       "stopOnEntry": false,

@@ -1,4 +1,3 @@
-import flask
 from dash_spa.spa_config import config, ConfigurationError
 
 from .diskcache import SessionDiskCache

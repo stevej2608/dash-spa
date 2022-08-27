@@ -15,8 +15,8 @@ class SessionDiskCache(SessionBackend):
 
     A single json string, indexed on session_id, is held in
     the server-side session cache. The cache should be thread and
-    multi-process safe since each session has a uniq uuid and all the
-    session data is stored in a single key.
+    multi-process safe since each session has a uniq id and all the
+    session data is stored on a single key.
 
     Use get(key) to get the value of an individual element in session dict.
 
@@ -28,8 +28,8 @@ class SessionDiskCache(SessionBackend):
 
     # TODO: Figure out how to test if this is thread & process safe
 
-
     try:
+        # pylint: disable=import-outside-toplevel
         from diskcache import Cache
     except ImportError as err:
         raise ImportError(
@@ -52,32 +52,42 @@ class SessionDiskCache(SessionBackend):
             log.info("Create new session store id=%s", self.session_id)
             self.session_store = {}
 
-    def update(self):
+    def _update(self):
+        """Write the session state to the store"""
+
         # log.info('write cache[%s]=%s', self.session_id, self.session_store)
         json_str = json.dumps(self.session_store, default=json_encode)
         SessionDiskCache._disk_cache.set(self.session_id, json_str, self.expiry)
 
 
     def get(self, obj_key) -> dict:
+        """Get current session value for the given key"""
         if not obj_key in self.session_store:
             self.session_store[obj_key] = {}
         return self.session_store[obj_key]
 
 
     def set(self, obj_key, value: dict):
+        """Save the session value against the given key and update the session store if needed"""
+
+        # previous value
+
         prev_state = json.dumps(self.get(obj_key), sort_keys = True)
+
+        # Save new value
 
         self.session_store[obj_key] = value
 
+        # Update if changed
+
         new_state = json.dumps(self.get(obj_key), sort_keys = True)
-
         if new_state != prev_state:
-            self.update()
-
+            self._update()
 
     def remove(self, obj_key):
+        """ Remove given key and update the store"""
         self.session_store.pop(obj_key, None)
-        self.update()
+        self._update()
 
     @staticmethod
     def clear():
@@ -87,4 +97,3 @@ class SessionDiskCache(SessionBackend):
         items is removed. Concurrent writes may occur between iterations.
         """
         SessionDiskCache._disk_cache.clear()
-

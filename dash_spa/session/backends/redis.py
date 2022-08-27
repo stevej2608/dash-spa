@@ -27,6 +27,7 @@ class RedisSessionBackend(SessionBackend):
         connection_kwargs = {}
 
         try:
+            # pylint: disable=import-outside-toplevel
             import redis
         except ImportError as err:
             raise ImportError(
@@ -53,3 +54,6 @@ class RedisSessionBackend(SessionBackend):
         if self.expire:
             self.r.expire(self._session_key(), self.expire)
 
+    def remove(self, obj_key):
+        """ Remove given key and update the store"""
+        self.r.hdel(self._session_key(), obj_key)
