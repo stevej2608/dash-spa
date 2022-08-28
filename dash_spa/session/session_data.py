@@ -1,3 +1,4 @@
+import sys
 from dataclasses import _process_class
 from dash_spa.context_state import ContextState
 from dash_spa.utils.caller import caller_hash
@@ -39,13 +40,28 @@ def session_data(cls=None, init=True, repr=True, eq=True,
         id (str, optional): id of session data. Defaults to hash derived from module.line_number.
     """
 
-    if id == None:
+    if id is None:
         id = caller_hash()
 
     def _process_session_class(cls, init, repr, eq, order, unsafe_hash, frozen, id=None):
 
         setattr(cls, '__session_data_id__', id)
-        cls = _process_class(cls, init, repr, eq, order, unsafe_hash, frozen)
+
+        # TODO: Python version issues
+        #
+        # https://docs.python.org/3/library/dataclasses.html
+        # https://github.com/python/cpython/blob/main/Lib/dataclasses.py
+        #
+        # 3.8 : dataclass(*, init=True, repr=True, eq=True, order=False, unsafe_hash=False, frozen=False)
+        # 3.9 : dataclass(*, init=True, repr=True, eq=True, order=False, unsafe_hash=False, frozen=False)
+        # 3.10: dataclass(*, init=True, repr=True, eq=True, order=False, unsafe_hash=False, frozen=False, match_args=True, kw_only=False, slots=False)
+
+        if sys.hexversion < 0x030A00F0:
+            # pylint: disable=no-value-for-parameter
+            cls = _process_class(cls, init, repr, eq, order, unsafe_hash, frozen)
+        else:
+            cls = _process_class(cls, init, repr, eq, order, unsafe_hash, frozen,
+                        False, False, False)
         return cls
 
     def wrap(cls):
