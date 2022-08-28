@@ -78,7 +78,7 @@ def test_login(duo, test_app):
     assert '_id' in session
 
 
-def xtest_admin_login_fail(duo, test_app):
+def test_admin_login_fail(duo, test_app):
 
     login_manager = test_app.server.login_manager
 
