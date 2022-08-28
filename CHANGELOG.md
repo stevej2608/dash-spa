@@ -1,3 +1,10 @@
+## [1.1.5] - August 28th, 2022
+
+### Fix
+
+- Rework current_user mock to remove flask_login package dependency.
+- Minimise the number of packages in loaded by install dash-spa. Now have dash-spa[admin] to load admin package
+
 ## [1.1.4] - August 27th, 2022
 
 ### Added
