@@ -1,6 +1,6 @@
-### dash-pages-spa
+### dash-spa
 
-    pip install -r requirements-dev.txt
+    pip install -r requirements.txt
 
 #### Testing
 
@@ -12,7 +12,7 @@ To run the tests:
 
 #### Publish
 
-    rm -rf dist/*
+    rm -rf dist dash_spa.egg-info build
 
     python setup.py sdist bdist_wheel
 

@@ -1,0 +1,17 @@
+##########################################################################
+# Temporary workround. Werkzeug==2.2.0 was released three daya ago. Now I
+# get following from Flask_Login:
+#
+#     importError: cannot import name 'parse_rule' from 'werkzeug.routing'
+#
+# I think it's because the Flask_Login needs updating. Force Werkzeug to
+# older 2.1.2 for now:
+Werkzeug==2.1.2
+##########################################################################
+
+cachetools>=5.0.0
+dash-datatables>=0.0.9
+Flask_Login>=0.4.1
+Flask_SQLAlchemy>=2.5.1
+pystache>=0.6.0
+SQLAlchemy_Utils>=0.38.2

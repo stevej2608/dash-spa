@@ -15,6 +15,10 @@ To appreciate what you can do with **DashSPA** take a look at [dash-flightdeck].
 
     pip install dash-spa
 
+or to install the optional admin support
+
+    pip install dash-spa[admin]
+
 ### Demo and Examples
 
 To try the demo perform the following steps:
