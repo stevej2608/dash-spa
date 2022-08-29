@@ -13,10 +13,3 @@ class AIOPrefix:
             'subcomponent': subcomponent_id,
             'aio_id': self.aio_id
         }
-
-
-class AIOBase():
-
-    @abstractmethod
-    def layout(self):
-        pass

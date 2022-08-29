@@ -1,4 +1,4 @@
-from .AIO_base  import AIOBase, AIOPrefix
+from .AIO_base  import AIOPrefix
 
 from .dropdown_aio import DropdownAIO
 
