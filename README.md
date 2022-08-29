@@ -484,7 +484,13 @@ installed. See [Dockerfile.dev](./Docker.dev) for details.
 
 To run the tests:
 
-    pytest
+    pytest tests
+
+Coverage
+
+    pytest --cov=dash_spa --ignore=tests/admin tests
+
+    pytest --cov=dash_spa_admin tests/admin
 
 #### Publish
 

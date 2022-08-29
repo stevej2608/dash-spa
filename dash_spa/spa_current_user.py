@@ -33,7 +33,7 @@ def _current_user():
         def is_authenticated(self):
             try:
                 session.permanent = True
-                return flask_current_user.is_authenticated
+                return self.current_user.is_authenticated
             except:
                 return False
 
@@ -77,6 +77,7 @@ def _current_user():
             return "Guest"
 
     try:
+        # pylint: disable=import-outside-toplevel
         from flask_login import current_user as flask_current_user
         return CurrentUser(flask_current_user)
     except:
