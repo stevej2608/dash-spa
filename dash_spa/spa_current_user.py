@@ -8,15 +8,15 @@ def _current_user():
         login manager when it hasn't. Without a login manager the
         stub mocks the equivalent of an anonymous user. With a login
         manager installed requests are handled by the flask_login
-        current_user instance as the would be normally.
+        current_user instance as it would be normally.
 
         To enable the DashSPA login manager add the following lines
         to your start-up code:
         ```
-        import dash
+        from dash_spa import DashSPA
         from dash_spa_admin import AdminLoginManager
 
-        app = dash.Dash( __name__, ...)
+        app = DashSPA( __name__, ...)
 
         ...
 
