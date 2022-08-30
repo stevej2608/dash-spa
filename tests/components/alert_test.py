@@ -1,29 +1,18 @@
 from dash import html
 from dash_spa.logging import log
-from dash_spa import DashSPA, NOUPDATE, page_container, register_page
+from dash_spa import NOUPDATE
 
 from dash_spa.components import Alert, SPA_ALERT
+from .app_factory import single_page_app
 
+class Page():
 
-def single_page_app(page_layout):
-    log.info('********************* create alert app *************************')
-    app = DashSPA(__name__, pages_folder='')
-    register_page('test_alert', path='/', title="test", layout=page_layout())
-    app.layout = page_container
-    return app
+    def __init__(self):
+        self.btn = html.Button("Alert Button", id='alert_btn')
 
-def test_alert(dash_duo):
+    def layout(self):
 
-    # Create Dash UI and start the test server
-
-    btn = None
-
-    def layout():
-        nonlocal btn
-
-        btn = html.Button("Alert Button", id='alert_btn')
-
-        @SPA_ALERT.update(btn.input.n_clicks)
+        @SPA_ALERT.update(self.btn.input.n_clicks)
         def btn_cb(clicks, store):
             if clicks:
                 log.info('issue alert')
@@ -32,14 +21,17 @@ def test_alert(dash_duo):
             else:
                 return NOUPDATE
 
-        return html.Div([btn])
+        return html.Div(self.btn)
 
-    app = single_page_app(layout)
-    dash_duo.start_server(app)
+def test_alert(dash_duo):
+
+    page = Page()
+    test_app = single_page_app(page.layout)
+    dash_duo.start_server(test_app)
 
     # Click a button to trigger the notify toast
 
-    browser_btn = dash_duo.find_element(btn.css_id)
+    browser_btn = dash_duo.find_element(page.btn.css_id)
     browser_btn.click()
 
     result = dash_duo.wait_for_text_to_equal("#swal2-title", "Basic alert", timeout=3)

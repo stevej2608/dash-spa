@@ -1,28 +1,19 @@
 from dash import html
 from dash_spa.logging import log
-from dash_spa import DashSPA, NOUPDATE, page_container, register_page
-
+from dash_spa import NOUPDATE
 from dash_spa.components import Notyf, SPA_NOTIFY
 
-def single_page_app(page_layout):
-    log.info('********************* create notify app ************************')
-    app = DashSPA(__name__, pages_folder='')
-    register_page("test_notify", path='/', title="test", layout=page_layout())
-    app.layout = page_container
-    return app
+from .app_factory import single_page_app
 
-def test_notify(dash_duo):
 
-    # Create Dash UI and start the test server
+class Page():
 
-    btn = None
+    def __init__(self):
+        self.btn = html.Button("Button", id='btn')
 
-    def layout():
-        nonlocal btn
+    def layout(self):
 
-        btn = html.Button("Button", id='btn')
-
-        @SPA_NOTIFY.update(btn.input.n_clicks)
+        @SPA_NOTIFY.update(self.btn.input.n_clicks)
         def btn_cb(clicks, store):
             if clicks:
                 log.info('Notify click')
@@ -31,14 +22,17 @@ def test_notify(dash_duo):
             else:
                 return NOUPDATE
 
-        return html.Div([btn])
+        return html.Div(self.btn)
 
-    app = single_page_app(layout)
-    dash_duo.start_server(app)
+def test_notify(dash_duo):
+
+    page = Page()
+    test_app = single_page_app(page.layout)
+    dash_duo.start_server(test_app)
 
     # Click a button to trigger the notify toast
 
-    browser_btn = dash_duo.find_element(btn.css_id)
+    browser_btn = dash_duo.find_element(page.btn.css_id)
     browser_btn.click()
 
     result = dash_duo.wait_for_text_to_equal(".notyf__message", "TESTING NOTIFY TESTING", timeout=3)
