@@ -4,19 +4,19 @@ from dash import html
 from dash_spa import register_page, prefix, trigger_index
 
 from dash_spa.spa_context import createContext, ContextState, dataclass
-from dash_spa.components import DropdownAIO, ButtonContainerAIO, SPA_NOTIFY, Notyf
+from dash_spa.components import DropdownAIO, ButtonContainerAIO
 
 from .icons import ICON
 
 page = register_page(__name__, path='/', title="Button Test", short_name='Buttons')
 
-# See assets.css for icon and test styling
+# See assets.css for icon and text styling
 
 @dataclass
-class TableState(ContextState):
+class MyAppState(ContextState):
     page_size: int = 10
 
-TableContext: TableState = createContext(TableState)
+MyAppContext: MyAppState = createContext(MyAppState)
 
 class PageSizeSelect(ButtonContainerAIO):
 
@@ -25,9 +25,9 @@ class PageSizeSelect(ButtonContainerAIO):
     def __init__(self, page_sizes: List, current:int, id):
         super().__init__(page_sizes, current, id=id, className=PageSizeSelect.className)
 
-        state = TableContext.getState()
+        state = MyAppContext.getState()
 
-        @TableContext.On(self.button_match.input.n_clicks)
+        @MyAppContext.On(self.button_match.input.n_clicks)
         def page_select(clicks):
             index = trigger_index()
             if index is not None and clicks[index]:
@@ -35,7 +35,7 @@ class PageSizeSelect(ButtonContainerAIO):
 
 
     def render_buttons(self, elements):
-        state = TableContext.getState()
+        state = MyAppContext.getState()
 
         def render_button(text):
             if int(text) == state.page_size:
@@ -61,15 +61,9 @@ def page_size_dropdown(id) -> html.Div:
 
     return html.Div(dropdown)
 
-@TableContext.Provider()
+@MyAppContext.Provider()
 def layout():
-    state = TableContext.getState()
+    state = MyAppContext.getState()
     size_dropdown = page_size_dropdown('test')
     h4 = html.H4(f"Page size is {state.page_size}")
-
-    @SPA_NOTIFY.update(TableContext.store.input.data)
-    def btn_cb(data, store):
-        notyf = Notyf(message=f'Page size is {state.page_size}', type='info')
-        return notyf.report()
-
     return html.Div([h4, size_dropdown])

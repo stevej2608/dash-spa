@@ -14,11 +14,10 @@ class DropdownAIO(html.Div):
 
     The button **must** be a DropdownAIO.Button
 
-
     Args:
-        button (dhc.Button): Button, when clicked displays the container
+        button (DropdownAIO.Button): Button, when clicked displays the container
         container (Component): Container to be shown/hidden
-        aio_id (str, optional): The container prefix. If None one will be allocated.
+        id (str): The container prefix.
     """
 
     Button = dhc.Button
@@ -63,10 +62,5 @@ class DropdownAIO(html.Div):
             #log.info("DropdownAIO className='%s'", className)
 
             return className
-
-
-
-
-
 
         super().__init__(html.Div([button, container], className='dropdown'))
