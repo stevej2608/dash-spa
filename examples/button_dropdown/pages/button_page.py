@@ -65,5 +65,5 @@ def page_size_dropdown(id) -> html.Div:
 def layout():
     state = MyAppContext.getState()
     size_dropdown = page_size_dropdown('test')
-    h4 = html.H4(f"Page size is {state.page_size}")
+    h4 = html.H4(f"Page size is {state.page_size}", id="test_h4")
     return html.Div([h4, size_dropdown])
