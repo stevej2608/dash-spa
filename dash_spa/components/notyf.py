@@ -158,7 +158,9 @@ class NotyfViewer(ReduxStore):
         if app and app.got_first_request:
             return callback_stub
 
-        return super().update(*_args, **_kwargs)
+        pic = _kwargs.pop('prevent_initial_call', True)
+
+        return super().update(*_args, prevent_initial_call=pic, **_kwargs)
 
 # The GLOBAL_CALLBACK_MAP is cleared when Dash sends the initial
 # app layout to the browser. A problem occurs when testing. The
