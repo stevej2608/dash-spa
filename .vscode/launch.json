@@ -231,7 +231,6 @@
       "stopOnEntry": false,
       "module": "pytest",
       "args": [
-        "--headless",
         "-sv",
         "-o log_cli=1",
         "${file}"
