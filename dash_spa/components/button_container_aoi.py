@@ -13,22 +13,29 @@ class Dict2Obj:
             for key, value in d.items():
                 setattr(self, key, value)
 
+
 class ButtonContainerAIO(html.Div):
-    """Manage a container(typically a list) of buttons and associated
-    store. This is an abstract base class.
+    """Manage a container of buttons. This is an abstract base class.
+
+    The ButtonContainerAIO constructor calls the render_button() method
+    passing in the list of elements. It then wraps each button in the
+    returned button list in a callback match ALL container. The button_match
+    attribute can then be used in by the super-class to action button callback
+    events.
 
     Args:
-        elements (List[str]): The button text
+        elements (List): List of elements to be passed to the render() method.
         current (int): Index of the selected button
-        store (ReduxStore): Store to be updated when a button is clicked
         className (str, optional): Container className. Defaults to None.
-        id (_type_, optional): Container ID, if None one will be allocated.
+        id (_type_, optional): Container ID.
+
+    Attributes:
+
+        button_match: Match ALL button id to be used in callbacks
 
     Abstract Methods:
 
-        render_button(self, text, selected)
-
-        update_store(self, value, store)
+        render_buttons(self, elements)
 
     """
 
@@ -38,9 +45,12 @@ class ButtonContainerAIO(html.Div):
 
         pid = prefix(id)
         self._elements = elements
+
         self.button_match = match({'type': pid('li'), 'idx': ALL})
 
         def _render_buttons(current):
+
+            # Get the user rendered button list
 
             buttons = self.render_buttons(elements)
 
@@ -55,7 +65,16 @@ class ButtonContainerAIO(html.Div):
         super().__init__(buttons, className=className)
 
     @abstractmethod
-    def render_buttons(self, store:ReduxStore) -> List[Component]:
-        """Return a button component list"""
-        pass
+    def render_buttons(self, elements:List) -> List[Component]:
+        """Return a list of button components derived from the supplied
+        element list.
+
+        Args:
+            elements (List): elements to be rendered
+
+        Returns:
+            List[Component]: Elements rendered as buttons
+        """
+
+        return []
 
