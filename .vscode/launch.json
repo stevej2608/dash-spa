@@ -176,6 +176,23 @@
       }
     },
 
+    {
+      "name": "2k. Python: examples.button_dropdown.app",
+      "type": "python",
+      "request": "launch",
+      "module": "examples.button_dropdown.app",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "env": {"PYTHONHASHSEED": "1234"},
+      "justMyCode": false,
+      "serverReadyAction": {
+        "pattern": ".*Visit http://(.*)",
+        "uriFormat": "http://%s",
+        "action": "openExternally"
+      }
+    },
+
+
 
     {
       "name": "3a. Python: Current Module",

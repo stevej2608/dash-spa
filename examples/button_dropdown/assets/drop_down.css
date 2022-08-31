@@ -1,0 +1,11 @@
+.icon.icon-sm {
+    height: 1.5rem;
+}
+
+.icon.icon-xxs {
+    height: 1rem;
+}
+
+.fw-bold {
+    font-weight: 500 !important;
+}
