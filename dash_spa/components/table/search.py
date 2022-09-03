@@ -3,7 +3,7 @@ from dash import html, dcc
 from dash_spa import prefix
 from pandas import DataFrame
 
-from .icons import SEARCH
+from ..icons import SEARCH
 from .context import TableContext
 
 # https://dash.plotly.com/datatable/callbacks#backend-paging-with-filtering
