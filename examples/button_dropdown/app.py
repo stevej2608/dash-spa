@@ -3,17 +3,18 @@ from dash_spa import page_container, DashSPA
 from dash_spa.logging import setLevel
 
 from server import serve_app
+from themes import VOLT_BOOTSTRAP
 
 def create_dash():
     app = DashSPA( __name__,
         prevent_initial_callbacks=True,
         suppress_callback_exceptions=True,
-        external_stylesheets=[dbc.themes.BOOTSTRAP])
+        external_stylesheets=[VOLT_BOOTSTRAP]
+        )
 
     app.server.config['SECRET_KEY'] = "A secret key"
 
     return app
-
 
 def create_app(dash_factory) -> DashSPA:
     app = dash_factory()
@@ -25,4 +26,4 @@ def create_app(dash_factory) -> DashSPA:
 if __name__ == "__main__":
     setLevel("INFO")
     app = create_app(create_dash)
-    serve_app(app, debug=False)
+    serve_app(app, path='/dropdown', debug=False)

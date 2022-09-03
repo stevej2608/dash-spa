@@ -10,44 +10,52 @@ def dropdownLink(title, icon, href='#'):
 
 class DropdownButtonAIO(DropdownAIO):
 
-    def __init__(self, dropdownEntries, buttonText, buttonIcon=PLUS, buttonColor='secondary', downArrow=False, id=None):
-        """Button with supplied icon and down arrow. When clicked a drop-down
-        selection of entries is revealed.
+    """Button with supplied icon and down arrow. When clicked a drop-down
+    selection of entries is revealed.
 
-        Args:
-            dropdownEntries (list): The dropdown entries
-            buttonText (str): The button text
-            buttonIcon (Svg, optional): Optional button icon. Defaults to PLUS.
-            buttonColor (str, optional): BS5 button colour. Defaults to 'secondary'.
-            downArrow (bool, optional): Show down arrow. Defaults to False.
+    Args:
+        dropdownEntries (list): The dropdown entries
+        buttonText (str): The button text
+        buttonIcon (Svg, optional): Optional button icon. Defaults to PLUS.
+        buttonColor (str, optional): BS5 button colour. Defaults to 'secondary'.
+        downArrow (bool, optional): Show down arrow. Defaults to False.
 
-        Example:
+    Example:
 
-            DropdownButtonAIO([
-                dropdownLink("Add User", USER_ADD),
+        DropdownButtonAIO([
+            dropdownLink("Add User", USER_ADD),
 
-                dropdownLink("Add Widget", WIDGET),
+            dropdownLink("Add Widget", WIDGET),
 
-                dropdownLink("Upload Files", UPLOAD),
+            dropdownLink("Upload Files", UPLOAD),
 
-                dropdownLink("Preview Security", SECURITY),
+            dropdownLink("Preview Security", SECURITY),
 
-                dropdownLink("Upgrade to Pro", FIRE_DANGER),
+            dropdownLink("Upgrade to Pro", FIRE_DANGER),
 
-            ], "New Task", buttonColor="gray-800")
+        ], "New Task", buttonColor="gray-800")
 
-        """
+    """
+
+    container_className = ''
+
+    def __init__(self, dropdownEntries, buttonText, buttonIcon=PLUS,
+                 buttonColor='secondary', downArrow=False, id=None):
 
         button = DropdownAIO.Button([
                 buttonIcon,
                 buttonText,
                 DOWN_ARROW if downArrow else None
-            ], className=f'btn btn-{buttonColor} d-inline-flex align-items-center me-2 dropdown-toggle')
+            ], className=self.button_className(buttonColor))
 
         # Drop down container
 
         container = html.Div(
             dropdownEntries,
-            className='dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1')
+            className=self.container_className)
 
         super().__init__(button, container, id=id)
+
+
+    def button_className(self, buttonColor):
+        return f'btn btn-{buttonColor}'

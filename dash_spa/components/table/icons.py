@@ -1,5 +1,25 @@
 from dash_svg import Svg, Path
 
+from dash_spa import add_style
+
+
+icon_style = """
+    .icon {
+        height: 2rem;
+        }
+    .icon.icon-xxs {
+        height: 1rem;
+        }
+    .icon.icon-xs {
+        height: 1.25rem;
+        }
+    .icon.icon-sm {
+        height: 1.5rem;
+        }
+"""
+
+add_style(icon_style)
+
 # heroicons: https://heroicons.dev/
 
 SEARCH = Svg([
