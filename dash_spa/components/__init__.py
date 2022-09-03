@@ -2,7 +2,7 @@ from .AIO_base  import AIOPrefix
 
 from .dropdown_aio import DropdownAIO
 
-from .navbar import NavBar, NavbarBrand, NavbarLink
+from .navbar import NavBar, NavbarBrand, NavbarLink, NavbarDropdown
 from .footer import  Footer
 
 from .alert import Alert, SPA_ALERT

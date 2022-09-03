@@ -1,8 +1,8 @@
 import traceback
-
+import dash_bootstrap_components as dbc
 import dash_spa as spa
 from dash import html
-from dash_spa.components import Footer, NavBar, NavbarBrand, NavbarLink
+from dash_spa.components import Footer, NavBar, NavbarBrand, NavbarLink, NavbarDropdown
 from dash_spa.exceptions import InvalidAccess
 from dash_spa.logging import log
 from dash_spa_admin import AdminNavbarComponent
@@ -48,11 +48,17 @@ def default_container(page, layout,  **kwargs):
 
     log.info("*************** default_container page=%s *********************", page['module'])
 
+    items_dropdown = NavbarDropdown([
+            dbc.DropdownMenuItem("Item 1"),
+            dbc.DropdownMenuItem("Item 2"),
+            dbc.DropdownMenuItem("Item 3"),
+        ], "Items")
+
     try:
 
         NAV_BAR_ITEMS = {
             'brand' : NavbarBrand(' DashSPA','/'),
-            'left' : [NavbarLink(path=path) for path in NAVBAR_PAGES],
+            'left' : [NavbarLink(path=path) for path in NAVBAR_PAGES] + [items_dropdown],
             'right' : AdminNavbarComponent()
         }
 

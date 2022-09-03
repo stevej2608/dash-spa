@@ -1,4 +1,6 @@
 from dash import html
+from dash.development.base_component import Component
+
 import dash_bootstrap_components as dbc
 
 from ..spa_pages import DashPage, get_page, add_style
@@ -47,6 +49,34 @@ class NavbarLink(NavbarBase):
             else:
                 return dbc.NavItem(dbc.NavLink(self.title, href=self.path))
 
+class NavbarDropdown(NavbarBase):
+
+    # Make dbc.DropdownMenu look like dbc.NavLink
+
+    style = """
+        button.spa-navbar-dropdown{
+            background: none;
+            border: none;
+            color: rgba(255,255,255,.55);
+            padding-bottom: 0.5rem;
+            padding-top: 0.5rem;
+        }
+        button.spa-navbar-dropdown:hover {
+            color: rgba(255,255,255,.75);
+        }
+    """
+
+    def __init__(self, children=None, label=Component.UNDEFINED):
+        super().__init__()
+        self.children = children
+        self.label = label
+
+    def layout(self):
+            return dbc.DropdownMenu(
+                label=self.label,
+                toggleClassName="spa-navbar-dropdown bg-secondary shadow-none",
+                children=self.children
+            )
 
 class NavbarBrand(NavbarBase):
 
