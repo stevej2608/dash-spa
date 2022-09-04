@@ -70,16 +70,18 @@ def dropdownFolderEntry(text:str, href:str) -> html.Li:
 
 
 class DropdownFolderAIO(html.Div):
+    """Sidebar dropdown component with icon, text and arrow; that when clicked displays the child elements
+
+    Args:
+        children (list): The child elements
+        text (str): The drop down text
+        icon (Svg): The dropdown icon
+        id (str): The component ID.
+    """
+
+    button_className = 'nav-link collapsed d-flex justify-content-between align-items-center'
 
     def __init__(self, children, text, icon, id=None):
-        """Sidebar dropdown component with icon, text and arrow; that when clicked displays the child elements
-
-        Args:
-            children (list): The child elements
-            text (str): The drop down text
-            icon (Svg): The dropdown icon
-            id (str): The component ID.
-        """
 
         pid = prefix(id)
         state, _ = DropdownFolderContext.useState(pid('state'), initial_state=DropdownFolderState('multi-level collapse'))
@@ -92,7 +94,7 @@ class DropdownFolderAIO(html.Div):
                 html.Span(text, className='sidebar-text')
             ]),
             html.Span(ARROW, className='link-arrow')
-        ], id=pid('btn'), className='nav-link collapsed d-flex justify-content-between align-items-center')
+        ], id=pid('btn'), className=self.button_className)
 
         # Drop down container
 
@@ -103,7 +105,6 @@ class DropdownFolderAIO(html.Div):
 
         @DropdownFolderContext.On(button.input.n_clicks)
         def update_dropdown(n_clicks):
-
 
             # if not n_clicks:
             #     return className
