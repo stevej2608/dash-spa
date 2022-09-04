@@ -3,13 +3,12 @@ from dash_spa import page_container, DashSPA
 from dash_spa.logging import setLevel
 
 from server import serve_app
-from themes import VOLT_BOOTSTRAP
 
 def create_dash():
     app = DashSPA( __name__,
         prevent_initial_callbacks=True,
         suppress_callback_exceptions=True,
-        external_stylesheets=[VOLT_BOOTSTRAP]
+        external_stylesheets=[dbc.themes.BOOTSTRAP]
         )
 
     app.server.config['SECRET_KEY'] = "A secret key"

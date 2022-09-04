@@ -1,6 +1,5 @@
 import flask
 import dash_spa as spa
-from themes import VOLT_BOOTSTRAP
 from dash_bootstrap_components.themes import BOOTSTRAP
 # from dash_spa import spa_pages
 
