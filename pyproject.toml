@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "dash-spa"
+version = "1.1.5"
+description = "Dash Pages SPA Framework"
+authors = ["Steve Jones <jonesst2608@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "dash_spa" },
+    { include = "dash_spa_admin" },
+]
+include = ["CHANGELOG.md", "LICENSE", "landing-page.md"]
+
+[tool.poetry.dependencies]
+
+python = "^3.11"
+
+dash-bootstrap-components = ">=1.1.0"
+dash-holoniq-components = ">=0.0.19"
+dash-prefix = ">=0.0.4"
+dash-redux = ">=0.0.4"
+dash-svg = ">=0.0.8"
+dash = "2.6.1"
+iniconfig = ">=1.1.1"
+appdirs = ">=1.4.4"
+itsdangerous = ">=2.0.1"
+
+[tool.poetry.extras]
+
+admin = ["werkzeug", "SQLAlchemy", "cachetools", "dash-datatables", "Flask_Login", "Flask_SQLAlchemy", "pystache", "SQLAlchemy_Utils"]
+diskcache = ["diskcache"]
+redis = ["redis"]
+
+[tool.poetry.group.dev.dependencies]
+
+werkzeug = "2.1.2"
+sqlalchemy = "1.4.40"
+cachetools = "5.2.0"
+dash = {version = "2.6.1", extras = ["testing"]}
+dash-datatables = ">=0.0.9"
+flask-login = "0.6.2"
+flask-sqlalchemy = "2.5.1"
+pystache = "0.6.0"
+sqlalchemy-utils = "0.38.3"
+diskcache = ">=5.4.0"
+keyrings-alt = ">=4.1.0"
+
+# Testing
+
+pytest-env = "0.6.2"
+pytest-mock = "3.7.0"
+pytest-cov = "3.0.0"
+pytest = "7.1.1"
+selenium = ">=4.1.0"
+setuptools = ">=63.2.0"
+twine = "3.7.1"
+
+pandas = "1.4.2"
+colorlover = "^0.3.0"
+wheel = "^0.42.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

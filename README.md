@@ -25,7 +25,9 @@ To try the demo perform the following steps:
 
     git clone https://github.com/stevej2608/dash-spa.git
     cd dash-spa
-    pip install -r requirements.txt
+
+    pip install poetry
+    poetry install --no-root
 
 Then start the demo with:
 

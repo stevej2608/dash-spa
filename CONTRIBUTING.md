@@ -1,25 +1,20 @@
 ### dash-spa
 
-    pip install -r requirements.txt
+    pip install poetry
+    poetry install --no-root
 
 #### Testing
 
-Pytest is used for testing.
-
-To run the tests:
+To run the tests (in Docker container):
 
     pytest
 
-#### Publish
+#### Build & Publish
 
-    rm -rf dist dash_spa.egg-info build
+    rm -rf dist && poetry build
 
-    python setup.py sdist bdist_wheel
-
-Upload to pypi:
-
-    twine upload -r dist/*
+    poetry publish
 
 Or upload to local package repository:
 
-    twine upload -r pypicloud dist/*
+    poetry publish -r pypicloud
