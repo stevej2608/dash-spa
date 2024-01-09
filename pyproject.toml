@@ -13,7 +13,7 @@ include = ["CHANGELOG.md", "LICENSE", "landing-page.md"]
 
 [tool.poetry.dependencies]
 
-python = "^3.11"
+python = "^3.9"
 
 dash-bootstrap-components = ">=1.1.0"
 dash-holoniq-components = ">=0.0.19"
