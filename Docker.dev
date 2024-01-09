@@ -12,11 +12,11 @@ RUN apt update && \
 
 # RUN apt-get update && apt-get install -y build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev
 
-# Install chrome
+ENV CHROME_VERSION 114.0.5735.90
 
 RUN mkdir -p /tmp/chrome \
    && cd /tmp/chrome \
-   && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+   && wget -q http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}-1_amd64.deb
 
 RUN cd /tmp/chrome \
    && ls \
@@ -28,7 +28,7 @@ RUN cd /tmp/chrome \
 
 RUN mkdir -p /tmp/ && \
     cd /tmp/ && \
-    wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip  && \
+    wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/${CHROME_VERSION}/chromedriver_linux64.zip  && \
     unzip /tmp/chromedriver.zip chromedriver -d /usr/bin/ && \
     # clean up the container "layer", after we are done
     rm /tmp/chromedriver.zip

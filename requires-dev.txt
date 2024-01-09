@@ -1,11 +1,11 @@
 # Additional packages for development & testing
 
-dash[testing]>=2.1.0
+dash[testing]==2.6.1
 keyrings.alt>=4.1.0
-pytest-env>=0.6.2
-pytest-mock>=3.7.0
-pytest-cov>=3.0.0
-pytest>=7.1.1
+pytest-env==0.6.2
+pytest-mock==3.7.0
+pytest-cov==3.0.0
+pytest==7.1.1
 selenium>=4.1.0
 setuptools>=63.2.0
 twine==3.7.1
