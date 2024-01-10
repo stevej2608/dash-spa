@@ -47,4 +47,4 @@ jobs:
         flake8 --exclude .venv . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Run pytest
-      run: python -m poetry run pytest
+      run: poetry run pytest
