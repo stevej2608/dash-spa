@@ -6,24 +6,25 @@
   "configurations": [
     {
       "name": "1a. usage.py",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "cwd": "${workspaceRoot}",
       "program": "usage.py",
       "console": "internalConsole",
-      "env": {"PYTHONHASHSEED": "1234"},
+      "env": {"debugpyHASHSEED": "1234"},
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2a. Python (Current file)",
-      "type": "python",
+      "name": "2a. debugpy (Current file)",
+      "type": "debugpy",
       "request": "launch",
       "cwd": "${workspaceRoot}",
       "program": "${file}",
@@ -31,186 +32,198 @@
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2b. Python: examples.context.app",
-      "type": "python",
+      "name": "2b. debugpy: examples.context.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.context.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
-      "env": {"PYTHONHASHSEED": "1234"},
+      "env": {"debugpyHASHSEED": "1234"},
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2c. Python: examples.veggy.app",
-      "type": "python",
+      "name": "2c. debugpy: examples.veggy.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.veggy.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2d. Python: examples.notifications.app",
-      "type": "python",
+      "name": "2d. debugpy: examples.notifications.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.notifications.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2e. Python: examples.multipage.app",
-      "type": "python",
+      "name": "2e. debugpy: examples.multipage.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.multipage.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2f. Python: examples.cra.app",
-      "type": "python",
+      "name": "2f. debugpy: examples.cra.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.cra.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2g. Python: examples.button_test_redux.app",
-      "type": "python",
+      "name": "2g. debugpy: examples.button_test_redux.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.button_test_redux.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
-      "env": {"PYTHONHASHSEED": "1234"},
+      "env": {"debugpyHASHSEED": "1234"},
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2h. Python: examples.button_test_simple.app",
-      "type": "python",
+      "name": "2h. debugpy: examples.button_test_simple.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.button_test_simple.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2i. Python: examples.button_test_context_state.app",
-      "type": "python",
+      "name": "2i. debugpy: examples.button_test_context_state.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.button_test_context_state.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
 
     {
-      "name": "2j. Python: examples.sidebar.app",
-      "type": "python",
+      "name": "2j. debugpy: examples.sidebar.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.sidebar.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
-      "env": {"PYTHONHASHSEED": "1234"},
+      "env": {"debugpyHASHSEED": "1234"},
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
     {
-      "name": "2k. Python: examples.button_dropdown.app",
-      "type": "python",
+      "name": "2k. debugpy: examples.button_dropdown.app",
+      "type": "debugpy",
       "request": "launch",
       "module": "examples.button_dropdown.app",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
-      "env": {"PYTHONHASHSEED": "1234"},
+      "env": {"debugpyHASHSEED": "1234"},
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
 
 
 
     {
-      "name": "3a. Python: Current Module",
-      "type": "python",
+      "name": "3a. debugpy: Current Module",
+      "type": "debugpy",
       "request": "launch",
       "module": "${command:extension.commandvariable.file.relativeDirDots}.${fileBasenameNoExtension}",
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false,
       "serverReadyAction": {
-        "pattern": ".*Visit http://(.*)",
-        "uriFormat": "http://%s",
-        "action": "openExternally"
+        "pattern": "Visit\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome",
+        "killOnServerStop": true
       }
     },
     {
       "name": "4a. PyTest (all)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "stopOnEntry": false,
       "module": "pytest",
@@ -220,13 +233,13 @@
         "-sv"
       ],
       "cwd": "${workspaceRoot}",
-      "env": {"DASH_SPA_ENV" : "test", "PYTHONHASHSEED": "1234"},
+      "env": {"DASH_SPA_ENV" : "test", "debugpyHASHSEED": "1234"},
       "console": "internalConsole",
       "justMyCode": false
     },
     {
       "name": "4b. PyTest (Current file)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "stopOnEntry": false,
       "module": "pytest",
@@ -236,7 +249,7 @@
         "${file}"
       ],
       "cwd": "${workspaceRoot}",
-      "env": {"DASH_SPA_ENV" : "test", "PYTHONHASHSEED": "1234"},
+      "env": {"DASH_SPA_ENV" : "test", "debugpyHASHSEED": "1234"},
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false
@@ -244,7 +257,7 @@
 
     {
       "name": "4c. PyTest (tests/spa/context/context_provider_test.py)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "stopOnEntry": false,
       "module": "pytest",
@@ -254,7 +267,7 @@
         "tests/spa/context/context_provider_test.py"
       ],
       "cwd": "${workspaceRoot}",
-      "env": {"DASH_SPA_ENV" : "test", "PYTHONHASHSEED": "1234"},
+      "env": {"DASH_SPA_ENV" : "test", "debugpyHASHSEED": "1234"},
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",
       "justMyCode": false
@@ -262,7 +275,7 @@
 
     {
       "name": "4d. PyTest (alert & notify)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "stopOnEntry": false,
       "module": "pytest",
@@ -281,7 +294,7 @@
 
     {
       "name": "4e. PyTest (examples)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "stopOnEntry": false,
       "module": "pytest",
